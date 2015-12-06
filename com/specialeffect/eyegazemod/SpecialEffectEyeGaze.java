@@ -209,7 +209,7 @@ public class SpecialEffectEyeGaze
 	                	    player.capabilities.isCreativeMode) {
 	                		item.stackSize += 1;
 	                	}
-			    		SpecialEffectEyeGaze.network.sendToServer(new MyMessage("foobar"));
+			    		SpecialEffectEyeGaze.network.sendToServer(new MyMessage("foobar", item, blockPos));
 	                }
 				}		
 			},
