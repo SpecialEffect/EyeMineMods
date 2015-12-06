@@ -45,6 +45,8 @@ public class SpecialEffectEyeGaze
     public static KeyBinding autoJumpKeyBinding;
     public static KeyBinding autoPlaceKeyBinding;
     public static KeyBinding toggleFlyingKeyBinding;
+    
+    public static SimpleNetworkWrapper network;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -54,6 +56,10 @@ public class SpecialEffectEyeGaze
         mWalkDistance = mConfig.get(Configuration.CATEGORY_GENERAL, "walkDistance", mWalkDistance).getDouble();
         mFlyHeight = mConfig.get(Configuration.CATEGORY_GENERAL, "flyHeight", mFlyHeight).getInt();
         mConfig.save();
+        
+        network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
+        network.registerMessage(MyMessage.Handler.class, MyMessage.class, 0, Side.SERVER);
+
     }
     
     @EventHandler
@@ -203,6 +209,7 @@ public class SpecialEffectEyeGaze
 	                	    player.capabilities.isCreativeMode) {
 	                		item.stackSize += 1;
 	                	}
+			    		SpecialEffectEyeGaze.network.sendToServer(new MyMessage("foobar"));
 	                }
 				}		
 			},
