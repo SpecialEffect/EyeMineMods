@@ -69,6 +69,7 @@ public class SpecialEffectEyeGaze
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
+        network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 0, Side.SERVER);
 
     }
     
@@ -162,15 +163,18 @@ public class SpecialEffectEyeGaze
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 	    			if (player.capabilities.allowFlying) {
-	    				// If flying, stop
 	    				if (player.capabilities.isFlying) {
-	    		            System.out.println("Turning off flying!");
+	    					// If flying, stop. State must be changed locally *and* on server
 	    					player.capabilities.isFlying = false;
+	    					SpecialEffectEyeGaze.network.sendToServer(
+	    							new ChangeFlyingStateMessage(false, mFlyHeight));
 	    				}
 	    				else {
-	    		            System.out.println("Turning on flying!");
+	    					// start flying, and fly upward.
 	    					player.capabilities.isFlying = true;
-		    				player.motionY += 5;
+                			player.motionY += mFlyHeight;
+	    					SpecialEffectEyeGaze.network.sendToServer(
+	    							new ChangeFlyingStateMessage(true, mFlyHeight));
 	    				}
 	    			}
 				}
