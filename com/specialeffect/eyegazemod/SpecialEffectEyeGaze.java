@@ -6,19 +6,26 @@ import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 
+import com.sun.prism.Material;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -28,6 +35,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = SpecialEffectEyeGaze.MODID, 
@@ -58,7 +68,7 @@ public class SpecialEffectEyeGaze
         mConfig.save();
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
-        network.registerMessage(MyMessage.Handler.class, MyMessage.class, 0, Side.SERVER);
+        network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
 
     }
     
@@ -196,24 +206,22 @@ public class SpecialEffectEyeGaze
 				public void onLiving(LivingUpdateEvent event) {
  	                World world = Minecraft.getMinecraft().theWorld;
 		    		EntityPlayer player = (EntityPlayer)event.entityLiving;
-					BlockPos playerPos = player.getPosition();
+		    		BlockPos playerPos = player.getPosition();
 
 	                ItemStack item = player.getHeldItem();
 	                if (item != null) {
 	                	BlockPos blockPos = new BlockPos(playerPos.getX(), 
 	                									 playerPos.getY()-1, // y = up 
 	                									 playerPos.getZ());
-	                	 
-			            // Use item, increment stack size if successful (in creative mode)
-	                	if (item.onItemUse(player, world, blockPos, EnumFacing.DOWN, 0, 0, 0) &&
-	                	    player.capabilities.isCreativeMode) {
-	                		item.stackSize += 1;
-	                	}
-			    		SpecialEffectEyeGaze.network.sendToServer(new MyMessage("foobar", item, blockPos));
+	                	
+			            // Ask server to use item
+			    		SpecialEffectEyeGaze.network.sendToServer(
+			    				new UseItemAtPositionMessage(item, blockPos));
+
 	                }
 				}		
 			},
-        	15 )); // delayed by 5 ticks
+        	10 )); // delayed by 5 ticks
         }
     }
 }

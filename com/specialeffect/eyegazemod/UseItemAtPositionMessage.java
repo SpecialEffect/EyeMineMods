@@ -16,23 +16,20 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class MyMessage implements IMessage {
+public class UseItemAtPositionMessage implements IMessage {
     
-    private String text;
     private ItemStack item;
     private BlockPos blockPos;
 
-    public MyMessage() { }
+    public UseItemAtPositionMessage() { }
 
-    public MyMessage(String text, ItemStack item, BlockPos pos) {
-        this.text = text;
+    public UseItemAtPositionMessage(ItemStack item, BlockPos pos) {
         this.item = item;
         this.blockPos = pos;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        text = ByteBufUtils.readUTF8String(buf); 
         item = ByteBufUtils.readItemStack(buf);
         int x = ByteBufUtils.readVarInt(buf, 5); 
         int y = ByteBufUtils.readVarInt(buf, 5); 
@@ -42,32 +39,28 @@ public class MyMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, text);
         ByteBufUtils.writeItemStack(buf, item);
         ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
     }
 
-    public static class Handler implements IMessageHandler<MyMessage, IMessage> {        
+    public static class Handler implements IMessageHandler<UseItemAtPositionMessage, IMessage> {        
     	@Override
-        public IMessage onMessage(final MyMessage message,final MessageContext ctx) {
+        public IMessage onMessage(final UseItemAtPositionMessage message,final MessageContext ctx) {
             IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println(String.format("Received %s from %s", message.text, ctx.getServerHandler().playerEntity.getDisplayName()));
-                    System.out.println(String.format("SERVER x = %d, y = %d, z = %d", 		
-                    					message.blockPos.getX(), 
-                    					message.blockPos.getY(),
-                    					message.blockPos.getZ()));
-                    
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     World world = player.getEntityWorld();
                     
                     message.item.onItemUse(player, world, 
 				                    	   message.blockPos, EnumFacing.UP, 
 				                    	   0.0f, 0.0f, 0.0f);
+                    
+                    // TODO: Deprecate item stack in survival mode?
+                    // TODO: Animate item use?
                 }
             });
             return null; // no response in this case
