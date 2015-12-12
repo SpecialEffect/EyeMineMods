@@ -52,11 +52,14 @@ public class SpecialEffectEyeGaze
     public static Configuration mConfig;
 
     public static KeyBinding walkKeyBinding;
+    public static KeyBinding walkDirectionKeyBinding;
     public static KeyBinding autoJumpKeyBinding;
     public static KeyBinding autoPlaceKeyBinding;
     public static KeyBinding toggleFlyingKeyBinding;
     
     public static SimpleNetworkWrapper network;
+    
+    private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -84,6 +87,10 @@ public class SpecialEffectEyeGaze
     	
 
     	// Register key bindings
+    	
+    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
+        
     	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, "SpecialEffect");
         ClientRegistry.registerKeyBinding(walkKeyBinding);
         
@@ -138,16 +145,42 @@ public class SpecialEffectEyeGaze
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         System.out.println("Key event");
+        
+        // Configure walk direction for next "walk" command.
+        // a = north, aa = north-east, aaa = east, etc.
+        if(walkDirectionKeyBinding.isPressed()) {
+        	keyCounterWalkDir.increment();
+        }
 
         // Walk: Move 100 units forward next onLiving tick.
         if(walkKeyBinding.isPressed()) {
+        	final int i = keyCounterWalkDir.getCount();
+        	keyCounterWalkDir.reset();
+        	
             System.out.println("Walk key event");
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
+					float strafe = 0.0f;
+					float forward = 0.0f;
+					if (i > 0 && i < 4) {
+						strafe = -1.0f;
+					}
+					else if (i > 4 && i < 8 ) {
+						strafe = 1.0f;
+					}
+					int iShifted = (Math.floorMod(i-6, 8) + 8) % 8;
+					if (iShifted > 0 && iShifted < 4) {
+						forward = 1.0f;
+					}
+					else if (iShifted > 4 && iShifted < 8 ) {
+						forward = -1.0f;
+					}
+
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 		            System.out.println("Moving forward "+mWalkDistance);
-	    			player.moveEntityWithHeading(0, (float)mWalkDistance);
+	    			player.moveEntityWithHeading(strafe*(float)mWalkDistance, 
+	    										 forward*(float)mWalkDistance);
 				}
 			}));
         }
