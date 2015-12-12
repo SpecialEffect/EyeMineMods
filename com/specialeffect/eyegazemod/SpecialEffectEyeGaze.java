@@ -69,7 +69,7 @@ public class SpecialEffectEyeGaze
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
-        network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 0, Side.SERVER);
+        network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
 
     }
     
