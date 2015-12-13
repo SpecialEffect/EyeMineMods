@@ -47,7 +47,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 public class SpecialEffectEyeGaze
 {
     public static final String MODID = "specialeffect";
-    public static final String VERSION = "1.3";
+    public static final String VERSION = "1.4";
     public static final String NAME = "SpecialEffectEyeGaze";
     public static Configuration mConfig;
 
