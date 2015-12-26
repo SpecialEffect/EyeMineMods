@@ -44,7 +44,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 	 version = SpecialEffectEyeGaze.VERSION,
 	 name = SpecialEffectEyeGaze.NAME,
 	 guiFactory = "com.specialeffect.eyegazemod.GuiFactorySpecialEffect")
-public class SpecialEffectEyeGaze
+public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect";
     public static final String VERSION = "1.4";
@@ -79,7 +79,6 @@ public class SpecialEffectEyeGaze
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        mOnLivingQueue = new LinkedList<OnLivingCallback>();
 
 		// Subscribe to event buses
         FMLCommonHandler.instance().bus().register(this);
@@ -117,27 +116,13 @@ public class SpecialEffectEyeGaze
     			player.stepHeight = 0.6f;
     		}
     		
-            synchronized (mOnLivingQueue) {
-            	Iterator<OnLivingCallback> it = mOnLivingQueue.iterator();
-            	while (it.hasNext()) {
-            		OnLivingCallback item = it.next();
-            		item.onLiving(event);
-            		if (item.hasCompleted()) {
-            			it.remove();
-            		}        		
-            	}
-            }
+    		// Process any events which were queued by key events
+    		this.processQueuedCallbacks(event);
     	}
     }
     
     LinkedList<OnLivingCallback> mOnLivingQueue;
     
-    private void queueOnLivingCallback(OnLivingCallback onLivingCallback) {
-    	synchronized (mOnLivingQueue) {
-        	mOnLivingQueue.add(onLivingCallback);
-		}
-    }
-
     private boolean mDoingAutoJump = false;
     private double mWalkDistance = 1.0f;
     private int mFlyHeight = 5;
