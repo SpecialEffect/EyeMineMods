@@ -46,7 +46,7 @@ public class MoveWithGaze {
     	MinecraftForge.EVENT_BUS.register(this);    	
 
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("", Keyboard.KEY_H, "SpecialEffect");
+    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
