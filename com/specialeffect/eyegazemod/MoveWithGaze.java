@@ -81,7 +81,7 @@ public class MoveWithGaze {
             	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
             	double thresh = 0.8; // below this, no movement
             	double distance = Math.max(0, /*mWalkDistance**/(normalCongruency - thresh)/(1.0-thresh));
-                System.out.println("distance = "+distance);
+//                System.out.println("distance = "+distance);
             	//distance = Math.max(distance, 0.0);
             	player.moveEntityWithHeading(0, (float)distance);
             }
