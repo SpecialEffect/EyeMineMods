@@ -55,7 +55,6 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
     public static KeyBinding walkDirectionKeyBinding;
     public static KeyBinding autoJumpKeyBinding;
     public static KeyBinding autoPlaceKeyBinding;
-    public static KeyBinding toggleFlyingKeyBinding;
     
     public static SimpleNetworkWrapper network;
     
@@ -67,12 +66,10 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	mConfig.load();
         mWalkDistance = mConfig.get(Configuration.CATEGORY_GENERAL, "walkDistance", mWalkDistance).getDouble();
-        mFlyHeight = mConfig.get(Configuration.CATEGORY_GENERAL, "flyHeight", mFlyHeight).getInt();
         mConfig.save();
         
-        network = NetworkRegistry.INSTANCE.newSimpleChannel("MyChannel");
+        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
-        network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
 
     }
     
@@ -99,9 +96,6 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
         autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, "SpecialEffect");
         ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
         
-        toggleFlyingKeyBinding = new KeyBinding("Toggle flying", Keyboard.KEY_F, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(toggleFlyingKeyBinding);
-        
     }
     
     @SubscribeEvent
@@ -125,7 +119,6 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
     
     private boolean mDoingAutoJump = false;
     private double mWalkDistance = 1.0f;
-    private int mFlyHeight = 5;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -173,30 +166,6 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
         if(autoJumpKeyBinding.isPressed()) {
         	mDoingAutoJump = !mDoingAutoJump;
             System.out.println("Turning auto jump " + (mDoingAutoJump ? "ON" : "OFF"));
-        }
-        
-        if (toggleFlyingKeyBinding.isPressed()) {
-        	this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
-	    			if (player.capabilities.allowFlying) {
-	    				if (player.capabilities.isFlying) {
-	    					// If flying, stop. State must be changed locally *and* on server
-	    					player.capabilities.isFlying = false;
-	    					SpecialEffectEyeGaze.network.sendToServer(
-	    							new ChangeFlyingStateMessage(false, mFlyHeight));
-	    				}
-	    				else {
-	    					// start flying, and fly upward.
-	    					player.capabilities.isFlying = true;
-                			player.motionY += mFlyHeight;
-	    					SpecialEffectEyeGaze.network.sendToServer(
-	    							new ChangeFlyingStateMessage(true, mFlyHeight));
-	    				}
-	    			}
-				}
-			}));
         }
         
         // Auto place is implemented as:
