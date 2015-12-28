@@ -5,9 +5,14 @@ import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -69,8 +74,33 @@ public class SpecialEffectAutoFly extends BaseClassWithCallbacks
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if(event.entityLiving instanceof EntityPlayer) {
+    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+
+    		// If flying, and about to bump into something, fly more!
+			if (player.capabilities.allowFlying &&
+					player.capabilities.isFlying) {	
+	    		BlockPos playerPos = player.getPosition();
+	    		Vec3 lookVec = player.getLookVec();
+
+	    		// Check all three blocks ahead of player
+	    		for (int yDiff = -1; yDiff < 2; yDiff++) {
+	    			BlockPos blockPosInFrontOfPlayer = new BlockPos(
+	    					playerPos.getX() + lookVec.xCoord,
+	    					playerPos.getY() + yDiff,
+	    					playerPos.getZ() + lookVec.zCoord);
+
+	    			World world = Minecraft.getMinecraft().theWorld;
+	    			Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
+
+	    			if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement()) {
+	    				player.motionY += mFlyHeight/4;
+	    				break; // for yDiff = ...
+	    			}
+	    		}
+			}
+			
 			this.processQueuedCallbacks(event);
-		}
+		}			
 	}
 
 	@SubscribeEvent
