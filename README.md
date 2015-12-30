@@ -6,6 +6,10 @@ Functionality would also be applicable for switch control.
 If you want to contribute, you need to install minecraft forge to build the mods. 
 These instructions are based on Windows 8.1, Minecraft 1.8.8 and using Eclipse as an IDE.
 
+### Pre-requisites
+- An IDE, such as Eclipse 
+- Java SDK ("JDK")
+
 ### Setting up forge
 1) Download the source ("MDK") for Forge from http://files.minecraftforge.net/. Extract it to your favourite folder. For the sake of these instructions, it is assumed you extract it to C:\code\forge-1.8.8\
 
@@ -16,7 +20,10 @@ These instructions are based on Windows 8.1, Minecraft 1.8.8 and using Eclipse a
 
 3) Load the forge project in Eclipse, by launching Eclipse and selecting C:\code\forge-1.8.8\eclipse as the workspace path. 
 
-If all has gone well, Minecraft will be launched when you hit "Run", including an ExampleMod which comes bundled with the Forge code.
+If all has gone well, Minecraft will be launched when you hit the green "Run" button, including an ExampleMod which comes bundled with the Forge code.
+
+If it doesn't work, check out the troubleshooting tips here:
+http://www.minecraftforge.net/forum/index.php/topic,14048.0.html#post_initial_setup
 
 ### Hooking up mod code
 1) Clone this repository into (e.g.) C:\code\SpecialEffectMinecraftMods
