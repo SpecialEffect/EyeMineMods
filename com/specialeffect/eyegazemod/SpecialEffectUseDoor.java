@@ -10,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -34,12 +36,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = SpecialEffectUseDoor.MODID, version = SpecialEffectUseDoor.VERSION, name = SpecialEffectUseDoor.NAME)
-public class SpecialEffectUseDoor extends BaseClassWithCallbacks {
+public class SpecialEffectUseDoor {
 	public static final String MODID = "specialeffect.usedoor";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "SpecialEffectUseDoor";
-
-	private static KeyBinding mUseDoorKB;
 
     public static SimpleNetworkWrapper network;
 
@@ -59,54 +59,72 @@ public class SpecialEffectUseDoor extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 
-		// Register key bindings
-		mUseDoorKB = new KeyBinding("Open/close nearby door", Keyboard.KEY_R, "SpecialEffect");
-
+		mOpenedDoors = new LinkedList<BlockPos>();
 	}
+	
+	// A list of the position of any doors we've opened that haven't yet been closed
+	private LinkedList<BlockPos> mOpenedDoors;
 
+	private int mDoorRadius = 2;
+	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
+			World world = Minecraft.getMinecraft().theWorld;
 
-			// Process any events which were queued by key events
-			this.processQueuedCallbacks(event);
-		}
-	}
+			BlockPos playerPos = player.getPosition();
 
-	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+			// Open any doors within 1 block
+			synchronized (mOpenedDoors) {
+				for (int i = -mDoorRadius; i <= mDoorRadius; i++) {
+					for (int j = -mDoorRadius; j <= mDoorRadius; j++) {
 
-		if (mUseDoorKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					World world = Minecraft.getMinecraft().theWorld;
+						BlockPos blockPos = playerPos.add(i, 0, j);
 
-					BlockPos playerPos = player.getPosition();
-
-					// Look for nearby doors to open/close
-					for (int i = -2; i <= 2; i++) {
-						for (int j = -2; j <= 2; j++) {
-
-							BlockPos blockPos = playerPos.add(i, 0, j);
-
-							// Check if block is door, if so, activate it.
-							Block block = world.getBlockState(blockPos).getBlock();
-							if (block instanceof BlockDoor) {
-								BlockDoor door = (BlockDoor) block;
+						// Check if block is door, if so, activate it.
+						Block block = world.getBlockState(blockPos).getBlock();
+						
+						if (block instanceof BlockDoor) {
+							BlockDoor door = (BlockDoor) block;
+							if (!door.isOpen(world, blockPos)) {
 								IBlockState state = world.getBlockState(blockPos);
 								door.onBlockActivated(world, blockPos, state, player, EnumFacing.NORTH, 0.0f, 0.0f, 0.0f);
-								
+								mOpenedDoors.add(blockPos);
+
 								// Ask server to activate door too
-					    		SpecialEffectUseDoor.network.sendToServer(
-					    				new UseDoorAtPositionMessage(blockPos));
+								SpecialEffectUseDoor.network.sendToServer(
+										new UseDoorAtPositionMessage(blockPos));
 							}
 						}
 					}
 				}
-			}));
+			}
+			
+			// Close any doors that you've left behind
+			synchronized (mOpenedDoors) {
+				for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext();) {
+					BlockPos pos = iterator.next();
+
+					if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > mDoorRadius*mDoorRadius) {
+						Block block = world.getBlockState(pos).getBlock();
+						IBlockState state = world.getBlockState(pos);
+						BlockDoor door = (BlockDoor) block;
+
+						if (door.isOpen(world, pos)) {
+							door.onBlockActivated(world, pos, state, player, EnumFacing.NORTH, 0.0f, 0.0f, 0.0f);
+
+							// Ask server to activate door too
+							SpecialEffectUseDoor.network.sendToServer(
+									new UseDoorAtPositionMessage(pos));
+						}
+
+						// Remove from list
+						iterator.remove();
+					}
+				}
+			}
+			
 		}
 	}
 
