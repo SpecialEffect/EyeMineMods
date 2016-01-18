@@ -209,6 +209,8 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
 			    		SpecialEffectEyeGaze.network.sendToServer(
 			    				new UseItemAtPositionMessage(item, blockPos));
 
+			    		// Make sure we get the animation
+			    		player.swingItem();
 	                }
 				}		
 			},
