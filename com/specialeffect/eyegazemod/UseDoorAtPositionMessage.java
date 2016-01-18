@@ -20,15 +20,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class UseDoorAtPositionMessage implements IMessage {
     
     private BlockPos blockPos;
+    private boolean toBeOpened;
 
     public UseDoorAtPositionMessage() { }
 
-    public UseDoorAtPositionMessage(BlockPos pos) {
+    public UseDoorAtPositionMessage(BlockPos pos, boolean toOpen) {
         this.blockPos = pos;
+        this.toBeOpened= toOpen;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
+    	toBeOpened = ByteBufUtils.readVarInt(buf, 1) > 0;
         int x = ByteBufUtils.readVarInt(buf, 5); 
         int y = ByteBufUtils.readVarInt(buf, 5); 
         int z = ByteBufUtils.readVarInt(buf, 5); 
@@ -37,6 +40,7 @@ public class UseDoorAtPositionMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
+    	ByteBufUtils.writeVarInt(buf, toBeOpened ? 1 : 0, 1);
         ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
@@ -51,13 +55,12 @@ public class UseDoorAtPositionMessage implements IMessage {
                 public void run() {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     World world = player.getEntityWorld();
-
-                    // Check if block is door, if so, activate it.
 					Block block = world.getBlockState(message.blockPos).getBlock();
-					if (block instanceof BlockDoor) {
-						BlockDoor door = (BlockDoor) block;
-						IBlockState state = world.getBlockState(message.blockPos);
-						door.onBlockActivated(world, message.blockPos, state, player, EnumFacing.NORTH, 0.0f, 0.0f, 0.0f);
+					if (message.toBeOpened) {
+						OpenableBlock.open(world, block, message.blockPos);
+					}
+					else {
+						OpenableBlock.close(world, block, message.blockPos);
 					}
                 }
             });

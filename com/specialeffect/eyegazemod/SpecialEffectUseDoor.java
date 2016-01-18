@@ -11,6 +11,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockFenceGate;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -77,24 +78,23 @@ public class SpecialEffectUseDoor {
 
 			// Open any doors within 1 block
 			synchronized (mOpenedDoors) {
-				for (int i = -mDoorRadius; i <= mDoorRadius; i++) {
-					for (int j = -mDoorRadius; j <= mDoorRadius; j++) {
+				for (int x = -mDoorRadius; x <= mDoorRadius; x++) {
+					for (int z = -mDoorRadius; z <= mDoorRadius; z++) {
+						for (int y = -1; y <= 1; y++) { // look up/down for trapdoors
+							BlockPos blockPos = playerPos.add(x, y, z);
 
-						BlockPos blockPos = playerPos.add(i, 0, j);
+							// Check if block is door, if so, activate it.
+							Block block = world.getBlockState(blockPos).getBlock();
 
-						// Check if block is door, if so, activate it.
-						Block block = world.getBlockState(blockPos).getBlock();
-						
-						if (block instanceof BlockDoor) {
-							BlockDoor door = (BlockDoor) block;
-							if (!door.isOpen(world, blockPos)) {
-								IBlockState state = world.getBlockState(blockPos);
-								door.onBlockActivated(world, blockPos, state, player, EnumFacing.NORTH, 0.0f, 0.0f, 0.0f);
-								mOpenedDoors.add(blockPos);
+							if (OpenableBlock.isOpenableBlock(block)) {
+								boolean haveOpened = OpenableBlock.open(world, block, blockPos);
+								if (haveOpened) {
+									mOpenedDoors.add(blockPos);
 
-								// Ask server to activate door too
-								SpecialEffectUseDoor.network.sendToServer(
-										new UseDoorAtPositionMessage(blockPos));
+									// Ask server to open door too
+									SpecialEffectUseDoor.network.sendToServer(
+											new UseDoorAtPositionMessage(blockPos, true));
+								}
 							}
 						}
 					}
@@ -108,16 +108,12 @@ public class SpecialEffectUseDoor {
 
 					if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > mDoorRadius*mDoorRadius) {
 						Block block = world.getBlockState(pos).getBlock();
-						IBlockState state = world.getBlockState(pos);
-						BlockDoor door = (BlockDoor) block;
 
-						if (door.isOpen(world, pos)) {
-							door.onBlockActivated(world, pos, state, player, EnumFacing.NORTH, 0.0f, 0.0f, 0.0f);
+						OpenableBlock.close(world, block, pos);
 
-							// Ask server to activate door too
-							SpecialEffectUseDoor.network.sendToServer(
-									new UseDoorAtPositionMessage(pos));
-						}
+						// Ask server to close door too
+						SpecialEffectUseDoor.network.sendToServer(
+								new UseDoorAtPositionMessage(pos, false));
 
 						// Remove from list
 						iterator.remove();
