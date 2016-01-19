@@ -53,6 +53,9 @@ public class SpecialEffectAutoDestroy {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
+
+		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+				"Add key binding to start/stop continuously attacking.");
 	}
 
 	@EventHandler

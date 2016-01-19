@@ -48,6 +48,9 @@ public class SpecialEffectAutoFly extends BaseClassWithCallbacks
 	public void preInit(FMLPreInitializationEvent event) {    
 		FMLCommonHandler.instance().bus().register(this);    	
 		
+		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+				"Add key binding to start/stop flying, and automatically fly over hills.");
+		
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	mConfig.load();
         mFlyHeight = mConfig.get(Configuration.CATEGORY_GENERAL, "flyHeight", mFlyHeight).getInt();

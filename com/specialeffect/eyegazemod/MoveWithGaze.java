@@ -35,7 +35,10 @@ public class MoveWithGaze {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
-    	FMLCommonHandler.instance().bus().register(this);    	
+    	FMLCommonHandler.instance().bus().register(this);  
+    	
+    	ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     }
     
     @EventHandler

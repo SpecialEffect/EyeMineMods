@@ -48,6 +48,9 @@ public class SpecialEffectUseDoor {
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
 		
+		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+				"Automatically open doors/gates and close them behind you.");
+		
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
         						UseDoorAtPositionMessage.class, 0, Side.SERVER);

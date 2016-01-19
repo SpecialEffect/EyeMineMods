@@ -68,6 +68,10 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
         mWalkDistance = mConfig.get(Configuration.CATEGORY_GENERAL, "walkDistance", mWalkDistance).getDouble();
         mConfig.save();
         
+        ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+				"A few actions for eye gaze support. Auto-place block, auto-jump, walk fixed amount.");
+		
+        
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
 
