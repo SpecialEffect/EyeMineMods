@@ -1,4 +1,6 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.utils;
+
+import com.specialeffect.mods.SpecialEffectEyeGaze;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

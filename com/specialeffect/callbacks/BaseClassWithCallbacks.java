@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.callbacks;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 // event.
 public class BaseClassWithCallbacks {
 
-	BaseClassWithCallbacks() {
+	public BaseClassWithCallbacks() {
 		mOnLivingQueue = new LinkedList<OnLivingCallback>();
 	}
 

@@ -1,8 +1,7 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,21 +16,21 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class UseDoorAtPositionMessage implements IMessage {
+public class UseItemAtPositionMessage implements IMessage {
     
+    private ItemStack item;
     private BlockPos blockPos;
-    private boolean toBeOpened;
 
-    public UseDoorAtPositionMessage() { }
+    public UseItemAtPositionMessage() { }
 
-    public UseDoorAtPositionMessage(BlockPos pos, boolean toOpen) {
+    public UseItemAtPositionMessage(ItemStack item, BlockPos pos) {
+        this.item = item;
         this.blockPos = pos;
-        this.toBeOpened= toOpen;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-    	toBeOpened = ByteBufUtils.readVarInt(buf, 1) > 0;
+        item = ByteBufUtils.readItemStack(buf);
         int x = ByteBufUtils.readVarInt(buf, 5); 
         int y = ByteBufUtils.readVarInt(buf, 5); 
         int z = ByteBufUtils.readVarInt(buf, 5); 
@@ -40,28 +39,28 @@ public class UseDoorAtPositionMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-    	ByteBufUtils.writeVarInt(buf, toBeOpened ? 1 : 0, 1);
+        ByteBufUtils.writeItemStack(buf, item);
         ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
     }
 
-    public static class Handler implements IMessageHandler<UseDoorAtPositionMessage, IMessage> {        
+    public static class Handler implements IMessageHandler<UseItemAtPositionMessage, IMessage> {        
     	@Override
-        public IMessage onMessage(final UseDoorAtPositionMessage message,final MessageContext ctx) {
+        public IMessage onMessage(final UseItemAtPositionMessage message,final MessageContext ctx) {
             IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     World world = player.getEntityWorld();
-					Block block = world.getBlockState(message.blockPos).getBlock();
-					if (message.toBeOpened) {
-						OpenableBlock.open(world, block, message.blockPos);
-					}
-					else {
-						OpenableBlock.close(world, block, message.blockPos);
-					}
+                    
+                    message.item.onItemUse(player, world, 
+				                    	   message.blockPos, EnumFacing.UP, 
+				                    	   0.0f, 0.0f, 0.0f);
+                    
+                    // TODO: Deprecate item stack in survival mode?
+                    // TODO: Animate item use?
                 }
             });
             return null; // no response in this case

@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.utils;
 
 import io.netty.util.concurrent.BlockingOperationException;
 import net.minecraft.block.Block;
@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 public class OpenableBlock {
 
 	// Open block if not already open. Return if you actually opened it.
-	static boolean open(World world, Block block, BlockPos blockPos) {
+	public static boolean open(World world, Block block, BlockPos blockPos) {
 	    if (!OpenableBlock.isOpenableBlock(block)) {
 	    	return false;
 	    }
@@ -48,7 +48,7 @@ public class OpenableBlock {
 	    }
 	}
 	
-	static boolean close(World world, Block block, BlockPos blockPos) {
+	public static boolean close(World world, Block block, BlockPos blockPos) {
 	    if (!OpenableBlock.isOpenableBlock(block)) {
 	    	return false;
 	    }
@@ -67,7 +67,7 @@ public class OpenableBlock {
 		return false;
 	}
 	
-	static boolean isOpenableBlock(Block block) {
+	public static boolean isOpenableBlock(Block block) {
 		return (block instanceof BlockFenceGate) ||
 			   (block instanceof BlockDoor) ||
 			   (block instanceof BlockTrapDoor);

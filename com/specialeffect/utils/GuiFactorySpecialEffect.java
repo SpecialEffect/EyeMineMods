@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.utils;
 
 import java.util.Set;
 

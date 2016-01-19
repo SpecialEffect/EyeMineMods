@@ -1,9 +1,15 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.mods;
 
 import java.util.Iterator;
 import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
+
+import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

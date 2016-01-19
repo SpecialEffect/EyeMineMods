@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.mods;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -6,6 +6,14 @@ import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 
+import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.DelayedOnLivingCallback;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.OnLivingCallback;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.utils.KeyPressCounter;
+import com.specialeffect.utils.ModUtils;
 import com.sun.prism.Material;
 
 import net.minecraft.block.Block;
@@ -43,7 +51,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 @Mod(modid = SpecialEffectEyeGaze.MODID, 
 	 version = SpecialEffectEyeGaze.VERSION,
 	 name = SpecialEffectEyeGaze.NAME,
-	 guiFactory = "com.specialeffect.eyegazemod.GuiFactorySpecialEffect")
+	 guiFactory = "com.specialeffect.utils.GuiFactorySpecialEffect")
 public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect";
@@ -118,8 +126,6 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
     		this.processQueuedCallbacks(event);
     	}
     }
-    
-    LinkedList<OnLivingCallback> mOnLivingQueue;
     
     private boolean mDoingAutoJump = false;
     private double mWalkDistance = 1.0f;

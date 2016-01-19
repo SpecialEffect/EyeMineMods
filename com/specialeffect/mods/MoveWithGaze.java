@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.mods;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,6 +8,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.input.Keyboard;
+
+import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;

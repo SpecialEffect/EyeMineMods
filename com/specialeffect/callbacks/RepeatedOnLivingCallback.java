@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.callbacks;
 
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 

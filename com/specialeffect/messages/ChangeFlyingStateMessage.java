@@ -1,4 +1,4 @@
-package com.specialeffect.eyegazemod;
+package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
