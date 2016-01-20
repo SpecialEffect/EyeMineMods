@@ -74,6 +74,7 @@ public class SpecialEffectUseDoor {
 	private LinkedList<BlockPos> mOpenedDoors;
 
 	private int mDoorRadius = 2;
+	private BlockPos mLastPlayerPos;
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -83,47 +84,59 @@ public class SpecialEffectUseDoor {
 
 			BlockPos playerPos = player.getPosition();
 
-			// Open any doors within 1 block
-			synchronized (mOpenedDoors) {
-				for (int x = -mDoorRadius; x <= mDoorRadius; x++) {
-					for (int z = -mDoorRadius; z <= mDoorRadius; z++) {
-						for (int y = -1; y <= 1; y++) { // look up/down for trapdoors
-							BlockPos blockPos = playerPos.add(x, y, z);
+			// Only check/update doors when (integer) position has changed. 
+			if (mLastPlayerPos == null || mLastPlayerPos != playerPos) {
+				mLastPlayerPos = playerPos;
 
-							// Check if block is door, if so, activate it.
-							Block block = world.getBlockState(blockPos).getBlock();
+				// Open any doors within 1 block
+				synchronized (mOpenedDoors) {
+					for (int x = -mDoorRadius; x <= mDoorRadius; x++) {
+						for (int z = -mDoorRadius; z <= mDoorRadius; z++) {
+							for (int y = -1; y <= 1; y++) { // look up/down for trapdoors
+								
+								BlockPos blockPos = playerPos.add(x, y, z);
 
-							if (OpenableBlock.isOpenableBlock(block)) {
-								boolean haveOpened = OpenableBlock.open(world, block, blockPos);
-								if (haveOpened) {
-									mOpenedDoors.add(blockPos);
+								// For symmetry with door closing, we actually want to test a circular
+								// area, not a square.
+								if (playerPos.distanceSq(new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()))
+										<= mDoorRadius*mDoorRadius) {
 
-									// Ask server to open door too
-									SpecialEffectUseDoor.network.sendToServer(
-											new UseDoorAtPositionMessage(blockPos, true));
+									// Check if block is door, if so, activate it.
+									Block block = world.getBlockState(blockPos).getBlock();
+
+									if (OpenableBlock.isOpenableBlock(block)) {
+										boolean haveOpened = OpenableBlock.open(world, block, blockPos);
+										if (haveOpened) {
+											mOpenedDoors.add(blockPos);
+
+											// Ask server to open door too
+											SpecialEffectUseDoor.network.sendToServer(
+													new UseDoorAtPositionMessage(blockPos, true));
+										}
+									}
 								}
 							}
 						}
 					}
 				}
-			}
-			
-			// Close any doors that you've left behind
-			synchronized (mOpenedDoors) {
-				for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext();) {
-					BlockPos pos = iterator.next();
 
-					if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > mDoorRadius*mDoorRadius) {
-						Block block = world.getBlockState(pos).getBlock();
+				// Close any doors that you've left behind
+				synchronized (mOpenedDoors) {
+					for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext();) {
+						BlockPos pos = iterator.next();
 
-						OpenableBlock.close(world, block, pos);
+						if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > mDoorRadius*mDoorRadius) {
+							Block block = world.getBlockState(pos).getBlock();
 
-						// Ask server to close door too
-						SpecialEffectUseDoor.network.sendToServer(
-								new UseDoorAtPositionMessage(pos, false));
+							OpenableBlock.close(world, block, pos);
 
-						// Remove from list
-						iterator.remove();
+							// Ask server to close door too
+							SpecialEffectUseDoor.network.sendToServer(
+									new UseDoorAtPositionMessage(pos, false));
+
+							// Remove from list
+							iterator.remove();
+						}
 					}
 				}
 			}
