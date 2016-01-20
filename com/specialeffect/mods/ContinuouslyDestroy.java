@@ -42,11 +42,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = SpecialEffectContinuouslyDestroy.MODID, version = SpecialEffectContinuouslyDestroy.VERSION, name = SpecialEffectContinuouslyDestroy.NAME)
-public class SpecialEffectContinuouslyDestroy {
+@Mod(modid = ContinuouslyDestroy.MODID, version = ContinuouslyDestroy.VERSION, name = ContinuouslyDestroy.NAME)
+public class ContinuouslyDestroy {
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String VERSION = "0.1";
-	public static final String NAME = "SpecialEffectContinuouslyDestroy";
+	public static final String NAME = "ContinuouslyDestroy";
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {

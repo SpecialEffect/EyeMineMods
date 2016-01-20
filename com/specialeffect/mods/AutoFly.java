@@ -35,15 +35,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
-@Mod(modid = SpecialEffectAutoFly.MODID, 
-version = SpecialEffectAutoFly.VERSION,
-name = SpecialEffectAutoFly.NAME)
-public class SpecialEffectAutoFly extends BaseClassWithCallbacks
+@Mod(modid = AutoFly.MODID, 
+version = AutoFly.VERSION,
+name = AutoFly.NAME)
+public class AutoFly extends BaseClassWithCallbacks
 {
 
 	public static final String MODID = "specialeffect.autofly";
 	public static final String VERSION = "0.1";
-	public static final String NAME = "SpecialEffectAutoFly";
+	public static final String NAME = "AutoFly";
 
     public static Configuration mConfig;
 	private static KeyBinding mToggleAutoFlyKB;
@@ -126,14 +126,14 @@ public class SpecialEffectAutoFly extends BaseClassWithCallbacks
 						if (player.capabilities.isFlying) {
 							// If flying, stop. State must be changed locally *and* on server
 							player.capabilities.isFlying = false;
-							SpecialEffectAutoFly.network.sendToServer(
+							AutoFly.network.sendToServer(
 									new ChangeFlyingStateMessage(false, mFlyHeight));
 						}
 						else {
 							// start flying, and fly upward.
 							player.capabilities.isFlying = true;
 							player.motionY += mFlyHeight;
-							SpecialEffectAutoFly.network.sendToServer(
+							AutoFly.network.sendToServer(
 									new ChangeFlyingStateMessage(true, mFlyHeight));
 						}
 					}

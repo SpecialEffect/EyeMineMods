@@ -48,15 +48,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
-@Mod(modid = SpecialEffectEyeGaze.MODID, 
-	 version = SpecialEffectEyeGaze.VERSION,
-	 name = SpecialEffectEyeGaze.NAME,
+@Mod(modid = EyeGaze.MODID, 
+	 version = EyeGaze.VERSION,
+	 name = EyeGaze.NAME,
 	 guiFactory = "com.specialeffect.utils.GuiFactorySpecialEffect")
-public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
+public class EyeGaze extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect";
     public static final String VERSION = "1.4";
-    public static final String NAME = "SpecialEffectEyeGaze";
+    public static final String NAME = "EyeGaze";
     public static Configuration mConfig;
 
     public static KeyBinding walkKeyBinding;
@@ -216,7 +216,7 @@ public class SpecialEffectEyeGaze extends BaseClassWithCallbacks
 	                									 playerPos.getZ());
 	                	
 			            // Ask server to use item
-			    		SpecialEffectEyeGaze.network.sendToServer(
+			    		EyeGaze.network.sendToServer(
 			    				new UseItemAtPositionMessage(item, blockPos));
 
 			    		// Make sure we get the animation

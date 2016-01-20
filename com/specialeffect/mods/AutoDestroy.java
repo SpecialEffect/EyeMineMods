@@ -43,11 +43,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = SpecialEffectAutoDestroy.MODID, version = SpecialEffectAutoDestroy.VERSION, name = SpecialEffectAutoDestroy.NAME)
-public class SpecialEffectAutoDestroy {
+@Mod(modid = AutoDestroy.MODID, version = AutoDestroy.VERSION, name = AutoDestroy.NAME)
+public class AutoDestroy {
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String VERSION = "0.1";
-	public static final String NAME = "SpecialEffectAutoDestroy";
+	public static final String NAME = "AutoDestroy";
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;

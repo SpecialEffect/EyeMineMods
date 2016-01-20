@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 public class MoveWithGaze {
 	public static final String MODID = "specialeffect.movewithgaze";
     public static final String VERSION = "0.1";
-    public static final String NAME = "SpecialEffectMoveWithGaze";
+    public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
 

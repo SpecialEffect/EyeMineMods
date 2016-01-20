@@ -40,11 +40,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = SpecialEffectUseDoor.MODID, version = SpecialEffectUseDoor.VERSION, name = SpecialEffectUseDoor.NAME)
-public class SpecialEffectUseDoor {
-	public static final String MODID = "specialeffect.usedoor";
+@Mod(modid = AutoOpenDoors.MODID, version = AutoOpenDoors.VERSION, name = AutoOpenDoors.NAME)
+public class AutoOpenDoors {
+	public static final String MODID = "specialeffect.autoopendoors";
 	public static final String VERSION = "0.1";
-	public static final String NAME = "SpecialEffectUseDoor";
+	public static final String NAME = "AutoOpenDoors";
 
     public static SimpleNetworkWrapper network;
 
@@ -110,7 +110,7 @@ public class SpecialEffectUseDoor {
 											mOpenedDoors.add(blockPos);
 
 											// Ask server to open door too
-											SpecialEffectUseDoor.network.sendToServer(
+											AutoOpenDoors.network.sendToServer(
 													new UseDoorAtPositionMessage(blockPos, true));
 										}
 									}
@@ -131,7 +131,7 @@ public class SpecialEffectUseDoor {
 							OpenableBlock.close(world, block, pos);
 
 							// Ask server to close door too
-							SpecialEffectUseDoor.network.sendToServer(
+							AutoOpenDoors.network.sendToServer(
 									new UseDoorAtPositionMessage(pos, false));
 
 							// Remove from list

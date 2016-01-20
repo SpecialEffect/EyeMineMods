@@ -1,6 +1,6 @@
 package com.specialeffect.utils;
 
-import com.specialeffect.mods.SpecialEffectEyeGaze;
+import com.specialeffect.mods.EyeGaze;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -20,13 +20,13 @@ public class GuiConfigSpecialEffect extends GuiConfig {
         
         super(parent,
                 new ConfigElement(
-                		SpecialEffectEyeGaze.mConfig.getCategory(Configuration.CATEGORY_GENERAL))
+                		EyeGaze.mConfig.getCategory(Configuration.CATEGORY_GENERAL))
                             .getChildElements(),
-                        SpecialEffectEyeGaze.MODID, 
+                        EyeGaze.MODID, 
 		                false, 
 		                false, 
 		                "Play Magic Beans Any Way You Want");
-        System.out.println("SpecialEffectEyeGaze.mConfig: "+SpecialEffectEyeGaze.mConfig);
+        System.out.println("SpecialEffectEyeGaze.mConfig: "+EyeGaze.mConfig);
 
         //titleLine2 = SpecialEffectEyeGaze.configFile.getAbsolutePath();
     }
