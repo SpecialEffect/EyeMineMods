@@ -84,8 +84,13 @@ public class AutoDestroy {
 				World world = Minecraft.getMinecraft().theWorld;
 				
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
+				boolean movedAway =  false;		
+				BlockPos pos = this.getMouseOverBlockPos();
+				if (pos != null) {
+					movedAway = mBlockToDestroy.distanceSq(pos.getX(), pos.getY(), pos.getZ()) > 0;
+				}
 				
-				if (mov == null || blockDestroyed) {
+				if (mov == null || blockDestroyed || movedAway) {
 					final KeyBinding attackBinding = 
 							Minecraft.getMinecraft().gameSettings.keyBindAttack;
 					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
@@ -95,23 +100,33 @@ public class AutoDestroy {
 		}
 	}
 	
+	// Return the position of the block that the mouse is pointing at.
+	// May be null, if pointing at something other than a block.
+	private BlockPos getMouseOverBlockPos() {
+		BlockPos pos = null;
+		MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+		if (mov != null) {
+			pos = mov.getBlockPos(); // may still be null if there's an entity there
+		}
+		return pos;
+	}
+	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mDestroyKB.isPressed()) {
-			 // only attack if there's something worth attacking
-			MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
-			if (mov == null) {
+			mBlockToDestroy = this.getMouseOverBlockPos();
+			if (mBlockToDestroy == null) {
 				System.out.println("Nothing to attack");
 				return;
 			}
+			else {
+				mDestroying = true;
 
-			mBlockToDestroy = mov.getBlockPos();
-			mDestroying = true;
-
-			// Start attacking
-			final KeyBinding attackBinding = 
-					Minecraft.getMinecraft().gameSettings.keyBindAttack;
-			KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
+				// Start attacking
+				final KeyBinding attackBinding = 
+						Minecraft.getMinecraft().gameSettings.keyBindAttack;
+				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
+			}
 		}
 	}
 }
