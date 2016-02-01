@@ -132,7 +132,6 @@ public class EyeGaze extends BaseClassWithCallbacks
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        System.out.println("Key event");
         
         // Configure walk direction for next "walk" command.
         // a = north, aa = north-east, aaa = east, etc.
@@ -145,7 +144,6 @@ public class EyeGaze extends BaseClassWithCallbacks
         	final int i = keyCounterWalkDir.getCount();
         	keyCounterWalkDir.reset();
         	
-            System.out.println("Walk key event");
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
@@ -166,7 +164,6 @@ public class EyeGaze extends BaseClassWithCallbacks
 					}
 
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
-		            System.out.println("Moving forward "+mWalkDistance);
 	    			player.moveEntityWithHeading(strafe*(float)mWalkDistance, 
 	    										 forward*(float)mWalkDistance);
 				}
