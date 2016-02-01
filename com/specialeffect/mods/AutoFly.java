@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -37,7 +38,9 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = AutoFly.MODID, 
 version = AutoFly.VERSION,
-name = AutoFly.NAME)
+name = AutoFly.NAME,
+guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
+
 public class AutoFly extends BaseClassWithCallbacks
 {
 
@@ -47,7 +50,7 @@ public class AutoFly extends BaseClassWithCallbacks
 
     public static Configuration mConfig;
 	private static KeyBinding mToggleAutoFlyKB;
-    private int mFlyHeight = 5;
+    private static int mFlyHeight = 5;
     public static SimpleNetworkWrapper network;
 
 	@EventHandler
@@ -57,14 +60,12 @@ public class AutoFly extends BaseClassWithCallbacks
 		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"Add key binding to start/stop flying, and automatically fly over hills.");
 		
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	mConfig.load();
-        mFlyHeight = mConfig.get(Configuration.CATEGORY_GENERAL, "flyHeight", mFlyHeight).getInt();
-        mConfig.save();
-        
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
 
+		// Set up config
+    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
+    	this.syncConfig();
 	}
 
 	@EventHandler
@@ -77,7 +78,22 @@ public class AutoFly extends BaseClassWithCallbacks
 		// Register key bindings	
 		mToggleAutoFlyKB = new KeyBinding("Toggle flying", Keyboard.KEY_F, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mToggleAutoFlyKB);
+    	
+	}
 
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(this.MODID)) {
+			syncConfig();
+		}
+	}
+	
+	public static void syncConfig() {
+        mFlyHeight = mConfig.getInt("Fly height", Configuration.CATEGORY_GENERAL, mFlyHeight, 
+        						1, 20, "How high to fly");
+        if (mConfig.hasChanged()) {
+        	mConfig.save();
+        }
 	}
 
 	@SubscribeEvent
@@ -102,7 +118,7 @@ public class AutoFly extends BaseClassWithCallbacks
 	    			Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
 
 	    			if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement()) {
-	    				player.motionY += mFlyHeight/4;
+	    				player.motionY += Math.max(mFlyHeight/4,1);
 	    				break; // for yDiff = ...
 	    			}
 	    		}
@@ -119,7 +135,8 @@ public class AutoFly extends BaseClassWithCallbacks
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-			        System.out.println("toggle fly living update");
+			        System.out.println("toggle fly living update, mFlyHeight = "+mFlyHeight);
+			        
 			        
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 					if (player.capabilities.allowFlying) {
