@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
@@ -28,6 +29,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -78,11 +80,20 @@ public class AutoDestroy {
 		if (event.entityLiving instanceof EntityPlayer) {
 			
 			if (mDestroying) {
+				// Check item in hand can actually destroy block.
+				// (we can't check this at the point of key press)
+				World world = Minecraft.getMinecraft().theWorld;
+	    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+                Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
+                if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
+                	System.out.println("Can't destroy this block with current item");
+                	this.stopDestroying();
+                	return;
+            	}
+				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
-				World world = Minecraft.getMinecraft().theWorld;
-				
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
@@ -91,13 +102,17 @@ public class AutoDestroy {
 				}
 				
 				if (mov == null || blockDestroyed || movedAway) {
-					final KeyBinding attackBinding = 
-							Minecraft.getMinecraft().gameSettings.keyBindAttack;
-					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
-					mDestroying = false;
+					this.stopDestroying();
 				}
 			}
 		}
+	}
+	
+	private void stopDestroying() {
+		final KeyBinding attackBinding = 
+				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
+		mDestroying = false;
 	}
 	
 	// Return the position of the block that the mouse is pointing at.
