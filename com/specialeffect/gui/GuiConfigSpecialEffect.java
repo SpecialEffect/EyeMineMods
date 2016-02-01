@@ -1,4 +1,4 @@
-package com.specialeffect.utils;
+package com.specialeffect.gui;
 
 import com.specialeffect.mods.EyeGaze;
 

@@ -51,7 +51,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 @Mod(modid = EyeGaze.MODID, 
 	 version = EyeGaze.VERSION,
 	 name = EyeGaze.NAME,
-	 guiFactory = "com.specialeffect.utils.GuiFactorySpecialEffect")
+	 guiFactory = "com.specialeffect.gui.GuiFactorySpecialEffect")
 public class EyeGaze extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect";
