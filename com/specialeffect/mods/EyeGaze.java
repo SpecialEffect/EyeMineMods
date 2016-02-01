@@ -34,6 +34,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -72,9 +73,7 @@ public class EyeGaze extends BaseClassWithCallbacks
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	mConfig.load();
-        mWalkDistance = mConfig.get(Configuration.CATEGORY_GENERAL, "walkDistance", mWalkDistance).getDouble();
-        mConfig.save();
+    	this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"A few actions for eye gaze support. Auto-place block, auto-jump, walk fixed amount.");
@@ -83,6 +82,21 @@ public class EyeGaze extends BaseClassWithCallbacks
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
 
+    }
+    
+    @SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(this.MODID)) {
+			syncConfig();
+		}
+	}
+    
+    private static void syncConfig() {
+        mWalkDistance = (double)mConfig.getFloat("Walk distance", Configuration.CATEGORY_GENERAL, (float)mWalkDistance, 
+        		0.1f, 10.0f, "Fixed distance to walk with single key press");
+        if (mConfig.hasChanged()) {
+        	mConfig.save();
+        }
     }
     
     @EventHandler
@@ -128,7 +142,7 @@ public class EyeGaze extends BaseClassWithCallbacks
     }
     
     private boolean mDoingAutoJump = false;
-    private double mWalkDistance = 1.0f;
+    private static double mWalkDistance = 1.0f;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
