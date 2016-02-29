@@ -27,7 +27,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -40,11 +42,13 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = AutoOpenDoors.MODID, version = AutoOpenDoors.VERSION, name = AutoOpenDoors.NAME)
+@Mod(modid = AutoOpenDoors.MODID, version = AutoOpenDoors.VERSION, name = AutoOpenDoors.NAME,
+guiFactory = "com.specialeffect.gui.GuiFactoryAutoDoors")
 public class AutoOpenDoors {
 	public static final String MODID = "specialeffect.autoopendoors";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "AutoOpenDoors";
+    public static Configuration mConfig;
 
     public static SimpleNetworkWrapper network;
 
@@ -59,6 +63,9 @@ public class AutoOpenDoors {
         network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
         						UseDoorAtPositionMessage.class, 0, Side.SERVER);
 
+        // Set up config
+    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
+    	this.syncConfig();
 	}
 
 	@EventHandler
@@ -70,10 +77,25 @@ public class AutoOpenDoors {
 		mOpenedDoors = new LinkedList<BlockPos>();
 	}
 	
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(this.MODID)) {
+			syncConfig();
+		}
+	}
+	
+	public static void syncConfig() {
+        mDoorRadius = mConfig.getInt("Distance to open doors", Configuration.CATEGORY_GENERAL, mDoorRadius, 
+        						1, 20, "How far away a player needs to be from a door to automatically open/close");
+        if (mConfig.hasChanged()) {
+        	mConfig.save();
+        }
+	}
+	
 	// A list of the position of any doors we've opened that haven't yet been closed
 	private LinkedList<BlockPos> mOpenedDoors;
 
-	private int mDoorRadius = 2;
+	private static int mDoorRadius = 3;
 	private BlockPos mLastPlayerPos;
 	
 	@SubscribeEvent
