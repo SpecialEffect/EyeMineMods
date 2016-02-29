@@ -1,7 +1,9 @@
 package com.specialeffect.mods;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -21,6 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
@@ -29,6 +32,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -80,10 +84,13 @@ public class AutoDestroy {
 		if (event.entityLiving instanceof EntityPlayer) {
 			
 			if (mDestroying) {
-				// Check item in hand can actually destroy block.
-				// (we can't check this at the point of key press)
+
+				// Select the best tool from the inventory
 				World world = Minecraft.getMinecraft().theWorld;
 	    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+				chooseBestTool(player.inventory, mBlockToDestroy);
+				
+				// Check selected item can actually destroy block.
                 Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
                 if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
                 	System.out.println("Can't destroy this block with current item");
@@ -143,5 +150,40 @@ public class AutoDestroy {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 			}
 		}
+	}
+	
+	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
+		ItemStack[] items = inventory.mainInventory;
+		World world = Minecraft.getMinecraft().theWorld;
+        Block block = world.getBlockState(blockPos).getBlock();
+        IBlockState state = world.getBlockState(blockPos);
+        state = state.getBlock().getActualState(state, world, blockPos);
+        
+		ItemStack bestItem = null;
+		int bestId = 0;
+		int bestToolLevel = -1;
+        String toolType = block.getHarvestTool(state);
+        
+        // We'll swap the best item into slot one, and select it.
+        ItemStack oldItem0 = items[0];
+
+		for(int i = 0; i < items.length; i++){
+			ItemStack stack = items[i];
+			if (stack != null) {
+		        int toolLevel = stack.getItem().getHarvestLevel(stack, toolType);
+		        if (toolLevel > bestToolLevel) {
+		        	bestToolLevel = toolLevel;
+		        	bestItem = stack;
+		        	bestId = i;
+		        }
+			}
+		}
+		
+		// Swap bestItem into slot 0 and select it
+		if (bestId != 0) {
+			inventory.setInventorySlotContents(bestId, oldItem0);
+			inventory.setInventorySlotContents(0, bestItem);
+		}
+		inventory.currentItem = 0;
 	}
 }
