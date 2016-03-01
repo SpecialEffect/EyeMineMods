@@ -36,6 +36,9 @@ public abstract class ContainerManager {
      */
     public void acceptKey() {
 
+    	// Poll keyboard
+    	Config.pollKeyPresses();
+    	
         // Get hovered slot and goal slotIndex of pressed key (if pressed)
         Slot currentHoveredSlot = InputUtil.getSlotAtMousePosition((GuiContainer) Util.client.currentScreen);
         int slotIndex = specificKeyToSlotIndex();

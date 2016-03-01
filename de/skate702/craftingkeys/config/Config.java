@@ -3,8 +3,14 @@ package de.skate702.craftingkeys.config;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.skate702.craftingkeys.CraftingKeys;
 import de.skate702.craftingkeys.util.Logger;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -43,52 +49,104 @@ public class Config {
      */
     private static Property enableNumPad;
 
-    public static boolean isKeyTopLeftPressed() {
-        return Keyboard.isKeyDown(keyTopLeft.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(71);
+    private static Map<Property, Boolean> keyStates = new HashMap<Property, Boolean>();
+    
+    private static void flagKeyIfMatches(Property keyProp) {
+    	if (Keyboard.getEventKey() == keyProp.getInt(retDefKey)) {
+			keyStates.put(keyProp, true);
+		}
+    }
+     
+    public static void pollKeyPresses() {
+    	// Reset states
+    	for (Map.Entry<Property, Boolean> entry : keyStates.entrySet()) {
+    	    entry.setValue(false);
+    	}
+    	
+    	// Query keyboard events since last polled. 
+    	// NOTE: This is a little bit fiddly. We need to make sure we iterate over all key presses
+    	// since last poll, otherwise we'll miss the 'instantaneous' key presses that come 
+    	// from OptiKey. However, we don't want to consume events that others are
+    	// listening to, so we need to make sure the current guiscreen gets first access
+    	// to every event.
+    	// A better approach would be to subscribe to GuiScreenEvent.KeyboardInputEvent, but
+    	// I'm not sure how to do this with a vanilla (not custom) GUI screen.
+    	while (Keyboard.next()) {
+	    	try {
+				// First offer the key event to the vanilla GUI
+				Minecraft.getMinecraft().currentScreen.handleKeyboardInput();
+				
+				// Now flag appropriate key if it's relevant to us.
+				if (Keyboard.getEventKeyState()) {
+					flagKeyIfMatches(keyTopLeft); 
+					flagKeyIfMatches(keyTopCenter); 
+					flagKeyIfMatches(keyTopRight);
+					flagKeyIfMatches(keyCenterLeft); 
+					flagKeyIfMatches(keyCenterCenter); 
+					flagKeyIfMatches(keyCenterRight);
+					flagKeyIfMatches(keyLowerLeft); 
+					flagKeyIfMatches(keyLowerCenter); 
+					flagKeyIfMatches(keyLowerRight);
+					flagKeyIfMatches(keyStack); 
+					flagKeyIfMatches(keyInteract); 
+					flagKeyIfMatches(keyDrop);
+				}
+			} catch (IOException e) {
+			} catch (NullPointerException e) {
+			}
+    	}
+    }
+    
+    private static boolean isKeyPressed(Property keyProp) {
+    	return keyStates.containsKey(keyProp) && keyStates.get(keyProp);
+    }
+     
+    public static boolean isKeyTopLeftPressed() {   	
+    	return isKeyPressed(keyTopLeft);
     }
 
     public static boolean isKeyTopCenterPressed() {
-        return Keyboard.isKeyDown(keyTopCenter.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(72);
+    	return isKeyPressed(keyTopCenter);
     }
 
     public static boolean isKeyTopRightPressed() {
-        return Keyboard.isKeyDown(keyTopRight.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(73);
+    	return isKeyPressed(keyTopRight);
     }
 
     public static boolean isKeyCenterLeftPressed() {
-        return Keyboard.isKeyDown(keyCenterLeft.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(75);
+    	return isKeyPressed(keyCenterLeft);
     }
 
     public static boolean isKeyCenterCenterPressed() {
-        return Keyboard.isKeyDown(keyCenterCenter.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(76);
+    	return isKeyPressed(keyCenterCenter);
     }
 
     public static boolean isKeyCenterRightPressed() {
-        return Keyboard.isKeyDown(keyCenterRight.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(77);
+    	return isKeyPressed(keyCenterRight);
     }
 
     public static boolean isKeyLowerLeftPressed() {
-        return Keyboard.isKeyDown(keyLowerLeft.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(79);
+    	return isKeyPressed(keyLowerLeft);
     }
 
     public static boolean isKeyLowerCenterPressed() {
-        return Keyboard.isKeyDown(keyLowerCenter.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(80);
+    	return isKeyPressed(keyLowerCenter);
     }
 
     public static boolean isKeyLowerRightPressed() {
-        return Keyboard.isKeyDown(keyLowerRight.getInt(retDefKey)) || isNumPadEnabled() && Keyboard.isKeyDown(81);
+    	return isKeyPressed(keyLowerRight);
     }
 
     public static boolean isKeyStackPressed() {
-        return Keyboard.isKeyDown(keyStack.getInt(retDefKey));
+    	return isKeyPressed(keyStack);
     }
 
     public static boolean isKeyInteractPressed() {
-        return Keyboard.isKeyDown(keyInteract.getInt(retDefKey));
+    	return isKeyPressed(keyInteract);
     }
 
     public static boolean isKeyDropPressed() {
-        return Keyboard.isKeyDown(keyDrop.getInt(retDefKey));
+    	return isKeyPressed(keyDrop);
     }
 
     private static boolean isNumPadEnabled() {
