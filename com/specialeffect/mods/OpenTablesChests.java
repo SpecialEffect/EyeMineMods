@@ -50,7 +50,8 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = OpenTablesChests.MODID, 
 version = OpenTablesChests.VERSION,
-name = OpenTablesChests.NAME)
+name = OpenTablesChests.NAME,
+guiFactory = "com.specialeffect.gui.GuiFactoryOpenChestsEtc")
 public class OpenTablesChests extends BaseClassWithCallbacks
 {
 
