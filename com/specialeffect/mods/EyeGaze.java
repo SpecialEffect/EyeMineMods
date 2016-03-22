@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -186,7 +187,15 @@ public class EyeGaze extends BaseClassWithCallbacks
         
         if(autoJumpKeyBinding.isPressed()) {
         	mDoingAutoJump = !mDoingAutoJump;
-            System.out.println("Turning auto jump " + (mDoingAutoJump ? "ON" : "OFF"));
+	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
+        	{				
+				@Override
+				public void onLiving(LivingUpdateEvent event) {
+					EntityPlayer player = (EntityPlayer)event.entityLiving;
+			        player.addChatComponentMessage(new ChatComponentText(
+			        		 "Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
+				}		
+			}));
         }
         
         // Auto place is implemented as:
