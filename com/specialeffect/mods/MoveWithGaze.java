@@ -15,7 +15,9 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -27,13 +29,16 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MoveWithGaze.MODID, 
 	 version = MoveWithGaze.VERSION,
-	 name = MoveWithGaze.NAME)
+	 name = MoveWithGaze.NAME,
+	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
 public class MoveWithGaze {
 	public static final String MODID = "specialeffect.movewithgaze";
     public static final String VERSION = "0.1";
     public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
+    public static Configuration mConfig;
+    private static int mQueueLength = 50;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -41,8 +46,27 @@ public class MoveWithGaze {
     	
     	ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
+    	
+    	// Set up config
+    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
+    	this.syncConfig();
     }
     
+    @SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(this.MODID)) {
+			syncConfig();
+		}
+	}
+	
+	public static void syncConfig() {
+        mQueueLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, mQueueLength, 
+				1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
+        if (mConfig.hasChanged()) {
+        	mConfig.save();
+        }
+	}
+	
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -64,7 +88,7 @@ public class MoveWithGaze {
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
-       		if (mPrevLookDirs.size() > 10) {
+       		if (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
        		}
        		
@@ -84,7 +108,7 @@ public class MoveWithGaze {
             	double normalCongruency = vectorLength/scalarLength;
             	
             	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
-            	double thresh = 0.8; // below this, no movement
+            	double thresh = 0.9; // below this, no movement
             	double distance = Math.max(0, /*mWalkDistance**/(normalCongruency - thresh)/(1.0-thresh));
 //                System.out.println("distance = "+distance);
             	//distance = Math.max(distance, 0.0);
