@@ -166,10 +166,14 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
 							BlockChest.class.getName(), player, world, mRadius);
 					
-					// Ask server to open chest
-					if (null != closestBlockPos ) {
+					// Ask server to open 
+					if (null == closestBlockPos) {
+						player.addChatComponentMessage(new ChatComponentText(
+								"No chests found in range"));
+					}
+					else {
 						OpenTablesChests.network.sendToServer(
-							new ActivateBlockAtPosition(closestBlockPos));
+								new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));
@@ -183,11 +187,15 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
 							BlockWorkbench.class.getName(), player, world, mRadius);
-					
-					// Ask server to open chest
-					if (null != closestBlockPos ) {
+
+					// Ask server to open 
+					if (null == closestBlockPos) {
+						player.addChatComponentMessage(new ChatComponentText(
+								"No crafting tables found in range"));
+					}
+					else {
 						OpenTablesChests.network.sendToServer(
-							new ActivateBlockAtPosition(closestBlockPos));
+								new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));
