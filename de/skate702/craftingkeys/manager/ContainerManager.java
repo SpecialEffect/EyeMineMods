@@ -122,6 +122,8 @@ public abstract class ContainerManager {
             interact();
         }
 
+        // Finally put what you're holding into a slot.
+        moveStackToInventory(-1);
     }
 
     /**
