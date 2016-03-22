@@ -201,17 +201,17 @@ public class Config {
     private static void syncProperties() {
         // Standard Keys
 
-        keyTopLeft = configFile.get(categoryKeys, "keyTopLeft", Keyboard.KEY_Q);
-        keyTopCenter = configFile.get(categoryKeys, "keyTopCenter", Keyboard.KEY_W);
-        keyTopRight = configFile.get(categoryKeys, "keyTopRight", Keyboard.KEY_E);
+        keyTopLeft = configFile.get(categoryKeys, "keyTopLeft", Keyboard.KEY_R);
+        keyTopCenter = configFile.get(categoryKeys, "keyTopCenter", Keyboard.KEY_T);
+        keyTopRight = configFile.get(categoryKeys, "keyTopRight", Keyboard.KEY_Y);
 
-        keyCenterLeft = configFile.get(categoryKeys, "keyCenterLeft", Keyboard.KEY_A);
-        keyCenterCenter = configFile.get(categoryKeys, "keyCenterCenter", Keyboard.KEY_S);
-        keyCenterRight = configFile.get(categoryKeys, "keyCenterRight", Keyboard.KEY_D);
+        keyCenterLeft = configFile.get(categoryKeys, "keyCenterLeft", Keyboard.KEY_F);
+        keyCenterCenter = configFile.get(categoryKeys, "keyCenterCenter", Keyboard.KEY_G);
+        keyCenterRight = configFile.get(categoryKeys, "keyCenterRight", Keyboard.KEY_H);
 
-        keyLowerLeft = configFile.get(categoryKeys, "keyLowerLeft", Keyboard.KEY_Y); // German Keyboard Layout
-        keyLowerCenter = configFile.get(categoryKeys, "keyLowerCenter", Keyboard.KEY_X);
-        keyLowerRight = configFile.get(categoryKeys, "keyLowerRight", Keyboard.KEY_C);
+        keyLowerLeft = configFile.get(categoryKeys, "keyLowerLeft", Keyboard.KEY_V);
+        keyLowerCenter = configFile.get(categoryKeys, "keyLowerCenter", Keyboard.KEY_B);
+        keyLowerRight = configFile.get(categoryKeys, "keyLowerRight", Keyboard.KEY_N);
 
         // Special Keys
 
