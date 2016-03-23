@@ -44,6 +44,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     public static Configuration mConfig;
     private static int mQueueLength = 50;
     private static boolean mMoveWhenMouseStationary = false;
+    private boolean mPendingMouseEvent = true;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -86,17 +87,14 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
-        mLastLookDir = new Vec3(0.0, 0.0, 0.0);
     }
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
     		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
-    		boolean hasMoved = player.getLookVec().dotProduct(mLastLookDir) < 0.99996 ;
     		
        		// Add current look dir to queue
-   			mLastLookDir = player.getLookVec();
     		mPrevLookDirs.add(player.getLookVec());
        		if (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
@@ -107,7 +105,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
        		// - if it takes time to turn the auto-walk function off (e.g. using an eye gaze with dwell click) then
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
-            if (mDoingAutoWalk && (mMoveWhenMouseStationary || hasMoved) ) {
+            if (mDoingAutoWalk && (mMoveWhenMouseStationary || mPendingMouseEvent) ) {
             	// Scale forward-distance by the normal congruency of the last X view-dirs.
             	// We use normal congruency over several ticks to:
             	// - smooth out noise, and
@@ -130,6 +128,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	player.moveEntityWithHeading(0, (float)distance);
             }
             
+            mPendingMouseEvent = false;
 			this.processQueuedCallbacks(event);
 
     	}
@@ -138,7 +137,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
     private Queue<Vec3> mPrevLookDirs;
-    private Vec3 mLastLookDir;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -155,6 +153,11 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 				}		
 			}));
         }
+    }
+
+    @SubscribeEvent
+    public void onMouseInput(InputEvent.MouseInputEvent event) {
+    	mPendingMouseEvent = true;
     }
 
 }
