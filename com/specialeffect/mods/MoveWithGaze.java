@@ -9,10 +9,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.input.Keyboard;
 
+import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -31,7 +35,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 	 version = MoveWithGaze.VERSION,
 	 name = MoveWithGaze.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
-public class MoveWithGaze {
+public class MoveWithGaze extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.movewithgaze";
     public static final String VERSION = "0.1";
     public static final String NAME = "MoveWithGaze";
@@ -114,6 +118,9 @@ public class MoveWithGaze {
             	//distance = Math.max(distance, 0.0);
             	player.moveEntityWithHeading(0, (float)distance);
             }
+            
+			this.processQueuedCallbacks(event);
+
     	}
     }
     
@@ -125,8 +132,16 @@ public class MoveWithGaze {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         if(mToggleAutoWalkKB.isPressed()) {
-
         	mDoingAutoWalk = !mDoingAutoWalk;
+        	this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
+        	{				
+				@Override
+				public void onLiving(LivingUpdateEvent event) {
+					EntityPlayer player = (EntityPlayer)event.entityLiving;
+			        player.addChatComponentMessage(new ChatComponentText(
+			        		 "Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF")));
+				}		
+			}));
         }
     }
 

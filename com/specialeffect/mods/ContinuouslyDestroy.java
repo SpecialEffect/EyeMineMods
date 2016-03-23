@@ -8,6 +8,9 @@ import java.util.concurrent.BlockingQueue;
 
 import org.lwjgl.input.Keyboard;
 
+import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -21,6 +24,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -43,7 +47,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = ContinuouslyDestroy.MODID, version = ContinuouslyDestroy.VERSION, name = ContinuouslyDestroy.NAME)
-public class ContinuouslyDestroy {
+public class ContinuouslyDestroy extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "ContinuouslyDestroy";
@@ -82,6 +86,8 @@ public class ContinuouslyDestroy {
 			if (attackBinding.isKeyDown()) {
 				event.entityLiving.swingItem();
 			}
+			
+			this.processQueuedCallbacks(event);
 		}
 	}
 	
@@ -93,10 +99,20 @@ public class ContinuouslyDestroy {
 
 			if (attackBinding.isKeyDown()) {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
+				
 			}
 			else {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 			}
+			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
+        	{				
+				@Override
+				public void onLiving(LivingUpdateEvent event) {
+					EntityPlayer player = (EntityPlayer)event.entityLiving;
+			        player.addChatComponentMessage(new ChatComponentText(
+			        		 "Attacking: " + (attackBinding.isKeyDown() ? "ON" : "OFF")));
+				}		
+			}));
 		}
 	}
 }
