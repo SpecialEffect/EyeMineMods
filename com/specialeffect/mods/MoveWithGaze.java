@@ -43,6 +43,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private static KeyBinding mToggleAutoWalkKB;
     public static Configuration mConfig;
     private static int mQueueLength = 50;
+    private static boolean mMoveWhenMouseStationary = false;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -66,6 +67,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 	public static void syncConfig() {
         mQueueLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, mQueueLength, 
 				1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
+        mMoveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
+        									mMoveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control.");
         if (mConfig.hasChanged()) {
         	mConfig.save();
         }
@@ -83,20 +86,28 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
+        mLastLookDir = new Vec3(0.0, 0.0, 0.0);
     }
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
-    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+    		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
+    		boolean hasMoved = player.getLookVec().dotProduct(mLastLookDir) < 0.99996 ;
     		
        		// Add current look dir to queue
+   			mLastLookDir = player.getLookVec();
     		mPrevLookDirs.add(player.getLookVec());
        		if (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
        		}
        		
-            if (mDoingAutoWalk) {
+       		// Explanation of strategy:
+       		// - when turning a corner, we want to slow down to make it a bit more manageable.
+       		// - if it takes time to turn the auto-walk function off (e.g. using an eye gaze with dwell click) then
+       		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
+       		//   hasn't moved at all. This is mainly applicable to gaze input.
+            if (mDoingAutoWalk && (mMoveWhenMouseStationary || hasMoved) ) {
             	// Scale forward-distance by the normal congruency of the last X view-dirs.
             	// We use normal congruency over several ticks to:
             	// - smooth out noise, and
@@ -127,6 +138,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
     private Queue<Vec3> mPrevLookDirs;
+    private Vec3 mLastLookDir;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
