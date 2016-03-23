@@ -74,8 +74,8 @@ public class AutoFly extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mFlyUpKB = new KeyBinding("Fly up", Keyboard.KEY_ADD, "SpecialEffect");
-		mStopFlyingKB = new KeyBinding("Stop flying", Keyboard.KEY_SUBTRACT, "SpecialEffect");
+		mFlyUpKB = new KeyBinding("Fly up", Keyboard.KEY_UP, "SpecialEffect");
+		mStopFlyingKB = new KeyBinding("Stop flying", Keyboard.KEY_DOWN, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mFlyUpKB);
 		ClientRegistry.registerKeyBinding(mStopFlyingKB);
 	}
