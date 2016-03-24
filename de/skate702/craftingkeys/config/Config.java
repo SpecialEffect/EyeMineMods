@@ -216,7 +216,7 @@ public class Config {
         // Special Keys
 
         keyStack = configFile.get(categoryKeys, "keyStack", Keyboard.KEY_LSHIFT);
-        keyInteract = configFile.get(categoryKeys, "keyInteract", Keyboard.KEY_LCONTROL);
+        keyInteract = configFile.get(categoryKeys, "keyInteract", Keyboard.KEY_U);
         keyDrop = configFile.get(categoryKeys, "keyDrop", Keyboard.KEY_SPACE);
 
         // Other Settings
