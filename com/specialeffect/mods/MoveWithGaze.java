@@ -8,12 +8,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
@@ -154,10 +156,29 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 			}));
         }
     }
-
+    
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
-    	mPendingMouseEvent = true;
+
+    	// Cancel any mouse events within a certain border. This avoids mouse movements outside the window (e.g. from
+    	// eye gaze system) from having an impact on view direction.
+    	float r = 0.05f;
+    	float x_abs = Math.abs((float)Mouse.getEventDX()); // distance from centre
+    	float y_abs = Math.abs((float)Mouse.getEventDY());
+    	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
+    	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
+    	
+    	if (x_abs > w_half*(1-r) ||
+    		y_abs > h_half*(1-r)) {
+    		
+    		// we can't cancel the event but we can cancel the delta 
+    		// querying DX/DY actually consumes the delta
+    		Mouse.getDX();
+    		Mouse.getDY();
+    	}
+    	else {
+        	mPendingMouseEvent = true;
+    	}
     }
 
 }
