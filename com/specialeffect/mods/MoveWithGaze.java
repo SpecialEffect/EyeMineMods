@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -58,6 +59,13 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	// Set up config
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
+    }
+    
+    @EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+    	if (mUserMouseSensitivity > 0) {
+			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
+		}
     }
     
     @SubscribeEvent
@@ -157,6 +165,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         }
     }
     
+    float mUserMouseSensitivity = -1.0f;
+    
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
 
@@ -169,14 +179,20 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
     	
     	if (x_abs > w_half*(1-r) ||
-    		y_abs > h_half*(1-r)) {
-    		
-    		// we can't cancel the event but we can cancel the delta 
-    		// querying DX/DY actually consumes the delta
-    		Mouse.getDX();
-    		Mouse.getDY();
+    		y_abs > h_half*(1-r)) {    		
+    		// In v1.8, it would be sufficient to query getDX and DY to consume the deltas.
+    		// ... but this doesn't work in 1.8.8, so we hack it by setting the mouse sensitivity down low.
+    		// See: http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
+    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity > 0) {
+    			mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+    		}
+    		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F/3F; 
     	}
     	else {
+    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity < 0) {
+    			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
+    		}
+
         	mPendingMouseEvent = true;
     	}
     }
