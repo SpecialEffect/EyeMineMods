@@ -46,6 +46,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private static KeyBinding mToggleAutoWalkKB;
     public static Configuration mConfig;
     private static int mQueueLength = 50;
+    private static float mDeadBorder = 0.07f;
+
     private static boolean mMoveWhenMouseStationary = false;
     private boolean mPendingMouseEvent = true;
 
@@ -78,6 +80,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 	public static void syncConfig() {
         mQueueLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, mQueueLength, 
 				1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
+        mDeadBorder = mConfig.getFloat("Dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
+        		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
         mMoveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
         									mMoveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control.");
         if (mConfig.hasChanged()) {
@@ -133,8 +137,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
             	double thresh = 0.9; // below this, no movement
             	double distance = Math.max(0, /*mWalkDistance**/(normalCongruency - thresh)/(1.0-thresh));
-//                System.out.println("distance = "+distance);
-            	//distance = Math.max(distance, 0.0);
             	player.moveEntityWithHeading(0, (float)distance);
             }
             
@@ -172,7 +174,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 
     	// Cancel any mouse events within a certain border. This avoids mouse movements outside the window (e.g. from
     	// eye gaze system) from having an impact on view direction.
-    	float r = 0.05f;
+    	float r = 2*mDeadBorder;
     	float x_abs = Math.abs((float)Mouse.getEventDX()); // distance from centre
     	float y_abs = Math.abs((float)Mouse.getEventDY());
     	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
