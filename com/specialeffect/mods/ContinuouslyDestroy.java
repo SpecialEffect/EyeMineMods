@@ -7,6 +7,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
@@ -81,36 +82,59 @@ public class ContinuouslyDestroy extends BaseClassWithCallbacks {
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
 			
+			// Set mouse in correct state - shouldn't attack unless there's an
+			// accompanying mouse movement.
+			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
+			// to query.
+			if (mIsAttacking) {
+				if (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick) {
+					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
+				}
+				else {
+					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
+				}
+			}
+			
 			// When attacking programmatically, the player doesn't swing unless
 			// an attackable-block is in reach. We fix that here.
 			if (attackBinding.isKeyDown()) {
 				event.entityLiving.swingItem();
 			}
 			
+			// Remember mouse status so we can have one tick of grace
+			// (necessary if minecraft running faster than eye tracker).
+			mMouseEventLastTick = MoveWithGaze.mPendingMouseEvent;
+			
 			this.processQueuedCallbacks(event);
 		}
 	}
 	
+	private boolean mIsAttacking = false;
+	private boolean mMouseEventLastTick = false;
+	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mDestroyKB.isPressed()) {
+			
+			mIsAttacking = !mIsAttacking;
+			
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
-
-			if (attackBinding.isKeyDown()) {
-				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
-				
-			}
-			else {
+			
+			if (mIsAttacking) {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 			}
+			else {
+				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
+			}
+
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Attacking: " + (attackBinding.isKeyDown() ? "ON" : "OFF")));
+			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));
 		}

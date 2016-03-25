@@ -49,7 +49,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private static float mDeadBorder = 0.07f;
 
     private static boolean mMoveWhenMouseStationary = false;
-    private boolean mPendingMouseEvent = true;
+    public static boolean mPendingMouseEvent = true;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
