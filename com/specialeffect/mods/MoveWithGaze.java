@@ -169,9 +169,14 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     
     float mUserMouseSensitivity = -1.0f;
     
+    private static int mIgnoreEventCount = 0;
+    
+    public static void setIgnoreNextEvent() {
+    	mIgnoreEventCount++;// = true;
+    }
+    
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
-
     	// Cancel any mouse events within a certain border. This avoids mouse movements outside the window (e.g. from
     	// eye gaze system) from having an impact on view direction.
     	float r = 2*mDeadBorder;
@@ -180,7 +185,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
     	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
     	
-    	if (x_abs > w_half*(1-r) ||
+    	if (mIgnoreEventCount > 0 ||
+    		x_abs > w_half*(1-r) ||
     		y_abs > h_half*(1-r)) {    		
     		// In v1.8, it would be sufficient to query getDX and DY to consume the deltas.
     		// ... but this doesn't work in 1.8.8, so we hack it by setting the mouse sensitivity down low.
@@ -197,6 +203,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 
         	mPendingMouseEvent = true;
     	}
+    	
+    	mIgnoreEventCount = Math.max(mIgnoreEventCount-1, 0);
     }
 
 }
