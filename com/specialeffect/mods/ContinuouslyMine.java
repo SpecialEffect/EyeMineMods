@@ -134,7 +134,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
+			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));
 		}
