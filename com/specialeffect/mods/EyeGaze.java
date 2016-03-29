@@ -63,7 +63,6 @@ public class EyeGaze extends BaseClassWithCallbacks
 
     public static KeyBinding walkKeyBinding;
     public static KeyBinding walkDirectionKeyBinding;
-    public static KeyBinding autoJumpKeyBinding;
     public static KeyBinding autoPlaceKeyBinding;
     
     public static SimpleNetworkWrapper network;
@@ -77,7 +76,7 @@ public class EyeGaze extends BaseClassWithCallbacks
     	this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
-				"A few actions for eye gaze support. Auto-place block, auto-jump, walk fixed amount.");
+				"A few actions for eye gaze support. Auto-place block, walk fixed amount.");
 		
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
@@ -117,9 +116,6 @@ public class EyeGaze extends BaseClassWithCallbacks
     	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, "SpecialEffect");
         ClientRegistry.registerKeyBinding(walkKeyBinding);
         
-        autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
-        
         autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, "SpecialEffect");
         ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
         
@@ -128,21 +124,11 @@ public class EyeGaze extends BaseClassWithCallbacks
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
-    		EntityPlayer player = (EntityPlayer)event.entityLiving;
-    		
-    		if (mDoingAutoJump) {
-    			player.stepHeight = 1.0f;
-    		}
-    		else {
-    			player.stepHeight = 0.6f;
-    		}
-    		
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
     }
     
-    private boolean mDoingAutoJump = false;
     private static double mWalkDistance = 1.0f;
 
     @SubscribeEvent
@@ -182,19 +168,6 @@ public class EyeGaze extends BaseClassWithCallbacks
 	    			player.moveEntityWithHeading(strafe*(float)mWalkDistance, 
 	    										 forward*(float)mWalkDistance);
 				}
-			}));
-        }
-        
-        if(autoJumpKeyBinding.isPressed()) {
-        	mDoingAutoJump = !mDoingAutoJump;
-	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
-			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
-				}		
 			}));
         }
         
