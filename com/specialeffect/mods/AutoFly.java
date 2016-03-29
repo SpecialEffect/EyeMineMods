@@ -135,6 +135,14 @@ public class AutoFly extends BaseClassWithCallbacks {
 
 					EntityPlayer player = (EntityPlayer) event.entityLiving;
 					if (player.capabilities.allowFlying) {
+						// stop sneaking, which prevents flying
+						final KeyBinding sneakBinding = 
+								Minecraft.getMinecraft().gameSettings.keyBindSneak;
+						if (sneakBinding.isKeyDown()) {
+							player.addChatComponentMessage(new ChatComponentText(
+									"Turning off sneak in order to fly"));
+							KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
+						}
 						// start flying, and fly upward.
 						player.capabilities.isFlying = true;
 						player.moveEntity(0, mFlyHeight, 0);
