@@ -1,8 +1,5 @@
 package com.specialeffect.mods;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -50,12 +47,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = ContinuouslyDestroy.MODID, version = ContinuouslyDestroy.VERSION, name = ContinuouslyDestroy.NAME)
-public class ContinuouslyDestroy extends BaseClassWithCallbacks {
+@Mod(modid = ContinuouslyMine.MODID, version = ContinuouslyMine.VERSION, name = ContinuouslyMine.NAME)
+public class ContinuouslyMine extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "ContinuouslyDestroy";
-    private Robot robot;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -73,14 +69,8 @@ public class ContinuouslyDestroy extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Destroy", Keyboard.KEY_R, "SpecialEffect");
+		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mDestroyKB);
-		
-		try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	private static KeyBinding mDestroyKB;
@@ -89,30 +79,25 @@ public class ContinuouslyDestroy extends BaseClassWithCallbacks {
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			
+			final KeyBinding attackBinding = 
+					Minecraft.getMinecraft().gameSettings.keyBindAttack;
+			
 			// Set mouse in correct state - shouldn't attack unless there's an
 			// accompanying mouse movement.
 			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
 			// to query.
 			if (mIsAttacking) {
 				if (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick) {
-					if (!Mouse.isButtonDown(0)) {
-						// Don't let this mouse 'event' count as 'looking at screen'
-						MoveWithGaze.setIgnoreNextEvent();
-						robot.mousePress(KeyEvent.BUTTON1_MASK);	
-					}
+					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 				}
 				else {
-					if (Mouse.isButtonDown(0)) {
-						// Don't let this mouse 'event' count as 'looking at screen'
-						MoveWithGaze.setIgnoreNextEvent();
-						robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-					}
+					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
 				}
 			}
 			
 			// When attacking programmatically, the player doesn't swing unless
-			// an attackable-block is in reach. We fix that here, for better feedback.
-			if (mIsAttacking && (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick)) {
+			// an attackable-block is in reach. We fix that here.
+			if (attackBinding.isKeyDown()) {
 				event.entityLiving.swingItem();
 			}
 			
@@ -129,21 +114,18 @@ public class ContinuouslyDestroy extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		
 		if(mDestroyKB.isPressed()) {
+			
 			mIsAttacking = !mIsAttacking;
 			
-			// Note: I'd like to use Minecraft.getMinecraft().gameSettings.keyBindAttack to
-			// make this robust to key changes in the config. However, through minecraft key 
-			// API you can only set key bind state, which misses the key press event you need
-			// for attacking. So we use java.awt.Robot, which requires explicitly using a 
-			// mouse event rather than a keyboard event. This is a shame.
+			final KeyBinding attackBinding = 
+					Minecraft.getMinecraft().gameSettings.keyBindAttack;
 			
-			if (mIsAttacking && !Mouse.isButtonDown(0)) {
-				robot.mousePress(KeyEvent.BUTTON1_MASK);
+			if (mIsAttacking) {
+				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 			}
-			else if (Mouse.isButtonDown(0)) {
-				robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+			else {
+				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
 			}
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
