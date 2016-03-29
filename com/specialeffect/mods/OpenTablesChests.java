@@ -132,7 +132,7 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 	    	double closestDistanceSq = Double.MAX_VALUE;
 	    	for (int x = -radius; x <= radius; x++) {
 	    		for (int z = -radius; z <= radius; z++) {
-	    			for (int y = -1; y <= 1; y++) { // look up/down 1
+	    			for (int y = -radius; y <= radius; y++) { 
 
 	    				BlockPos blockPos = playerPos.add(x, y, z);
 
