@@ -88,7 +88,9 @@ public class MineOne {
 				// Select the best tool from the inventory
 				World world = Minecraft.getMinecraft().theWorld;
 	    		EntityPlayer player = (EntityPlayer)event.entityLiving;
-				chooseBestTool(player.inventory, mBlockToDestroy);
+				
+	    		// Not currently using -> separate out to another key binding?
+	    		//chooseBestTool(player.inventory, mBlockToDestroy);
 				
 				// Check selected item can actually destroy block.
                 Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
