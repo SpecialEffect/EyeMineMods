@@ -50,19 +50,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
-@Mod(modid = EyeGaze.MODID, 
-	 version = EyeGaze.VERSION,
-	 name = EyeGaze.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactorySpecialEffect")
-public class EyeGaze extends BaseClassWithCallbacks
+@Mod(modid = AutoPillar.MODID, 
+	 version = AutoPillar.VERSION,
+	 name = AutoPillar.NAME)
+public class AutoPillar extends BaseClassWithCallbacks
 {
-    public static final String MODID = "specialeffect";
+    public static final String MODID = "specialeffect.AutoPillar";
     public static final String VERSION = "1.4";
-    public static final String NAME = "EyeGaze";
-    public static Configuration mConfig;
+    public static final String NAME = "AutoPillar";
 
-    public static KeyBinding walkKeyBinding;
-    public static KeyBinding walkDirectionKeyBinding;
     public static KeyBinding autoPlaceKeyBinding;
     
     public static SimpleNetworkWrapper network;
@@ -72,50 +68,22 @@ public class EyeGaze extends BaseClassWithCallbacks
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
-				"A few actions for eye gaze support. Auto-place block, walk fixed amount.");
+				"Add key binding to create pillar, or 'nerd-pole'.");
 		
-        
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
-
-    }
-    
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-    
-    private static void syncConfig() {
-        mWalkDistance = (double)mConfig.getFloat("Walk distance", Configuration.CATEGORY_GENERAL, (float)mWalkDistance, 
-        		0.1f, 10.0f, "Fixed distance to walk with single key press");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
     }
     
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-
 		// Subscribe to event buses
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
-    	
 
     	// Register key bindings
-    	
-    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
-        
-    	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(walkKeyBinding);
-        
         autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, "SpecialEffect");
         ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
         
@@ -129,47 +97,8 @@ public class EyeGaze extends BaseClassWithCallbacks
     	}
     }
     
-    private static double mWalkDistance = 1.0f;
-
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        
-        // Configure walk direction for next "walk" command.
-        // a = north, aa = north-east, aaa = east, etc.
-        if(walkDirectionKeyBinding.isPressed()) {
-        	keyCounterWalkDir.increment();
-        }
-
-        // Walk: Move 100 units forward next onLiving tick.
-        if(walkKeyBinding.isPressed()) {
-        	final int i = keyCounterWalkDir.getCount();
-        	keyCounterWalkDir.reset();
-        	
-            this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					float strafe = 0.0f;
-					float forward = 0.0f;
-					if (i > 0 && i < 4) {
-						strafe = -1.0f;
-					}
-					else if (i > 4 && i < 8 ) {
-						strafe = 1.0f;
-					}
-					int iShifted = (Math.floorMod(i-6, 8) + 8) % 8;
-					if (iShifted > 0 && iShifted < 4) {
-						forward = 1.0f;
-					}
-					else if (iShifted > 4 && iShifted < 8 ) {
-						forward = -1.0f;
-					}
-
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
-	    			player.moveEntityWithHeading(strafe*(float)mWalkDistance, 
-	    										 forward*(float)mWalkDistance);
-				}
-			}));
-        }
         
         // Auto place is implemented as:
         // Next onLiving tick: look at floor, jump
@@ -209,7 +138,7 @@ public class EyeGaze extends BaseClassWithCallbacks
 	                									 playerPos.getZ());
 	                	
 			            // Ask server to use item
-			    		EyeGaze.network.sendToServer(
+			    		AutoPillar.network.sendToServer(
 			    				new UseItemAtPositionMessage(item, blockPos));
 
 			    		// Make sure we get the animation

@@ -1,6 +1,6 @@
 package com.specialeffect.gui;
 
-import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.WalkIncrements;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiConfig;
@@ -13,11 +13,11 @@ public class GuiConfigSpecialEffect extends GuiConfig {
     {
         super(parent,
                 new ConfigElement(
-                		EyeGaze.mConfig.getCategory(Configuration.CATEGORY_GENERAL))
+                		WalkIncrements.mConfig.getCategory(Configuration.CATEGORY_GENERAL))
                             .getChildElements(),
-                        EyeGaze.MODID, 
+                        WalkIncrements.MODID, 
 		                false, 
 		                false, 
-		                "Options for " + EyeGaze.NAME);
+		                "Options for " + WalkIncrements.NAME);
     }
 }
