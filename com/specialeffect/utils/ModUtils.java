@@ -1,5 +1,7 @@
 package com.specialeffect.utils;
 
+import java.awt.Point;
+
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -21,5 +23,39 @@ public class ModUtils {
 		m.description = modDescription;
 		m.authorList.add("Kirsty McNaught");
 		m.credits = "Written in collaboration with SpecialEffect";
+	}
+	
+	// Get the x, y point corresponding to one of 8 compass points
+	// 0 = N, 1 = NE, 2 = E, etc ...
+	public static Point getCompassPoint(int i) {
+		Point p = new Point(0,  0);	
+		i = i % 8;
+		switch (i) {
+		case 0:
+			p.setLocation(0, +1);
+			break;
+		case 1:
+			p.setLocation(+1, +1);
+			break;
+		case 2:
+			p.setLocation(+1, 0);
+			break;
+		case 3:
+			p.setLocation(+1, -1);
+			break;
+		case 4:
+			p.setLocation(0, -1);
+			break;
+		case 5:
+			p.setLocation(-1, -1);
+			break;
+		case 6:
+			p.setLocation(-1, 0);
+			break;
+		default:
+			p.setLocation(-1, +1);
+			break;
+		}
+		return p;
 	}
 }
