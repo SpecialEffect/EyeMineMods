@@ -110,7 +110,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
-       		if (mPrevLookDirs.size() > mQueueLength) {
+       		while (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
        		}
        		
