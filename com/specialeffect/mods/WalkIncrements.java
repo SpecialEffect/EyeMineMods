@@ -1,5 +1,6 @@
 package com.specialeffect.mods;
 
+import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -76,7 +77,6 @@ public class WalkIncrements extends BaseClassWithCallbacks
         
         ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"Add key bindings to walk fixed amount, for alternative inputs.");
-		
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
@@ -105,9 +105,7 @@ public class WalkIncrements extends BaseClassWithCallbacks
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
     	
-
     	// Register key bindings
-    	
     	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");
         ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
         
@@ -143,25 +141,12 @@ public class WalkIncrements extends BaseClassWithCallbacks
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					float strafe = 0.0f;
-					float forward = 0.0f;
-					if (i > 0 && i < 4) {
-						strafe = -1.0f;
-					}
-					else if (i > 4 && i < 8 ) {
-						strafe = 1.0f;
-					}
-					int iShifted = (Math.floorMod(i-6, 8) + 8) % 8;
-					if (iShifted > 0 && iShifted < 4) {
-						forward = 1.0f;
-					}
-					else if (iShifted > 4 && iShifted < 8 ) {
-						forward = -1.0f;
-					}
+					Point p = ModUtils.getCompassPoint(i);
+					float strafe = - (float)(p.getX() * mWalkDistance);
+					float forward = (float)(p.getY() * mWalkDistance);
 
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
-	    			player.moveEntityWithHeading(strafe*(float)mWalkDistance, 
-	    										 forward*(float)mWalkDistance);
+	    			player.moveEntityWithHeading(strafe, forward);
 				}
 			}));
         }
