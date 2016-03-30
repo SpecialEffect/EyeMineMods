@@ -58,7 +58,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 @Mod(modid = ViewIncrements.MODID, 
 	 version = ViewIncrements.VERSION,
 	 name = ViewIncrements.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactorySpecialEffect")
+	 guiFactory = "com.specialeffect.gui.GuiFactoryViewIncrements")
 public class ViewIncrements extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.ViewIncrements";

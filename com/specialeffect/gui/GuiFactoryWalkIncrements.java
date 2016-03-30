@@ -2,11 +2,11 @@ package com.specialeffect.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 
-public class GuiFactorySpecialEffect extends GuiFactoryGeneric 
+public class GuiFactoryWalkIncrements extends GuiFactoryGeneric 
 {
     @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() 
     {
-        return GuiConfigSpecialEffect.class;
+        return GuiConfigWalkIncrements.class;
     }
 }

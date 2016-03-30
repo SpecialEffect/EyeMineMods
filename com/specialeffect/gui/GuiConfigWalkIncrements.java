@@ -7,9 +7,9 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
-public class GuiConfigSpecialEffect extends GuiConfig {
+public class GuiConfigWalkIncrements extends GuiConfig {
 
-    public GuiConfigSpecialEffect(GuiScreen parent) 
+    public GuiConfigWalkIncrements(GuiScreen parent) 
     {
         super(parent,
                 new ConfigElement(
