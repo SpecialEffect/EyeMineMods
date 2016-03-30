@@ -52,7 +52,8 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = AutoJump.MODID, 
 	 version = AutoJump.VERSION,
-	 name = AutoJump.NAME)
+	 name = AutoJump.NAME,
+	 guiFactory = "com.specialeffect.gui.GuiFactoryAutoJump")
 public class AutoJump extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.autojump";
@@ -61,16 +62,36 @@ public class AutoJump extends BaseClassWithCallbacks
 
     public static KeyBinding autoJumpKeyBinding;
     
+    public static Configuration mConfig;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
         
         ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"Automatically step over blocks.");
-
+        
+        // Set up config and load cached value
+    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
+    	this.syncConfig();
     }
     
-    @EventHandler
+    @SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+		if(eventArgs.modID.equals(this.MODID)) {
+			syncConfig();
+		}
+	}
+    
+    private void syncConfig() {
+    	mDoingAutoJump = mConfig.getBoolean("Auto-jump switched on by default?", Configuration.CATEGORY_GENERAL, mDoingAutoJump,
+    			"Whether auto-jump is on at the beginning of a new game.");
+        if (mConfig.hasChanged()) {
+        	mConfig.save();
+        }		
+	}
+
+	@EventHandler
     public void init(FMLInitializationEvent event)
     {
 		// Subscribe to event buses
@@ -99,7 +120,7 @@ public class AutoJump extends BaseClassWithCallbacks
     	}
     }
     
-    private boolean mDoingAutoJump = false;
+    private boolean mDoingAutoJump = true;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
