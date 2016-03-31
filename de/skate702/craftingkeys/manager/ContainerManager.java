@@ -105,21 +105,15 @@ public abstract class ContainerManager {
             moveStackToInventory(-1);
         }
 
-        // Handle Interaction
-        if (Config.isKeyStackPressed()) {
+        // Handle Interaction - get stack from output
+        int oldStackSize = -1;
+        interact();
 
-            int oldStackSize = -1;
-            interact();
+        while (Util.isHoldingStack() &&
+        		oldStackSize != Util.getHeldStack().stackSize) {
 
-            while (Util.isHoldingStack() &&
-                    oldStackSize != Util.getHeldStack().stackSize) {
-
-                oldStackSize = Util.getHeldStack().stackSize;
-                interact();
-            }
-
-        } else {
-            interact();
+        	oldStackSize = Util.getHeldStack().stackSize;
+        	interact();
         }
 
         // Finally put what you're holding into a slot.
