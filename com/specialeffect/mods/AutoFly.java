@@ -114,7 +114,9 @@ public class AutoFly extends BaseClassWithCallbacks {
 					World world = Minecraft.getMinecraft().theWorld;
 					Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
 
-					if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement()) {
+					// If there's a block in your way, and you're not already jumping over it...
+					if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement() &&
+							player.motionY == 0) {
 						player.motionY += Math.max(mFlyHeight / 4, 1);
 						break; // for yDiff = ...
 					}
