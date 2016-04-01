@@ -15,11 +15,16 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -119,23 +124,120 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
        		// - if it takes time to turn the auto-walk function off (e.g. using an eye gaze with dwell click) then
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
+       		// - If walking into a wall, don't keep walking fast!
             if (mDoingAutoWalk && (mMoveWhenMouseStationary || mPendingMouseEvent) ) {
             	
             	double forward = 1.0f; 
             	
             	// Slow down when you've been turning a corner
-            	forward *= slowdownFactorViewDirs();
+            	double slowDownCorners= slowdownFactorViewDirs();
             	
+            	// Slow down when you've got a wall in front of you
+            	double slowDownWalls = slowdownFactorWall(player);
+
+            	forward *= Math.min(slowDownWalls, slowDownCorners);
             	player.moveEntityWithHeading(0, (float)forward);
             }
             
             mPendingMouseEvent = false;
 			this.processQueuedCallbacks(event);
-
+			
     	}
     }
     
-    private double slowdownFactorViewDirs() {
+    private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
+    	double thresh = 0.8;
+    	switch(sideHit) {
+		case NORTH:
+			if (lookVec.zCoord > thresh){
+				return true;
+			}
+			break;
+		case EAST:
+			if (lookVec.xCoord < -thresh){
+				return true;
+			}
+			break;
+		case SOUTH:
+			if (lookVec.zCoord < -thresh){
+				return true;
+			}
+			break;
+		case WEST:
+			if (lookVec.xCoord > thresh){
+				return true;
+			}
+			break;
+		default:
+			break;
+    	}
+    	return false;
+    }
+    
+    // Check if there's a block at the given position which
+    // blocks movement.
+    private boolean doesBlockMovement(BlockPos pos) {
+    	World world = Minecraft.getMinecraft().theWorld;
+		Block block = world.getBlockState(pos).getBlock();
+		return block.getMaterial().blocksMovement();
+    }
+    
+    private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
+		Vec3 lookVec = player.getLookVec();
+		Vec3 posVec = player.getPositionVector();
+		MovingObjectPosition movPos = player.rayTrace(1.0, 1.0f);
+		if (null != movPos) { 
+			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
+		}
+    	return false;
+    }
+    
+    private double slowdownFactorWall(EntityPlayer player) {
+    	BlockPos playerPos = player.getPosition();
+		Vec3 lookVec = player.getLookVec();
+		Vec3 posVec = player.getPositionVector();
+
+		// Check block in front of player, and the one above it.
+		// Also same two blocks in front.
+		BlockPos posInFront = new BlockPos(posVec.xCoord + lookVec.xCoord,
+				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		
+		//isPlayerDirectlyFacingBlock(player, posInFront);
+		
+		BlockPos posInFrontAbove = new BlockPos(posVec.xCoord + lookVec.xCoord,
+				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+		
+		BlockPos posInFrontTwo = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
+				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		
+		BlockPos posInFrontTwoAbove = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
+				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+
+		if (doesBlockMovement(posInFront) &&
+				doesBlockMovement(posInFrontAbove)) {
+			// If you're *facing* the wall, then don't keep walking.
+			if (isPlayerDirectlyFacingBlock(player)) {
+				return 0.0f;
+			}
+			else {
+				// If looking obliquely, slow down a little
+				return 0.55f;
+			}
+		}
+		else {
+			// If 1 block away from wall, start slowing
+			if (doesBlockMovement(posInFrontTwo) &&
+					doesBlockMovement(posInFrontTwoAbove)) {
+				return 0.5;
+			}
+			else {
+				//default
+				return 1.0;
+			}
+		}
+    }
+
+	private double slowdownFactorViewDirs() {
     	// Scale forward-distance by the normal congruency of the last X view-dirs.
     	// We use normal congruency over several ticks to:
     	// - smooth out noise, and
