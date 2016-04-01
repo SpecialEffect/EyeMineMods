@@ -120,24 +120,13 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
             if (mDoingAutoWalk && (mMoveWhenMouseStationary || mPendingMouseEvent) ) {
-            	// Scale forward-distance by the normal congruency of the last X view-dirs.
-            	// We use normal congruency over several ticks to:
-            	// - smooth out noise, and
-            	// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after movement).
-            	double scalarLength = mPrevLookDirs.size();
-            	Vec3 vectorSum = new Vec3(0, 0, 0);
-            	// TODO: Sums can be done incrementally rather than looping over everything each time.
-            	Iterator<Vec3> iter = mPrevLookDirs.iterator();
-            	while (iter.hasNext()) {
-                    vectorSum = vectorSum.add(iter.next());
-            	}
-            	double vectorLength = vectorSum.lengthVector();            	
-            	double normalCongruency = vectorLength/scalarLength;
             	
-            	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
-            	double thresh = 0.9; // below this, no movement
-            	double distance = Math.max(0, /*mWalkDistance**/(normalCongruency - thresh)/(1.0-thresh));
-            	player.moveEntityWithHeading(0, (float)distance);
+            	double forward = 1.0f; 
+            	
+            	// Slow down when you've been turning a corner
+            	forward *= slowdownFactorViewDirs();
+            	
+            	player.moveEntityWithHeading(0, (float)forward);
             }
             
             mPendingMouseEvent = false;
@@ -146,7 +135,29 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	}
     }
     
-    private boolean mDoingAutoWalk = false;
+    private double slowdownFactorViewDirs() {
+    	// Scale forward-distance by the normal congruency of the last X view-dirs.
+    	// We use normal congruency over several ticks to:
+    	// - smooth out noise, and
+    	// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after movement).
+    	double scalarLength = mPrevLookDirs.size();
+    	Vec3 vectorSum = new Vec3(0, 0, 0);
+    	
+    	// TODO: Sums could be done incrementally rather than looping over everything each time.
+    	Iterator<Vec3> iter = mPrevLookDirs.iterator();
+    	while (iter.hasNext()) {
+            vectorSum = vectorSum.add(iter.next());
+    	}
+    	double vectorLength = vectorSum.lengthVector();            	
+    	double normalCongruency = vectorLength/scalarLength;
+    	
+    	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
+    	double thresh = 0.9; // below this, no movement
+    	double slowdownFactor = Math.max(0, (normalCongruency - thresh)/(1.0-thresh));
+    	return slowdownFactor;
+	}
+
+	private boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
     private Queue<Vec3> mPrevLookDirs;
 
