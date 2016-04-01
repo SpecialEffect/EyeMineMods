@@ -10,10 +10,14 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -59,21 +63,52 @@ public class Swim extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)event.entityLiving;
+			
+			if (mIsSwimming) {
+				final KeyBinding swimBinding = 
+						Minecraft.getMinecraft().gameSettings.keyBindJump;
+
+				// Only hold down the swim button when actually in water.
+				if (player.isInWater() && 						
+						!swimBinding.isKeyDown() ) {
+					KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);
+				}
+				// Switch off when on land
+				else if (!player.isInWater() &&
+						swimBinding.isKeyDown() ) {
+					// If water is underneath, don't stop swimming yet (probably in the
+					// process of swimming).
+					BlockPos playerPos = player.getPosition();
+					BlockPos blockBelow = new BlockPos(playerPos.getX(),
+							playerPos.getY()-1, playerPos.getZ());
+			    	World world = Minecraft.getMinecraft().theWorld;
+					Block block = world.getBlockState(blockBelow).getBlock();
+					if (block != null && block instanceof BlockLiquid) {
+						// do nothing
+					}
+					else {
+						KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+					}
+				}
+			}
 			this.processQueuedCallbacks(event);
+			
 		}
 	}
+	
+	private boolean mIsSwimming = false;
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mSwimKB.isPressed()) {
 			final KeyBinding swimBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindJump;
+			
+			mIsSwimming = !mIsSwimming;
 
-			if (swimBinding.isKeyDown()) {
+			if (!mIsSwimming) {
 				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
-			}
-			else {
-				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);
 			}
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
@@ -81,7 +116,7 @@ public class Swim extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Swimming: " + (swimBinding.isKeyDown() ? "ON" : "OFF")));
+			        		 "Swimming: " + (mIsSwimming? "ON" : "OFF")));
 				}		
 			}));
 		}
