@@ -174,7 +174,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 	private double fpsFactor() {
 		int currFps = Minecraft.getDebugFPS();
 		int standardFps = 30; // what we tune on
-		return (double)standardFps/(double)currFps;
+		return Math.min(1.0, (double)standardFps/(double)currFps);
 	}
 
 	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
