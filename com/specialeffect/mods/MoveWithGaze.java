@@ -54,6 +54,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private static float mDeadBorder = 0.07f;
 
     private static boolean mMoveWhenMouseStationary = false;
+    private static float mCustomSpeedFactor = 0.8f;
     public static boolean mPendingMouseEvent = true;
 
     @EventHandler
@@ -89,6 +90,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
         mMoveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
         									mMoveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control.");
+        mCustomSpeedFactor = mConfig.getFloat("Speed factor", Configuration.CATEGORY_GENERAL, mCustomSpeedFactor, 0.0f, 1.0f, 
+        						"A scaling factor for speed. 1.0 = maximum."); 
         if (mConfig.hasChanged()) {
         	mConfig.save();
         }
@@ -127,15 +130,19 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
        		// - If walking into a wall, don't keep walking fast!
             if (mDoingAutoWalk && (mMoveWhenMouseStationary || mPendingMouseEvent) ) {
             	
-            	double forward = 1.0f; 
+            	double forward = (double)mCustomSpeedFactor; 
             	
             	// Slow down when you've been turning a corner
             	double slowDownCorners= slowdownFactorViewDirs();
             	
             	// Slow down when you've got a wall in front of you
             	double slowDownWalls = slowdownFactorWall(player);
-
+            	
             	forward *= Math.min(slowDownWalls, slowDownCorners);
+
+            	// Adjust according to FPS (to get some consistency across installations)
+            	forward *= fpsFactor();
+            	
             	player.moveEntityWithHeading(0, (float)forward);
             }
             
@@ -145,7 +152,13 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	}
     }
     
-    private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
+    private double fpsFactor() {
+		int currFps = Minecraft.getDebugFPS();
+		int standardFps = 30; // what we tune on
+		return (double)standardFps/(double)currFps;
+	}
+
+	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
     	double thresh = 0.8;
     	switch(sideHit) {
 		case NORTH:
