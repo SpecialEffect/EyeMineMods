@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
@@ -141,9 +142,10 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	// Slow down when you're looking really far up/down
             	double slowDownPitch = slowdownFactorPitch(player);
 
-            	forward *= Math.min(slowDownWalls,  
+            	if (!player.isOnLadder()) {
+            		forward *= Math.min(slowDownWalls,  
             			Math.min(slowDownCorners, slowDownPitch));
-            			
+            	}	
             	// Adjust according to FPS (to get some consistency across installations)
             	forward *= fpsFactor();
             	
@@ -226,7 +228,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	BlockPos playerPos = player.getPosition();
 		Vec3 lookVec = player.getLookVec();
 		Vec3 posVec = player.getPositionVector();
-
+		
 		// Check block in front of player, and the one above it.
 		// Also same two blocks in front.
 		BlockPos posInFront = new BlockPos(posVec.xCoord + lookVec.xCoord,
@@ -245,6 +247,10 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 
 		if (doesBlockMovement(posInFront) &&
 				doesBlockMovement(posInFrontAbove)) {
+			// If there's a ladder, keep going!
+			if (isLadder(posInFront)) {
+				return 1.0f;
+			}
 			// If you're *facing* the wall, then don't keep walking.
 			if (isPlayerDirectlyFacingBlock(player)) {
 				return 0.0f;
@@ -266,6 +272,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 			}
 		}
     }
+
+	private boolean isLadder(BlockPos pos) {
+		World world = Minecraft.getMinecraft().theWorld;
+		Block block = world.getBlockState(pos).getBlock();		
+		return ( block != null && block instanceof BlockLadder);
+	}
 
 	private double slowdownFactorViewDirs() {
     	// Scale forward-distance by the normal congruency of the last X view-dirs.
