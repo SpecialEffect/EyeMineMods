@@ -138,8 +138,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	// Slow down when you've got a wall in front of you
             	double slowDownWalls = slowdownFactorWall(player);
             	
-            	forward *= Math.min(slowDownWalls, slowDownCorners);
+            	// Slow down when you're looking really far up/down
+            	double slowDownPitch = slowdownFactorPitch(player);
 
+            	forward *= Math.min(slowDownWalls,  
+            			Math.min(slowDownCorners, slowDownPitch));
+            			
             	// Adjust according to FPS (to get some consistency across installations)
             	forward *= fpsFactor();
             	
@@ -152,7 +156,20 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	}
     }
     
-    private double fpsFactor() {
+    private double slowdownFactorPitch(EntityPlayer player) {
+    	float f = player.rotationPitch;
+    	if (f < -30 || f > 50) {
+    		return 0.0f;
+    	}
+    	else if (f < -25 || f > 40) {
+    		return 0.5f;
+    	}
+    	else {
+    		return 1.0f;
+    	}
+	}
+
+	private double fpsFactor() {
 		int currFps = Minecraft.getDebugFPS();
 		int standardFps = 30; // what we tune on
 		return (double)standardFps/(double)currFps;
