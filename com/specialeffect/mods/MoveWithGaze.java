@@ -26,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -72,9 +73,17 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent event) {
+    	this.resetSensitivity();
+    }
+    
+    private void resetSensitivity() {
     	if (mUserMouseSensitivity > 0) {
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
 		}
+    }
+    
+    private void querySensitivity() {
+		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
     }
     
     @SubscribeEvent
@@ -362,5 +371,19 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	mIgnoreEventCount = Math.max(mIgnoreEventCount-1, 0);
     }
 
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent event) {
+    	// This is an 'open' and 'close' event
+    	
+    	if (event.gui != null) { // open event
+    		this.resetSensitivity();
+    	}
+    	else {
+    		this.querySensitivity();
+    	}
+//    	this.resetSensitivity();
+    }
+    
 }
+
 
