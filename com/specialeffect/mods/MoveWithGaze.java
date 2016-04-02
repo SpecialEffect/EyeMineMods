@@ -1,5 +1,6 @@
 package com.specialeffect.mods;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -51,6 +52,9 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
+    private static KeyBinding mSensivityUpKB;
+    private static KeyBinding mSensivityDownKB;
+    
     public static Configuration mConfig;
     private static int mQueueLength = 50;
     private static float mDeadBorder = 0.07f;
@@ -118,6 +122,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
+        mSensivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_ADD, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(mSensivityUpKB);
+        
+        mSensivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_SUBTRACT, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(mSensivityDownKB);
+
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
     }
     
@@ -319,16 +329,25 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
-        	this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
-			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF")));
-				}		
-			}));
+        	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
+        else if (mSensivityUpKB.isPressed()) {
+        	this.resetSensitivity();
+        	Minecraft.getMinecraft().gameSettings.mouseSensitivity *= 1.1;
+        	this.querySensitivity();
+        	this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+        }
+        else if (mSensivityDownKB.isPressed()) {
+        	this.resetSensitivity();
+        	Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
+        	this.querySensitivity();
+        	this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+        }
+    }
+    
+    String toPercent(float input) {
+    	DecimalFormat myFormatter = new DecimalFormat("#0.0");
+        return myFormatter.format(input*100) + "%";
     }
     
     float mUserMouseSensitivity = -1.0f;
