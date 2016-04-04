@@ -156,15 +156,16 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	double slowDownCorners= slowdownFactorViewDirs();
             	
             	// Slow down when you've got a wall in front of you
-            	double slowDownWalls = slowdownFactorWall(player);
+            	// TODO: Rethink this. It wasn't working so well
+            	//double slowDownWalls = slowdownFactorWall(player);
             	
             	// Slow down when you're looking really far up/down
             	double slowDownPitch = slowdownFactorPitch(player);
 
             	if (!player.isOnLadder()) {
-            		forward *= Math.min(slowDownWalls,  
-            			Math.min(slowDownCorners, slowDownPitch));
+            		forward *= Math.min(slowDownCorners, slowDownPitch);
             	}	
+            	
             	// Adjust according to FPS (to get some consistency across installations)
             	forward *= fpsFactor();
             	
