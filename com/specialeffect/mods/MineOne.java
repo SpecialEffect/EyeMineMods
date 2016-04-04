@@ -92,13 +92,15 @@ public class MineOne {
 	    		// Not currently using -> separate out to another key binding?
 	    		//chooseBestTool(player.inventory, mBlockToDestroy);
 				
-				// Check selected item can actually destroy block.
-                Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
-                if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
-                	System.out.println("Can't destroy this block with current item");
-                	this.stopDestroying();
-                	return;
-            	}
+				// Check selected item can actually destroy block (only in survival)
+	    		if (!player.capabilities.isCreativeMode) {
+	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
+	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
+	    				System.out.println("Can't destroy this block with current item");
+	    				this.stopDestroying();
+	    				return;
+	    			}
+	    		}
 				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
