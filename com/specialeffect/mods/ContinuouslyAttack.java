@@ -26,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -94,25 +95,21 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
 			// to query.
 			if (mIsAttacking) {
-				if (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick) {
-					if (!Mouse.isButtonDown(0)) {
-						// Don't let this mouse 'event' count as 'looking at screen'
-						MoveWithGaze.setIgnoreNextEvent();
-						robot.mousePress(KeyEvent.BUTTON1_MASK);	
-					}
-				}
-				else {
-					if (Mouse.isButtonDown(0)) {
-						// Don't let this mouse 'event' count as 'looking at screen'
-						MoveWithGaze.setIgnoreNextEvent();
-						robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-					}
+				// Get entity being looked at
+				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+				Entity entity = mov.entityHit;
+				if (null != entity) {
+					// It feels like we should be able to just call 
+					// player.attackTargetEntityWithCurrentItem but
+					// it doesn't seem to work. 
+					robot.mousePress(KeyEvent.BUTTON1_MASK);
+					robot.mouseRelease(KeyEvent.BUTTON1_MASK);
 				}
 			}
 			
 			// When attacking programmatically, the player doesn't swing unless
 			// an attackable-block is in reach. We fix that here, for better feedback.
-			if (mIsAttacking && (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick)) {
+			if (mIsAttacking) {
 				event.entityLiving.swingItem();
 			}
 			
@@ -139,12 +136,12 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			// for attacking. So we use java.awt.Robot, which requires explicitly using a 
 			// mouse event rather than a keyboard event. This is a shame.
 			
-			if (mIsAttacking && !Mouse.isButtonDown(0)) {
-				robot.mousePress(KeyEvent.BUTTON1_MASK);
-			}
-			else if (Mouse.isButtonDown(0)) {
-				robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-			}
+//			if (mIsAttacking && !Mouse.isButtonDown(0)) {
+//				robot.mousePress(KeyEvent.BUTTON1_MASK);
+//			}
+//			else if (Mouse.isButtonDown(0)) {
+//				robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+//			}
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
