@@ -12,6 +12,8 @@ import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
@@ -22,6 +24,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.ICommandManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -30,6 +33,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -79,7 +83,7 @@ public class WalkIncrements extends BaseClassWithCallbacks
 				"Add key bindings to walk fixed amount, for alternative inputs.");
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
+        network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);
 
     }
     
@@ -141,12 +145,21 @@ public class WalkIncrements extends BaseClassWithCallbacks
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					Point p = ModUtils.getCompassPoint(i);
-					float strafe = - (float)(p.getX() * mWalkDistance);
-					float forward = (float)(p.getY() * mWalkDistance);
-
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
-	    			player.moveEntityWithHeading(strafe, forward);
+					Point p = ModUtils.getCompassPoint(i);
+
+					float theta = (float)Math.atan2(p.getX(), p.getY());
+
+					if (player.isRiding()) {
+						// Ask server to move entity being ridden
+						WalkIncrements.network.sendToServer(
+							new MovePlayerMessage((float)mWalkDistance, theta));
+					}
+					else {
+						float strafe = - (float)(p.getX() * mWalkDistance);
+						float forward = (float)(p.getY() * mWalkDistance);
+						player.moveEntityWithHeading(strafe, forward);
+					}
 				}
 			}));
         }

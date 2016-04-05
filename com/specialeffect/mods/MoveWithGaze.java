@@ -14,6 +14,7 @@ import org.lwjgl.input.Mouse;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -169,7 +170,14 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
             	// Adjust according to FPS (to get some consistency across installations)
             	forward *= fpsFactor();
             	
-            	player.moveEntityWithHeading(0, (float)forward);
+            	if (player.isRiding()) {
+					// Ask server to move entity being ridden
+					WalkIncrements.network.sendToServer(
+						new MovePlayerMessage((float)forward, 0.0f));
+				}
+				else {
+					player.moveEntityWithHeading(0.0f, (float)forward);
+				}            
             }
             
             mPendingMouseEvent = false;
