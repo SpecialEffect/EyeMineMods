@@ -46,11 +46,13 @@ public class AutoFly extends BaseClassWithCallbacks {
 	public static final String NAME = "AutoFly";
 
 	public static Configuration mConfig;
+	private static KeyBinding mFlyManualKB;
+	private static KeyBinding mFlyAutoKB;
 	private static KeyBinding mFlyUpKB;
-	private static KeyBinding mStopFlyingKB;
-	private static int mFlyHeight = 5;
+
+	private static int mFlyHeightManual = 2;
+	private static int mFlyHeightAuto = 6;
 	public static SimpleNetworkWrapper network;
-	private static boolean mDoFlyOver = true;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -74,10 +76,12 @@ public class AutoFly extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mFlyUpKB = new KeyBinding("Fly up", Keyboard.KEY_UP, "SpecialEffect");
-		mStopFlyingKB = new KeyBinding("Stop flying", Keyboard.KEY_DOWN, "SpecialEffect");
+		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_F, "SpecialEffect");
+		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, "SpecialEffect");
+		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_UP, "SpecialEffect");
+		ClientRegistry.registerKeyBinding(mFlyManualKB);
+		ClientRegistry.registerKeyBinding(mFlyAutoKB);
 		ClientRegistry.registerKeyBinding(mFlyUpKB);
-		ClientRegistry.registerKeyBinding(mStopFlyingKB);
 	}
 
 	@SubscribeEvent
@@ -88,9 +92,8 @@ public class AutoFly extends BaseClassWithCallbacks {
 	}
 
 	public static void syncConfig() {
-		mFlyHeight = mConfig.getInt("Fly height", Configuration.CATEGORY_GENERAL, mFlyHeight, 1, 20, "How high to fly");
-		mDoFlyOver = mConfig.getBoolean("Auto fly higher", Configuration.CATEGORY_GENERAL, mDoFlyOver,
-				"Automatically fly higher to get over obstacles");
+		mFlyHeightManual = mConfig.getInt("Fly height manual", Configuration.CATEGORY_GENERAL, mFlyHeightManual, 1, 20, "How high to fly in manual mode");
+		mFlyHeightAuto = mConfig.getInt("Fly height auto", Configuration.CATEGORY_GENERAL, mFlyHeightAuto, 1, 20, "How high to auto mode");
 		if (mConfig.hasChanged()) {
 			mConfig.save();
 		}
@@ -101,8 +104,8 @@ public class AutoFly extends BaseClassWithCallbacks {
 		if (event.entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
 
-			// If flying, and about to bump into something, fly more!
-			if (mDoFlyOver && player.capabilities.allowFlying && player.capabilities.isFlying) {
+			// If auto flying, and about to bump into something, fly more!
+			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
 				BlockPos playerPos = player.getPosition();
 				Vec3 lookVec = player.getLookVec();
 
@@ -117,7 +120,7 @@ public class AutoFly extends BaseClassWithCallbacks {
 					// If there's a block in your way, and you're not already jumping over it...
 					if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement() &&
 							player.motionY == 0) {
-						player.motionY += Math.max(mFlyHeight / 4, 1);
+						player.motionY += Math.max(mFlyHeightAuto / 4, 1);
 						break; // for yDiff = ...
 					}
 				}
@@ -126,45 +129,84 @@ public class AutoFly extends BaseClassWithCallbacks {
 			this.processQueuedCallbacks(event);
 		}
 	}
+	
+	private boolean mIsFlyingManual;
+	private boolean mIsFlyingAuto;
+	
+	private void stopFlying() {
+		mIsFlyingAuto = false;
+		mIsFlyingManual = false;
+		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+			@Override
+			public void onLiving(LivingUpdateEvent event) {
+				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				player.capabilities.isFlying = false;
+				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
+			}
+		}));
+	}	
+	
+	private void setFlying(final boolean bFlyUp) {
+		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+			@Override
+			public void onLiving(LivingUpdateEvent event) {
+
+				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				if (player.capabilities.allowFlying) {
+					// stop sneaking, which prevents flying
+					final KeyBinding sneakBinding = 
+							Minecraft.getMinecraft().gameSettings.keyBindSneak;
+					if (sneakBinding.isKeyDown()) {
+						player.addChatComponentMessage(new ChatComponentText(
+								"Turning off sneak in order to fly"));
+						KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
+					}
+					// start flying
+					player.capabilities.isFlying = true;
+					int flyHeight = 0;
+					if (bFlyUp) {
+						if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
+						if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
+					}
+					player.moveEntity(0, flyHeight, 0);
+					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
+				}
+				else {
+					player.addChatComponentMessage(new ChatComponentText(
+							"Player unable to fly"));
+				}
+			}
+		}));
+	}
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		if (mFlyUpKB.isPressed()) {
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					if (player.capabilities.allowFlying) {
-						// stop sneaking, which prevents flying
-						final KeyBinding sneakBinding = 
-								Minecraft.getMinecraft().gameSettings.keyBindSneak;
-						if (sneakBinding.isKeyDown()) {
-							player.addChatComponentMessage(new ChatComponentText(
-									"Turning off sneak in order to fly"));
-							KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-						}
-						// start flying, and fly upward.
-						player.capabilities.isFlying = true;
-						player.moveEntity(0, mFlyHeight, 0);
-						AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, mFlyHeight));
-					}
-					else {
-						player.addChatComponentMessage(new ChatComponentText(
-								"Player unable to fly"));
-					}
-				}
-			}));
-		} else if (mStopFlyingKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					player.capabilities.isFlying = false;
-					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, mFlyHeight));
-				}
-			}));
+		if (mFlyManualKB.isPressed()) {			
+			if (mIsFlyingManual) {
+				this.queueChatMessage("Fly manual: OFF");
+				this.stopFlying();
+			}
+			else {
+				this.queueChatMessage("Fly manual: ON");
+				this.setFlying(!mIsFlyingAuto);
+				mIsFlyingManual = true;
+				mIsFlyingAuto = false;
+			}
+			
+		} else if (mFlyAutoKB.isPressed()) {
+			if (mIsFlyingAuto) {
+				this.queueChatMessage("Fly auto: OFF");
+				this.stopFlying();
+			}
+			else {
+				this.queueChatMessage("Auto-fly: ON");
+				this.setFlying(!mIsFlyingManual);
+				mIsFlyingAuto = true;
+				mIsFlyingManual = false;
+			}
+		}
+		else if (mFlyUpKB.isPressed()) {
+			this.setFlying(true);
 		}
 	}
 
