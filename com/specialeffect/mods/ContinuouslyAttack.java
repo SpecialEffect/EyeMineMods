@@ -128,7 +128,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		
 		if(mAttackKB.isPressed()) {
-			mIsAttacking = !mIsAttacking;
+        	mIsAttacking = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
 			
 			// Note: I'd like to use Minecraft.getMinecraft().gameSettings.keyBindAttack to
 			// make this robust to key changes in the config. However, through minecraft key 

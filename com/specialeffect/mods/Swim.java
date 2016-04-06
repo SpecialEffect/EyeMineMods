@@ -105,7 +105,7 @@ public class Swim extends BaseClassWithCallbacks {
 			final KeyBinding swimBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindJump;
 			
-			mIsSwimming = !mIsSwimming;
+        	mIsSwimming = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
 
 			if (!mIsSwimming) {
 				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);

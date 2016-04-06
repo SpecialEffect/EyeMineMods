@@ -86,7 +86,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			// accompanying mouse movement.
 			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
 			// to query.
-			if (mIsAttacking) {
+			if (mIsMining) {
 				if (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick) {
 					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 				}
@@ -109,19 +109,18 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsAttacking = false;
+	private boolean mIsMining = false;
 	private boolean mMouseEventLastTick = false;
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mDestroyKB.isPressed()) {
-			
-			mIsAttacking = !mIsAttacking;
+        	mIsMining = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
 			
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
 			
-			if (mIsAttacking) {
+			if (mIsMining) {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 			}
 			else {
@@ -134,7 +133,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
+			        		 "Mining: " + (mIsMining ? "ON" : "OFF")));
 				}		
 			}));
 		}

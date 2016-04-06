@@ -126,7 +126,8 @@ public class AutoJump extends BaseClassWithCallbacks
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         if(autoJumpKeyBinding.isPressed()) {
-        	mDoingAutoJump = !mDoingAutoJump;
+        	mDoingAutoJump = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
+        		
 	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override

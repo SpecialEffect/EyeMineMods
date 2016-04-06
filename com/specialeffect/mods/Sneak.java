@@ -66,16 +66,18 @@ public class Sneak extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mSneakKB.isPressed()) {
+        	boolean doSneak = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
+
 			final KeyBinding sneakBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindSneak;
 
-			if (sneakBinding.isKeyDown()) {
-				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-				
-			}
-			else {
+			if (doSneak) {
 				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), true);
 			}
+			else {
+				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
+			}
+			
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override

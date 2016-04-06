@@ -337,7 +337,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         if(mToggleAutoWalkKB.isPressed()) {
-        	mDoingAutoWalk = !mDoingAutoWalk;
+        	mDoingAutoWalk = !(GeneralSpecialEffect.mTurnOffKB.isKeyDown());
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
         else if (mSensivityUpKB.isPressed()) {
