@@ -177,18 +177,26 @@ public class AutoFly extends BaseClassWithCallbacks {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mFlyUpKB.isPressed()) {			
 			if (GeneralSpecialEffect.mTurnOffKB.isKeyDown()) {
+				this.queueChatMessage("Fly: OFF");
 				this.stopFlying();
 			}
 			else {
+				if (!mIsFlyingManual) {
+					this.queueChatMessage("Fly: ON");
+				}
 				mIsFlyingManual = true;
 				mIsFlyingAuto = false;
 				this.startFlyingOrFlyUp();
 			}
 		} else if (mFlyAutoKB.isPressed()) {
 			if (GeneralSpecialEffect.mTurnOffKB.isKeyDown()) {
+				this.queueChatMessage("Fly: OFF");
 				this.stopFlying();
 			}
 			else {
+				if (!mIsFlyingAuto) {
+					this.queueChatMessage("Auto-fly: ON");
+				}
 				mIsFlyingAuto = true;
 				mIsFlyingManual = false;
 				this.startFlyingOrFlyUp();
