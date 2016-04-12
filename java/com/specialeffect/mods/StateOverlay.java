@@ -87,20 +87,49 @@ public class StateOverlay extends Gui
 	}
 
 	// A helper function to draw a texture scaled to fit.
-	private void drawScaledTexture(ResourceLocation res,
+	private void drawScaledTextureWithGlow(ResourceLocation res,
 			int x, int y, 
 			int width, int height)
 	{
-		this.mc.renderEngine.bindTexture(res);
+		GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
 
-		// Make sure icons stay pixelated rather than blurring.
+		this.mc.renderEngine.bindTexture(res);
+		
+		// First draw enlarged and blurred, for glow.
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 
 				GL11.GL_TEXTURE_MIN_FILTER, 
-				GL11.GL_NEAREST);
+				GL11.GL_LINEAR);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 
 				GL11.GL_TEXTURE_MAG_FILTER, 
-				GL11.GL_NEAREST);
+				GL11.GL_LINEAR);
 
+		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD );
+
+		// We draw the texture larger, in white, at progressive levels of alpha 
+		// for blur effect (the alpha gets added on each layer)
+		int blurSteps = 4; // how many levels of progressive blur
+		double totalBlur = width/12; // in pixels		
+		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f/blurSteps);
+
+		for (int i=0; i < blurSteps; i++) {
+			double blurAmount = totalBlur/blurSteps*(i+1);
+			drawTexQuad(x - blurAmount, 
+						y - blurAmount, 
+						width + 2*blurAmount, 
+						height + 2*blurAmount);
+		}
+
+		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
+		GL11.glColor3f(1.0f, 1.0f, 1.0f);
+		this.mc.renderEngine.bindTexture(res);
+		drawTexQuad(x, y, width, height);
+		
+		// reset GL attributes!
+		GL11.glPopAttrib();
+
+	}
+	
+	private void drawTexQuad(double x, double y, double width, double height) {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 		worldrenderer.startDrawingQuads();
@@ -138,7 +167,7 @@ public class StateOverlay extends Gui
 		int yPos = mIconPadding;
 		for (int i=0; i < mResourcesLeft.size(); i++) {
 			if (mFlagsLeft.get(i)) {
-				drawScaledTexture(mResourcesLeft.get(i), xPos, yPos, mIconSize, mIconSize);
+				drawScaledTextureWithGlow(mResourcesLeft.get(i), xPos, yPos, mIconSize, mIconSize);
 			}
 			xPos += mIconSize + mIconPadding;
 		}
@@ -147,7 +176,7 @@ public class StateOverlay extends Gui
 		xPos = mDisplayWidth - mIconSize - mIconPadding;
 		for (int i=0; i < mResourcesRight.size(); i++) {
 			if (mFlagsRight.get(i)) {
-				drawScaledTexture(mResourcesRight.get(i), xPos, yPos, mIconSize, mIconSize);
+				drawScaledTextureWithGlow(mResourcesRight.get(i), xPos, yPos, mIconSize, mIconSize);
 			}
 			xPos -= (mIconSize + mIconPadding);
 		}
