@@ -52,7 +52,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "ContinuouslyDestroy";
-	private int mIconIndex;
+	private static int mIconIndex;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -78,6 +78,16 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	}
 	
 	private static KeyBinding mDestroyKB;
+	
+	public static void stop() {
+		mIsAttacking = false;
+		final KeyBinding attackBinding = 
+				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+		
+		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), mIsAttacking);
+		
+		StateOverlay.setStateRightIcon(mIconIndex, false);
+	}
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -113,7 +123,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsAttacking = false;
+	private static boolean mIsAttacking = false;
 	private boolean mMouseEventLastTick = false;
 	
 	@SubscribeEvent
@@ -142,6 +152,9 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));
+			
+			// Don't allow mining *and* attacking at same time
+			ContinuouslyAttack.stop();
 		}
 	}
 }

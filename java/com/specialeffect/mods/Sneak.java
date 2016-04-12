@@ -60,7 +60,7 @@ public class Sneak extends BaseClassWithCallbacks {
 
 	}
 	
-	private int mIconIndex;
+	private static int mIconIndex;
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -69,11 +69,11 @@ public class Sneak extends BaseClassWithCallbacks {
 		}
 	}
 	
-	public void stop() {
+	public static void stop() {
 		final KeyBinding sneakBinding = 
 				Minecraft.getMinecraft().gameSettings.keyBindSneak;
 		KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-		StateOverlay.setStateLeftIcon(mIconIndex, false);
+		StateOverlay.setStateLeftIcon(mIconIndex, false);		
 	}
 
 	@SubscribeEvent
@@ -87,6 +87,8 @@ public class Sneak extends BaseClassWithCallbacks {
 			}
 			else {
 				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), true);
+				// turning sneak on will automatically make flying stop.
+				AutoFly.updateAfterStopFlying();
 			}
     		StateOverlay.setStateLeftIcon(mIconIndex, sneakBinding.isKeyDown());
 

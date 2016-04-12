@@ -88,8 +88,8 @@ public class AutoFly extends BaseClassWithCallbacks {
 		mIconIndexManual = StateOverlay.registerTextureLeft("specialeffect:icons/fly.png");
 	}
 
-	private int mIconIndexAuto;
-	private int mIconIndexManual;
+	private static int mIconIndexAuto;
+	private static int mIconIndexManual;
 	
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -137,18 +137,25 @@ public class AutoFly extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsFlyingManual;
-	private boolean mIsFlyingAuto;
+	private static boolean mIsFlyingManual;
+	private static boolean mIsFlyingAuto;
 	
-	private void updateIcons() {
+	private static void updateIcons() {
 		StateOverlay.setStateLeftIcon(mIconIndexAuto, mIsFlyingAuto);
 		StateOverlay.setStateLeftIcon(mIconIndexManual, mIsFlyingManual);
+	}
+	
+	// Update state if flying was stopped from elsewhere
+	public static void updateAfterStopFlying() {
+		mIsFlyingAuto = false;
+		mIsFlyingManual = false;
+		updateIcons();
 	}
 	
 	private void stopFlying() {
 		mIsFlyingAuto = false;
 		mIsFlyingManual = false;
-		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+		queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 			@Override
 			public void onLiving(LivingUpdateEvent event) {
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
@@ -156,7 +163,7 @@ public class AutoFly extends BaseClassWithCallbacks {
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 			}
 		}));
-		this.updateIcons();
+		updateIcons();
 	}	
 	
 	private void setFlying(final boolean bFlyUp) {
@@ -166,14 +173,9 @@ public class AutoFly extends BaseClassWithCallbacks {
 
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 				if (player.capabilities.allowFlying) {
-					// stop sneaking, which prevents flying
-					final KeyBinding sneakBinding = 
-							Minecraft.getMinecraft().gameSettings.keyBindSneak;
-					if (sneakBinding.isKeyDown()) {
-						player.addChatComponentMessage(new ChatComponentText(
-								"Turning off sneak in order to fly"));
-						KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-					}
+					// stop sneaking (if we are), which prevents flying
+					Sneak.stop();
+
 					// start flying
 					player.capabilities.isFlying = true;
 					int flyHeight = 0;

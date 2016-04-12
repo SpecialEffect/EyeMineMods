@@ -87,8 +87,13 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 	}
 	
-	private int mIconIndex;
+	private static int mIconIndex;
 	private static KeyBinding mAttackKB;
+	
+	public static void stop() {
+		mIsAttacking = false;
+		StateOverlay.setStateRightIcon(mIconIndex, false);
+	}
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -125,7 +130,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsAttacking = false;
+	private static boolean mIsAttacking = false;
 	private boolean mMouseEventLastTick = false;
 	
 	@SubscribeEvent
@@ -157,6 +162,9 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));
+			
+			// Don't allow mining *and* attacking at same time
+			ContinuouslyMine.stop();
 		}
 	}
 }
