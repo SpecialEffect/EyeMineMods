@@ -32,7 +32,7 @@ However, as soon as you want to build the mod for more than one version of minec
 1) Clone this repository into (e.g.) C:\code\SpecialEffectMinecraftMods
 
 2) Remove the 'src\main' directory containing the sample "ExampleMod" in the forge source code. We'll replace this with a soft link to our own mod code.
-> rm C:\code\forge-1.8.8\src\main
+> rmdir C:\code\forge-1.8.8\src\main
 
 3) Create a soft link to the mod code from within your forge source folder:
 - Launch a command prompt as an administrator. On Win8.1, you can do this by right-clicking on the Windows button in the bottom left and selecting "Command Prompt (Admin)"
