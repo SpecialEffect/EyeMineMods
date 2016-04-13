@@ -26,19 +26,19 @@ If it doesn't work, check out the troubleshooting tips here:
 http://www.minecraftforge.net/forum/index.php/topic,14048.0.html#post_initial_setup
 
 ### Hooking up mod code
-It's entirely possible to just check out the mod repository inside your forge source folder. If you want to do it, just replace C:\code\forge-1.8.8\src\main\java with the mod repo (and call it 'java').
+It's entirely possible to just check out the mod repository inside your forge source folder. If you want to do it, just replace C:\code\forge-1.8.8\src\main with the mod repo (and call it 'main').
 However, as soon as you want to build the mod for more than one version of minecraft, you will find that this strategy doesn't scale. My preferred workflow is to use softlinks from each forge directory to point at a separate mods directory. Instructions for this are below.
 
 1) Clone this repository into (e.g.) C:\code\SpecialEffectMinecraftMods
 
-2) Remove the directory containing the sample "ExampleMod" in the forge source code. We'll replace this with a soft link to our own mod code.
-> rm C:\code\forge-1.8.8\src\main\java
+2) Remove the 'src\main' directory containing the sample "ExampleMod" in the forge source code. We'll replace this with a soft link to our own mod code.
+> rm C:\code\forge-1.8.8\src\main
 
 3) Create a soft link to the mod code from within your forge source folder:
 - Launch a command prompt as an administrator. On Win8.1, you can do this by right-clicking on the Windows button in the bottom left and selecting "Command Prompt (Admin)"
 - Create the softlink (change the paths as appropriate to match your setup):
 
-> mklink /D C:\code\forge-1.8.8\src\main\java C:\code\mods 
+> mklink /D C:\code\forge-1.8.8\src\main C:\code\SpecialEffectMinecraftMods 
 
 Now, if all has gone well, Minecraft will be launched when you hit "Run", and the SpecialEffect mod will be loaded. Verify that:
 - Under "Mods" there is now an entry called "SpecialEffectEyeGaze"
