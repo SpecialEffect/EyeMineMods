@@ -8,6 +8,8 @@ import org.lwjgl.input.Keyboard;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -25,6 +27,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 
 @Mod(modid = Dismount.MODID, version = Dismount.VERSION, name = Dismount.NAME)
@@ -36,6 +41,8 @@ public class Dismount extends BaseClassWithCallbacks {
 	public static final String NAME = "Dismount";
 
 	private static KeyBinding mDismountKB;
+	
+    public static SimpleNetworkWrapper network;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -43,6 +50,10 @@ public class Dismount extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
 				"Add custom key binding to dismount");
+
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        network.registerMessage(DismountPlayerMessage.Handler.class, 
+        						DismountPlayerMessage.class, 0, Side.SERVER);
 
 	}
 
@@ -67,29 +78,28 @@ public class Dismount extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mDismountKB.isPressed()) {
-			System.out.println("dismount key");
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
+			// Dismount player locally
+			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					System.out.println("onliving");
-
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
+
 					if (player.isRiding()) {
-						System.out.println("is riding");
 
 						Entity riddenEntity = player.ridingEntity;
 						if (null != riddenEntity) {
-							System.out.println("dismount");
-
 							player.dismountEntity(riddenEntity);
 							riddenEntity.riddenByEntity = null;
 							player.ridingEntity = null;
 							player.motionY += 0.5D;
 						}
 					}
-				}		
+				}
 			}));
+			
+			// Dismount player on server
+			this.network.sendToServer(
+					new DismountPlayerMessage());
 		}
 	}
 
