@@ -82,8 +82,15 @@ public class AutoFly extends BaseClassWithCallbacks {
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
 		ClientRegistry.registerKeyBinding(mFlyAutoKB);
 		ClientRegistry.registerKeyBinding(mFlyUpKB);
+
+		// Register an icon for the overlay
+		mIconIndexAuto = StateOverlay.registerTextureLeft("specialeffect:icons/fly-auto.png");
+		mIconIndexManual = StateOverlay.registerTextureLeft("specialeffect:icons/fly.png");
 	}
 
+	private int mIconIndexAuto;
+	private int mIconIndexManual;
+	
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.modID.equals(this.MODID)) {
@@ -133,6 +140,11 @@ public class AutoFly extends BaseClassWithCallbacks {
 	private boolean mIsFlyingManual;
 	private boolean mIsFlyingAuto;
 	
+	private void updateIcons() {
+		StateOverlay.setStateLeftIcon(mIconIndexAuto, mIsFlyingAuto);
+		StateOverlay.setStateLeftIcon(mIconIndexManual, mIsFlyingManual);
+	}
+	
 	private void stopFlying() {
 		mIsFlyingAuto = false;
 		mIsFlyingManual = false;
@@ -144,6 +156,7 @@ public class AutoFly extends BaseClassWithCallbacks {
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 			}
 		}));
+		this.updateIcons();
 	}	
 	
 	private void setFlying(final boolean bFlyUp) {
@@ -188,9 +201,10 @@ public class AutoFly extends BaseClassWithCallbacks {
 			}
 			else {
 				this.queueChatMessage("Fly manual: ON");
-				this.setFlying(!mIsFlyingAuto);
+				boolean doFlyUp = !mIsFlyingAuto;
 				mIsFlyingManual = true;
 				mIsFlyingAuto = false;
+				this.setFlying(doFlyUp);
 			}
 			
 		} else if (mFlyAutoKB.isPressed()) {
@@ -200,14 +214,16 @@ public class AutoFly extends BaseClassWithCallbacks {
 			}
 			else {
 				this.queueChatMessage("Auto-fly: ON");
-				this.setFlying(!mIsFlyingManual);
+				boolean doFlyUp = !mIsFlyingManual;
 				mIsFlyingAuto = true;
-				mIsFlyingManual = false;
+				mIsFlyingManual = false;		
+				this.setFlying(doFlyUp);
 			}
 		}
 		else if (mFlyUpKB.isPressed()) {
 			this.setFlying(true);
 		}
+		this.updateIcons();
 	}
 
 }

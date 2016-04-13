@@ -52,7 +52,8 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String VERSION = "0.1";
 	public static final String NAME = "ContinuouslyDestroy";
-
+	private int mIconIndex;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -71,6 +72,9 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mDestroyKB);
+		
+		// Register an icon for the overlay
+		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
 	}
 	
 	private static KeyBinding mDestroyKB;
@@ -117,7 +121,8 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		if(mDestroyKB.isPressed()) {
 			
 			mIsAttacking = !mIsAttacking;
-			
+			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
+
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
 			

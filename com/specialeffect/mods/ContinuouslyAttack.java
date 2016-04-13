@@ -82,8 +82,12 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
+		
+		// Register an icon for the overlay
+		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 	}
 	
+	private int mIconIndex;
 	private static KeyBinding mAttackKB;
 	
 	@SubscribeEvent
@@ -129,6 +133,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		
 		if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
+			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
 			// Note: I'd like to use Minecraft.getMinecraft().gameSettings.keyBindAttack to
 			// make this robust to key changes in the config. However, through minecraft key 

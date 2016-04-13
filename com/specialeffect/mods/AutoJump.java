@@ -101,7 +101,12 @@ public class AutoJump extends BaseClassWithCallbacks
     	// Register key bindings
         autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
+        
+        // Register an icon for the overlay
+        mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
     }
+	
+	private int mIconIndex;
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
@@ -127,6 +132,8 @@ public class AutoJump extends BaseClassWithCallbacks
         
         if(autoJumpKeyBinding.isPressed()) {
         	mDoingAutoJump = !mDoingAutoJump;
+    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+
 	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override

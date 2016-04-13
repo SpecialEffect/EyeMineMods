@@ -54,13 +54,26 @@ public class Sneak extends BaseClassWithCallbacks {
 		// Register key bindings
 		mSneakKB = new KeyBinding("Toggle sneak", Keyboard.KEY_Z, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mSneakKB);
+		
+		// Register an icon for the overlay
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
+
 	}
+	
+	private int mIconIndex;
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			this.processQueuedCallbacks(event);
 		}
+	}
+	
+	public void stop() {
+		final KeyBinding sneakBinding = 
+				Minecraft.getMinecraft().gameSettings.keyBindSneak;
+		KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
+		StateOverlay.setStateLeftIcon(mIconIndex, false);
 	}
 
 	@SubscribeEvent
@@ -71,11 +84,12 @@ public class Sneak extends BaseClassWithCallbacks {
 
 			if (sneakBinding.isKeyDown()) {
 				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-				
 			}
 			else {
 				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), true);
 			}
+    		StateOverlay.setStateLeftIcon(mIconIndex, sneakBinding.isKeyDown());
+
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override

@@ -58,7 +58,13 @@ public class Swim extends BaseClassWithCallbacks {
 		// Register key bindings
 		mSwimKB = new KeyBinding("Toggle swimming", Keyboard.KEY_V, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mSwimKB);
+		
+		// Register an icon for the overlay
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/swim.png");
+
 	}
+	
+	private int mIconIndex;
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -107,6 +113,8 @@ public class Swim extends BaseClassWithCallbacks {
 			
 			mIsSwimming = !mIsSwimming;
 
+			StateOverlay.setStateLeftIcon(mIconIndex, mIsSwimming);
+			
 			if (!mIsSwimming) {
 				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
 			}

@@ -130,7 +130,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         ClientRegistry.registerKeyBinding(mSensivityDownKB);
 
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
+        
+		// Register an icon for the overlay
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
     }
+    
+    private int mIconIndex;
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
@@ -338,6 +343,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
+			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
         else if (mSensivityUpKB.isPressed()) {
