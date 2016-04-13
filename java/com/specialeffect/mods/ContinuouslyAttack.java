@@ -99,10 +99,6 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			
-			// Set mouse in correct state - shouldn't attack unless there's an
-			// accompanying mouse movement.
-			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
-			// to query.
 			if (mIsAttacking) {
 				// Get entity being looked at
 				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
@@ -122,16 +118,11 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 				event.entityLiving.swingItem();
 			}
 			
-			// Remember mouse status so we can have one tick of grace
-			// (necessary if minecraft running faster than eye tracker).
-			mMouseEventLastTick = MoveWithGaze.mPendingMouseEvent;
-			
 			this.processQueuedCallbacks(event);
 		}
 	}
 	
 	private static boolean mIsAttacking = false;
-	private boolean mMouseEventLastTick = false;
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {

@@ -13,6 +13,7 @@ import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.utils.ModUtils;
@@ -53,16 +54,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
-    private static KeyBinding mSensivityUpKB;
-    private static KeyBinding mSensivityDownKB;
     
     public static Configuration mConfig;
     private static int mQueueLength = 50;
-    private static float mDeadBorder = 0.07f;
 
     private static boolean mMoveWhenMouseStationary = false;
     private static float mCustomSpeedFactor = 0.8f;
-    public static boolean mPendingMouseEvent = true;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -76,20 +73,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	this.syncConfig();
     }
     
-    @EventHandler
-    public void serverStopping(FMLServerStoppingEvent event) {
-    	this.resetSensitivity();
-    }
-    
-    private void resetSensitivity() {
-    	if (mUserMouseSensitivity > 0) {
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
-		}
-    }
-    
-    private void querySensitivity() {
-		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-    }
     
     @SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
@@ -101,8 +84,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 	public static void syncConfig() {
         mQueueLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, mQueueLength, 
 				1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
-        mDeadBorder = mConfig.getFloat("Dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
-        		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
         mMoveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
         									mMoveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control.");
         mCustomSpeedFactor = mConfig.getFloat("Speed factor", Configuration.CATEGORY_GENERAL, mCustomSpeedFactor, 0.0f, 1.0f, 
@@ -123,12 +104,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
-        mSensivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_ADD, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(mSensivityUpKB);
-        
-        mSensivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_SUBTRACT, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(mSensivityDownKB);
-
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
         
 		// Register an icon for the overlay
@@ -140,6 +115,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
+
     		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
     		
        		// Add current look dir to queue
@@ -154,7 +130,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
-            if (mDoingAutoWalk && (mMoveWhenMouseStationary || mPendingMouseEvent) ) {
+            if (mDoingAutoWalk && (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
             	
             	double forward = (double)mCustomSpeedFactor; 
             	
@@ -185,7 +161,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 				}            
             }
             
-            mPendingMouseEvent = false;
 			this.processQueuedCallbacks(event);
 			
     	}
@@ -346,76 +321,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
-        else if (mSensivityUpKB.isPressed()) {
-        	this.resetSensitivity();
-        	Minecraft.getMinecraft().gameSettings.mouseSensitivity *= 1.1;
-        	this.querySensitivity();
-        	this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
-        }
-        else if (mSensivityDownKB.isPressed()) {
-        	this.resetSensitivity();
-        	Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
-        	this.querySensitivity();
-        	this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
-        }
-    }
-    
-    String toPercent(float input) {
-    	DecimalFormat myFormatter = new DecimalFormat("#0.0");
-        return myFormatter.format(input*100) + "%";
-    }
-    
-    float mUserMouseSensitivity = -1.0f;
-    
-    private static int mIgnoreEventCount = 0;
-    
-    public static void setIgnoreNextEvent() {
-    	mIgnoreEventCount++;// = true;
-    }
-    
-    @SubscribeEvent
-    public void onMouseInput(InputEvent.MouseInputEvent event) {
-    	// Cancel any mouse events within a certain border. This avoids mouse movements outside the window (e.g. from
-    	// eye gaze system) from having an impact on view direction.
-    	float r = 2*mDeadBorder;
-    	float x_abs = Math.abs((float)Mouse.getEventDX()); // distance from centre
-    	float y_abs = Math.abs((float)Mouse.getEventDY());
-    	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
-    	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
-    	
-    	if (mIgnoreEventCount > 0 ||
-    		x_abs > w_half*(1-r) ||
-    		y_abs > h_half*(1-r)) {    		
-    		// In v1.8, it would be sufficient to query getDX and DY to consume the deltas.
-    		// ... but this doesn't work in 1.8.8, so we hack it by setting the mouse sensitivity down low.
-    		// See: http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity > 0) {
-    			mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-    		}
-    		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F/3F; 
-    	}
-    	else {
-    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity < 0) {
-    			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
-    		}
-
-        	mPendingMouseEvent = true;
-    	}
-    	
-    	mIgnoreEventCount = Math.max(mIgnoreEventCount-1, 0);
-    }
-
-    @SubscribeEvent
-    public void onGuiOpen(GuiOpenEvent event) {
-    	// This is an 'open' and 'close' event
-    	
-    	if (event.gui != null) { // open event
-    		this.resetSensitivity();
-    	}
-    	else {
-    		this.querySensitivity();
-    	}
-//    	this.resetSensitivity();
     }
     
 }

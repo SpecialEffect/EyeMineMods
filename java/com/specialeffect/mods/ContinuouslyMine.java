@@ -98,10 +98,8 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			
 			// Set mouse in correct state - shouldn't attack unless there's an
 			// accompanying mouse movement.
-			// TODO: Encapsulate pending-mouse-event in separate class, for everyone
-			// to query.
 			if (mIsAttacking) {
-				if (MoveWithGaze.mPendingMouseEvent || mMouseEventLastTick) {
+				if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
 					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 				}
 				else {
@@ -117,7 +115,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			
 			// Remember mouse status so we can have one tick of grace
 			// (necessary if minecraft running faster than eye tracker).
-			mMouseEventLastTick = MoveWithGaze.mPendingMouseEvent;
+			mMouseEventLastTick =MouseHandler.hasPendingEvent();
 			
 			this.processQueuedCallbacks(event);
 		}
