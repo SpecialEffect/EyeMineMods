@@ -116,33 +116,22 @@ public class StateOverlay extends Gui
 
 		for (int i=0; i < blurSteps; i++) {
 			double blurAmount = totalBlur/blurSteps*(i+1);
-			drawTexQuad(x - blurAmount, 
-						y - blurAmount, 
-						width + 2*blurAmount, 
-						height + 2*blurAmount);
-		}
+			ModUtils.drawTexQuad(x - blurAmount, 
+								y - blurAmount, 
+								width + 2*blurAmount, 
+								height + 2*blurAmount);
+				}
 
 		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
 		GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.bindTexture(res);
-		drawTexQuad(x, y, width, height);
+		ModUtils.drawTexQuad(x, y, width, height);
 		
 		// reset GL attributes!
 		GL11.glPopAttrib();
 
 	}
 	
-	private void drawTexQuad(double x, double y, double width, double height) {
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.startDrawingQuads();
-		worldrenderer.addVertexWithUV(x        , y + height, 0, 0.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y         , 0, 1.0, 0.0);
-		worldrenderer.addVertexWithUV(x        , y         , 0, 0.0, 0.0);
-		tessellator.draw();
-	}
-
 	// This event is called by GuiIngameForge during each frame by
 	// GuiIngameForge.pre() and GuiIngameForce.post().
 	@SubscribeEvent

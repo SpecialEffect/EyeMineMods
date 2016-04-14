@@ -4,6 +4,8 @@ import java.awt.Point;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -70,5 +72,16 @@ public class ModUtils {
 		
 		return p;
 		
+	}
+	
+	public static void drawTexQuad(double x, double y, double width, double height) {
+		Tessellator tessellator = Tessellator.getInstance();
+		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		worldrenderer.startDrawingQuads();
+		worldrenderer.addVertexWithUV(x        , y + height, 0, 0.0, 1.0);
+		worldrenderer.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
+		worldrenderer.addVertexWithUV(x + width, y         , 0, 1.0, 0.0);
+		worldrenderer.addVertexWithUV(x        , y         , 0, 0.0, 0.0);
+		tessellator.draw();
 	}
 }

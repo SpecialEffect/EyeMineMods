@@ -55,17 +55,6 @@ public class JoystickControlOverlay extends Gui
 	// Lists of icons to draw on each half of screen
 	ResourceLocation mResource;
 
-	private void drawTexQuad(double x, double y, double width, double height) {
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.startDrawingQuads();
-		worldrenderer.addVertexWithUV(x        , y + height, 0, 0.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y         , 0, 1.0, 0.0);
-		worldrenderer.addVertexWithUV(x        , y         , 0, 0.0, 0.0);
-		tessellator.draw();
-	}
-	
 	private boolean mVisible = false;
 	
 	public void setVisible(boolean bVisible) {
@@ -101,7 +90,7 @@ public class JoystickControlOverlay extends Gui
 
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
-			drawTexQuad(0, 0, mDisplayWidth, mDisplayHeight);
+			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mDisplayHeight);
 
 			// reset GL attributes!
 			GL11.glPopAttrib();
