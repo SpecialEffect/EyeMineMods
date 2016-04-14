@@ -61,7 +61,7 @@ public class MouseHandler extends BaseClassWithCallbacks {
     private static KeyBinding mSensivityUpKB;
     private static KeyBinding mSensivityDownKB;
     
-    private float mUserMouseSensitivity = -1.0f;
+    public static float mUserMouseSensitivity = -1.0f;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    

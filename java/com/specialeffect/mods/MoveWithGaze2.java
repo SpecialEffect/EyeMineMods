@@ -122,6 +122,11 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     	mOverlay.setVisible(mDoingAutoWalk);
     }
 	
+	// Some hard-coded fudge factors for maximums.
+	private final float mMaxForward = 1.5f;
+	private final float mMaxBackward = 0.5f;
+	private final int mMaxYaw = 100; // at 100% sensitivity
+	
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
@@ -129,24 +134,30 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
     		if (mDoingAutoWalk && (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
     			
-    			// Y gives distance to walk forward/back
+    			// Y gives distance to walk forward/back.
     			float walkForwardAmount = 0.0f;
     			float h = (float)Minecraft.getMinecraft().displayHeight;
     			float h3 = h/3.0f;
 
     			if (lastMouseY < h3) {
-    				walkForwardAmount = -1.0f*(h3-lastMouseY)/h3;
+    				walkForwardAmount = -mMaxBackward*(h3-lastMouseY)/h3;
     			}
     			else if (lastMouseY > 2*h3) {
-    				walkForwardAmount = 1.0f*(lastMouseY-2*h3)/h3;
+    				walkForwardAmount = mMaxForward*(lastMouseY-2*h3)/h3;
     			}
+
+    			// scaled by mCustomSpeedFactor from MoveWithGaze
+    			walkForwardAmount *= MoveWithGaze.mCustomSpeedFactor;
 
     			// X gives how far to rotate viewpoint
     			float w = (float)Minecraft.getMinecraft().displayWidth;
     			float w2 = w/2.0f;
 
     			float yawAmount = (lastMouseX - w2)/w2;
-    			yawAmount*= 360/45;
+    			yawAmount*= mMaxYaw;
+    			    			
+    			// scaled by user sensitivity
+    			yawAmount *= MouseHandler.mUserMouseSensitivity;
     			
     			// TODO: Scale by user sensitivity?
     			

@@ -59,7 +59,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     private static int mQueueLength = 50;
 
     private static boolean mMoveWhenMouseStationary = false;
-    private static float mCustomSpeedFactor = 0.8f;
+    public static float mCustomSpeedFactor = 0.8f;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
