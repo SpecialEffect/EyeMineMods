@@ -104,6 +104,9 @@ public class AutoJump extends BaseClassWithCallbacks
         
         // Register an icon for the overlay
         mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
+        
+        // Make sure icon is up to date (might be on by default).
+        StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
     }
 	
 	private int mIconIndex;
