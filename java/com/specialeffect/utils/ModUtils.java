@@ -2,10 +2,13 @@ package com.specialeffect.utils;
 
 import java.awt.Point;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -79,22 +82,28 @@ public class ModUtils {
 	public static Point getScaledDisplaySize(Minecraft mc) {
 		Point p = new Point(0,  0);	
 		
-		ScaledResolution res = new ScaledResolution( mc,
-				mc.displayWidth, mc.displayHeight);
+		ScaledResolution res = new ScaledResolution( mc );
 		p.setLocation(res.getScaledWidth(), res.getScaledHeight());
 		
 		return p;
 		
 	}
-	
+
 	public static void drawTexQuad(double x, double y, double width, double height) {
+
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.startDrawingQuads();
-		worldrenderer.addVertexWithUV(x        , y + height, 0, 0.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
-		worldrenderer.addVertexWithUV(x + width, y         , 0, 1.0, 0.0);
-		worldrenderer.addVertexWithUV(x        , y         , 0, 0.0, 0.0);
+
+		// Ugh, these methods get proper names in forge 1.9
+		worldrenderer.func_181668_a(GL11.GL_QUADS, DefaultVertexFormats.field_181707_g); // 2nd arg = DefaultVertexFormats.POSITION_TEX
+
+		// = worldrenderer.pos( ... ).tex( ... ).endVertex() 
+		worldrenderer.func_181662_b(x        , y + height, 0).func_181673_a(0.0, 1.0).func_181675_d();
+		worldrenderer.func_181662_b(x + width, y + height, 0).func_181673_a(1.0, 1.0).func_181675_d();
+		worldrenderer.func_181662_b(x + width, y         , 0).func_181673_a(1.0, 0.0).func_181675_d();
+		worldrenderer.func_181662_b(x        , y         , 0).func_181673_a(0.0, 0.0).func_181675_d();
+
 		tessellator.draw();
+
 	}
 }
