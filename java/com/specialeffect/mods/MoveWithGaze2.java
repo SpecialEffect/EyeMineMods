@@ -108,7 +108,7 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
         
 		// Register an icon for the overlay
-		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/legacy-mode.png");
     }
     
     private static int mIconIndex;
