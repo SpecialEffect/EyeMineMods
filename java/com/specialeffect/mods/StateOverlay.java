@@ -156,6 +156,11 @@ public class StateOverlay extends Gui
 			return;
 		}
 		
+		// Don't show if the debug screen is open
+		if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+			return;
+		}
+		
 		this.rescale();
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
