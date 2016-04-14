@@ -111,10 +111,17 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
     }
     
-    private int mIconIndex;
+    private static int mIconIndex;
     
-	private JoystickControlOverlay mOverlay;
+	private static JoystickControlOverlay mOverlay;
 
+	public static void stop() {
+    	mDoingAutoWalk = false;
+		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);        	
+		MouseHandler.setVanillaMouseHandling(!mDoingAutoWalk);
+    	mOverlay.setVisible(mDoingAutoWalk);
+    }
+	
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
@@ -151,7 +158,7 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     	}
     }
     
-	private boolean mDoingAutoWalk = false;
+	private static boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
     private Queue<Vec3> mPrevLookDirs;
 
@@ -160,6 +167,9 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
         
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
+        	if (mDoingAutoWalk) { 
+        		MoveWithGaze.stop();
+        	}
         	MouseHandler.setVanillaMouseHandling(!mDoingAutoWalk);
         	mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);

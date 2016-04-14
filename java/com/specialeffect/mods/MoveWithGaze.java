@@ -110,7 +110,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
     }
     
-    private int mIconIndex;
+    private static int mIconIndex;
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
@@ -309,15 +309,23 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	return slowdownFactor;
 	}
 
-	private boolean mDoingAutoWalk = false;
+	private static boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
     private Queue<Vec3> mPrevLookDirs;
+    
+    public static void stop() {
+    	mDoingAutoWalk = false;
+		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+    }
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
+        	if (mDoingAutoWalk) { 
+        		MoveWithGaze2.stop();
+        	}
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
