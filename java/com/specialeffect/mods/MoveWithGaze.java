@@ -168,10 +168,10 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     
     private double slowdownFactorPitch(EntityPlayer player) {
     	float f = player.rotationPitch;
-    	if (f < -30 || f > 50) {
+    	if (f < -60 || f > 60) {
     		return 0.0f;
     	}
-    	else if (f < -25 || f > 40) {
+    	else if (f < -30 || f > 40) {
     		return 0.5f;
     	}
     	else {
