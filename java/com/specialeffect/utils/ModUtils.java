@@ -2,6 +2,8 @@ package com.specialeffect.utils;
 
 import java.awt.Point;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -57,5 +59,16 @@ public class ModUtils {
 			break;
 		}
 		return p;
+	}
+	
+	public static Point getScaledDisplaySize(Minecraft mc) {
+		Point p = new Point(0,  0);	
+		
+		ScaledResolution res = new ScaledResolution( mc,
+				mc.displayWidth, mc.displayHeight);
+		p.setLocation(res.getScaledWidth(), res.getScaledHeight());
+		
+		return p;
+		
 	}
 }

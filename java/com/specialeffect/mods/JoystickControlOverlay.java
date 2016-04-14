@@ -1,5 +1,6 @@
 package com.specialeffect.mods;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,6 +20,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.lwjgl.opengl.GL11;
+
+import com.specialeffect.utils.ModUtils;
 
 //
 // StateOverlay implements a simple status bar at the top of the screen which 
@@ -40,11 +43,10 @@ public class JoystickControlOverlay extends Gui
 	}
 	
 	private void rescale() {
-		// Scale icon sizes to fit screen
-		ScaledResolution res = new ScaledResolution( mc,
-				mc.displayWidth, mc.displayHeight);
-		mDisplayWidth = res.getScaledWidth();
-		mDisplayHeight = res.getScaledHeight();
+		// Scale icon sizes to fit screen		
+		Point size = ModUtils.getScaledDisplaySize(mc);
+		mDisplayWidth = size.x;
+		mDisplayHeight = size.y;
 	}
 
 	private int mDisplayWidth;
