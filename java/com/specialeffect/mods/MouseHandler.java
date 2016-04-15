@@ -55,14 +55,18 @@ public class MouseHandler extends BaseClassWithCallbacks {
     public static final String NAME = "MouseHandler";
 
     public static Configuration mConfig;
-    private static boolean mPendingMouseEvent = false;
-    public static boolean mLastEventWithinBounds = false;
     
     private static KeyBinding mSensivityUpKB;
     private static KeyBinding mSensivityDownKB;
     
-    public static float mUserMouseSensitivity = -1.0f;
-
+    private static boolean mPendingMouseEvent = false;
+    public static boolean mLastEventWithinBounds = false; 
+	private static boolean mDoVanilla = true; // whether to allow normal mouse processing	
+    
+    public static float mUserMouseSensitivity = -1.0f; // internal cache of user's preference.
+	private static int mIgnoreEventCount = 0;
+    private static float mDeadBorder = 0.1f;
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);  
@@ -73,6 +77,9 @@ public class MouseHandler extends BaseClassWithCallbacks {
     	// Set up config
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
+    	
+    	// Check the initial sensitivity setting.
+    	this.querySensitivity();
     }
     
     @SubscribeEvent
@@ -90,8 +97,6 @@ public class MouseHandler extends BaseClassWithCallbacks {
         	mConfig.save();
         }
 	}
-	
-	private static boolean mDoVanilla = true;
 	
 	public static void setVanillaMouseHandling(boolean doVanilla) {
 		mDoVanilla = doVanilla;
@@ -113,7 +118,7 @@ public class MouseHandler extends BaseClassWithCallbacks {
         
     }
     
-    @SubscribeEvent(priority=EventPriority.LOWEST) 
+    @SubscribeEvent(priority=EventPriority.LOWEST)  // important we get this *after* other mods
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
     		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
@@ -124,7 +129,7 @@ public class MouseHandler extends BaseClassWithCallbacks {
     }
     
     
-    @SubscribeEvent(priority=EventPriority.HIGHEST) 
+    @SubscribeEvent(priority=EventPriority.HIGHEST)  // important we get this *before* other mods
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (mSensivityUpKB.isPressed()) {
         	this.resetSensitivity();
@@ -140,13 +145,9 @@ public class MouseHandler extends BaseClassWithCallbacks {
         }
     }
     
-    private static int mIgnoreEventCount = 0;
-    
     public static void setIgnoreNextEvent() {
     	mIgnoreEventCount++;
     }
-    
-    static float mDeadBorder = 0.1f;
     
     public static boolean hasPendingEvent() {
     	return mPendingMouseEvent;
@@ -174,30 +175,24 @@ public class MouseHandler extends BaseClassWithCallbacks {
     		// In v1.8, it would be sufficient to query getDX and DY to consume the deltas.
     		// ... but this doesn't work in 1.8.8, so we hack it by setting the mouse sensitivity down low.
     		// See: http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity > 0) {
-    			mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-    		}
-    		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F/3F; 
+    		this.zeroSensitivity();
     	}
     	// turn off anyway, if vanilla mouse movements turned off, but record pending event.
     	else if (!mDoVanilla) {
-    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity > 0) {
-    			mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-    		}
-    		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F/3F; 
+    		this.zeroSensitivity();
         	mPendingMouseEvent = true;
     	}
     	else {
-    		if (Minecraft.getMinecraft().gameSettings.mouseSensitivity < 0) {
-    			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
-    		}
-
+    		this.resetSensitivity();
         	mPendingMouseEvent = true;
     	}
     	
     	mIgnoreEventCount = Math.max(mIgnoreEventCount-1, 0);
     }
     
+    // When we leave a GUI and enter the game, we record the user's
+    // chosen sensitivity (and hack around with it in-game).
+    // When we leave the game, we reset the sensitivty to how we found it.
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
     	// This is an 'open' and 'close' event
@@ -221,6 +216,11 @@ public class MouseHandler extends BaseClassWithCallbacks {
 		}
     }
     
+    private void zeroSensitivity() {
+    	// See  http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2 for
+    	// magic number.
+		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F/3F; 
+    }
     private void querySensitivity() {
 		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
     }
