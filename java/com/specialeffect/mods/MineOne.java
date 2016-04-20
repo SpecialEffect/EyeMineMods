@@ -49,7 +49,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = MineOne.MODID, version = MineOne.VERSION, name = MineOne.NAME)
+@Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
 public class MineOne {
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String VERSION = "0.1";

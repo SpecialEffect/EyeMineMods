@@ -51,7 +51,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = EasyLadderClimb.MODID, version = EasyLadderClimb.VERSION, name = EasyLadderClimb.NAME)
+@Mod(modid = EasyLadderClimb.MODID, version = ModUtils.VERSION, name = EasyLadderClimb.NAME)
 public class EasyLadderClimb {
 	public static final String MODID = "specialeffect.EasyLadderClimb";
 	public static final String VERSION = "0.1";

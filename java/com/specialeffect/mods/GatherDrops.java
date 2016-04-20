@@ -54,7 +54,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = GatherDrops.MODID, 
-version = GatherDrops.VERSION,
+version = ModUtils.VERSION,
 name = GatherDrops.NAME)
 public class GatherDrops extends BaseClassWithCallbacks
 {

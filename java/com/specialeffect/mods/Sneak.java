@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 
-@Mod(modid = Sneak.MODID, version = Sneak.VERSION, name = Sneak.NAME)
+@Mod(modid = Sneak.MODID, version = ModUtils.VERSION, name = Sneak.NAME)
 
 public class Sneak extends BaseClassWithCallbacks {
 

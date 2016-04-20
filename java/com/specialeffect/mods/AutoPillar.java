@@ -51,7 +51,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = AutoPillar.MODID, 
-	 version = AutoPillar.VERSION,
+	 version = ModUtils.VERSION,
 	 name = AutoPillar.NAME)
 public class AutoPillar extends BaseClassWithCallbacks
 {

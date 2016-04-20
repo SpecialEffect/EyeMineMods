@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 
-@Mod(modid = Swim.MODID, version = Swim.VERSION, name = Swim.NAME)
+@Mod(modid = Swim.MODID, version = ModUtils.VERSION, name = Swim.NAME)
 
 public class Swim extends BaseClassWithCallbacks {
 

@@ -56,7 +56,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = WalkIncrements.MODID, 
-	 version = WalkIncrements.VERSION,
+	 version = ModUtils.VERSION,
 	 name = WalkIncrements.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkIncrements")
 public class WalkIncrements extends BaseClassWithCallbacks

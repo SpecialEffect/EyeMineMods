@@ -38,7 +38,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
-@Mod(modid = ModStateGui.MODID, version = ModStateGui.VERSION, name = ModStateGui.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
+@Mod(modid = ModStateGui.MODID, version = ModUtils.VERSION, name = ModStateGui.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
 
 public class ModStateGui extends BaseClassWithCallbacks {
 

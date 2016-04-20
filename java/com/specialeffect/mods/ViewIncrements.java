@@ -56,7 +56,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = ViewIncrements.MODID, 
-	 version = ViewIncrements.VERSION,
+	 version = ModUtils.VERSION,
 	 name = ViewIncrements.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryViewIncrements")
 public class ViewIncrements extends BaseClassWithCallbacks

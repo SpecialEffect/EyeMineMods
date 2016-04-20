@@ -45,7 +45,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MoveWithGaze.MODID, 
-	 version = MoveWithGaze.VERSION,
+	 version = ModUtils.VERSION,
 	 name = MoveWithGaze.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
 public class MoveWithGaze extends BaseClassWithCallbacks {

@@ -49,7 +49,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = OpenTablesChests.MODID, 
-version = OpenTablesChests.VERSION,
+version = ModUtils.VERSION,
 name = OpenTablesChests.NAME,
 guiFactory = "com.specialeffect.gui.GuiFactoryOpenChestsEtc")
 public class OpenTablesChests extends BaseClassWithCallbacks

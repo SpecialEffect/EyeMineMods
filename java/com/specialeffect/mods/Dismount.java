@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 
-@Mod(modid = Dismount.MODID, version = Dismount.VERSION, name = Dismount.NAME)
+@Mod(modid = Dismount.MODID, version = ModUtils.VERSION, name = Dismount.NAME)
 
 public class Dismount extends BaseClassWithCallbacks {
 

@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
-@Mod(modid = AutoFly.MODID, version = AutoFly.VERSION, name = AutoFly.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
+@Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
 
 public class AutoFly extends BaseClassWithCallbacks {
 

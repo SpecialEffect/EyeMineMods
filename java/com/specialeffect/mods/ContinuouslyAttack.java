@@ -51,7 +51,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = ContinuouslyAttack.MODID, version = ContinuouslyAttack.VERSION, name = ContinuouslyAttack.NAME)
+@Mod(modid = ContinuouslyAttack.MODID, version = ModUtils.VERSION, name = ContinuouslyAttack.NAME)
 public class ContinuouslyAttack extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslyAttack";
 	public static final String VERSION = "0.1";

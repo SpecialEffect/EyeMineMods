@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = DebugAverageFps.MODID, 
-version = DebugAverageFps.VERSION,
+version = ModUtils.VERSION,
 name = DebugAverageFps.NAME)
 
 public class DebugAverageFps
