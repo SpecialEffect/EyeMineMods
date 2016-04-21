@@ -49,6 +49,7 @@ public class Dismount extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add custom key binding to dismount");
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(DismountPlayerMessage.Handler.class, 

@@ -80,6 +80,7 @@ public class WalkIncrements extends BaseClassWithCallbacks
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to walk fixed amount, for alternative inputs.");
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);

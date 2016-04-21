@@ -66,7 +66,8 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+
     	// Set up config
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();

@@ -62,6 +62,7 @@ public class EasyLadderClimb {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically turn to face ladders, to simplify climbing with eye control.");
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 	}
 

@@ -41,6 +41,7 @@ public class Sneak extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop sneaking");
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 	}
 

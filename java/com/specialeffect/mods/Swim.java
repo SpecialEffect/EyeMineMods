@@ -45,6 +45,7 @@ public class Swim extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop swimming (= jumping)");
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 	}
 

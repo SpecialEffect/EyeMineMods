@@ -46,8 +46,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MoveWithGaze2.MODID, 
 	 version = ModUtils.VERSION,
-	 name = MoveWithGaze2.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
+	 name = MoveWithGaze2.NAME)
 public class MoveWithGaze2 extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.movewithgaze2";
     public static final String NAME = "MoveWithGaze2";
@@ -65,7 +64,8 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+
     	// Set up config
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();

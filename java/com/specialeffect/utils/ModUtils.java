@@ -2,6 +2,8 @@ package com.specialeffect.utils;
 
 import java.awt.Point;
 
+import com.specialeffect.mods.SpecialEffectMovements;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
@@ -35,6 +37,12 @@ public class ModUtils {
 		m.authorList.add("Kirsty McNaught");
 		m.credits = "Written in collaboration with SpecialEffect";
 	}
+	
+	public static void setAsParent(FMLPreInitializationEvent event,
+									String parentModID) {
+		ModMetadata m = event.getModMetadata(); 		
+		m.parent = parentModID;
+    }
 	
 	// Get the x, y point corresponding to one of 8 compass points
 	// 0 = N, 1 = NE, 2 = E, etc ...

@@ -82,7 +82,9 @@ public class ViewIncrements extends BaseClassWithCallbacks
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to change view by fixed amount, for alternative inputs.");
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+
+    	network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
         
         try {

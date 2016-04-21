@@ -69,7 +69,8 @@ public class AutoJump extends BaseClassWithCallbacks
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically step over blocks.");
-        
+    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+
         // Set up config and load cached value
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
