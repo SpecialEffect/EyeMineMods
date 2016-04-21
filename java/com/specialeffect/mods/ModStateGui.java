@@ -42,7 +42,6 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 public class ModStateGui extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.modstategui";
-	public static final String VERSION = "0.1";
 	public static final String NAME = "modstategui";
 
 	private StateOverlay mStateOverlay;
@@ -51,7 +50,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
 
-		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Overlay icons to show state of mods.");
 		
 		// This needs to be initialised in preinit because other mods will 

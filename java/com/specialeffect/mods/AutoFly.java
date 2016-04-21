@@ -42,7 +42,6 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 public class AutoFly extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.autofly";
-	public static final String VERSION = "0.1";
 	public static final String NAME = "AutoFly";
 
 	public static Configuration mConfig;
@@ -58,7 +57,7 @@ public class AutoFly extends BaseClassWithCallbacks {
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
 
-		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop flying, and automatically fly over hills.");
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);

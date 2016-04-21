@@ -20,7 +20,7 @@ public class ModUtils {
 	// A helper function to replace mcmod.info. Must be called with 
 	// a pre-init event.
 	public static void setupModInfo(FMLPreInitializationEvent event,
-									String modId, String modVersion, String modName,
+									String modId, String modName,
 									String modDescription) {
 
 		// Adding info here avoids having to maintain a mcmod.info file.

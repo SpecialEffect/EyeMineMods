@@ -50,7 +50,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
 public class MoveWithGaze extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.movewithgaze";
-    public static final String VERSION = "0.1";
     public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
@@ -65,7 +64,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);  
     	
-    	ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+    	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	
     	// Set up config

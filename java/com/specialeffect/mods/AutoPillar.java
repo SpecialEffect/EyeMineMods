@@ -56,7 +56,6 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 public class AutoPillar extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.AutoPillar";
-    public static final String VERSION = "1.4";
     public static final String NAME = "AutoPillar";
 
     public static KeyBinding autoPlaceKeyBinding;
@@ -69,7 +68,7 @@ public class AutoPillar extends BaseClassWithCallbacks
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
         
-        ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+        ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to create pillar, or 'nerd-pole'.");
 		
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);

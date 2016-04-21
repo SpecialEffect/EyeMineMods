@@ -50,7 +50,6 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod(modid = ContinuouslyMine.MODID, version = ModUtils.VERSION, name = ContinuouslyMine.NAME)
 public class ContinuouslyMine extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslydestroy";
-	public static final String VERSION = "0.1";
 	public static final String NAME = "ContinuouslyDestroy";
 	private static int mIconIndex;
 	
@@ -58,7 +57,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
 		
-		ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
 		
 	}

@@ -62,7 +62,6 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 public class WalkIncrements extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.WalkIncrements";
-    public static final String VERSION = "1.4";
     public static final String NAME = "WalkIncrements";
     public static Configuration mConfig;
 
@@ -79,7 +78,7 @@ public class WalkIncrements extends BaseClassWithCallbacks
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
         
-        ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+        ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to walk fixed amount, for alternative inputs.");
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);

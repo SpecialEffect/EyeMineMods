@@ -57,7 +57,6 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 public class AutoJump extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.autojump";
-    public static final String VERSION = "1.4";
     public static final String NAME = "AutoJump";
 
     public static KeyBinding autoJumpKeyBinding;
@@ -68,7 +67,7 @@ public class AutoJump extends BaseClassWithCallbacks
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
         
-        ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+        ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically step over blocks.");
         
         // Set up config and load cached value

@@ -62,7 +62,6 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 public class ViewIncrements extends BaseClassWithCallbacks
 {
     public static final String MODID = "specialeffect.ViewIncrements";
-    public static final String VERSION = "1.4";
     public static final String NAME = "ViewIncrements";
     public static Configuration mConfig;
 
@@ -81,9 +80,8 @@ public class ViewIncrements extends BaseClassWithCallbacks
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
         
-        ModUtils.setupModInfo(event, this.MODID, this.VERSION, this.NAME,
+        ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to change view by fixed amount, for alternative inputs.");
-		
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
         
