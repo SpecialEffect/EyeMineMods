@@ -111,8 +111,9 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 				1, 20, "How far away a player needs to be from a door to automatically open/close");
 
 		// OpenTablesChests
+		// This is limited to 6 blocks since the gui doesn't appear if block is too far away
 		mRadiusChests = mConfig.getInt("Distance to open chests/crafting tables", Configuration.CATEGORY_GENERAL, mRadiusChests, 
-				1, 100, "How far away a player needs to be from a chest/table to be able to open it");
+				1, 6, "How far away a player needs to be from a chest/table to be able to open it");
         
 		if (mConfig.hasChanged()) {
 			mConfig.save();
