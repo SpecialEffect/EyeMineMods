@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.gui;
 
 import java.awt.Point;
 import java.util.ArrayList;

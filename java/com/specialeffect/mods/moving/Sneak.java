@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.mods.StateOverlay;
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
