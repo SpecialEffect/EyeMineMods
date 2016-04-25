@@ -49,7 +49,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 @Mod(modid = MouseHandler.MODID, 
 	 version = ModUtils.VERSION,
 	 name = MouseHandler.NAME)
-// TODO: gui factory for config
 public class MouseHandler 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig

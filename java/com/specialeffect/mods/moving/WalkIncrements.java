@@ -58,8 +58,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = WalkIncrements.MODID, 
 	 version = ModUtils.VERSION,
-	 name = WalkIncrements.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkIncrements")
+	 name = WalkIncrements.NAME)
 public class WalkIncrements 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig

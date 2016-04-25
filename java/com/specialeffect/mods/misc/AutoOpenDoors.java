@@ -43,8 +43,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = AutoOpenDoors.MODID, version = ModUtils.VERSION, name = AutoOpenDoors.NAME,
-guiFactory = "com.specialeffect.gui.GuiFactoryAutoDoors")
+@Mod(modid = AutoOpenDoors.MODID, version = ModUtils.VERSION, name = AutoOpenDoors.NAME)
 public class AutoOpenDoors 
 implements ChildModWithConfig
 {

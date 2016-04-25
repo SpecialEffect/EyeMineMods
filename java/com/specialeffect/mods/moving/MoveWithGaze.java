@@ -49,8 +49,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MoveWithGaze.MODID, 
 	 version = ModUtils.VERSION,
-	 name = MoveWithGaze.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
+	 name = MoveWithGaze.NAME)
 public class MoveWithGaze 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig 

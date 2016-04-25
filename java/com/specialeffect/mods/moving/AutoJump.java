@@ -54,8 +54,7 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = AutoJump.MODID, 
 	 version = ModUtils.VERSION,
-	 name = AutoJump.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactoryAutoJump")
+	 name = AutoJump.NAME)
 public class AutoJump 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig

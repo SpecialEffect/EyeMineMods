@@ -38,8 +38,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.actors.threadpool.LinkedBlockingQueue;
 
-@Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
-
+@Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME)
 public class AutoFly 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig 
