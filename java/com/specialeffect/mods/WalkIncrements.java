@@ -15,6 +15,7 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 import com.sun.prism.Material;
@@ -59,7 +60,9 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 	 version = ModUtils.VERSION,
 	 name = WalkIncrements.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkIncrements")
-public class WalkIncrements extends BaseClassWithCallbacks
+public class WalkIncrements 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig
 {
     public static final String MODID = "specialeffect.WalkIncrements";
     public static final String NAME = "WalkIncrements";
@@ -94,12 +97,8 @@ public class WalkIncrements extends BaseClassWithCallbacks
 		}
 	}
     
-    private static void syncConfig() {
-        mWalkDistance = (double)mConfig.getFloat("Walk distance", Configuration.CATEGORY_GENERAL, (float)mWalkDistance, 
-        		0.1f, 10.0f, "Fixed distance to walk with single key press");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+    public void syncConfig() {       
+        mWalkDistance = SpecialEffectMovements.moveIncrement;
     }
     
     @EventHandler
@@ -108,6 +107,9 @@ public class WalkIncrements extends BaseClassWithCallbacks
 		// Subscribe to event buses
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
+    	
+    	// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
     	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");

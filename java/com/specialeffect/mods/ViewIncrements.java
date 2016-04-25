@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 import com.sun.prism.Material;
@@ -59,7 +60,9 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 	 version = ModUtils.VERSION,
 	 name = ViewIncrements.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryViewIncrements")
-public class ViewIncrements extends BaseClassWithCallbacks
+public class ViewIncrements 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig
 {
     public static final String MODID = "specialeffect.ViewIncrements";
     public static final String NAME = "ViewIncrements";
@@ -95,22 +98,8 @@ public class ViewIncrements extends BaseClassWithCallbacks
 		}
     }
     
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-    
-    private static void syncConfig() {
-    	mViewDeltaRelative = mConfig.getInt("View delta (degrees)", 
-    			Configuration.CATEGORY_GENERAL, 
-    			mViewDeltaRelative, 
-        		1, 45, 
-        		"Fixed rotation to change view with single key press");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+    public void syncConfig() {
+    	mViewDeltaRelative = SpecialEffectMovements.viewIncrement;
     }
     
     @EventHandler
@@ -120,6 +109,9 @@ public class ViewIncrements extends BaseClassWithCallbacks
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
 
+    	// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	
     	// Register key bindings
     	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", Keyboard.KEY_U, "SpecialEffect");
         ClientRegistry.registerKeyBinding(viewDirectionKeyBinding);

@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -48,7 +49,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 	 version = ModUtils.VERSION,
 	 name = MoveWithGaze.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkWithGaze")
-public class MoveWithGaze extends BaseClassWithCallbacks {
+public class MoveWithGaze 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig 
+{
 	public static final String MODID = "specialeffect.movewithgaze";
     public static final String NAME = "MoveWithGaze";
 
@@ -68,29 +72,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
-    	// Set up config
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
-    }
-    
-    
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
+    }    
 	
-	public static void syncConfig() {
-        mQueueLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, mQueueLength, 
-				1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
-        mMoveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
-        									mMoveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control.");
-        mCustomSpeedFactor = mConfig.getFloat("Speed factor", Configuration.CATEGORY_GENERAL, mCustomSpeedFactor, 0.0f, 1.0f, 
-        						"A scaling factor for speed. 1.0 = maximum."); 
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+	public void syncConfig() {
+        mQueueLength = SpecialEffectMovements.filterLength;
+        mMoveWhenMouseStationary = SpecialEffectMovements.moveWhenMouseStationary;
+        mCustomSpeedFactor = SpecialEffectMovements.customSpeedFactor;
 	}
 	
     @EventHandler
@@ -100,6 +87,9 @@ public class MoveWithGaze extends BaseClassWithCallbacks {
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);    	
 
+    	// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	
     	// Register key bindings	
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);

@@ -12,6 +12,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 import com.sun.prism.Material;
@@ -54,7 +55,9 @@ import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 	 version = ModUtils.VERSION,
 	 name = AutoJump.NAME,
 	 guiFactory = "com.specialeffect.gui.GuiFactoryAutoJump")
-public class AutoJump extends BaseClassWithCallbacks
+public class AutoJump 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig
 {
     public static final String MODID = "specialeffect.autojump";
     public static final String NAME = "AutoJump";
@@ -71,24 +74,10 @@ public class AutoJump extends BaseClassWithCallbacks
 				"Automatically step over blocks.");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
-        // Set up config and load cached value
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
     }
     
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-    
-    private void syncConfig() {
-    	mDoingAutoJump = mConfig.getBoolean("Auto-jump switched on by default?", Configuration.CATEGORY_GENERAL, mDoingAutoJump,
-    			"Whether auto-jump is on at the beginning of a new game.");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }		
+    public void syncConfig() {
+    	mDoingAutoJump = SpecialEffectMovements.defaultDoAutoJump;
 	}
 
 	@EventHandler
@@ -97,6 +86,9 @@ public class AutoJump extends BaseClassWithCallbacks
 		// Subscribe to event buses
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
+    	
+    	// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
         autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");

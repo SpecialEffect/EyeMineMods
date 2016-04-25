@@ -15,6 +15,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -47,7 +48,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 @Mod(modid = MoveWithGaze2.MODID, 
 	 version = ModUtils.VERSION,
 	 name = MoveWithGaze2.NAME)
-public class MoveWithGaze2 extends BaseClassWithCallbacks {
+public class MoveWithGaze2 
+extends BaseClassWithCallbacks 
+implements ChildModWithConfig
+{
 	public static final String MODID = "specialeffect.movewithgaze2";
     public static final String NAME = "MoveWithGaze2";
 
@@ -65,10 +69,6 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
-
-    	// Set up config
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
     	
     	mOverlay = new JoystickControlOverlay(Minecraft.getMinecraft());
     }
@@ -78,20 +78,6 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
 	{
 		MinecraftForge.EVENT_BUS.register(mOverlay);
 	}
-    
-    
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-	
-	public static void syncConfig() {
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
-	}
 	
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -100,8 +86,11 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);    	
 
+    	// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk2", Keyboard.KEY_B, "SpecialEffect");
+    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk legacy", Keyboard.KEY_B, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
@@ -121,11 +110,16 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     	mOverlay.setVisible(mDoingAutoWalk);
     }
 	
+	public void syncConfig() {
+        mMoveWhenMouseStationary = SpecialEffectMovements.moveWhenMouseStationary;
+        mCustomSpeedFactor = SpecialEffectMovements.customSpeedFactor;
+	}
+	
 	// Some hard-coded fudge factors for maximums.
 	private final float mMaxForward = 1.5f;
 	private final float mMaxBackward = 0.5f;
 	private final int mMaxYaw = 100; // at 100% sensitivity
-	
+    
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
@@ -145,8 +139,8 @@ public class MoveWithGaze2 extends BaseClassWithCallbacks {
     				walkForwardAmount = mMaxForward*(lastMouseY-2*h3)/h3;
     			}
 
-    			// scaled by mCustomSpeedFactor from MoveWithGaze
-    			walkForwardAmount *= MoveWithGaze.mCustomSpeedFactor;
+    			// scaled by mCustomSpeedFactor 
+    			walkForwardAmount *= mCustomSpeedFactor;
 
     			// X gives how far to rotate viewpoint
     			float w = (float)Minecraft.getMinecraft().displayWidth;

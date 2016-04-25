@@ -59,20 +59,20 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 	public static Configuration mConfig;	
 
 	// Flying options
-	private static int flyHeightManual = 2;
-	private static int flyHeightAuto = 6;
+	public static int flyHeightManual = 2;
+	public static int flyHeightAuto = 6;
 	
 	// Walking options -> walk with gaze
-	private static int filterLength = 50;
-    private static boolean moveWhenMouseStationary = false;
+	public static int filterLength = 50;
+	public static boolean moveWhenMouseStationary = false;
     public static float customSpeedFactor = 0.8f;
 	
     // OptiKey adjustments
-    private static int viewIncrement = 2;
-    private static double moveIncrement = 2;
+    public static int viewIncrement = 2;
+    public static double moveIncrement = 2;
 
 	// AutoJump
-    private static boolean defaultDoAutoJump = true;
+    public static boolean defaultDoAutoJump = true;
     
     private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
     

@@ -9,6 +9,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -21,7 +22,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -39,12 +39,14 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME, guiFactory = "com.specialeffect.gui.GuiFactoryAutoFly")
 
-public class AutoFly extends BaseClassWithCallbacks {
+public class AutoFly 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig 
+{
 
 	public static final String MODID = "specialeffect.autofly";
 	public static final String NAME = "AutoFly";
 
-	public static Configuration mConfig;
 	private static KeyBinding mFlyManualKB;
 	private static KeyBinding mFlyAutoKB;
 	private static KeyBinding mFlyUpKB;
@@ -59,14 +61,11 @@ public class AutoFly extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop flying, and automatically fly over hills.");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
 
-		// Set up config
-		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();
 	}
 
 	@EventHandler
@@ -74,7 +73,10 @@ public class AutoFly extends BaseClassWithCallbacks {
 		// Subscribe to event buses
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
-
+		
+		// Subscribe to parent's config changes
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	
 		// Register key bindings
 		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_F, "SpecialEffect");
 		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, "SpecialEffect");
@@ -90,20 +92,10 @@ public class AutoFly extends BaseClassWithCallbacks {
 
 	private static int mIconIndexAuto;
 	private static int mIconIndexManual;
-	
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if (eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
 
-	public static void syncConfig() {
-		mFlyHeightManual = mConfig.getInt("Fly height manual", Configuration.CATEGORY_GENERAL, mFlyHeightManual, 1, 20, "How high to fly in manual mode");
-		mFlyHeightAuto = mConfig.getInt("Fly height auto", Configuration.CATEGORY_GENERAL, mFlyHeightAuto, 1, 20, "How high to auto mode");
-		if (mConfig.hasChanged()) {
-			mConfig.save();
-		}
+	public void syncConfig() {
+		mFlyHeightManual = SpecialEffectMovements.flyHeightManual;
+		mFlyHeightAuto = SpecialEffectMovements.flyHeightAuto;
 	}
 
 	@SubscribeEvent
