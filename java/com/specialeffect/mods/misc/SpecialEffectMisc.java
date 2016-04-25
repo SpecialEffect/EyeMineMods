@@ -59,10 +59,10 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 	public static Configuration mConfig;	
 
 	// AutoOpenDoors
-    public static int mRadiusDoors = 5;
+    public static int mRadiusDoors = 3;
 	
     // OpenTablesChests
-    public static int mRadiusChests = 3;
+    public static int mRadiusChests = 5;
     
     private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
     
