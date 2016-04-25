@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.misc;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -65,7 +65,8 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
-		
+		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+
 	}
 
 	@EventHandler

@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.misc;
 
 import java.util.Iterator;
 import java.util.Queue;
@@ -10,6 +10,8 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.mods.utils.SpecialEffectUtils;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.utils.OpenableBlock;
 
@@ -52,7 +54,9 @@ import scala.actors.threadpool.LinkedBlockingQueue;
 version = ModUtils.VERSION,
 name = OpenTablesChests.NAME,
 guiFactory = "com.specialeffect.gui.GuiFactoryOpenChestsEtc")
-public class OpenTablesChests extends BaseClassWithCallbacks
+public class OpenTablesChests 
+extends BaseClassWithCallbacks
+implements ChildModWithConfig
 {
 
 	public static final String MODID = "specialeffect.OpenTablesChests";
@@ -72,7 +76,8 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to open nearby chests/crafting tables.");
-
+		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(ActivateBlockAtPosition.Handler.class, 
         						ActivateBlockAtPosition.class, 0, Side.SERVER);
@@ -89,6 +94,9 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);    	
 
+		// Register for config changes from parent
+		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+				
 		// Register key bindings	
 		mOpenChestKB = new KeyBinding("Open chest", Keyboard.KEY_LBRACKET, "SpecialEffect");
 		mOpenCraftingTableKB = new KeyBinding("Open crafting table", Keyboard.KEY_RBRACKET, "SpecialEffect");
@@ -96,19 +104,8 @@ public class OpenTablesChests extends BaseClassWithCallbacks
 		ClientRegistry.registerKeyBinding(mOpenCraftingTableKB);
 	}
 
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-	
-	public static void syncConfig() {
-        mRadius = mConfig.getInt("Distance to open chests/crafting tables", Configuration.CATEGORY_GENERAL, mRadius, 
-				1, 100, "How far away a player needs to be from a chest/table to be able to open it");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+	public void syncConfig() {
+        mRadius = SpecialEffectMisc.mRadiusChests;
 	}
 
 	@SubscribeEvent

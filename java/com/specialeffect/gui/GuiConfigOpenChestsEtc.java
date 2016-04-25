@@ -1,6 +1,6 @@
 package com.specialeffect.gui;
 
-import com.specialeffect.mods.OpenTablesChests;
+import com.specialeffect.mods.misc.OpenTablesChests;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiConfig;

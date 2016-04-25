@@ -1,7 +1,7 @@
 package com.specialeffect.gui;
 
 import com.specialeffect.mods.AutoFly;
-import com.specialeffect.mods.AutoOpenDoors;
+import com.specialeffect.mods.misc.AutoOpenDoors;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiConfig;

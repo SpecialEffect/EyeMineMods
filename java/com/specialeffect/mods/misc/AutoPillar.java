@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.misc;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -70,7 +70,8 @@ public class AutoPillar extends BaseClassWithCallbacks
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to create pillar, or 'nerd-pole'.");
-		
+		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
     }

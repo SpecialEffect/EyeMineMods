@@ -13,7 +13,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
-import com.specialeffect.mods.ContinuouslyAttack;
+import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.utils.MouseHandler;
 import com.specialeffect.utils.ModUtils;
 

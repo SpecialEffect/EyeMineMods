@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.misc;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.messages.UseDoorAtPositionMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.utils.OpenableBlock;
 
@@ -44,7 +45,9 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = AutoOpenDoors.MODID, version = ModUtils.VERSION, name = AutoOpenDoors.NAME,
 guiFactory = "com.specialeffect.gui.GuiFactoryAutoDoors")
-public class AutoOpenDoors {
+public class AutoOpenDoors 
+implements ChildModWithConfig
+{
 	public static final String MODID = "specialeffect.autoopendoors";
 	public static final String NAME = "AutoOpenDoors";
     public static Configuration mConfig;
@@ -57,7 +60,8 @@ public class AutoOpenDoors {
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically open doors/gates and close them behind you.");
-		
+		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
         						UseDoorAtPositionMessage.class, 0, Side.SERVER);
@@ -73,22 +77,14 @@ public class AutoOpenDoors {
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 
+		// Register for config changes from parent
+		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+		
 		mOpenedDoors = new LinkedList<BlockPos>();
 	}
 	
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-	
-	public static void syncConfig() {
-        mDoorRadius = mConfig.getInt("Distance to open doors", Configuration.CATEGORY_GENERAL, mDoorRadius, 
-        						1, 20, "How far away a player needs to be from a door to automatically open/close");
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+	public void syncConfig() {
+        mDoorRadius = SpecialEffectMisc.mRadiusDoors;
 	}
 	
 	// A list of the position of any doors we've opened that haven't yet been closed
