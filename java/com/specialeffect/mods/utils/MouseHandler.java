@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.utils;
 
 import java.text.DecimalFormat;
 import java.util.Iterator;
@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -49,7 +50,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 	 version = ModUtils.VERSION,
 	 name = MouseHandler.NAME)
 // TODO: gui factory for config
-public class MouseHandler extends BaseClassWithCallbacks {
+public class MouseHandler 
+extends BaseClassWithCallbacks 
+implements ChildModWithConfig
+{
 	public static final String MODID = "specialeffect.MouseHandler";
     public static final String NAME = "MouseHandler";
 
@@ -72,7 +76,8 @@ public class MouseHandler extends BaseClassWithCallbacks {
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	
+    	ModUtils.setAsParent(event, SpecialEffectUtils.MODID);
+
     	// Set up config
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
@@ -81,20 +86,8 @@ public class MouseHandler extends BaseClassWithCallbacks {
     	this.querySensitivity();
     }
     
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-	
-	public static void syncConfig() {
-		mDeadBorder = mConfig.getFloat("Dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
-        		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
-        
-        if (mConfig.hasChanged()) {
-        	mConfig.save();
-        }
+	public void syncConfig() {
+		mDeadBorder = SpecialEffectUtils.mDeadBorder;
 	}
 	
 	public static void setVanillaMouseHandling(boolean doVanilla) {
@@ -107,6 +100,9 @@ public class MouseHandler extends BaseClassWithCallbacks {
 		// Subscribe to event buses
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);    	
+    	
+    	// Subscribe to config changes from parent
+    	SpecialEffectUtils.registerForConfigUpdates((ChildModWithConfig) this);
 
     	// Register key bindings	
         mSensivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_ADD, "SpecialEffect");

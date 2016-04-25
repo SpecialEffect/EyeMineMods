@@ -1,7 +1,8 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.utils;
 
 import java.util.Iterator;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.input.Keyboard;
 
@@ -17,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,47 +29,74 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.LinkedBlockingQueue;
 
-@Mod(modid = ModStateGui.MODID, version = ModUtils.VERSION, name = ModStateGui.NAME)
-public class ModStateGui extends BaseClassWithCallbacks {
+@Mod(modid = DebugAverageFps.MODID, 
+version = ModUtils.VERSION,
+name = DebugAverageFps.NAME)
 
-	public static final String MODID = "specialeffect.modstategui";
-	public static final String NAME = "modstategui";
+public class DebugAverageFps
+{
 
-	private StateOverlay mStateOverlay;
+	public static final String MODID = "specialeffect.debugfps";
+	public static final String NAME = "DebugAverageFps";
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Overlay icons to show state of mods.");
+	public void preInit(FMLPreInitializationEvent event) {    
+		FMLCommonHandler.instance().bus().register(this);    	
 		
-		// This needs to be initialised in preinit because other mods will 
-		// try to register with it in postinit.
-		mStateOverlay = new StateOverlay(Minecraft.getMinecraft());
-	}
-	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		MinecraftForge.EVENT_BUS.register(mStateOverlay);
+		ModUtils.setupModInfo(event, this.MODID, this.NAME,
+				"Log the average FPS, for debugging");
+    	ModUtils.setAsParent(event, SpecialEffectUtils.MODID);
+
 	}
 
 	@EventHandler
-	public void init(FMLInitializationEvent event) {
+	public void init(FMLInitializationEvent event)
+	{
 		// Subscribe to event buses
 		FMLCommonHandler.instance().bus().register(this);
-		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(this);    	
+		
+		mPrevFps = new LinkedBlockingQueue<Integer>();
 
 	}
 
+	@SubscribeEvent
+	public void onLiving(LivingUpdateEvent event) {
+		if(event.entityLiving instanceof EntityPlayer) {
+			mTickCount++;
+			
+			int currFps = Minecraft.getDebugFPS();
+			mPrevFps.add(currFps);
+			
+			if (mPrevFps.size() > mAveragingPeriod) {
+				mPrevFps.remove();
+			}
+			
+			if (mTickCount == mLoggingPeriod) {
+				System.out.println("FPS: "+ this.computeAverage());
+				mTickCount = 0;
+			}
+		}			
+	}
+	
+	private float computeAverage() {
+		Iterator<Integer> iter = mPrevFps.iterator();
+		float runningAve = 0;
+    	while (iter.hasNext()) {
+    		runningAve += (float)iter.next()/(float)mPrevFps.size();
+    	}
+		return runningAve;
+	}
+	
+	private int mTickCount = 0; 
+	private int mAveragingPeriod = 100;
+	private int mLoggingPeriod = 100;
+    private Queue<Integer> mPrevFps;
 }
