@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.mining;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,6 +12,9 @@ import org.lwjgl.input.Mouse;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.mods.ContinuouslyAttack;
+import com.specialeffect.mods.MouseHandler;
+import com.specialeffect.mods.StateOverlay;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;

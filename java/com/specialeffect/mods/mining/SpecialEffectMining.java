@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.mining;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -3,7 +3,7 @@ package com.specialeffect.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.specialeffect.mods.SpecialEffectMovements;
+import com.specialeffect.mods.moving.SpecialEffectMovements;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.DummyConfigElement;

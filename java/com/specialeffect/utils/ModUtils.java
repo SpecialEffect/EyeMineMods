@@ -2,8 +2,6 @@ package com.specialeffect.utils;
 
 import java.awt.Point;
 
-import com.specialeffect.mods.SpecialEffectMovements;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;

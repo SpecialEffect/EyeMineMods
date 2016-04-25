@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.moving;
 
 import java.util.Iterator;
 import java.util.Queue;

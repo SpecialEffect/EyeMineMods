@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.moving;
 
 import java.util.ArrayList;
 import java.util.Iterator;

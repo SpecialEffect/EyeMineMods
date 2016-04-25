@@ -1,8 +1,5 @@
 package com.specialeffect.messages;
 
-import com.specialeffect.mods.AutoOpenDoors;
-import com.specialeffect.mods.WalkIncrements;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

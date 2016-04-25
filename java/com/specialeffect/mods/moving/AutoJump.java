@@ -1,6 +1,5 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.moving;
 
-import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,9 +11,8 @@ import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.MovePlayerMessage;
-import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.mods.StateOverlay;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
@@ -25,7 +23,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.ICommandManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -34,7 +31,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -56,52 +52,36 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
-@Mod(modid = WalkIncrements.MODID, 
+@Mod(modid = AutoJump.MODID, 
 	 version = ModUtils.VERSION,
-	 name = WalkIncrements.NAME,
-	 guiFactory = "com.specialeffect.gui.GuiFactoryWalkIncrements")
-public class WalkIncrements 
+	 name = AutoJump.NAME,
+	 guiFactory = "com.specialeffect.gui.GuiFactoryAutoJump")
+public class AutoJump 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
-    public static final String MODID = "specialeffect.WalkIncrements";
-    public static final String NAME = "WalkIncrements";
-    public static Configuration mConfig;
+    public static final String MODID = "specialeffect.autojump";
+    public static final String NAME = "AutoJump";
 
-    public static KeyBinding walkKeyBinding;
-    public static KeyBinding walkDirectionKeyBinding;
+    public static KeyBinding autoJumpKeyBinding;
     
-    public static SimpleNetworkWrapper network;
-    
-    private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
+    public static Configuration mConfig;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key bindings to walk fixed amount, for alternative inputs.");
+				"Automatically step over blocks.");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
-        
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);
 
     }
     
-    @SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
-			syncConfig();
-		}
+    public void syncConfig() {
+    	mDoingAutoJump = SpecialEffectMovements.defaultDoAutoJump;
 	}
-    
-    public void syncConfig() {       
-        mWalkDistance = SpecialEffectMovements.moveIncrement;
-    }
-    
-    @EventHandler
+
+	@EventHandler
     public void init(FMLInitializationEvent event)
     {
 		// Subscribe to event buses
@@ -112,57 +92,52 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
-    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
+        autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
         
-    	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(walkKeyBinding);
+        // Register an icon for the overlay
+        mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
         
+        // Make sure icon is up to date (might be on by default).
+        StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
     }
+	
+	private int mIconIndex;
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
+    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+    		
+    		if (mDoingAutoJump) {
+    			player.stepHeight = 1.0f;
+    		}
+    		else {
+    			player.stepHeight = 0.6f;
+    		}
+    		
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
     }
     
-    private static double mWalkDistance = 1.0f;
+    private boolean mDoingAutoJump = true;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
-        // Configure walk direction for next "walk" command.
-        // a = north, aa = north-east, aaa = east, etc.
-        if(walkDirectionKeyBinding.isPressed()) {
-        	keyCounterWalkDir.increment();
-        }
+        if(autoJumpKeyBinding.isPressed()) {
+        	mDoingAutoJump = !mDoingAutoJump;
+    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 
-        // Walk: Move 100 units forward next onLiving tick.
-        if(walkKeyBinding.isPressed()) {
-        	final int i = keyCounterWalkDir.getCount();
-        	keyCounterWalkDir.reset();
-        	
-            this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
+        	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
-					Point p = ModUtils.getCompassPoint(i);
-
-					float theta = (float)Math.atan2(p.getX(), p.getY());
-
-					if (player.isRiding()) {
-						// Ask server to move entity being ridden
-						WalkIncrements.network.sendToServer(
-							new MovePlayerMessage((float)mWalkDistance, theta));
-					}
-					else {
-						float strafe = - (float)(p.getX() * mWalkDistance);
-						float forward = (float)(p.getY() * mWalkDistance);
-						player.moveEntityWithHeading(strafe, forward);
-					}
-				}
+			        player.addChatComponentMessage(new ChatComponentText(
+			        		 "Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
+				}		
 			}));
         }
     }

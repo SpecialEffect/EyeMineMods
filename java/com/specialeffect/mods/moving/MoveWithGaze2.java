@@ -1,4 +1,4 @@
-package com.specialeffect.mods;
+package com.specialeffect.mods.moving;
 
 import java.text.DecimalFormat;
 import java.util.Iterator;
@@ -15,6 +15,9 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.mods.JoystickControlOverlay;
+import com.specialeffect.mods.MouseHandler;
+import com.specialeffect.mods.StateOverlay;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
