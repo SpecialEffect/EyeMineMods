@@ -76,6 +76,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to gather nearby dropped items.");
+		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(PickBlockMessage.Handler.class, 

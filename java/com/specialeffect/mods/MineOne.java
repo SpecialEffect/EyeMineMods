@@ -63,6 +63,7 @@ public class MineOne {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
+		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
 	}
 
 	@EventHandler
