@@ -74,6 +74,7 @@ implements ChildModWithConfig
     private static boolean mPendingMouseEvent = false;
     public static boolean mLastEventWithinBounds = false; 
 	private static boolean mDoVanilla = true; // whether to allow normal mouse processing	
+    public static boolean mDoOwnViewControl = false;
     
     public static float mUserMouseSensitivity = -1.0f; // internal cache of user's preference.
 	private static int mIgnoreEventCount = 0;
@@ -161,21 +162,15 @@ implements ChildModWithConfig
     	return mPendingMouseEvent && mLastEventWithinBounds;
     }
     
-    @SubscribeEvent
-    public void onMouseInput(InputEvent.MouseInputEvent event) {
-    	
+    private void onMouseInputGrabbed(InputEvent.MouseInputEvent event) {
+
     	// Cancel any mouse events within a certain border. This avoids mouse movements outside the window (e.g. from
     	// eye gaze system) from having an impact on view direction.
-    	float r = 2*mDeadBorder;
-    	
     	float x_abs = Math.abs((float)Mouse.getEventDX()); // distance from centre
     	float y_abs = Math.abs((float)Mouse.getEventDY());
-    	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
-    	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
     	  	
     	if (mIgnoreEventCount > 0 ||
-    		x_abs > w_half*(1-r) ||
-    		y_abs > h_half*(1-r)) {    		
+    		!isPointInBounds(x_abs, y_abs)) {    		
     		// In v1.8, it would be sufficient to query getDX and DY to consume the deltas.
     		// ... but this doesn't work in 1.8.8, so we hack it by setting the mouse sensitivity down low.
     		// See: http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
@@ -192,6 +187,75 @@ implements ChildModWithConfig
     	}
     	
     	mIgnoreEventCount = Math.max(mIgnoreEventCount-1, 0);
+    }
+    
+    // x_abs and y_abs are from centre of minecraft window
+    private boolean isPointInBounds(float x_abs, float y_abs) {
+    	float r = 2*mDeadBorder;
+    	
+    	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
+    	float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
+    	  	
+    	if (x_abs > w_half*(1-r) ||
+    		y_abs > h_half*(1-r)) {
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+    }
+    
+    private void onMouseInputNotGrabbed(InputEvent.MouseInputEvent event) {
+    	
+    	if (mDoOwnViewControl) {
+    		// Don't allow vanilla processing
+    		this.zeroSensitivity();
+
+    		// TODO: Cancel edge events
+    		float x = Math.abs((float)Mouse.getEventX());
+        	float y = Math.abs((float)Mouse.getEventY());
+
+        	float w_half = (float)Minecraft.getMinecraft().displayWidth/2;
+    		float h_half = (float)Minecraft.getMinecraft().displayHeight/2;
+
+    		float dx = x - w_half;
+    		float dy = y - h_half;
+    		
+        	if (isPointInBounds(dx, dy)) {
+        		System.out.println("Mouse (" + dx + ", " + dy + ")");
+
+        		float s = mUserMouseSensitivity;
+
+        		// handle yaw
+        		final float mMaxYaw = 50; // at 100% sensitivity
+        		final float dYaw = mMaxYaw * s * dx/w_half;
+
+        		// handle pitch 
+        		final float mMaxPitch = -50; // at 100% sensitivity
+        		final float dPitch = mMaxPitch * s * dy/w_half;
+
+        		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+        			@Override
+        			public void onLiving(LivingUpdateEvent event) {
+        				EntityPlayer player = (EntityPlayer)event.entity;
+        				player.rotationPitch += dPitch;
+        				player.rotationYaw += dYaw;
+        			}
+        		}));
+
+        		mPendingMouseEvent = true;
+        	}
+    	}
+    }
+    
+    @SubscribeEvent
+    public void onMouseInput(InputEvent.MouseInputEvent event) {
+    	if (Mouse.isGrabbed()) {
+    		this.onMouseInputGrabbed(event);
+    	}
+    	else {
+    		this.onMouseInputNotGrabbed(event);
+    	}
     }
     
     // When we leave a GUI and enter the game, we record the user's
