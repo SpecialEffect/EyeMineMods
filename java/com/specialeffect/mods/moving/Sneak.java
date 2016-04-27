@@ -35,7 +35,11 @@ public class Sneak extends BaseClassWithCallbacks {
 	public static final String NAME = "SneakToggle";
 
 	private static KeyBinding mSneakKB;
-
+	private static KeyBinding mMCSneakBinding;
+	private boolean mIsSneaking;
+	
+	private static int mIconIndex;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -58,40 +62,35 @@ public class Sneak extends BaseClassWithCallbacks {
 		
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
+		
+		// Query sneak key binding
+		mMCSneakBinding = Minecraft.getMinecraft().gameSettings.keyBindSneak;
 
 	}
 	
-	private static int mIconIndex;
-
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (event.entityLiving instanceof EntityPlayer) {
 			this.processQueuedCallbacks(event);
+			
+			// Make sure icon up to date
+    		StateOverlay.setStateLeftIcon(mIconIndex, mMCSneakBinding.isKeyDown());
 		}
 	}
 	
 	public static void stop() {
-		final KeyBinding sneakBinding = 
-				Minecraft.getMinecraft().gameSettings.keyBindSneak;
-		KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
-		StateOverlay.setStateLeftIcon(mIconIndex, false);		
+		KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), false);
 	}
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mSneakKB.isPressed()) {
-			final KeyBinding sneakBinding = 
-					Minecraft.getMinecraft().gameSettings.keyBindSneak;
-
-			if (sneakBinding.isKeyDown()) {
-				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), false);
+			if (mMCSneakBinding.isKeyDown()) {
+				KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), false);
 			}
 			else {
-				KeyBinding.setKeyBindState(sneakBinding.getKeyCode(), true);
-				// turning sneak on will automatically make flying stop.
-				AutoFly.updateAfterStopFlying();
+				KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), true);
 			}
-    		StateOverlay.setStateLeftIcon(mIconIndex, sneakBinding.isKeyDown());
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
@@ -99,7 +98,7 @@ public class Sneak extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.entityLiving;
 			        player.addChatComponentMessage(new ChatComponentText(
-			        		 "Sneaking: " + (sneakBinding.isKeyDown() ? "ON" : "OFF")));
+			        		 "Sneaking: " + (mMCSneakBinding.isKeyDown() ? "ON" : "OFF")));
 				}		
 			}));
 		}

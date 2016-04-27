@@ -55,6 +55,9 @@ implements ChildModWithConfig
 	private static int mFlyHeightAuto = 6;
 	public static SimpleNetworkWrapper network;
 
+	private static int mIconIndexAuto;
+	private static int mIconIndexManual;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -90,9 +93,6 @@ implements ChildModWithConfig
 		mIconIndexManual = StateOverlay.registerTextureLeft("specialeffect:icons/fly.png");
 	}
 
-	private static int mIconIndexAuto;
-	private static int mIconIndexManual;
-
 	public void syncConfig() {
 		mFlyHeightManual = SpecialEffectMovements.flyHeightManual;
 		mFlyHeightAuto = SpecialEffectMovements.flyHeightAuto;
@@ -125,6 +125,18 @@ implements ChildModWithConfig
 				}
 			}
 
+			// Check flying wasn't forcefully stopped from elsewhere
+			if ((mIsFlyingAuto || mIsFlyingManual) &&
+					!player.capabilities.isFlying) {
+				updateAfterStopFlying();
+			}		
+			// If flying was turned on elsewhere, make it 'manual'
+			if (!mIsFlyingAuto && !mIsFlyingManual &&
+					player.capabilities.isFlying) {
+				mIsFlyingManual = true;
+				updateIcons();
+			}
+
 			this.processQueuedCallbacks(event);
 		}
 	}
@@ -138,31 +150,33 @@ implements ChildModWithConfig
 	}
 	
 	// Update state if flying was stopped from elsewhere
-	public static void updateAfterStopFlying() {
+	private void updateAfterStopFlying() {
 		mIsFlyingAuto = false;
 		mIsFlyingManual = false;
 		updateIcons();
 	}
 	
 	private void stopFlying() {
-		mIsFlyingAuto = false;
-		mIsFlyingManual = false;
 		queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 			@Override
 			public void onLiving(LivingUpdateEvent event) {
+//				mIsFlyingAuto = false;
+//				mIsFlyingManual = false;
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 				player.capabilities.isFlying = false;
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
+//				updateIcons();
 			}
-		}));
-		updateIcons();
+		}));	
 	}	
 	
-	private void setFlying(final boolean bFlyUp) {
+	private void setFlying(final boolean bFlyUp, final boolean isAuto) {
 		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 			@Override
 			public void onLiving(LivingUpdateEvent event) {
-
+				mIsFlyingAuto = isAuto;
+				mIsFlyingManual = !isAuto;
+				
 				EntityPlayer player = (EntityPlayer) event.entityLiving;
 				if (player.capabilities.allowFlying) {
 					// stop sneaking (if we are), which prevents flying
@@ -182,6 +196,7 @@ implements ChildModWithConfig
 					player.addChatComponentMessage(new ChatComponentText(
 							"Player unable to fly"));
 				}
+				updateIcons();
 			}
 		}));
 	}
@@ -196,9 +211,7 @@ implements ChildModWithConfig
 			else {
 				this.queueChatMessage("Fly manual: ON");
 				boolean doFlyUp = !mIsFlyingAuto;
-				mIsFlyingManual = true;
-				mIsFlyingAuto = false;
-				this.setFlying(doFlyUp);
+				this.setFlying(doFlyUp, false);
 			}
 			
 		} else if (mFlyAutoKB.isPressed()) {
@@ -209,13 +222,11 @@ implements ChildModWithConfig
 			else {
 				this.queueChatMessage("Auto-fly: ON");
 				boolean doFlyUp = !mIsFlyingManual;
-				mIsFlyingAuto = true;
-				mIsFlyingManual = false;		
-				this.setFlying(doFlyUp);
+				this.setFlying(doFlyUp, true);
 			}
 		}
 		else if (mFlyUpKB.isPressed()) {
-			this.setFlying(true);
+			this.setFlying(true, mIsFlyingAuto);
 		}
 		this.updateIcons();
 	}
