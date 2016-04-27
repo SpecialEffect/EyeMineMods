@@ -62,9 +62,11 @@ implements ChildModWithConfig
     public static final String MODID = "specialeffect.autojump";
     public static final String NAME = "AutoJump";
 
-    public static KeyBinding autoJumpKeyBinding;
-    
+    public static KeyBinding autoJumpKeyBinding;    
     public static Configuration mConfig;
+
+    private boolean mDoingAutoJump = true;
+	private int mIconIndex;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -78,6 +80,7 @@ implements ChildModWithConfig
     
     public void syncConfig() {
     	mDoingAutoJump = SpecialEffectMovements.defaultDoAutoJump;
+		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
 	@EventHandler
@@ -101,8 +104,6 @@ implements ChildModWithConfig
         StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
     }
 	
-	private int mIconIndex;
-    
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
@@ -120,8 +121,6 @@ implements ChildModWithConfig
     	}
     }
     
-    private boolean mDoingAutoJump = true;
-
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
