@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ModUtils {
 
 	// This is where we specify the version that all our mods use
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "0.2";
 
 	// version of optikey to use
 	public static final String OPTIKEY_VERSION = "2.2.4.1";
