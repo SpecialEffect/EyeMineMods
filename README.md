@@ -1,6 +1,9 @@
 # SpecialEffectMinecraftMods
-A collection of small minecraft modifications to support the use of an eye-gaze controlled keyboard as input. Designed to accompany OptiKeyMinecraft.
-Functionality would also be applicable for switch control.
+A collection of small minecraft modifications to support the use of alternative input methods including eye-gaze control. Designed to accompany [OptiKeyMinecraft](https://github.com/kirstymcnaught/OptiKeyMinecraft), which provides a gaze-controlled keyboard for in-game actions.
+
+Certain functionality would also be applicable for switch or joystick control - get in touch if you have particular input requirements.
+
+If you want to try out the latest releases, contact [SpecialEffect](http://www.specialeffect.org.uk/contact) for more information.
 
 ## Dev setup
 If you want to contribute, you need to install minecraft forge to build the mods. 
