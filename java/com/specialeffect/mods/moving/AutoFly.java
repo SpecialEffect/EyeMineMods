@@ -151,8 +151,8 @@ implements ChildModWithConfig
 		}
 	}
 	
-	private static boolean mIsFlyingManual;
-	private static boolean mIsFlyingAuto;
+	private static boolean mIsFlyingManual = false;
+	private static boolean mIsFlyingAuto = false;
 	
 	private static void updateIcons() {
 		StateOverlay.setStateLeftIcon(mIconIndexAuto, mIsFlyingAuto);
