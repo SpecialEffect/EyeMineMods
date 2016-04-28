@@ -100,9 +100,6 @@ implements ChildModWithConfig
         FMLCommonHandler.instance().bus().register(this);
     	MinecraftForge.EVENT_BUS.register(this);
     	
-    	// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
-    	
     	// Register key bindings
         autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
@@ -110,8 +107,9 @@ implements ChildModWithConfig
         // Register an icon for the overlay
         mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
         
-        // Make sure icon is up to date (might be on by default).
-        StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+        // Subscribe to parent's config changes
+        // This has to happen after texture is registered, since it will trigger a syncConfig call.
+    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     }
 	
     @SubscribeEvent
