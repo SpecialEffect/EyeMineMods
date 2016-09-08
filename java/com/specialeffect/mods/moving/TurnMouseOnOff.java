@@ -75,16 +75,18 @@ extends BaseClassWithCallbacks
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Turn mouse control on/off");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
-
+    	
     } 
     
-    // When we leave a GUI and enter the game, make sure mouse isn't captured
+    // When we leave a GUI and enter the game, make sure mouse is
+    // in appropriate state 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
-    	// This is an 'open' and 'close' event
     	
+    	// This is an 'open' and 'close' event    	
+		System.out.println("onGuiOpen " + event.gui == null);
     	if (event.gui == null) { // close event
-    		Mouse.setGrabbed(false);
+  			Mouse.setGrabbed(!mDoOwnViewHandling);
     	}
     }
     
@@ -123,7 +125,7 @@ extends BaseClassWithCallbacks
     	}
     }
     
-    private boolean mDoOwnViewHandling = true;
+    private boolean mDoOwnViewHandling = false;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -133,6 +135,11 @@ extends BaseClassWithCallbacks
         	mDoOwnViewHandling = !mDoOwnViewHandling;
     		StateOverlay.setStateLeftIcon(mIconIndex, mDoOwnViewHandling);
 
+    		Mouse.setGrabbed(!mDoOwnViewHandling);
+    		int w_half = Minecraft.getMinecraft().displayWidth/2;
+    		int h_half = Minecraft.getMinecraft().displayHeight/2;
+    		Mouse.setCursorPosition(w_half, h_half);
+    		
     		//MouseHandler.setVanillaMouseHandling(mDoOwnViewHandling);
     		MouseHandler.mDoOwnViewControl = mDoOwnViewHandling;
     		
