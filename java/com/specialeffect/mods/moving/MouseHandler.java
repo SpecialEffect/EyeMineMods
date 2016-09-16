@@ -303,7 +303,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		} else {
 			this.querySensitivity();
 			// Make sure we're in the right 'grabbed' state.
-			Mouse.setGrabbed(mInputSource == InputSource.EyeTracker);
+			if (mInputSource == InputSource.Mouse) {
+				Mouse.setGrabbed(false);
+			}
 		}
 	}
 
