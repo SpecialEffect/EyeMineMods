@@ -200,14 +200,22 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
     	if (mDoingAutoWalk) {
-    		// since mouse is captured, x and y pos are encoded in deltas.
-    		lastMouseX = Minecraft.getMinecraft().displayWidth/2 + Mouse.getEventDX();
-    		lastMouseY = Minecraft.getMinecraft().displayHeight/2 + Mouse.getEventDY(); 
+    		System.out.print("legacy walking");
+    		if (Mouse.isGrabbed()) {
+	    		// when mouse is captured, x and y pos are encoded in deltas.
+	    		lastMouseX = Minecraft.getMinecraft().displayWidth/2 + Mouse.getEventDX();
+	    		lastMouseY = Minecraft.getMinecraft().displayHeight/2 + Mouse.getEventDY();
+    		}
+    		else {
+    			lastMouseX = Mouse.getEventX();
+	    		lastMouseY = Mouse.getEventY();
+    		}
     	}
     	else {
     		lastMouseX = Minecraft.getMinecraft().displayWidth/2;
     		lastMouseY = Minecraft.getMinecraft().displayHeight/2;
     	}
+    	System.out.println(lastMouseX + ", " + lastMouseY);
     }
 }
 

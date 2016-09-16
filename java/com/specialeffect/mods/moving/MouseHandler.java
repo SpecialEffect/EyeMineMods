@@ -268,6 +268,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			}
 		} else {
 			System.out.println("disabled, not doing anything.");
+			mPendingMouseEvent = true;
 		}
 		// }
 	}
