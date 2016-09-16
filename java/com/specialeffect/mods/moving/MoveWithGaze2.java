@@ -27,7 +27,6 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
-import com.specialeffect.mods.utils.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
@@ -119,7 +118,7 @@ implements ChildModWithConfig
 	public static void stop() {
     	mDoingAutoWalk = false;
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);        	
-		MouseHandler.setVanillaMouseHandling(!mDoingAutoWalk);
+		MouseHandler.setMouseMovementsDisabled(mDoingAutoWalk);
     	mOverlay.setVisible(mDoingAutoWalk);
     }
 	
@@ -187,7 +186,7 @@ implements ChildModWithConfig
         	if (mDoingAutoWalk) { 
         		MoveWithGaze.stop();
         	}
-        	MouseHandler.setVanillaMouseHandling(!mDoingAutoWalk);
+    		MouseHandler.setMouseMovementsDisabled(mDoingAutoWalk);
         	mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));

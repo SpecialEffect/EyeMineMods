@@ -84,6 +84,10 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 	// AutoJump
     public static boolean defaultDoAutoJump = true;
     
+    // MouseHandler options
+ 	public static float mDeadBorder = 0.1f;
+ 	public static boolean usingMouseEmulation = false;
+    
     private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
     
     public static void registerForConfigUpdates(ChildModWithConfig mod) {
@@ -151,6 +155,12 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
         defaultDoAutoJump = mConfig.getBoolean("Auto-jump switched on by default?", Configuration.CATEGORY_GENERAL, defaultDoAutoJump,
         									   "Whether auto-jump is on at the beginning of a new game.");
        
+        // MouseHandler
+        mDeadBorder = mConfig.getFloat("Mousehandler dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
+        		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
+        usingMouseEmulation = mConfig.getBoolean("Use mouse emulation from eye-tracker", Configuration.CATEGORY_GENERAL, false, 
+        		"Turn this on if you're using mouse pointer control");
+        
 		if (mConfig.hasChanged()) {
 			mConfig.save();
 		}
