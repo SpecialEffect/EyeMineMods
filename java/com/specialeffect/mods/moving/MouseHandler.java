@@ -66,6 +66,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	private static KeyBinding mSensivityUpKB;
 	private static KeyBinding mSensivityDownKB;
+	private static KeyBinding mToggleMouseViewControlKB;
 
 	private static boolean mPendingMouseEvent = false;
 	public static boolean mLastEventWithinBounds = false;
@@ -84,7 +85,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
+				"Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 		// Set up config
@@ -94,10 +95,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// Check the initial sensitivity setting.
 		this.querySensitivity();
 
-		// We start without 'look with gaze' in mouse-emulation mode.
-		if (mInputSource == InputSource.Mouse) {
-			mMouseMovementDisabled = true;
-		}
 	}
 
 	public void syncConfig() {
@@ -109,6 +106,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		} else {
 			System.out.println("using eyetracker");
 			mInputSource = InputSource.EyeTracker;
+		}
+		// We start without 'look with gaze' in mouse-emulation mode.
+		if (mInputSource == InputSource.Mouse) {
+			mMouseMovementDisabled = true;
 		}
 	}
 
@@ -136,6 +137,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mSensivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_SUBTRACT, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mSensivityDownKB);
 
+		// Used to turn 'look with gaze' on and off when using mouse emulation instead of an 
+		// eyetracker
+    	mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
+      
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
@@ -162,6 +168,13 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+		}
+		else if (mToggleMouseViewControlKB.isPressed()) {
+			// Only one 'walk with gaze' mode should be on at a time
+			MoveWithGaze2.stop();
+			// This is a bit of a proxy, it might have been changed by something else
+			// (but currently only WalkWithGaze2, which we just turned off!)
+			mMouseMovementDisabled = !mMouseMovementDisabled;
 		}
 	}
 
