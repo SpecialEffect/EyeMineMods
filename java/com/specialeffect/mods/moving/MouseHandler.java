@@ -287,7 +287,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				float s = mUserMouseSensitivity;
 
 				// handle yaw
-				final float mMaxYaw = 50; // at 100% sensitivity
+				final float mMaxYaw = 35; // at 100% sensitivity
 				final float dYaw = mMaxYaw * s * dx / w_half;
 
 				// handle pitch
