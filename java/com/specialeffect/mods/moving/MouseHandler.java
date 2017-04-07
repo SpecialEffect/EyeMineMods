@@ -103,22 +103,20 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		if (SpecialEffectMovements.usingMouseEmulation) {
 			System.out.println("using mouse");
 			mInputSource = InputSource.Mouse;
+			// initially disabled
+			mMouseMovementDisabled = true;
 		} else {
 			System.out.println("using eyetracker");
 			mInputSource = InputSource.EyeTracker;
-		}
-		// We start without 'look with gaze' in mouse-emulation mode.
-		if (mInputSource == InputSource.Mouse) {
-			mMouseMovementDisabled = true;
+			// always enabled
+			mMouseMovementDisabled = false;
 		}
 	}
-
+	
 	public static void setMouseMovementsDisabled(boolean doDisable) {
-		// if (mInputSource == InputSource.EyeTracker) {
-		// // TODO: user-friendly message.
-		// this.queueChatMessage("In eye tracker mode, ignoring request");
-		// }
-		mMouseMovementDisabled = doDisable;
+		if (mInputSource == InputSource.Mouse) {		
+			mMouseMovementDisabled = doDisable;
+		}
 	}
 
 	@EventHandler
