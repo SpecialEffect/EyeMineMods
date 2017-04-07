@@ -116,9 +116,7 @@ implements ChildModWithConfig
 	private static JoystickControlOverlay mOverlay;
 
 	public static void stop() {
-		System.out.println("stopping movewithgaze2");
 		if (mDoingAutoWalk) {
-			System.out.println("actually stopping movewithgaze2");
 			mDoingAutoWalk = false;
 			StateOverlay.setStateLeftIcon(mIconIndex, false);        	
 			MouseHandler.setMouseMovementsDisabled(true);
@@ -132,6 +130,7 @@ implements ChildModWithConfig
 	}
 	
 	// Some hard-coded fudge factors for maximums.
+	// TODO: make configurable?
 	private final float mMaxForward = 1.5f;
 	private final float mMaxBackward = 0.5f;
 	private final int mMaxYaw = 100; // at 100% sensitivity
@@ -204,7 +203,6 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onMouseInput(InputEvent.MouseInputEvent event) {
     	if (mDoingAutoWalk) {
-    		System.out.print("legacy walking");
     		if (Mouse.isGrabbed()) {
 	    		// when mouse is captured, x and y pos are encoded in deltas.
 	    		lastMouseX = Minecraft.getMinecraft().displayWidth/2 + Mouse.getEventDX();
@@ -219,7 +217,6 @@ implements ChildModWithConfig
     		lastMouseX = Minecraft.getMinecraft().displayWidth/2;
     		lastMouseY = Minecraft.getMinecraft().displayHeight/2;
     	}
-    	System.out.println(lastMouseX + ", " + lastMouseY);
     }
 }
 
