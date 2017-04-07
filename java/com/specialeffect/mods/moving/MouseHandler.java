@@ -177,7 +177,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				// This is a bit of a proxy, it might have been changed by something else
 				// (but currently only WalkWithGaze2, which we just turned off!)
 				mMouseMovementDisabled = !mMouseMovementDisabled;
-				this.queueChatMessage("mMouseMovementDisabled: " +mMouseMovementDisabled);
 			}
 		}
 	}
@@ -195,7 +194,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	private void onMouseInputGrabbed(InputEvent.MouseInputEvent event) {
-
 		// Cancel any mouse events within a certain border. This avoids mouse
 		// movements outside the window (e.g. from
 		// eye gaze system) from having an impact on view direction.
@@ -240,18 +238,13 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	private void onMouseInputNotGrabbed(InputEvent.MouseInputEvent event) {
-
-		// if (mDoOwnViewControl) {
 		// Don't allow vanilla processing
 		this.zeroSensitivity();
-		System.out.println("disabled? " + mMouseMovementDisabled );
+		
 		if (!mMouseMovementDisabled) {
-
 			// TODO: Cancel edge events
 			float x = Math.abs((float) Mouse.getEventX());
 			float y = Math.abs((float) Mouse.getEventY());
-
-			System.out.println("x, y: " + x + ", " + y);
 
 			float w_half = (float) Minecraft.getMinecraft().displayWidth / 2;
 			float h_half = (float) Minecraft.getMinecraft().displayHeight / 2;
@@ -260,8 +253,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			float dy = y - h_half;
 
 			if (isPointInBounds(dx, dy)) {
-				System.out.println("Mouse (" + dx + ", " + dy + ")");
-
 				float s = mUserMouseSensitivity;
 
 				// handle yaw
@@ -284,10 +275,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				mPendingMouseEvent = true;
 			}
 		} else {
-			System.out.println("disabled, not doing anything.");
 			mPendingMouseEvent = true;
 		}
-		// }
 	}
 
 	@SubscribeEvent
@@ -299,12 +288,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		
 		if (mInputSource == InputSource.EyeTracker) {
-			System.out.println("onMouseInput grabbed");
 			this.onMouseInputGrabbed(event);
 		} else if (mInputSource == InputSource.Mouse) {
 			//Mouse.setGrabbed(false);
 			this.onMouseInputNotGrabbed(event);
-			System.out.println("onMouseInput not-grabbed");
 		}
 	}
 
@@ -333,6 +320,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	private void resetSensitivity() {
+		System.out.println("resetSensitivity");
+
 		if (mUserMouseSensitivity > 0) {
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
 		}
