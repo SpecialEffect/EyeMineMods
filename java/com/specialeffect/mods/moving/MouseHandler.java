@@ -10,6 +10,7 @@
 
 package com.specialeffect.mods.moving;
 
+import java.nio.IntBuffer;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -18,6 +19,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -79,7 +83,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	private static InputSource mInputSource = InputSource.EyeTracker;
 	private static boolean mMouseMovementDisabled = false;
-
+	
+	private Cursor mEmptyCursor;
+	
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -140,6 +147,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
     	mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
       
+        // Set up an empty cursor to use when doing own mouse handling
+		int w = Cursor.getMinCursorSize();
+		IntBuffer buf = BufferUtils.createIntBuffer(4*w*w);
+		BufferUtils.zeroBuffer(buf);
+		try {
+			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
+		} catch (LWJGLException e) {
+			System.out.println("LWJGLException creating cursor");
+		}
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
@@ -176,8 +192,20 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				MoveWithGaze2.stop();
 				// This is a bit of a proxy, it might have been changed by something else
 				// (but currently only WalkWithGaze2, which we just turned off!)
-				mMouseMovementDisabled = !mMouseMovementDisabled;
+				mMouseMovementDisabled = !mMouseMovementDisabled;				
 			}
+		}
+	}
+	
+	public void setMouseNotGrabbed() {
+		Mouse.setGrabbed(false);
+		try {
+			System.out.println("setting empty cursor");
+			Mouse.setNativeCursor(mEmptyCursor);
+		} catch (LWJGLException e) {
+			System.out.print("LWJGLException setting native cursor");
+		} catch (NullPointerException e) {
+			System.out.print("Cursor is null, so can't set");
 		}
 	}
 
@@ -290,7 +318,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		if (mInputSource == InputSource.EyeTracker) {
 			this.onMouseInputGrabbed(event);
 		} else if (mInputSource == InputSource.Mouse) {
-			//Mouse.setGrabbed(false);
 			this.onMouseInputNotGrabbed(event);
 		}
 	}
@@ -298,6 +325,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	// When we leave a GUI and enter the game, we record the user's
 	// chosen sensitivity (and hack around with it in-game).
 	// When we leave the game, we reset the sensitivity to how we found it.
+	// We also need to make sure cursor is appropriately visible/hidden
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
 		// This is an 'open' and 'close' event
@@ -305,11 +333,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		System.out.println("onGuiOpen " + event.gui == null);
 		if (event.gui != null) { // open event
 			this.resetSensitivity();
+			try {
+				System.out.println("setting native cursor");
+				Mouse.setNativeCursor(null);
+			} catch (LWJGLException e) { }
 		} else {
 			this.querySensitivity();
 			// Make sure we're in the right 'grabbed' state.
 			if (mInputSource == InputSource.Mouse) {
-				Mouse.setGrabbed(false);
+				this.setMouseNotGrabbed();
 			}
 		}
 	}
