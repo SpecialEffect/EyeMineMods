@@ -158,8 +158,8 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
         // MouseHandler
         mDeadBorder = mConfig.getFloat("Mousehandler dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
         		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
-        usingMouseEmulation = mConfig.getBoolean("Use mouse emulation from eye-tracker", Configuration.CATEGORY_GENERAL, false, 
-        		"Turn this on if you're using mouse pointer control");
+        usingMouseEmulation = mConfig.getBoolean("Enable mouse-emulation compatibility mode", Configuration.CATEGORY_GENERAL, false, 
+        		"Turn this on if you're using mouse position as an input to OptiKey");
         
 		if (mConfig.hasChanged()) {
 			mConfig.save();

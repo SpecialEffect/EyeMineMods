@@ -37,6 +37,8 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
@@ -83,16 +85,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	private static InputSource mInputSource = InputSource.EyeTracker;
 	private static boolean mMouseMovementDisabled = false;
-	
+
 	private Cursor mEmptyCursor;
-	
-	
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
 
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Mouse utilities for auto-walk, mouse emulation, etc.");
+		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 		// Set up config
@@ -119,9 +119,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			mMouseMovementDisabled = false;
 		}
 	}
-	
+
 	public static void setMouseMovementsDisabled(boolean doDisable) {
-		if (mInputSource == InputSource.Mouse) {		
+		if (mInputSource == InputSource.Mouse) {
 			mMouseMovementDisabled = doDisable;
 		}
 	}
@@ -142,14 +142,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mSensivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_SUBTRACT, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mSensivityDownKB);
 
-		// Used to turn 'look with gaze' on and off when using mouse emulation instead of an 
+		// Used to turn 'look with gaze' on and off when using mouse emulation
+		// instead of an
 		// eyetracker
-    	mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, "SpecialEffect");
-        ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
-      
-        // Set up an empty cursor to use when doing own mouse handling
+		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, "SpecialEffect");
+		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
+
+		// Set up an empty cursor to use when doing own mouse handling
 		int w = Cursor.getMinCursorSize();
-		IntBuffer buf = BufferUtils.createIntBuffer(4*w*w);
+		IntBuffer buf = BufferUtils.createIntBuffer(4 * w * w);
 		BufferUtils.zeroBuffer(buf);
 		try {
 			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
@@ -182,24 +183,23 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
-		}
-		else if (mToggleMouseViewControlKB.isPressed()) {
+		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
-				System.out.println("this key doesn't do anything in eyetracker mode" );
-			}
-			else {
+				System.out.println("this key doesn't do anything in eyetracker mode");
+			} else {
 				// Only one mousehandling mode should be on at a time
 				MoveWithGaze2.stop();
-				// This is a bit of a proxy, it might have been changed by something else
+				// This is a bit of a proxy, it might have been changed by
+				// something else
 				// (but currently only WalkWithGaze2, which we just turned off!)
-				mMouseMovementDisabled = !mMouseMovementDisabled;	
+				mMouseMovementDisabled = !mMouseMovementDisabled;
 				if (mMouseMovementDisabled) {
 					MoveWithGaze.stop();
 				}
 			}
 		}
 	}
-	
+
 	public void setMouseNotGrabbed() {
 		Mouse.setGrabbed(false);
 		try {
@@ -271,7 +271,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private void onMouseInputNotGrabbed(InputEvent.MouseInputEvent event) {
 		// Don't allow vanilla processing
 		this.zeroSensitivity();
-		
+
 		if (!mMouseMovementDisabled) {
 			// TODO: Cancel edge events
 			float x = Math.abs((float) Mouse.getEventX());
@@ -317,32 +317,41 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			// Don't hijack button events, let minecraft do it's own thing
 			return;
 		}
-		
+
 		if (mInputSource == InputSource.EyeTracker) {
 			this.onMouseInputGrabbed(event);
 		} else if (mInputSource == InputSource.Mouse) {
 			this.onMouseInputNotGrabbed(event);
 		}
 	}
-
-	// When we leave a GUI and enter the game, we record the user's
-	// chosen sensitivity (and hack around with it in-game).
-	// When we leave the game, we reset the sensitivity to how we found it.
-	// We also need to make sure cursor is appropriately visible/hidden
+	
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
-		// This is an 'open' and 'close' event
-
-		System.out.println("onGuiOpen " + event.gui == null);
-		if (event.gui != null) { // open event
-			this.resetSensitivity();
+		// It's important that when the 'controls' menu is opened, we are
+		// not overriding the sensitivity setting. It's also important that
+		// we get any user updates to sensitivity.
+		
+		// This corresponds to the opening of the controls pane 
+		if (null != event.gui && event.gui.getClass() == GuiControls.class) {
+			this.resetSensitivity();			
+		}
+		// This corresponds to the opening/closing of *any other pane*.
+		// NB: Important to know that new screens are opened before the controls
+		// pane is closed; and close events don't have guiscreens attached to them.
+		else {
+			this.querySensitivity();			
+		}
+		
+		// For any  open event, make sure cursor not overridden
+		if (null != event.gui) {
 			try {
-				System.out.println("setting native cursor");
 				Mouse.setNativeCursor(null);
-			} catch (LWJGLException e) { }
-		} else {
-			this.querySensitivity();
-			// Make sure we're in the right 'grabbed' state.
+			} catch (LWJGLException e) {
+			}
+		}
+		else {
+			// For any close event, make sure we're in the right 'grabbed' state.
+			// (also sets cursor if applicable)
 			if (mInputSource == InputSource.Mouse) {
 				this.setMouseNotGrabbed();
 			}
@@ -355,8 +364,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	private void resetSensitivity() {
-		System.out.println("resetSensitivity");
-
 		if (mUserMouseSensitivity > 0) {
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
 		}
