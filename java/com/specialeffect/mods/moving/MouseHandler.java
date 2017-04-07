@@ -188,11 +188,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				System.out.println("this key doesn't do anything in eyetracker mode" );
 			}
 			else {
-				// Only one 'walk with gaze' mode should be on at a time
+				// Only one mousehandling mode should be on at a time
 				MoveWithGaze2.stop();
 				// This is a bit of a proxy, it might have been changed by something else
 				// (but currently only WalkWithGaze2, which we just turned off!)
-				mMouseMovementDisabled = !mMouseMovementDisabled;				
+				mMouseMovementDisabled = !mMouseMovementDisabled;	
+				if (mMouseMovementDisabled) {
+					MoveWithGaze.stop();
+				}
 			}
 		}
 	}

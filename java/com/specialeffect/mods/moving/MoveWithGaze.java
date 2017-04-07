@@ -315,6 +315,7 @@ implements ChildModWithConfig
     
     public static void stop() {
     	mDoingAutoWalk = false;
+    	MouseHandler.setMouseMovementsDisabled(true);
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
     }
 
