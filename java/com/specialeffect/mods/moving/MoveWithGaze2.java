@@ -116,10 +116,14 @@ implements ChildModWithConfig
 	private static JoystickControlOverlay mOverlay;
 
 	public static void stop() {
-    	mDoingAutoWalk = false;
-		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);        	
-		MouseHandler.setMouseMovementsDisabled(mDoingAutoWalk);
-    	mOverlay.setVisible(mDoingAutoWalk);
+		System.out.println("stopping movewithgaze2");
+		if (mDoingAutoWalk) {
+			System.out.println("actually stopping movewithgaze2");
+			mDoingAutoWalk = false;
+			StateOverlay.setStateLeftIcon(mIconIndex, false);        	
+			MouseHandler.setMouseMovementsDisabled(true);
+    		mOverlay.setVisible(false);
+		}
     }
 	
 	public void syncConfig() {
@@ -186,7 +190,7 @@ implements ChildModWithConfig
         	if (mDoingAutoWalk) { 
         		MoveWithGaze.stop();
         	}
-    		MouseHandler.setMouseMovementsDisabled(mDoingAutoWalk);
+    		MouseHandler.setMouseMovementsDisabled(true);
         	mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
