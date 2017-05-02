@@ -273,7 +273,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		this.zeroSensitivity();
 
 		if (!mMouseMovementDisabled) {
-			// TODO: Cancel edge events
 			float x = Math.abs((float) Mouse.getEventX());
 			float y = Math.abs((float) Mouse.getEventY());
 
