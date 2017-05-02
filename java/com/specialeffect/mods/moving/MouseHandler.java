@@ -177,12 +177,12 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			this.resetSensitivity();
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity *= 1.1;
 			this.querySensitivity();
-			this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mSensivityDownKB.isPressed()) {
 			this.resetSensitivity();
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
 			this.querySensitivity();
-			this.queueChatMessage("Sensitivity: " + toPercent(Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
