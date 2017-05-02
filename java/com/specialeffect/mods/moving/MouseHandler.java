@@ -103,7 +103,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		this.syncConfig();
 
 		// Check the initial sensitivity setting.
-		this.querySensitivity();
+		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
 		
 		// Set up icon rendering		
 		mIcon = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
