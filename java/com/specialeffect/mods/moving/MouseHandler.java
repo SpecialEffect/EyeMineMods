@@ -377,7 +377,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	private void querySensitivity() {
-		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+		if (sens > 0) {
+			mUserMouseSensitivity = sens;
+		}
 	}
 
 	String toPercent(float input) {
