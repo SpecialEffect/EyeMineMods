@@ -287,11 +287,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				float s = mUserMouseSensitivity;
 
 				// handle yaw
-				final float mMaxYaw = 35; // at 100% sensitivity
+				final float mMaxYaw = 35/2; // at 100% sensitivity
 				final float dYaw = mMaxYaw * s * dx / w_half;
 
 				// handle pitch
-				final float mMaxPitch = -50; // at 100% sensitivity
+				final float mMaxPitch = -40/2; // at 100% sensitivity
 				final float dPitch = mMaxPitch * s * dy / w_half;
 
 				this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
