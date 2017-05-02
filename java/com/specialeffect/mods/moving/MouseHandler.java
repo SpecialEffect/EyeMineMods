@@ -29,6 +29,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.utils.SpecialEffectUtils;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -57,6 +58,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -87,6 +89,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private static boolean mMouseMovementDisabled = false;
 
 	private Cursor mEmptyCursor;
+	private IconOverlay mIcon;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -101,7 +104,18 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 		// Check the initial sensitivity setting.
 		this.querySensitivity();
-
+		
+		// Set up icon rendering		
+		mIcon = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
+		mIcon.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
+		mIcon.setAlpha(0.2f);
+		
+	}
+	
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		MinecraftForge.EVENT_BUS.register(mIcon);
 	}
 
 	public void syncConfig() {
@@ -195,6 +209,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				mMouseMovementDisabled = !mMouseMovementDisabled;
 				if (mMouseMovementDisabled) {
 					MoveWithGaze.stop();
+					mIcon.setVisible(false);
+				}
+				else {
+					mIcon.setVisible(true);
 				}
 			}
 		}
