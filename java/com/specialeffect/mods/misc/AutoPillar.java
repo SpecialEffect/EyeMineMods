@@ -99,9 +99,16 @@ public class AutoPillar extends BaseClassWithCallbacks
         
     }
     
+    private float lastPlayerPitch;
+    
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if(event.entityLiving instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer)event.entityLiving;
+			synchronized (mOnLivingQueue) {
+				this.lastPlayerPitch = player.rotationPitch;
+			}
+    				
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
@@ -111,9 +118,22 @@ public class AutoPillar extends BaseClassWithCallbacks
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         // Auto place is implemented as:
-        // Next onLiving tick: look at floor, jump
-        // After 15 ticks (when jump is high): place current item below player.
-        if(autoPlaceKeyBinding.isPressed()) {
+        // - Next onLiving tick: look at floor, jump
+        // - After 10 ticks (when jump is high): place current item below player.
+    	// - From 12 - 17ticks, gradually reset view 
+    	// Technically there is no need to change player's view, but the user experience
+    	// is weird if you don't (you don't really know what just happened).
+        if(autoPlaceKeyBinding.isPressed()) {   
+        	float origPitchTemp = 0;        	
+        	synchronized (mOnLivingQueue) {
+        		origPitchTemp = this.lastPlayerPitch;
+			}
+  			final float origPitch = origPitchTemp;
+  			final float pillarPitch = 85; // 90 = look straight down
+  			final int numTicksReset = 5;
+  		
+  			final float deltaPitch = (pillarPitch - origPitch)/numTicksReset;
+  			
         	this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
 				@Override
@@ -127,8 +147,8 @@ public class AutoPillar extends BaseClassWithCallbacks
 		    						   Math.floor(player.posY), 
 		    						   Math.floor(player.posZ)+0.4,
 		    						   player.rotationYaw,
-		    						   85); // 90 = look straight down
-		    		
+		    						   pillarPitch);
+
 		    		// Then jump
 		    		player.jump();
 				}		
@@ -156,7 +176,33 @@ public class AutoPillar extends BaseClassWithCallbacks
 	                }
 				}		
 			},
-        	10 )); // delayed by 5 ticks
+        	10 )); // delayed by 10 ticks
+        	
+        	for (int i = 1; i < numTicksReset+1; i++) {        		
+        		final int j = i;
+        		this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving()
+	        	{				
+					@Override
+					public void onLiving(LivingUpdateEvent event) {
+						EntityPlayer player = (EntityPlayer)event.entityLiving;
+						
+						player.setPositionAndRotation(player.posX,
+			    						  		 	  player.posY, 
+			    						  		 	  player.posZ,
+						    						  player.rotationYaw,
+						    						  pillarPitch - deltaPitch*j);
+						// This forces an update, otherwise you sometimes lose the
+						// last delta.
+						player.setPositionAndUpdate(player.posX,
+			    						  		 	  player.posY, 
+			    						  		 	  player.posZ);
+					}		
+				},
+	        	12+j));
+        	}
         }
     }
+    
+    
+    
 }

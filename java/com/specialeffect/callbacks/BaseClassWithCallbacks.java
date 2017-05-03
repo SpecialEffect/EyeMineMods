@@ -41,7 +41,7 @@ public class BaseClassWithCallbacks {
 		}
 	}
 
-	LinkedList<OnLivingCallback> mOnLivingQueue;
+	protected LinkedList<OnLivingCallback> mOnLivingQueue;
 
 	protected void queueOnLivingCallback(OnLivingCallback onLivingCallback) {
 		synchronized (mOnLivingQueue) {
