@@ -83,7 +83,7 @@ public class MineOne {
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_T, "SpecialEffect");
+		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_N, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 	}
 	
