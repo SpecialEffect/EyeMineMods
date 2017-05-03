@@ -189,7 +189,7 @@ implements ChildModWithConfig
         	if (mDoingAutoWalk) { 
         		MoveWithGaze.stop();
         	}
-    		MouseHandler.setMouseMovementsDisabled(true);
+    		MouseHandler.overrideMouseMovementsDisabled(mDoingAutoWalk);
         	mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));

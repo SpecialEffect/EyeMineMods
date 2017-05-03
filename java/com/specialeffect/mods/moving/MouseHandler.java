@@ -89,7 +89,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private static boolean mMouseMovementDisabled = false;
 
 	private Cursor mEmptyCursor;
-	private IconOverlay mIcon;
+	private static IconOverlay mIcon;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -98,10 +98,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
-		// Set up config
-		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();
-
 		// Check the initial sensitivity setting.
 		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
 		
@@ -109,7 +105,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mIcon = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
 		mIcon.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
 		mIcon.setAlpha(0.2f);
-		
+
+		// Set up config
+		mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		this.syncConfig();
 	}
 	
 	@EventHandler
@@ -132,11 +131,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			// always enabled
 			mMouseMovementDisabled = false;
 		}
+		mIcon.setVisible(false);
 	}
 
 	public static void setMouseMovementsDisabled(boolean doDisable) {
+		mMouseMovementDisabled = doDisable;
+		
 		if (mInputSource == InputSource.Mouse) {
-			mMouseMovementDisabled = doDisable;
+			mIcon.setVisible(!mMouseMovementDisabled);
 		}
 	}
 
@@ -215,6 +217,20 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 					mIcon.setVisible(true);
 				}
 			}
+		}
+	}	
+	
+	
+	public static void overrideMouseMovementsDisabled(boolean doDisable) {
+		if (doDisable) {
+			mMouseMovementDisabled = true;
+		}
+		else {
+			mMouseMovementDisabled = (mInputSource == InputSource.Mouse);
+		}
+			
+		if (mInputSource == InputSource.Mouse) {			
+			mIcon.setVisible(!mMouseMovementDisabled);
 		}
 	}
 
@@ -386,7 +402,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
-	private void zeroSensitivity() {
+	private static void zeroSensitivity() {
 		// See http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
 		// for
 		// magic number.
