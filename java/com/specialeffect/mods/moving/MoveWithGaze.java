@@ -314,9 +314,10 @@ implements ChildModWithConfig
     private Queue<Vec3> mPrevLookDirs;
     
     public static void stop() {
-    	mDoingAutoWalk = false;
-    	MouseHandler.setMouseMovementsDisabled(true);
-		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+    	if (mDoingAutoWalk) {
+    		mDoingAutoWalk = false;
+    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+    	}
     }
 
     @SubscribeEvent
@@ -324,10 +325,8 @@ implements ChildModWithConfig
         
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
-        	if (mDoingAutoWalk) { 
-        		MoveWithGaze2.stop();
-        	}
-			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+        	MouseHandler.setWalking(mDoingAutoWalk);
+        	StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
     }

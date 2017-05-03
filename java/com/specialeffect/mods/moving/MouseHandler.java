@@ -70,6 +70,13 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public static final String MODID = "specialeffect.MouseHandler";
 	public static final String NAME = "MouseHandler";
 
+	public enum InteractionState {
+	    EYETRACKER_NORMAL, EYETRACKER_WALK, EYETRACKER_LEGACY, 
+	    MOUSE_NOTHING, MOUSE_LOOK, MOUSE_WALK, MOUSE_LEGACY 
+	}
+	
+	public static InteractionState mInteractionState;
+	
 	public static Configuration mConfig;
 
 	private static KeyBinding mSensivityUpKB;
@@ -78,7 +85,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	private static boolean mPendingMouseEvent = false;
 	public static boolean mLastEventWithinBounds = false;
-	public static boolean mDoOwnViewControl = false;
 
 	public static float mUserMouseSensitivity = -1.0f; // internal cache of
 														// user's preference.
@@ -86,8 +92,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private static float mDeadBorder = 0.1f;
 
 	private static InputSource mInputSource = InputSource.EyeTracker;
-	private static boolean mMouseMovementDisabled = false;
-
+	private static boolean mVanillaMouseMovementDisabled = false;
+	private static boolean mDoingOwnMouseHandling = false;
+	
 	private Cursor mEmptyCursor;
 	private static IconOverlay mIcon;
 
@@ -116,6 +123,82 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	{
 		MinecraftForge.EVENT_BUS.register(mIcon);
 	}
+	
+	public static void setWalking(boolean doWalk) {
+		if (mInputSource == InputSource.EyeTracker) {
+			if (doWalk) {
+				updateState(InteractionState.EYETRACKER_WALK);
+			}
+			else {
+				updateState(InteractionState.EYETRACKER_NORMAL);
+			}
+		}
+		else {
+			if (doWalk) {
+				updateState(InteractionState.MOUSE_WALK);
+			}
+			else {
+				updateState(InteractionState.MOUSE_NOTHING);
+			}			
+		}
+	}
+	
+	public static void setLegacyWalking(boolean doWalk) {
+		if (mInputSource == InputSource.EyeTracker) {
+			if (doWalk) {
+				updateState(InteractionState.EYETRACKER_LEGACY);
+			}
+			else {
+				updateState(InteractionState.EYETRACKER_NORMAL);
+			}
+		}
+		else {
+			if (doWalk) {
+				updateState(InteractionState.MOUSE_LEGACY);
+			}
+			else {
+				updateState(InteractionState.MOUSE_NOTHING);
+			}			
+		}
+	}
+	
+	private static void updateIconForState(InteractionState state) {
+		boolean showIcon = (state == InteractionState.MOUSE_LOOK ||
+							state == InteractionState.MOUSE_WALK);
+		mIcon.setVisible(showIcon);								
+	}
+	
+	private static void updateMouseForState(InteractionState state) {
+		boolean disabled = (state == InteractionState.MOUSE_NOTHING ||
+							state == InteractionState.MOUSE_LOOK ||
+							state == InteractionState.MOUSE_WALK ||
+							state == InteractionState.MOUSE_LEGACY ||
+							state == InteractionState.EYETRACKER_LEGACY);
+		mVanillaMouseMovementDisabled = disabled;
+		
+		boolean ownMouseControl = (state == InteractionState.MOUSE_LOOK ||
+								   state == InteractionState.MOUSE_WALK);
+		mDoingOwnMouseHandling = ownMouseControl;
+		
+		System.out.println("Setting mouse disabled? : "+ mVanillaMouseMovementDisabled);
+	}
+	
+	private static void updateState(InteractionState state) {
+		mInteractionState = state;
+		updateIconForState(state);
+		updateMouseForState(state);
+
+		if (state == InteractionState.MOUSE_WALK || state == InteractionState.EYETRACKER_WALK) {
+			MoveWithGaze2.stop();
+		}
+		else if (state == InteractionState.MOUSE_LEGACY || state == InteractionState.EYETRACKER_LEGACY) {
+			MoveWithGaze.stop();
+		}
+		else {
+			MoveWithGaze.stop();
+			MoveWithGaze2.stop();
+		}
+	}
 
 	public void syncConfig() {
 		System.out.println("syncConfig MouseHandler");
@@ -123,23 +206,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		if (SpecialEffectMovements.usingMouseEmulation) {
 			System.out.println("using mouse");
 			mInputSource = InputSource.Mouse;
-			// initially disabled
-			mMouseMovementDisabled = true;
+			this.updateState(InteractionState.MOUSE_NOTHING); 
 		} else {
 			System.out.println("using eyetracker");
 			mInputSource = InputSource.EyeTracker;
 			// always enabled
-			mMouseMovementDisabled = false;
+			this.updateState(InteractionState.EYETRACKER_NORMAL); 
 		}
 		mIcon.setVisible(false);
-	}
-
-	public static void setMouseMovementsDisabled(boolean doDisable) {
-		mMouseMovementDisabled = doDisable;
-		
-		if (mInputSource == InputSource.Mouse) {
-			mIcon.setVisible(!mMouseMovementDisabled);
-		}
 	}
 
 	@EventHandler
@@ -203,36 +277,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
 			} else {
-				// Only one mousehandling mode should be on at a time
-				MoveWithGaze2.stop();
-				// This is a bit of a proxy, it might have been changed by
-				// something else
-				// (but currently only WalkWithGaze2, which we just turned off!)
-				mMouseMovementDisabled = !mMouseMovementDisabled;
-				if (mMouseMovementDisabled) {
-					MoveWithGaze.stop();
-					mIcon.setVisible(false);
+				if (this.mInteractionState == InteractionState.MOUSE_LOOK) {
+					this.updateState(InteractionState.MOUSE_NOTHING);
 				}
 				else {
-					mIcon.setVisible(true);
+					this.updateState(InteractionState.MOUSE_LOOK);
 				}
 			}
 		}
-	}	
-	
-	
-	public static void overrideMouseMovementsDisabled(boolean doDisable) {
-		if (doDisable) {
-			mMouseMovementDisabled = true;
-		}
-		else {
-			mMouseMovementDisabled = (mInputSource == InputSource.Mouse);
-		}
-			
-		if (mInputSource == InputSource.Mouse) {			
-			mIcon.setVisible(!mMouseMovementDisabled);
-		}
-	}
+	}		
 
 	public void setMouseNotGrabbed() {
 		Mouse.setGrabbed(false);
@@ -277,7 +330,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		// turn off anyway, if vanilla mouse movements turned off, but record
 		// pending event.
-		else if (mMouseMovementDisabled) {
+		else if (mVanillaMouseMovementDisabled) {
 			this.zeroSensitivity();
 			mPendingMouseEvent = true;
 		} else {
@@ -306,7 +359,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// Don't allow vanilla processing
 		this.zeroSensitivity();
 
-		if (!mMouseMovementDisabled) {
+		if (mDoingOwnMouseHandling) {
 			float x = Math.abs((float) Mouse.getEventX());
 			float y = Math.abs((float) Mouse.getEventY());
 

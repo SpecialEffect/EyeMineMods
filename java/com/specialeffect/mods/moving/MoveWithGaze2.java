@@ -119,7 +119,6 @@ implements ChildModWithConfig
 		if (mDoingAutoWalk) {
 			mDoingAutoWalk = false;
 			StateOverlay.setStateLeftIcon(mIconIndex, false);        	
-			MouseHandler.setMouseMovementsDisabled(true);
     		mOverlay.setVisible(false);
 		}
     }
@@ -185,11 +184,9 @@ implements ChildModWithConfig
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         
         if(mToggleAutoWalkKB.isPressed()) {
-        	mDoingAutoWalk = !mDoingAutoWalk;
-        	if (mDoingAutoWalk) { 
-        		MoveWithGaze.stop();
-        	}
-    		MouseHandler.overrideMouseMovementsDisabled(mDoingAutoWalk);
+        	mDoingAutoWalk = !mDoingAutoWalk;        	
+        	MouseHandler.setLegacyWalking(mDoingAutoWalk);
+        	
         	mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
