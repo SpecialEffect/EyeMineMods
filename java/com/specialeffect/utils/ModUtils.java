@@ -11,6 +11,7 @@
 package com.specialeffect.utils;
 
 import java.awt.Point;
+import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,6 +20,9 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -54,6 +58,21 @@ public class ModUtils {
 		ModMetadata m = event.getModMetadata(); 		
 		m.parent = parentModID;
     }
+	
+	// Check if entityliving is the current player (and not another
+	// player on the network, for instance)
+	public static boolean entityIsMe(EntityLivingBase entity) {
+		if (entity instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) entity;
+			UUID playerUUID = player.getUniqueID();
+			UUID myUUID = Minecraft.getMinecraft().thePlayer.getUniqueID();
+			
+			return (playerUUID.equals(myUUID));
+		}
+		else {
+			return false;
+		}
+	}
 	
 	// Get the x, y point corresponding to one of 8 compass points
 	// 0 = N, 1 = NE, 2 = E, etc ...
