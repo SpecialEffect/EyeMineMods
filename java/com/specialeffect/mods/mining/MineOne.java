@@ -91,7 +91,7 @@ public class MineOne {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer) {
+		if (ModUtils.entityIsMe(event.entityLiving)) {
 			
 			if (mDestroying) {
 

@@ -110,9 +110,9 @@ implements ChildModWithConfig
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer) {
+		if (ModUtils.entityIsMe(event.entityLiving)) {
 			EntityPlayer player = (EntityPlayer) event.entityLiving;
-
+			
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
 				BlockPos playerPos = player.getPosition();

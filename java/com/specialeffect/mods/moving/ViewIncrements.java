@@ -132,7 +132,7 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if(event.entityLiving instanceof EntityPlayer) {
+    	if (ModUtils.entityIsMe(event.entityLiving)) {
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}

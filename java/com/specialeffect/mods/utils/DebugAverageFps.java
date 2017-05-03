@@ -79,7 +79,7 @@ public class DebugAverageFps
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if(event.entityLiving instanceof EntityPlayer) {
+		if (ModUtils.entityIsMe(event.entityLiving)) {
 			mTickCount++;
 			
 			int currFps = Minecraft.getDebugFPS();

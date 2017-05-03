@@ -103,7 +103,7 @@ public class AutoPillar extends BaseClassWithCallbacks
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if(event.entityLiving instanceof EntityPlayer) {
+    	if (ModUtils.entityIsMe(event.entityLiving)) {
 			EntityPlayer player = (EntityPlayer)event.entityLiving;
 			synchronized (mOnLivingQueue) {
 				this.lastPlayerPitch = player.rotationPitch;

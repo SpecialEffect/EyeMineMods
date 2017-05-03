@@ -104,7 +104,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer) {
+		if (ModUtils.entityIsMe(event.entityLiving)) {
 			
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;

@@ -79,7 +79,7 @@ public class Swim extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (event.entityLiving instanceof EntityPlayer) {
+		if (ModUtils.entityIsMe(event.entityLiving)) {
 			EntityPlayer player = (EntityPlayer)event.entityLiving;
 			
 			if (mIsSwimming) {
