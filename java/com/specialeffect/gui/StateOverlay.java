@@ -145,7 +145,7 @@ public class StateOverlay extends Gui
 		// that case, the portion of rendering which this event represents will be canceled.
 		// We want to draw *after* the experience bar is drawn, so we make sure isCancelable() returns
 		// false and that the eventType represents the ExperienceBar event.
-		if(event.isCancelable() || event.type != ElementType.EXPERIENCE)
+		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
 		{      
 			return;
 		}
