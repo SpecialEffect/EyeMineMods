@@ -101,7 +101,7 @@ public abstract class ContainerManager {
         // Stack up on hand if equal or small enough, else throw held stack away
         if (Util.isHoldingStack() && getItemStack(getInteractionSlotIndex()) != null && (
                 !Util.getHeldStack().isItemEqual(getItemStack(getInteractionSlotIndex()))
-                        || Util.getHeldStack().stackSize + getItemStack(getInteractionSlotIndex()).stackSize
+                        || Util.getHeldStack().getCount() + getItemStack(getInteractionSlotIndex()).getCount()
                         > getItemStack(getInteractionSlotIndex()).getMaxStackSize())) {
             moveStackToInventory(-1);
         }
@@ -111,9 +111,9 @@ public abstract class ContainerManager {
         interact();
 
         while (Util.isHoldingStack() &&
-        		oldStackSize != Util.getHeldStack().stackSize) {
+        		oldStackSize != Util.getHeldStack().getCount()) {
 
-        	oldStackSize = Util.getHeldStack().stackSize;
+        	oldStackSize = Util.getHeldStack().getCount();
         	interact();
         }
 
@@ -276,7 +276,7 @@ public abstract class ContainerManager {
         if (source == null) {
             Logger.debug("moveAll(i,i)", "Source ItemStack from Index == null");
         } else {
-            move(srcIndex, destIndex, source.stackSize);
+            move(srcIndex, destIndex, source.getCount());
         }
 
     }
@@ -303,7 +303,7 @@ public abstract class ContainerManager {
         }
 
         // Test for max. moving Amount
-        int sourceSize = source.stackSize;
+        int sourceSize = source.getCount();
         int movedAmount = Math.min(amount, sourceSize);
 
         // Clear goal slot (May fail on full inventory!); only available if not holdling
@@ -424,7 +424,7 @@ public abstract class ContainerManager {
 
             if (potentialGoalStack != null && stackToMove != null) {
                 if (potentialGoalStack.isItemEqual(stackToMove)) {
-                    if (potentialGoalStack.stackSize + stackToMove.stackSize <= stackToMove.getMaxStackSize()) {
+                    if (potentialGoalStack.getCount() + stackToMove.getCount() <= stackToMove.getMaxStackSize()) {
                         return i;
                     }
                 }
