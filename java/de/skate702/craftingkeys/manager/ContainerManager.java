@@ -1,5 +1,7 @@
 package de.skate702.craftingkeys.manager;
 
+import org.lwjgl.input.Keyboard;
+
 import de.skate702.craftingkeys.CraftingKeys;
 import de.skate702.craftingkeys.config.Config;
 import de.skate702.craftingkeys.util.InputUtil;
@@ -9,7 +11,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.input.Keyboard;
 
 /**
  * Provides all needed methods to handle and manage a gui inventory. Does also provide frames for own implementations.

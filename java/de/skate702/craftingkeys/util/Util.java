@@ -1,9 +1,8 @@
 package de.skate702.craftingkeys.util;
 
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
  * Provides basic utility methods. For input methods, look at InputUtil.

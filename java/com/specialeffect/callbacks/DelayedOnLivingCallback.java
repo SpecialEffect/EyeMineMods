@@ -10,8 +10,6 @@
 
 package com.specialeffect.callbacks;
 
-import java.util.concurrent.CountDownLatch;
-
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 public class DelayedOnLivingCallback implements OnLivingCallback {

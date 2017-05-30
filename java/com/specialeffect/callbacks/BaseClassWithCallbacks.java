@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 // A class which handles tick-based callbacks for mods.

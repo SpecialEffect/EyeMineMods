@@ -1,8 +1,9 @@
 package de.skate702.craftingkeys.config;
 
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
+
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 /**
  * Provides all Key Bindings and methods to register and check them.

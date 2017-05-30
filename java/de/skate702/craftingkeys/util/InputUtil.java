@@ -1,9 +1,10 @@
 package de.skate702.craftingkeys.util;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import org.lwjgl.input.Mouse;
 
 /**
  * This class provides methods to interact with the Mouse and key input.

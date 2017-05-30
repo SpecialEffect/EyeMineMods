@@ -1,7 +1,5 @@
 package de.skate702.craftingkeys.util;
 
-import net.minecraft.util.StatCollector;
-
 public class LanguageLocalizer {
     /**
      * If another language than de_DE or en_US is selected the English one is used...
