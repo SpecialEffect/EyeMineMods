@@ -18,6 +18,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -118,16 +119,16 @@ public class ModUtils {
 	public static void drawTexQuad(double x, double y, double width, double height) {
 
 		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		VertexBuffer buffer = tessellator.getBuffer();
 
 		// Ugh, these methods get proper names in forge 1.9
-		worldrenderer.func_181668_a(GL11.GL_QUADS, DefaultVertexFormats.field_181707_g); // 2nd arg = DefaultVertexFormats.POSITION_TEX
+		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		// 2nd arg = DefaultVertexFormats.POSITION_TEX
 
-		// = worldrenderer.pos( ... ).tex( ... ).endVertex() 
-		worldrenderer.func_181662_b(x        , y + height, 0).func_181673_a(0.0, 1.0).func_181675_d();
-		worldrenderer.func_181662_b(x + width, y + height, 0).func_181673_a(1.0, 1.0).func_181675_d();
-		worldrenderer.func_181662_b(x + width, y         , 0).func_181673_a(1.0, 0.0).func_181675_d();
-		worldrenderer.func_181662_b(x        , y         , 0).func_181673_a(0.0, 0.0).func_181675_d();
+		buffer.pos(x        , y + height, 0).tex(0.0, 1.0).endVertex();
+		buffer.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
+		buffer.pos(x + width, y         , 0).tex(1.0, 0.0).endVertex();
+		buffer.pos(x        , y         , 0).tex(0.0, 0.0).endVertex();
 
 		tessellator.draw();
 
