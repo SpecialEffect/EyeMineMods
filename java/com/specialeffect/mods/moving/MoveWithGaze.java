@@ -29,6 +29,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -212,7 +213,7 @@ implements ChildModWithConfig
     private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
     	Vec3d lookVec = player.getLookVec();
     	Vec3d posVec = player.getPositionVector();
-		MovingObjectPosition movPos = player.rayTrace(1.0, 1.0f);
+    	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
 		}

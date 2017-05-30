@@ -28,6 +28,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -89,7 +90,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			
 			if (mIsAttacking) {
 				// Get entity being looked at
-				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 				Entity entity = mov.entityHit;
 				if (null != entity) {
 					// It feels like we should be able to just call 

@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,7 +61,7 @@ public class EasyLadderClimb {
 
 			if (event.getEntityLiving().isOnLadder()) {
 				System.out.println("LADDER");
-				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 				if (mov != null) {
 					BlockPos blockPos = mov.getBlockPos(); // may still be null
 															// if there's an

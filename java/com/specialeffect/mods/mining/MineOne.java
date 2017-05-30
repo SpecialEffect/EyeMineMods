@@ -24,6 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -92,7 +93,7 @@ public class MineOne {
 				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
-				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
@@ -118,7 +119,7 @@ public class MineOne {
 	// May be null, if pointing at something other than a block.
 	private BlockPos getMouseOverBlockPos() {
 		BlockPos pos = null;
-		MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+		RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 		if (mov != null) {
 			pos = mov.getBlockPos(); // may still be null if there's an entity there
 		}
