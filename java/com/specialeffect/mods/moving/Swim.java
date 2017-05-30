@@ -95,7 +95,7 @@ public class Swim extends BaseClassWithCallbacks {
 					BlockPos playerPos = player.getPosition();
 					BlockPos blockBelow = new BlockPos(playerPos.getX(),
 							playerPos.getY()-1, playerPos.getZ());
-			    	World world = Minecraft.getMinecraft().theWorld;
+			    	World world = Minecraft.getMinecraft().world;
 					Block block = world.getBlockState(blockBelow).getBlock();
 					if (block != null && block instanceof BlockLiquid) {
 						// do nothing

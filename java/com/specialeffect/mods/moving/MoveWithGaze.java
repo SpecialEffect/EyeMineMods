@@ -204,7 +204,7 @@ implements ChildModWithConfig
     // Check if there's a block at the given position which
     // blocks movement.
     private boolean doesBlockMovement(BlockPos pos) {
-    	World world = Minecraft.getMinecraft().theWorld;
+    	World world = Minecraft.getMinecraft().world;
 		Block block = world.getBlockState(pos).getBlock();
 		return block.getMaterial().blocksMovement();
     }
@@ -269,7 +269,7 @@ implements ChildModWithConfig
     }
 
 	private boolean isLadder(BlockPos pos) {
-		World world = Minecraft.getMinecraft().theWorld;
+		World world = Minecraft.getMinecraft().world;
 		Block block = world.getBlockState(pos).getBlock();		
 		return ( block != null && block instanceof BlockLadder);
 	}

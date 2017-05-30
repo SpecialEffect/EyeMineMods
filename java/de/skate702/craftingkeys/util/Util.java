@@ -48,10 +48,10 @@ public class Util {
      * @return True, if this is the first tick
      */
     public static boolean isFirstInWorldTick() {
-        if (firstInWorldTick && client.theWorld != null) {
+        if (firstInWorldTick && client.world != null) {
             firstInWorldTick = false;
             return true;
-        } else if (client.theWorld == null) {
+        } else if (client.world == null) {
             firstInWorldTick = true;
         }
         return false;

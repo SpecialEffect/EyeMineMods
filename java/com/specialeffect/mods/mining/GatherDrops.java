@@ -118,7 +118,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-					World world = Minecraft.getMinecraft().theWorld;
+					World world = Minecraft.getMinecraft().world;
 
 					BlockPos playerPos = player.getPosition();
 					double dx, dy, dz;

@@ -137,7 +137,7 @@ public class AutoPillar extends BaseClassWithCallbacks
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
- 	                World world = Minecraft.getMinecraft().theWorld;
+ 	                World world = Minecraft.getMinecraft().world;
 		    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 		    		BlockPos playerPos = player.getPosition();
 

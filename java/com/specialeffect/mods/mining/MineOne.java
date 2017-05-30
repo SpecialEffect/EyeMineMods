@@ -73,7 +73,7 @@ public class MineOne {
 			if (mDestroying) {
 
 				// Select the best tool from the inventory
-				World world = Minecraft.getMinecraft().theWorld;
+				World world = Minecraft.getMinecraft().world;
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 				
 	    		// Not currently using -> separate out to another key binding?
@@ -145,7 +145,7 @@ public class MineOne {
 	
 	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
 		ItemStack[] items = inventory.mainInventory;
-		World world = Minecraft.getMinecraft().theWorld;
+		World world = Minecraft.getMinecraft().world;
         Block block = world.getBlockState(blockPos).getBlock();
         IBlockState state = world.getBlockState(blockPos);
         state = state.getBlock().getActualState(state, world, blockPos);
