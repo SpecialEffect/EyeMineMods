@@ -1,5 +1,8 @@
 package de.skate702.craftingkeys.util;
 
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.translation.LanguageMap;
+
 public class LanguageLocalizer {
     /**
      * If another language than de_DE or en_US is selected the English one is used...
@@ -8,6 +11,7 @@ public class LanguageLocalizer {
      * @return localized The localized String
      */
     public static String localize(String unloc) {
-        return StatCollector.translateToLocal(unloc);
+    	LanguageMap map = new LanguageMap();
+    	return map.translateKey(unloc);
     }
 }
