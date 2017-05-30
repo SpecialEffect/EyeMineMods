@@ -364,7 +364,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 					@Override
 					public void onLiving(LivingUpdateEvent event) {
-						EntityPlayer player = (EntityPlayer) event.entity;
+						EntityPlayer player = (EntityPlayer) event.getEntity();
 						player.rotationPitch += dPitch;
 						player.rotationYaw += dYaw;
 					}

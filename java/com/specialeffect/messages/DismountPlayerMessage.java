@@ -34,12 +34,12 @@ public class DismountPlayerMessage implements IMessage {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
 
 					if (player.isRiding()) {
-						Entity riddenEntity = player.ridingEntity;
+						Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
 
 							player.dismountEntity(riddenEntity);
-							riddenEntity.riddenByEntity = null;
-							player.ridingEntity = null;
+							riddenEntity.updateRidden();
+							player.updateRidden();
 							player.motionY += 0.5D;
 						}
 					}
