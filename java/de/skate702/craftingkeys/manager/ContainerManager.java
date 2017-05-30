@@ -8,6 +8,7 @@ import de.skate702.craftingkeys.util.InputUtil;
 import de.skate702.craftingkeys.util.Logger;
 import de.skate702.craftingkeys.util.Util;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -481,13 +482,15 @@ public abstract class ContainerManager {
      * @param rightClick True, if the click is with the right mouse button
      */
     private void slotClick(int index, boolean rightClick) {
-
+    	
+    	//TODO: replace with new ClickType at the point that we
+    	// know what the goal is..
+    	ClickType type = rightClick ? ClickType.PICKUP : ClickType.THROW;
+    	
         Logger.info("slotClick(i,b)", "Clicked @ Slot " + index + " with data " + rightClick + ".");
 
-        int rightClickData = (rightClick) ? 1 : 0;
-
         CraftingKeys.proxy.sendSlotClick(Util.client.playerController, container.windowId, index,
-                rightClickData, 0, Util.client.player);
+                type, 0, Util.client.player);
 
     }
 
