@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -135,7 +136,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.addChatComponentMessage(new ChatComponentText(
+			        player.sendMessage(new TextComponentString(
 			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));

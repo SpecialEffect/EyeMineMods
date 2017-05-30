@@ -2,6 +2,7 @@ package de.skate702.craftingkeys.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
@@ -63,7 +64,7 @@ public class Util {
      * @param lang_key key from lang-file
      */
     public static void printMessage(String lang_key) {
-        client.player.addChatMessage(new ChatComponentTranslation(lang_key));
+        client.player.sendMessage(new TextComponentTranslation(lang_key));
     }
 
 }

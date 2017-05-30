@@ -29,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -139,7 +140,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.addChatComponentMessage(new ChatComponentText(
+			        player.sendMessage(new TextComponentString(
 			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
 				}		
 			}));

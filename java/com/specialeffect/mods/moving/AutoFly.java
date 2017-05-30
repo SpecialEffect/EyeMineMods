@@ -27,6 +27,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -41,6 +42,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import scala.swing.TextComponent;
 
 @Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME)
 public class AutoFly 
@@ -198,7 +200,7 @@ implements ChildModWithConfig
 					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 				}
 				else {
-					player.addChatComponentMessage(new ChatComponentText(
+					player.sendMessage(new TextComponentString(
 							"Player unable to fly"));
 				}
 				updateIcons();

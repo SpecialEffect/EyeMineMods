@@ -27,6 +27,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -157,7 +158,7 @@ implements ChildModWithConfig
 					
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.addChatComponentMessage(new ChatComponentText(
+						player.sendMessage(new TextComponentString(
 								"No chests found in range"));
 					}
 					else {
@@ -179,7 +180,7 @@ implements ChildModWithConfig
 
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.addChatComponentMessage(new ChatComponentText(
+						player.sendMessage(new TextComponentString(
 								"No crafting tables found in range"));
 					}
 					else {

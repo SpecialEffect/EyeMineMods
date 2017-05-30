@@ -21,6 +21,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -112,7 +113,7 @@ implements ChildModWithConfig
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.addChatComponentMessage(new ChatComponentText(
+			        player.sendMessage(new TextComponentString(
 			        		 "Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
 				}		
 			}));

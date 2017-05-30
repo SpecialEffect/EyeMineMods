@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 // A class which handles tick-based callbacks for mods.
@@ -56,7 +57,7 @@ public class BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.addChatComponentMessage(new ChatComponentText(message));
+			        player.sendMessage(new TextComponentString(message));
 				}		
 			}));
 		}
