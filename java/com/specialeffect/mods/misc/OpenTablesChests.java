@@ -150,7 +150,7 @@ implements ChildModWithConfig
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-					World world = Minecraft.getMinecraft().theWorld;
+					World world = Minecraft.getMinecraft().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
 							BlockChest.class.getName(), player, world, mRadius);
