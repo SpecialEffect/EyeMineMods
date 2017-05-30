@@ -399,7 +399,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// we get any user updates to sensitivity.
 		
 		// This corresponds to the opening of the controls pane 
-		if (null != event.gui && event.gui.getClass() == GuiControls.class) {
+		if (null != event.getGui() && event.getGui().getClass() == GuiControls.class) {
 			this.resetSensitivity();			
 		}
 		// This corresponds to the opening/closing of *any other pane*.
@@ -410,7 +410,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		
 		// For any  open event, make sure cursor not overridden
-		if (null != event.gui) {
+		if (null != event.getGui()) {
 			try {
 				Mouse.setNativeCursor(null);
 			} catch (LWJGLException e) {
