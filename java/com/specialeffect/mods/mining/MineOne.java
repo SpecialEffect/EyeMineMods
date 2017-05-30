@@ -22,6 +22,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -144,8 +145,9 @@ public class MineOne {
 	}
 	
 	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
-		ItemStack[] items = inventory.mainInventory;
+		NonNullList<ItemStack> items = inventory.mainInventory;
 		World world = Minecraft.getMinecraft().world;
+		EntityPlayer player = Minecraft.getMinecraft().player;
         Block block = world.getBlockState(blockPos).getBlock();
         IBlockState state = world.getBlockState(blockPos);
         state = state.getBlock().getActualState(state, world, blockPos);
@@ -156,12 +158,12 @@ public class MineOne {
         String toolType = block.getHarvestTool(state);
         
         // We'll swap the best item into slot one, and select it.
-        ItemStack oldItem0 = items[0];
-
-		for(int i = 0; i < items.length; i++){
-			ItemStack stack = items[i];
+        ItemStack oldItem0 = items.get(0);
+        
+		for(int i = 0; i < items.size(); i++){
+			ItemStack stack = items.get(i);
 			if (stack != null) {
-		        int toolLevel = stack.getItem().getHarvestLevel(stack, toolType);
+				int toolLevel = stack.getItem().getHarvestLevel(stack, toolType, player, state);		        
 		        if (toolLevel > bestToolLevel) {
 		        	bestToolLevel = toolLevel;
 		        	bestItem = stack;
