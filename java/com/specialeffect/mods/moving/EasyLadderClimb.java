@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -72,7 +73,7 @@ public class EasyLadderClimb {
 						if (block instanceof BlockLadder) {
 							BlockLadder ladder = (BlockLadder) block;
 							EnumFacing facing = (EnumFacing) state.getProperties().get(ladder.FACING);
-							Vec3 playerPos = player.getPositionVector();
+							Vec3d playerPos = player.getPositionVector();
 							
 							// Rotate player to face ladder.
 							player.setPositionAndRotation(playerPos.xCoord,

@@ -25,6 +25,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -86,7 +87,7 @@ implements ChildModWithConfig
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk legacy", Keyboard.KEY_B, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
+        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/legacy-mode.png");
@@ -159,7 +160,7 @@ implements ChildModWithConfig
     
 	private static boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
-    private Queue<Vec3> mPrevLookDirs;
+    private Queue<Vec3d> mPrevLookDirs;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {

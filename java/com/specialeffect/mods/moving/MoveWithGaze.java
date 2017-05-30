@@ -29,6 +29,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -90,7 +91,7 @@ implements ChildModWithConfig
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
+        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
@@ -171,7 +172,7 @@ implements ChildModWithConfig
 		return Math.min(1.0, (double)standardFps/(double)currFps);
 	}
 
-	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
+	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3d lookVec) {
     	double thresh = 0.8;
     	switch(sideHit) {
 		case NORTH:
@@ -209,8 +210,8 @@ implements ChildModWithConfig
     }
     
     private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
-		Vec3 lookVec = player.getLookVec();
-		Vec3 posVec = player.getPositionVector();
+    	Vec3d lookVec = player.getLookVec();
+    	Vec3d posVec = player.getPositionVector();
 		MovingObjectPosition movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
@@ -220,8 +221,8 @@ implements ChildModWithConfig
     
     private double slowdownFactorWall(EntityPlayer player) {
     	BlockPos playerPos = player.getPosition();
-		Vec3 lookVec = player.getLookVec();
-		Vec3 posVec = player.getPositionVector();
+    	Vec3d lookVec = player.getLookVec();
+    	Vec3d posVec = player.getPositionVector();
 		
 		// Check block in front of player, and the one above it.
 		// Also same two blocks in front.
@@ -279,10 +280,10 @@ implements ChildModWithConfig
     	// - smooth out noise, and
     	// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after movement).
     	double scalarLength = mPrevLookDirs.size();
-    	Vec3 vectorSum = new Vec3(0, 0, 0);
+    	Vec3d vectorSum = new Vec3d(0, 0, 0);
     	
     	// TODO: Sums could be done incrementally rather than looping over everything each time.
-    	Iterator<Vec3> iter = mPrevLookDirs.iterator();
+    	Iterator<Vec3d> iter = mPrevLookDirs.iterator();
     	while (iter.hasNext()) {
             vectorSum = vectorSum.add(iter.next());
     	}
@@ -297,7 +298,7 @@ implements ChildModWithConfig
 
 	private static boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
-    private Queue<Vec3> mPrevLookDirs;
+    private Queue<Vec3d> mPrevLookDirs;
     
     public static void stop() {
     	if (mDoingAutoWalk) {

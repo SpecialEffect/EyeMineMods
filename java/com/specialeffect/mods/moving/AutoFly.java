@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -108,7 +109,7 @@ implements ChildModWithConfig
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
 				BlockPos playerPos = player.getPosition();
-				Vec3 lookVec = player.getLookVec();
+				Vec3d lookVec = player.getLookVec();
 
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {

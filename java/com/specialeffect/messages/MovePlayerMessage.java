@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -60,7 +61,7 @@ public class MovePlayerMessage implements IMessage {
 							// Minecarts can only be moved forward/backward
 							if (riddenEntity instanceof EntityMinecart) {
 								EntityMinecart minecart = (EntityMinecart)riddenEntity;
-								Vec3 lookVec = player.getLookVec();
+								Vec3d lookVec = player.getLookVec();
 								int lookYaw = (int)player.rotationYaw;
 								int yawDiff = ((int)riddenEntity.rotationYaw - lookYaw) % 360;
 								if (yawDiff < 90 || yawDiff > 270) {

@@ -26,6 +26,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -139,7 +140,7 @@ implements ChildModWithConfig
 
 			    	EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 
-			    	Vec3 pos = player.getPositionVector();
+			    	Vec3d pos = player.getPositionVector();
 	    			float yaw = player.rotationYaw;
 	    			float pitch = player.rotationPitch; 
 	    			
