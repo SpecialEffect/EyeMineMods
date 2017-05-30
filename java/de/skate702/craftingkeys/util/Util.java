@@ -30,7 +30,7 @@ public class Util {
      * @return A item stack
      */
     public static ItemStack getHeldStack() {
-        return client.thePlayer.inventory.getItemStack();
+        return client.player.inventory.getItemStack();
     }
 
     /**
@@ -63,7 +63,7 @@ public class Util {
      * @param lang_key key from lang-file
      */
     public static void printMessage(String lang_key) {
-        client.thePlayer.addChatMessage(new ChatComponentTranslation(lang_key));
+        client.player.addChatMessage(new ChatComponentTranslation(lang_key));
     }
 
 }
