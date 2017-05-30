@@ -152,7 +152,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 			    				new UseItemAtPositionMessage(item, blockPos));
 
 			    		// Make sure we get the animation
-			    		player.swingItem();
+			    		player.swingArm(null);
 	                }
 				}		
 			},

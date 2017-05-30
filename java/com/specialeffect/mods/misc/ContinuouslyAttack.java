@@ -102,7 +102,8 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			// When attacking programmatically, the player doesn't swing unless
 			// an attackable-block is in reach. We fix that here, for better feedback.
 			if (mIsAttacking) {
-				event.getEntityLiving().swingItem();
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+				player.swingArm(null);
 			}
 			
 			this.processQueuedCallbacks(event);
