@@ -103,7 +103,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
@@ -122,7 +122,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			// When attacking programmatically, the player doesn't swing unless
 			// an attackable-block is in reach. We fix that here.
 			if (attackBinding.isKeyDown()) {
-				event.entityLiving.swingItem();
+				event.getEntityLiving().swingItem();
 			}
 			
 			// Remember mouse status so we can have one tick of grace
@@ -157,7 +157,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.addChatComponentMessage(new ChatComponentText(
 			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
 				}		

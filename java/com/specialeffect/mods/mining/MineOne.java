@@ -91,13 +91,13 @@ public class MineOne {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			
 			if (mDestroying) {
 
 				// Select the best tool from the inventory
 				World world = Minecraft.getMinecraft().theWorld;
-	    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 				
 	    		// Not currently using -> separate out to another key binding?
 	    		//chooseBestTool(player.inventory, mBlockToDestroy);

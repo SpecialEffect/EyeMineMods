@@ -114,9 +114,9 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
 
-    		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
+    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());

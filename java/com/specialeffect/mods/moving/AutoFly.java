@@ -110,8 +110,8 @@ implements ChildModWithConfig
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
@@ -172,7 +172,7 @@ implements ChildModWithConfig
 			public void onLiving(LivingUpdateEvent event) {
 //				mIsFlyingAuto = false;
 //				mIsFlyingManual = false;
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				player.capabilities.isFlying = false;
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 //				updateIcons();
@@ -187,7 +187,7 @@ implements ChildModWithConfig
 				mIsFlyingAuto = isAuto;
 				mIsFlyingManual = !isAuto;
 				
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				if (player.capabilities.allowFlying) {
 					// stop sneaking (if we are), which prevents flying
 					Sneak.stop();

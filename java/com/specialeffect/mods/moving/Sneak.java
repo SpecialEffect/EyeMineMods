@@ -80,7 +80,7 @@ public class Sneak extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			this.processQueuedCallbacks(event);
 			
 			// Make sure icon up to date
@@ -106,7 +106,7 @@ public class Sneak extends BaseClassWithCallbacks {
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.addChatComponentMessage(new ChatComponentText(
 			        		 "Sneaking: " + (mMCSneakBinding.isKeyDown() ? "ON" : "OFF")));
 				}		

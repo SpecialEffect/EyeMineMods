@@ -104,8 +104,8 @@ implements ChildModWithConfig
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			World world = Minecraft.getMinecraft().theWorld;
 
 			BlockPos playerPos = player.getPosition();

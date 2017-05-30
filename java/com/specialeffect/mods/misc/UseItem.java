@@ -96,7 +96,7 @@ public class UseItem extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			this.processQueuedCallbacks(event);
 		}
 	}

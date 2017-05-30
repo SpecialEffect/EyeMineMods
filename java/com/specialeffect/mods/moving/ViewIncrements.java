@@ -131,7 +131,7 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
@@ -161,7 +161,7 @@ implements ChildModWithConfig
 			    	int dYaw = (int)p.getX() * mViewDeltaRelative;
 			    	int dPitch = - (int)p.getY() * mViewDeltaRelative; // pitch is opposite to what you expect
 
-			    	EntityPlayer player = (EntityPlayer)event.entityLiving;
+			    	EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 
 			    	Vec3 pos = player.getPositionVector();
 	    			float yaw = player.rotationYaw;

@@ -56,7 +56,7 @@ public class BaseClassWithCallbacks {
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.addChatComponentMessage(new ChatComponentText(message));
 				}		
 			}));

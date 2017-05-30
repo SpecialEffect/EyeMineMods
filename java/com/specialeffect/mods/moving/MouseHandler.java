@@ -251,8 +251,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
 														// *after* other mods
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			mPendingMouseEvent = false;
 
 			this.processQueuedCallbacks(event);

@@ -103,8 +103,8 @@ public class AutoPillar extends BaseClassWithCallbacks
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer)event.entityLiving;
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			synchronized (mOnLivingQueue) {
 				this.lastPlayerPitch = player.rotationPitch;
 			}
@@ -142,7 +142,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 		            // on a block here, so that the block always ends up under us (if you do this
 		            // with integer positions you often find your position alternating between 2 blocks)
 		    		// Also look down, purely for effect.
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 					player.setPositionAndRotation(Math.floor(player.posX)+0.4, 
 		    						   Math.floor(player.posY), 
 		    						   Math.floor(player.posZ)+0.4,
@@ -158,7 +158,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
  	                World world = Minecraft.getMinecraft().theWorld;
-		    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+		    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 		    		BlockPos playerPos = player.getPosition();
 
 	                ItemStack item = player.getHeldItem();
@@ -184,7 +184,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 	        	{				
 					@Override
 					public void onLiving(LivingUpdateEvent event) {
-						EntityPlayer player = (EntityPlayer)event.entityLiving;
+						EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 						
 						player.setPositionAndRotation(player.posX,
 			    						  		 	  player.posY, 

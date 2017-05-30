@@ -130,7 +130,7 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
@@ -155,7 +155,7 @@ implements ChildModWithConfig
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 					Point p = ModUtils.getCompassPoint(i);
 
 					float theta = (float)Math.atan2(p.getX(), p.getY());
