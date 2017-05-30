@@ -23,6 +23,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -192,7 +193,8 @@ implements ChildModWithConfig
 						if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
 						if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
 					}
-					player.moveEntity(0, flyHeight, 0);
+					//TODO: MoverType SELF or PLAYER?
+					player.move(MoverType.SELF, 0, flyHeight, 0);
 					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 				}
 				else {

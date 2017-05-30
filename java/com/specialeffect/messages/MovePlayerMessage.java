@@ -12,6 +12,7 @@ package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
@@ -56,7 +57,7 @@ public class MovePlayerMessage implements IMessage {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     if (player.isRiding()) {
                     	player.moveForward = 1.0f;
-                    	Entity riddenEntity = player.ridingEntity;
+                    	Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
 							// Minecarts can only be moved forward/backward
 							if (riddenEntity instanceof EntityMinecart) {
@@ -79,8 +80,8 @@ public class MovePlayerMessage implements IMessage {
 							float xDiff =  -(float)(message.moveAmount*Math.sin(yaw+message.moveAngle));
 							float yDiff = (float)(message.moveAmount*Math.cos(yaw+message.moveAngle));
 
-							riddenEntity.moveEntity(xDiff, 0, 
-													yDiff);
+							// TODO: check if type is correct.
+							riddenEntity.move(MoverType.SELF, xDiff, 0, yDiff);
 						}
                     }
                 }
