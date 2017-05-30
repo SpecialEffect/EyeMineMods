@@ -56,7 +56,7 @@ public class UseDoorAtPositionMessage implements IMessage {
     public static class Handler implements IMessageHandler<UseDoorAtPositionMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final UseDoorAtPositionMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
