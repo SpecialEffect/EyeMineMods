@@ -142,7 +142,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 		    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 		    		BlockPos playerPos = player.getPosition();
 
-	                ItemStack item = player.getHeldItem();
+	                ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);
 	                if (item != null) {
 	                	BlockPos blockPos = new BlockPos(playerPos.getX(), 
 	                									 playerPos.getY()-1, // y = up 

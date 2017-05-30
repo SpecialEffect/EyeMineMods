@@ -14,6 +14,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -63,7 +64,8 @@ public class UseItemAtPositionMessage implements IMessage {
                     World world = player.getEntityWorld();
                     
                     message.item.onItemUse(player, world, 
-				                    	   message.blockPos, EnumFacing.UP, 
+				                    	   message.blockPos, EnumHand.MAIN_HAND, 
+				                    	   EnumFacing.UP, 
 				                    	   0.0f, 0.0f, 0.0f);
                     
                     // TODO: Deprecate item stack in survival mode?
