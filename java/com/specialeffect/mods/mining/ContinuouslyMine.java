@@ -23,6 +23,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -98,7 +99,7 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			// an attackable-block is in reach. We fix that here.
 			if (attackBinding.isKeyDown()) {
 				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-				player.swingArm(null);
+				player.swingArm(EnumHand.MAIN_HAND);
 			}
 			
 			// Remember mouse status so we can have one tick of grace

@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -152,7 +153,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 			    				new UseItemAtPositionMessage(item, blockPos));
 
 			    		// Make sure we get the animation
-			    		player.swingArm(null);
+			    		player.swingArm(EnumHand.MAIN_HAND);
 	                }
 				}		
 			},
