@@ -94,7 +94,7 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if (eventArgs.modID.equals(this.MODID)) {
+		if (eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();
 		}
 		for (ChildModWithConfig child : childrenWithConfig) {

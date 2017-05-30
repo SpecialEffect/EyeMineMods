@@ -126,7 +126,7 @@ public class CraftingKeys {
      */
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if (eventArgs.modID.equals(MODID)) {
+        if (eventArgs.getModID().equals(MODID)) {
             Config.syncConfig();
             Logger.info("onConfigChanged(e)", "Changed config.");
         }
