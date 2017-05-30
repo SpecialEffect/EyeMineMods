@@ -206,8 +206,7 @@ implements ChildModWithConfig
     // blocks movement.
     private boolean doesBlockMovement(BlockPos pos) {
     	World world = Minecraft.getMinecraft().world;
-		Block block = world.getBlockState(pos).getBlock();
-		return block.getMaterial().blocksMovement();
+		return world.getBlockState(pos).getMaterial().blocksMovement();
     }
     
     private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {

@@ -123,7 +123,7 @@ implements ChildModWithConfig
 					Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
 
 					// If there's a block in your way, and you're not already jumping over it...
-					if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement() &&
+					if (world.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMovement() &&
 							player.motionY == 0) {
 						player.motionY += Math.max(mFlyHeightAuto / 4, 1);
 						break; // for yDiff = ...
