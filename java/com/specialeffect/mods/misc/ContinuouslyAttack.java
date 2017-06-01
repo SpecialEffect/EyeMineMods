@@ -43,7 +43,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = ContinuouslyAttack.MODID, version = ModUtils.VERSION, name = ContinuouslyAttack.NAME)
 public class ContinuouslyAttack extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.continuouslyAttack";
+	public static final String MODID = "specialeffect.continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
     private Robot robot;
 

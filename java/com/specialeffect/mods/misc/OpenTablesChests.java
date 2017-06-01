@@ -52,7 +52,7 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
 
-	public static final String MODID = "specialeffect.OpenTablesChests";
+	public static final String MODID = "specialeffect.opentableschests";
 	public static final String NAME = "OpenTablesChests";
 
     public static Configuration mConfig;

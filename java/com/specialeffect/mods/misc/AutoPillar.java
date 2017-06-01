@@ -46,7 +46,7 @@ import net.minecraftforge.fml.relauncher.Side;
 	 name = AutoPillar.NAME)
 public class AutoPillar extends BaseClassWithCallbacks
 {
-    public static final String MODID = "specialeffect.AutoPillar";
+    public static final String MODID = "specialeffect.autopillar";
     public static final String NAME = "AutoPillar";
 
     public static KeyBinding autoPlaceKeyBinding;

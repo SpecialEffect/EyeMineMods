@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 	 name = SpecialEffectMining.NAME)
 public class SpecialEffectMining extends BaseClassWithCallbacks {
 
-	public static final String MODID = "specialeffect.Mining";	
+	public static final String MODID = "specialeffect.mining";	
 	public static final String NAME = "SpecialEffectMining";
 
 	@EventHandler

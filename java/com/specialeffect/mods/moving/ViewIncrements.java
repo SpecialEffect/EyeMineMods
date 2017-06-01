@@ -49,7 +49,7 @@ public class ViewIncrements
 extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
-    public static final String MODID = "specialeffect.ViewIncrements";
+    public static final String MODID = "specialeffect.viewincrements";
     public static final String NAME = "ViewIncrements";
     public static Configuration mConfig;
 

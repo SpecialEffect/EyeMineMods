@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = UseItem.MODID, version = ModUtils.VERSION, name = UseItem.NAME)
 public class UseItem extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.useItem";
+	public static final String MODID = "specialeffect.useitem";
 	public static final String NAME = "UseItem";
 
 	@EventHandler

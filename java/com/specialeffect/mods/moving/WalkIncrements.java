@@ -47,7 +47,7 @@ public class WalkIncrements
 extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
-    public static final String MODID = "specialeffect.WalkIncrements";
+    public static final String MODID = "specialeffect.walkincrements";
     public static final String NAME = "WalkIncrements";
     public static Configuration mConfig;
 

@@ -50,7 +50,7 @@ name = GatherDrops.NAME)
 public class GatherDrops extends BaseClassWithCallbacks
 {
 
-	public static final String MODID = "specialeffect.GatherDrops";
+	public static final String MODID = "specialeffect.gatherdrops";
 	public static final String NAME = "GatherDrops";
 
 	public static Configuration mConfig;
