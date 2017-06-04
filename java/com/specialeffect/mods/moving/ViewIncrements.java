@@ -12,7 +12,6 @@ package com.specialeffect.mods.moving;
 
 import java.awt.AWTException;
 import java.awt.Point;
-import java.awt.Robot;
 
 import org.lwjgl.input.Keyboard;
 
@@ -60,7 +59,6 @@ implements ChildModWithConfig
     
     private KeyPressCounter keyCounterViewDir = new KeyPressCounter();
 
-    private Robot robot;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
@@ -75,12 +73,6 @@ implements ChildModWithConfig
     	network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
         
-        try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			System.out.println("Can't create robot for " + this.NAME);
-			e.printStackTrace();
-		}
     }
     
     public void syncConfig() {
