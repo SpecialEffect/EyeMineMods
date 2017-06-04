@@ -292,6 +292,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		return mPendingMouseEvent && mLastEventWithinBounds;
 	}
 
+	private static long lastActualEventNanoseconds = 0;
+	
 	private void onMouseInputGrabbed(InputEvent.MouseInputEvent event) {
 		// Cancel any mouse events within a certain border. This avoids mouse
 		// movements outside the window (e.g. from
@@ -299,27 +301,37 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		float x_abs = Math.abs((float) Mouse.getEventDX()); // distance from
 															// centre
 		float y_abs = Math.abs((float) Mouse.getEventDY());
-
-		if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
-			// In v1.8, it would be sufficient to query getDX and DY to consume
-			// the deltas.
-			// ... but this doesn't work in 1.8.8, so we hack it by setting the
-			// mouse sensitivity down low.
-			// See:
-			// http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-			this.zeroSensitivity();
+		
+		boolean actualEvent = false; 
+		// in v1_11 (but not v_1_1_8) we get repeat mouse events every tick even 
+		// if mouse hasn't moved, but the timestamp reveals all secrets.
+		if (Mouse.getEventNanoseconds() > this.lastActualEventNanoseconds) {
+			this.lastActualEventNanoseconds = Mouse.getEventNanoseconds();
+			actualEvent = true;
 		}
-		// turn off anyway, if vanilla mouse movements turned off, but record
-		// pending event.
-		else if (mVanillaMouseMovementDisabled) {
-			this.zeroSensitivity();
-			mPendingMouseEvent = true;
-		} else {
-			this.resetSensitivity();
-			mPendingMouseEvent = true;
+		
+		if (actualEvent) {
+			if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
+				// In v1.8, it would be sufficient to query getDX and DY to consume
+				// the deltas.
+				// ... but this doesn't work in 1.8.8, so we hack it by setting the
+				// mouse sensitivity down low.
+				// See:
+				// http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
+				this.zeroSensitivity();
+			}
+			// turn off anyway, if vanilla mouse movements turned off, but record
+			// pending event.
+			else if (mVanillaMouseMovementDisabled) {
+				this.zeroSensitivity();
+				mPendingMouseEvent = true;
+			} else {
+				this.resetSensitivity();
+				mPendingMouseEvent = true;
+			}
+	
+			mIgnoreEventCount = Math.max(mIgnoreEventCount - 1, 0);
 		}
-
-		mIgnoreEventCount = Math.max(mIgnoreEventCount - 1, 0);
 	}
 
 	// x_abs and y_abs are from centre of minecraft window
