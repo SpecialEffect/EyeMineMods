@@ -1,32 +1,6 @@
 package de.skate702.craftingkeys;
 
-import de.skate702.craftingkeys.config.Config;
-import de.skate702.craftingkeys.config.GuiConfig;
-import de.skate702.craftingkeys.config.GuiConfigHandler;
-import de.skate702.craftingkeys.config.KeyBindings;
-import de.skate702.craftingkeys.manager.AnvilManager;
-import de.skate702.craftingkeys.manager.BrewingManager;
-import de.skate702.craftingkeys.manager.ContainerManager;
-import de.skate702.craftingkeys.manager.CraftingManager;
-import de.skate702.craftingkeys.manager.DispenserManager;
-import de.skate702.craftingkeys.manager.EnchantmentManager;
-import de.skate702.craftingkeys.manager.FurnaceManager;
-import de.skate702.craftingkeys.manager.InventoryManager;
-import de.skate702.craftingkeys.manager.VillagerManager;
-import de.skate702.craftingkeys.proxies.CraftingKeysProxy;
-import de.skate702.craftingkeys.util.Logger;
-import de.skate702.craftingkeys.util.Util;
-import net.minecraft.client.gui.GuiEnchantment;
-import net.minecraft.client.gui.GuiMerchant;
-import net.minecraft.client.gui.GuiRepair;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiBrewingStand;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.client.gui.inventory.GuiDispenser;
-import net.minecraft.client.gui.inventory.GuiFurnace;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraftforge.client.event.GuiOpenEvent;
-import net.minecraftforge.common.MinecraftForge;
+
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +14,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import de.skate702.craftingkeys.config.Config;
+import de.skate702.craftingkeys.config.GuiConfig;
+import de.skate702.craftingkeys.config.GuiConfigHandler;
+import de.skate702.craftingkeys.config.KeyBindings;
+import de.skate702.craftingkeys.manager.*;
+import de.skate702.craftingkeys.proxies.CraftingKeysProxy;
+import de.skate702.craftingkeys.util.Logger;
+import de.skate702.craftingkeys.util.Util;
+import net.minecraft.client.gui.GuiEnchantment;
+import net.minecraft.client.gui.GuiMerchant;
+import net.minecraft.client.gui.GuiRepair;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.*;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * The Main Class of the Mod with the important onTick-Method. Some Methods are
@@ -51,7 +40,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 public class CraftingKeys {
 
     public static final String MODID = "craftingkeys";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.2";
     public static final String NAME = "Crafting Keys";
 
     /**
@@ -126,7 +115,7 @@ public class CraftingKeys {
      */
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if (eventArgs.getModID().equals(MODID)) {
+        if (eventArgs.getModID().equals(MODID)) { 
             Config.syncConfig();
             Logger.info("onConfigChanged(e)", "Changed config.");
         }
@@ -154,7 +143,6 @@ public class CraftingKeys {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent tick) {
 
-        // Get current Screen, then test
         GuiScreen currentScreen = Util.client.currentScreen;
 
         if (currentScreen != null) {

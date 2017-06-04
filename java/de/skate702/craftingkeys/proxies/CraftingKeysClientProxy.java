@@ -12,9 +12,10 @@ import net.minecraft.inventory.ClickType;
 public class CraftingKeysClientProxy extends CraftingKeysProxy {
 
     @Override
-	public void sendSlotClick(PlayerControllerMP controller, int windowId, int slot, ClickType type, int action,
+    public void sendSlotClick(PlayerControllerMP controller, int windowId, int slot, int rightClick, int action,
                               EntityPlayer player) {
-    	controller.windowClick(windowId, slot, action, type, player);
+
+        controller.windowClick(windowId, slot, rightClick, ClickType.PICKUP, player);
     }
 
 }
