@@ -92,9 +92,7 @@ public class Dismount extends BaseClassWithCallbacks {
 
 						Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
-							player.dismountEntity(riddenEntity);
-							riddenEntity.updateRidden();
-							player.updateRidden();
+							player.dismountRidingEntity();
 							player.motionY += 0.5D;
 						}
 					}
