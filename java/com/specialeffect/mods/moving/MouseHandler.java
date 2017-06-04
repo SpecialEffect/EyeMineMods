@@ -246,12 +246,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mSensivityUpKB.isPressed()) {
 			this.resetSensitivity();
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity *= 1.1;
+			Minecraft.getMinecraft().gameSettings.mouseSensitivity = 
+					Math.abs(Minecraft.getMinecraft().gameSettings.mouseSensitivity)*1.1f;
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mSensivityDownKB.isPressed()) {
 			this.resetSensitivity();
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity /= 1.1;
+			Minecraft.getMinecraft().gameSettings.mouseSensitivity = 
+					Math.abs(Minecraft.getMinecraft().gameSettings.mouseSensitivity)/1.1f;
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
