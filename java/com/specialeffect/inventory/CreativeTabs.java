@@ -109,10 +109,11 @@ implements ChildModWithConfig
 		GuiScreen currentScreen = client.currentScreen;
 		if (currentScreen != null) {
 			if (currentScreen instanceof GuiContainerCreative) {
-				GuiContainerCreative gui = (GuiContainerCreative)currentScreen;				
+				GuiContainerCreative gui = (GuiContainerCreative)currentScreen;	
 				CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 						gui.getGuiLeft(), gui.getGuiTop(), 
-						gui.getXSize(), gui.getYSize());            	
+						gui.getXSize(), gui.getYSize(),
+						gui.getSelectedTabIndex());            	
 				con.acceptKey();
 			}
 		}

@@ -43,11 +43,13 @@ public class CreativeInventoryManager {
 	 * @return manager-singleton
 	 */
 	public static CreativeInventoryManager getInstance(int left, int top, 
-													   int xSize, int ySize) {
+													   int xSize, int ySize,
+													   int currTab) {
 		if (instance == null) {
 			instance = new CreativeInventoryManager();
 		} 
 		instance.updateCoordinates(left, top, xSize, ySize);
+		instance.currTab = currTab;
 		return instance;
 	}
 	
@@ -58,6 +60,8 @@ public class CreativeInventoryManager {
 	
 	private float xScale = 1.0f;
 	private float yScale = 1.0f;
+	
+	private int currTab;
 	
 	private void updateCoordinates(int left, int top, int width, int height) {
 		int inventoryWidth = width;
@@ -82,40 +86,96 @@ public class CreativeInventoryManager {
 		// Handle key press
 		int xPos = -1;
 		int yPos = -1;
+		// First 5 tabs on top (not inc search which has it's own key already)
 		if (Config.isKey0Pressed()) {
-			xPos = leftColXPos;
-			yPos = topRowYPos;
+			this.switchToTab(0);
 		} else if (Config.isKey1Pressed()) {
-			xPos = leftColXPos+tabWidth;
-			yPos = topRowYPos;
+			this.switchToTab(1);
 		} else if (Config.isKey2Pressed()) {
-			xPos = leftColXPos+2*tabWidth;
-			yPos = topRowYPos;
+			this.switchToTab(2);
 		} else if (Config.isKey3Pressed()) {
-			xPos = leftColXPos+3*tabWidth;
-			yPos = topRowYPos;
+			this.switchToTab(3);
 		} else if (Config.isKey4Pressed()) {
-			xPos = leftColXPos+4*tabWidth;
-			yPos = topRowYPos;
-		} else if (Config.isKey5Pressed()) {
-			xPos = leftColXPos;
-			yPos = bottomRowYPos;
+			this.switchToTab(4);			
+		} 
+		// 5 tabs on bottom (not inc survival since it's unlikely you need it)
+		// Note indices are offset by one since we skipped search.
+		else if (Config.isKey5Pressed()) {
+			this.switchToTab(6);
 		} else if (Config.isKey6Pressed()) {
-			xPos = leftColXPos+tabWidth;;
-			yPos = bottomRowYPos;
+			this.switchToTab(7);
 		} else if (Config.isKey7Pressed()) {
-			xPos = leftColXPos+2*tabWidth;;
-			yPos = bottomRowYPos;
+			this.switchToTab(8);
 		} else if (Config.isKey8Pressed()) {
-			xPos = leftColXPos+3*tabWidth;;
-			yPos = bottomRowYPos;
+			this.switchToTab(9);
 		} else if (Config.isKey9Pressed()) {
-			xPos = leftColXPos+4*tabWidth;
-			yPos = bottomRowYPos;
+			this.switchToTab(10);
+		} else if (Config.isKeyPrevPressed()) {
+			this.switchToTab(validateTabIdx(currTab - 1));
+		} else if (Config.isKeyNextPressed()) {
+			this.switchToTab(validateTabIdx(currTab + 1));
 		} else if (Config.isKeyTakePressed()) {
 			// TODO: Take first item?
+		}		
+	}
+	
+	private void switchToTab(int iTab) {
+		int xPos = -1;
+		int yPos = -1;
+		switch(iTab) {
+		case 0:
+			xPos = leftColXPos;
+			yPos = topRowYPos;
+			break;
+		case 1:
+			xPos = leftColXPos+tabWidth;
+			yPos = topRowYPos;
+			break;
+		case 2:
+			xPos = leftColXPos+2*tabWidth;
+			yPos = topRowYPos;
+			break;
+		case 3:
+			xPos = leftColXPos+3*tabWidth;
+			yPos = topRowYPos;
+			break;
+		case 4:
+			xPos = leftColXPos+4*tabWidth;
+			yPos = topRowYPos;
+			break;
+		case 5: 
+			xPos = leftColXPos+6*tabWidth;
+			yPos = topRowYPos;
+			break;
+		case 6:
+			xPos = leftColXPos;
+			yPos = bottomRowYPos;
+			break;
+		case 7:
+			xPos = leftColXPos+tabWidth;;
+			yPos = bottomRowYPos;
+			break;
+		case 8:
+			xPos = leftColXPos+2*tabWidth;;
+			yPos = bottomRowYPos;
+			break;
+		case 9:
+			xPos = leftColXPos+3*tabWidth;;
+			yPos = bottomRowYPos;
+			break;
+		case 10:
+			xPos = leftColXPos+4*tabWidth;
+			yPos = bottomRowYPos;
+			break;			
+		case 11:
+			xPos = leftColXPos+6*tabWidth;
+			yPos = bottomRowYPos;
+			break;
+		default:
+			System.out.println("Unknown tab requested");
+			break;
 		}
-
+		
 		if (xPos > -1) {
 			org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
 													(int)(yPos*this.yScale));
@@ -124,6 +184,16 @@ public class CreativeInventoryManager {
 			// I don't know how else to.
 			robot.mousePress(KeyEvent.BUTTON1_MASK);
 			robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-		}		
+		}	
 	}
+	
+	private int NUM_TABS = 12;
+		
+	// Ensure index in range, wrap if necessary
+	private int validateTabIdx(int idx) {
+		idx += NUM_TABS; // ensure positive
+		idx %= NUM_TABS; // modulo into range	
+		return idx;
+	}
+	
 }

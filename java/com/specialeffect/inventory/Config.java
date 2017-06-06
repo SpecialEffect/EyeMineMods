@@ -34,7 +34,8 @@ public class Config {
      * Defines all 11 Keys you can use with Crafting Keys.
      */
     static Property key0, key1, key2, key3, key4,
-    			    key5, key6, key7, key8, key9, keyTake;
+    			    key5, key6, key7, key8, key9, 
+    			    keyNext, keyPrev, keyTake;
     
     /**
      * Provides the Suggested Config File.
@@ -84,6 +85,8 @@ public class Config {
 					flagKeyIfMatches(key7); 
 					flagKeyIfMatches(key8); 
 					flagKeyIfMatches(key9); 
+					flagKeyIfMatches(keyPrev); 
+					flagKeyIfMatches(keyNext); 
 					flagKeyIfMatches(keyTake); 
 				}
 			} catch (IOException e) {
@@ -139,6 +142,15 @@ public class Config {
     public static boolean isKeyTakePressed() {
     	return isKeyPressed(keyTake);
     }    
+    
+    public static boolean isKeyPrevPressed() {
+    	return isKeyPressed(keyPrev);
+    }
+    
+    public static boolean isKeyNextPressed() {
+    	return isKeyPressed(keyNext);
+    }
+    
     /**
      * Initializes the configFile Files, loads all values (or sets them to default).
      *
@@ -188,6 +200,8 @@ public class Config {
         key8 = configFile.get(categoryInventory, "key8", Keyboard.KEY_NUMPAD8);
         key9 = configFile.get(categoryInventory, "key9", Keyboard.KEY_NUMPAD9);
 
+        keyPrev = configFile.get(categoryInventory, "keyPrev", Keyboard.KEY_LSHIFT);
+        keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RSHIFT);
         keyTake = configFile.get(categoryInventory, "keyTake", Keyboard.KEY_RETURN);
    }
 
