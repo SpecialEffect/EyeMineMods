@@ -10,9 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.util.Iterator;
-import java.util.Queue;
-
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
@@ -24,7 +21,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -80,7 +77,7 @@ public class Sneak extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			this.processQueuedCallbacks(event);
 			
 			// Make sure icon up to date
@@ -106,8 +103,8 @@ public class Sneak extends BaseClassWithCallbacks {
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
-			        player.addChatComponentMessage(new ChatComponentText(
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+			        player.sendMessage(new TextComponentString(
 			        		 "Sneaking: " + (mMCSneakBinding.isKeyDown() ? "ON" : "OFF")));
 				}		
 			}));

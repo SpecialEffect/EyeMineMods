@@ -14,37 +14,17 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.lwjgl.input.Keyboard;
-
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = DebugAverageFps.MODID, 
 version = ModUtils.VERSION,
@@ -79,7 +59,7 @@ public class DebugAverageFps
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			mTickCount++;
 			
 			int currFps = Minecraft.getDebugFPS();

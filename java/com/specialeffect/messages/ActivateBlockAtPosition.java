@@ -10,19 +10,14 @@
 
 package com.specialeffect.messages;
 
-import com.specialeffect.utils.OpenableBlock;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -58,7 +53,7 @@ public class ActivateBlockAtPosition implements IMessage {
     public static class Handler implements IMessageHandler<ActivateBlockAtPosition, IMessage> {        
     	@Override
         public IMessage onMessage(final ActivateBlockAtPosition message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
@@ -68,7 +63,7 @@ public class ActivateBlockAtPosition implements IMessage {
 
 					IBlockState state = world.getBlockState(message.blockPos);								    
 					block.onBlockActivated(world, message.blockPos, state, player, 
-							EnumFacing.NORTH, 0.5f, 0.5f, 0.5f);	
+							EnumHand.MAIN_HAND, EnumFacing.NORTH, 0.5f, 0.5f, 0.5f);	
 
                 }
             });

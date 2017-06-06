@@ -1,5 +1,6 @@
 package de.skate702.craftingkeys.config;
 
+
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import de.skate702.craftingkeys.CraftingKeys;
 import de.skate702.craftingkeys.util.Logger;

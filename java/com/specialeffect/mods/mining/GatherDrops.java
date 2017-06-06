@@ -11,40 +11,22 @@
 package com.specialeffect.mods.mining;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.ActivateBlockAtPosition;
-import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.messages.PickBlockMessage;
-import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.utils.OpenableBlock;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockLadder;
-import net.minecraft.block.BlockWorkbench;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3i;
-import net.minecraft.world.ILockableContainer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -61,7 +43,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = GatherDrops.MODID, 
 version = ModUtils.VERSION,
@@ -69,7 +50,7 @@ name = GatherDrops.NAME)
 public class GatherDrops extends BaseClassWithCallbacks
 {
 
-	public static final String MODID = "specialeffect.GatherDrops";
+	public static final String MODID = "specialeffect.gatherdrops";
 	public static final String NAME = "GatherDrops";
 
 	public static Configuration mConfig;
@@ -111,7 +92,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
+		if(eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();
 		}
 	}
@@ -124,7 +105,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			this.processQueuedCallbacks(event);
 		}			
 	}
@@ -136,8 +117,8 @@ public class GatherDrops extends BaseClassWithCallbacks
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					World world = Minecraft.getMinecraft().theWorld;
+					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					World world = Minecraft.getMinecraft().world;
 
 					BlockPos playerPos = player.getPosition();
 					double dx, dy, dz;

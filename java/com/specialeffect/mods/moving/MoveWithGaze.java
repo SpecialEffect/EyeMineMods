@@ -10,21 +10,13 @@
 
 package com.specialeffect.mods.moving;
 
-import java.text.DecimalFormat;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.OnLivingCallback;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -35,24 +27,20 @@ import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -104,7 +92,7 @@ implements ChildModWithConfig
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3>();
+        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
@@ -114,9 +102,9 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
 
-    		EntityPlayer player = (EntityPlayer)event.entityLiving;    		
+    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
@@ -185,7 +173,7 @@ implements ChildModWithConfig
 		return Math.min(1.0, (double)standardFps/(double)currFps);
 	}
 
-	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3 lookVec) {
+	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3d lookVec) {
     	double thresh = 0.8;
     	switch(sideHit) {
 		case NORTH:
@@ -217,15 +205,14 @@ implements ChildModWithConfig
     // Check if there's a block at the given position which
     // blocks movement.
     private boolean doesBlockMovement(BlockPos pos) {
-    	World world = Minecraft.getMinecraft().theWorld;
-		Block block = world.getBlockState(pos).getBlock();
-		return block.getMaterial().blocksMovement();
+    	World world = Minecraft.getMinecraft().world;
+		return world.getBlockState(pos).getMaterial().blocksMovement();
     }
     
     private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
-		Vec3 lookVec = player.getLookVec();
-		Vec3 posVec = player.getPositionVector();
-		MovingObjectPosition movPos = player.rayTrace(1.0, 1.0f);
+    	Vec3d lookVec = player.getLookVec();
+    	Vec3d posVec = player.getPositionVector();
+    	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
 		}
@@ -234,8 +221,8 @@ implements ChildModWithConfig
     
     private double slowdownFactorWall(EntityPlayer player) {
     	BlockPos playerPos = player.getPosition();
-		Vec3 lookVec = player.getLookVec();
-		Vec3 posVec = player.getPositionVector();
+    	Vec3d lookVec = player.getLookVec();
+    	Vec3d posVec = player.getPositionVector();
 		
 		// Check block in front of player, and the one above it.
 		// Also same two blocks in front.
@@ -282,7 +269,7 @@ implements ChildModWithConfig
     }
 
 	private boolean isLadder(BlockPos pos) {
-		World world = Minecraft.getMinecraft().theWorld;
+		World world = Minecraft.getMinecraft().world;
 		Block block = world.getBlockState(pos).getBlock();		
 		return ( block != null && block instanceof BlockLadder);
 	}
@@ -293,10 +280,10 @@ implements ChildModWithConfig
     	// - smooth out noise, and
     	// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after movement).
     	double scalarLength = mPrevLookDirs.size();
-    	Vec3 vectorSum = new Vec3(0, 0, 0);
+    	Vec3d vectorSum = new Vec3d(0, 0, 0);
     	
     	// TODO: Sums could be done incrementally rather than looping over everything each time.
-    	Iterator<Vec3> iter = mPrevLookDirs.iterator();
+    	Iterator<Vec3d> iter = mPrevLookDirs.iterator();
     	while (iter.hasNext()) {
             vectorSum = vectorSum.add(iter.next());
     	}
@@ -311,7 +298,7 @@ implements ChildModWithConfig
 
 	private static boolean mDoingAutoWalk = false;
     private double mWalkDistance = 1.0f;
-    private Queue<Vec3> mPrevLookDirs;
+    private Queue<Vec3d> mPrevLookDirs;
     
     public static void stop() {
     	if (mDoingAutoWalk) {

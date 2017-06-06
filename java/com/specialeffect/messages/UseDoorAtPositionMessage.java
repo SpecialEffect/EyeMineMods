@@ -14,14 +14,9 @@ import com.specialeffect.utils.OpenableBlock;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -61,7 +56,7 @@ public class UseDoorAtPositionMessage implements IMessage {
     public static class Handler implements IMessageHandler<UseDoorAtPositionMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final UseDoorAtPositionMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {

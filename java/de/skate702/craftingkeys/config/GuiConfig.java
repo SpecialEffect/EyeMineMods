@@ -142,11 +142,11 @@ public class GuiConfig extends GuiScreen {
     public void actionPerformed(GuiButton button) {
         if (button.id == buttonAbortID) {
             Logger.info("actionPerformed(b)", "Closing Crafting Keys GUI now!");
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         } else if (button.id == buttonSaveID) {
             save();
             Logger.info("actionPerformed(b)", "Saving & closing Crafting Keys GUI now!");
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         } else if (button.id >= 0 && button.id <= 11) {
             if (selectedButtonID == -1) {
                 selectedButtonID = button.id;
@@ -228,11 +228,12 @@ public class GuiConfig extends GuiScreen {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         mc.renderEngine.bindTexture(new ResourceLocation(CraftingKeys.MODID, "textures/gui/symbols.png"));
         drawTexturedModalRect(guiShowBasePosX + 105, guiShowBasePosY + 17, 200, 0, 50, 50);
-
-        drawInfoString(1, 86, 21);
-        drawInfoString(4, 86, 58);
-        drawInfoString(3, 63, 50);
-        drawInfoString(5, 109, 50);
+        
+        drawInfoString(0, 24, 21);
+        drawInfoString(4, 86, 63);
+        drawInfoString(3, 64, 56);
+        drawInfoString(5, 109, 56);
+        
     }
 
     private void genEnchantmentInfo() {
@@ -245,8 +246,8 @@ public class GuiConfig extends GuiScreen {
         mc.renderEngine.bindTexture(new ResourceLocation(CraftingKeys.MODID, "textures/gui/symbols.png"));
         drawTexturedModalRect(guiShowBasePosX + 105, guiShowBasePosY + 17, 150, 50, 50, 50);
 
-        drawInfoString(1, 32, 51);
-        // 1.8 drawInfoString(2, 42, 51);
+        drawInfoString(1, 22, 51);
+        drawInfoString(2, 42, 51);
     }
 
 
@@ -276,7 +277,7 @@ public class GuiConfig extends GuiScreen {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         mc.renderEngine.bindTexture(new ResourceLocation(CraftingKeys.MODID, "textures/gui/symbols.png"));
         drawTexturedModalRect(guiShowBasePosX + 105, guiShowBasePosY + 17, 100, 100, 50, 50);
-
+        
         drawInfoString(4, 43, 57);
         drawInfoString(5, 69, 57);
         drawInfoString(9, 126, 58);
@@ -291,12 +292,13 @@ public class GuiConfig extends GuiScreen {
         GL11.glColor4f(1F, 1F, 1F, 1F);
         mc.renderEngine.bindTexture(new ResourceLocation(CraftingKeys.MODID, "textures/gui/symbols.png"));
         drawTexturedModalRect(guiShowBasePosX + 105, guiShowBasePosY + 17, 0, 0, 50, 50);
+        
+        drawInfoString(1, 105, 22);
+        drawInfoString(2, 123, 22);
+        drawInfoString(4, 105, 40);
+        drawInfoString(5, 123, 40);
+        drawInfoString(9, 164, 32);
 
-        drawInfoString(1, 95, 30);
-        drawInfoString(2, 113, 30);
-        drawInfoString(4, 95, 48);
-        drawInfoString(5, 113, 48);
-        drawInfoString(9, 151, 40);
     }
 
     private void genDispenserInfo() {

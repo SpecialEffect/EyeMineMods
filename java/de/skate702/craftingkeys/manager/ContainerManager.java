@@ -6,8 +6,12 @@ import de.skate702.craftingkeys.util.InputUtil;
 import de.skate702.craftingkeys.util.Logger;
 import de.skate702.craftingkeys.util.Util;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
@@ -100,20 +104,26 @@ public abstract class ContainerManager {
         // Stack up on hand if equal or small enough, else throw held stack away
         if (Util.isHoldingStack() && getItemStack(getInteractionSlotIndex()) != null && (
                 !Util.getHeldStack().isItemEqual(getItemStack(getInteractionSlotIndex()))
-                        || Util.getHeldStack().stackSize + getItemStack(getInteractionSlotIndex()).stackSize
+                        || Util.getHeldStack().getCount() + getItemStack(getInteractionSlotIndex()).getCount()
                         > getItemStack(getInteractionSlotIndex()).getMaxStackSize())) {
             moveStackToInventory(-1);
         }
 
-        // Handle Interaction - get stack from output
-        int oldStackSize = -1;
-        interact();
+        // Handle Interaction
+        if (Config.isKeyStackPressed()) {
 
-        while (Util.isHoldingStack() &&
-        		oldStackSize != Util.getHeldStack().stackSize) {
+            int oldStackSize = -1;
+            interact();
 
-        	oldStackSize = Util.getHeldStack().stackSize;
-        	interact();
+            while (Util.isHoldingStack() &&
+                    oldStackSize != Util.getHeldStack().getCount()) {
+
+                oldStackSize = Util.getHeldStack().getCount();
+                interact();
+            }
+
+        } else {
+            interact();
         }
 
         // Finally put what you're holding into a slot.
@@ -156,26 +166,32 @@ public abstract class ContainerManager {
     void handleNumKey(Slot currentHoveredSlot) {
 
         // hotbar-slots are always the last 9 slots of the currently opened inventory
-        int hotbarStartIndex = Util.client.thePlayer.openContainer.getInventory().size() - 9 - 1;
-        int inputdelta;
+        int hotbarStartIndex = Util.client.player.openContainer.getInventory().size() - 9 - 1;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+        if (Util.client.currentScreen instanceof GuiInventory) {
+            hotbarStartIndex -= 1;
+        }
+
+        int inputdelta;
+        KeyBinding[] hotbar = Util.client.gameSettings.keyBindsHotbar;
+
+        if (Keyboard.isKeyDown(hotbar[0].getKeyCode())) {
             inputdelta = 1;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+        } else if (Keyboard.isKeyDown(hotbar[1].getKeyCode())) {
             inputdelta = 2;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_3)) {
+        } else if (Keyboard.isKeyDown(hotbar[2].getKeyCode())) {
             inputdelta = 3;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_4)) {
+        } else if (Keyboard.isKeyDown(hotbar[3].getKeyCode())) {
             inputdelta = 4;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_5)) {
+        } else if (Keyboard.isKeyDown(hotbar[4].getKeyCode())) {
             inputdelta = 5;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_6)) {
+        } else if (Keyboard.isKeyDown(hotbar[5].getKeyCode())) {
             inputdelta = 6;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_7)) {
+        } else if (Keyboard.isKeyDown(hotbar[6].getKeyCode())) {
             inputdelta = 7;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_8)) {
+        } else if (Keyboard.isKeyDown(hotbar[7].getKeyCode())) {
             inputdelta = 8;
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_9)) {
+        } else if (Keyboard.isKeyDown(hotbar[8].getKeyCode())) {
             inputdelta = 9;
         } else {
             return;
@@ -275,7 +291,7 @@ public abstract class ContainerManager {
         if (source == null) {
             Logger.debug("moveAll(i,i)", "Source ItemStack from Index == null");
         } else {
-            move(srcIndex, destIndex, source.stackSize);
+            move(srcIndex, destIndex, source.getCount());
         }
 
     }
@@ -302,7 +318,7 @@ public abstract class ContainerManager {
         }
 
         // Test for max. moving Amount
-        int sourceSize = source.stackSize;
+        int sourceSize = source.getCount();
         int movedAmount = Math.min(amount, sourceSize);
 
         // Clear goal slot (May fail on full inventory!); only available if not holdling
@@ -345,7 +361,15 @@ public abstract class ContainerManager {
         if (index >= 0 && index < container.inventorySlots.size()) {
 
             Slot slot = (Slot) (container.inventorySlots.get(index));
-            return (slot == null) ? null : slot.getStack();
+
+            // NEW_1_11 No Null-Stacks anymore. Empty Stacks with air...
+            ItemStack returnStack =  (slot == null) ? null : slot.getStack();
+
+            if(returnStack.getCount() == 0 && returnStack.getItem() == Item.getItemFromBlock(Blocks.AIR)) {
+                returnStack = null;
+            }
+
+            return returnStack;
 
         } else if (index == -1 && Util.isHoldingStack()) {
             return Util.getHeldStack();
@@ -423,7 +447,7 @@ public abstract class ContainerManager {
 
             if (potentialGoalStack != null && stackToMove != null) {
                 if (potentialGoalStack.isItemEqual(stackToMove)) {
-                    if (potentialGoalStack.stackSize + stackToMove.stackSize <= stackToMove.getMaxStackSize()) {
+                    if (potentialGoalStack.getCount() + stackToMove.getCount() <= stackToMove.getMaxStackSize()) {
                         return i;
                     }
                 }
@@ -486,7 +510,7 @@ public abstract class ContainerManager {
         int rightClickData = (rightClick) ? 1 : 0;
 
         CraftingKeys.proxy.sendSlotClick(Util.client.playerController, container.windowId, index,
-                rightClickData, 0, Util.client.thePlayer);
+                rightClickData, 0, Util.client.player);
 
     }
 

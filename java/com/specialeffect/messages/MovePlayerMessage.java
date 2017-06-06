@@ -11,23 +11,13 @@
 package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityMinecartContainer;
-import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -60,19 +50,19 @@ public class MovePlayerMessage implements IMessage {
     public static class Handler implements IMessageHandler<MovePlayerMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final MovePlayerMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.worldObj; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     if (player.isRiding()) {
                     	player.moveForward = 1.0f;
-                    	Entity riddenEntity = player.ridingEntity;
+                    	Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
 							// Minecarts can only be moved forward/backward
 							if (riddenEntity instanceof EntityMinecart) {
 								EntityMinecart minecart = (EntityMinecart)riddenEntity;
-								Vec3 lookVec = player.getLookVec();
+								Vec3d lookVec = player.getLookVec();
 								int lookYaw = (int)player.rotationYaw;
 								int yawDiff = ((int)riddenEntity.rotationYaw - lookYaw) % 360;
 								if (yawDiff < 90 || yawDiff > 270) {
@@ -90,8 +80,8 @@ public class MovePlayerMessage implements IMessage {
 							float xDiff =  -(float)(message.moveAmount*Math.sin(yaw+message.moveAngle));
 							float yDiff = (float)(message.moveAmount*Math.cos(yaw+message.moveAngle));
 
-							riddenEntity.moveEntity(xDiff, 0, 
-													yDiff);
+							// TODO: check if type is correct.
+							riddenEntity.move(MoverType.SELF, xDiff, 0, yDiff);
 						}
                     }
                 }

@@ -11,46 +11,22 @@
 package com.specialeffect.mods.moving;
 
 import java.awt.Point;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
-import com.specialeffect.messages.UseDoorAtPositionMessage;
-import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
-import com.sun.prism.Material;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.command.ICommandManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -60,11 +36,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.collection.parallel.mutable.DoublingUnrolledBuffer;
 
 @Mod(modid = WalkIncrements.MODID, 
 	 version = ModUtils.VERSION,
@@ -73,7 +47,7 @@ public class WalkIncrements
 extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
-    public static final String MODID = "specialeffect.WalkIncrements";
+    public static final String MODID = "specialeffect.walkincrements";
     public static final String NAME = "WalkIncrements";
     public static Configuration mConfig;
 
@@ -101,7 +75,7 @@ implements ChildModWithConfig
     
     @SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.modID.equals(this.MODID)) {
+		if(eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();
 		}
 	}
@@ -131,7 +105,7 @@ implements ChildModWithConfig
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.entityLiving)) {
+    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
@@ -156,7 +130,7 @@ implements ChildModWithConfig
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.entityLiving;
+					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 					Point p = ModUtils.getCompassPoint(i);
 
 					float theta = (float)Math.atan2(p.getX(), p.getY());

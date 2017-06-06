@@ -10,43 +10,28 @@
 
 package com.specialeffect.mods.misc;
 
-import java.util.Iterator;
-import java.util.Queue;
-
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
-import com.specialeffect.messages.ChangeFlyingStateMessage;
-import com.specialeffect.mods.utils.SpecialEffectUtils;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.utils.OpenableBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockLadder;
 import net.minecraft.block.BlockWorkbench;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3i;
-import net.minecraft.world.ILockableContainer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -58,7 +43,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.LinkedBlockingQueue;
 
 @Mod(modid = OpenTablesChests.MODID, 
 version = ModUtils.VERSION,
@@ -68,7 +52,7 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
 
-	public static final String MODID = "specialeffect.OpenTablesChests";
+	public static final String MODID = "specialeffect.opentableschests";
 	public static final String NAME = "OpenTablesChests";
 
     public static Configuration mConfig;
@@ -119,7 +103,7 @@ implements ChildModWithConfig
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			this.processQueuedCallbacks(event);
 		}			
 	}
@@ -166,15 +150,15 @@ implements ChildModWithConfig
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					World world = Minecraft.getMinecraft().theWorld;
+					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					World world = Minecraft.getMinecraft().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
 							BlockChest.class.getName(), player, world, mRadius);
 					
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.addChatComponentMessage(new ChatComponentText(
+						player.sendMessage(new TextComponentString(
 								"No chests found in range"));
 					}
 					else {
@@ -188,15 +172,15 @@ implements ChildModWithConfig
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.entityLiving;
-					World world = Minecraft.getMinecraft().theWorld;
+					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					World world = Minecraft.getMinecraft().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
 							BlockWorkbench.class.getName(), player, world, mRadius);
 
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.addChatComponentMessage(new ChatComponentText(
+						player.sendMessage(new TextComponentString(
 								"No crafting tables found in range"));
 					}
 					else {

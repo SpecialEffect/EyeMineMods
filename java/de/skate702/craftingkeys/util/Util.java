@@ -1,9 +1,10 @@
 package de.skate702.craftingkeys.util;
 
+
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * Provides basic utility methods. For input methods, look at InputUtil.
@@ -31,7 +32,7 @@ public class Util {
      * @return A item stack
      */
     public static ItemStack getHeldStack() {
-        return client.thePlayer.inventory.getItemStack();
+        return client.player.inventory.getItemStack();
     }
 
     /**
@@ -39,8 +40,8 @@ public class Util {
      *
      * @return True, if held stack != null
      */
-    public static boolean isHoldingStack() {
-        return (getHeldStack() != null);
+    public static boolean isHoldingStack() {  
+    	return (getHeldStack().getCount() > 0);
     }
 
     /**
@@ -49,10 +50,10 @@ public class Util {
      * @return True, if this is the first tick
      */
     public static boolean isFirstInWorldTick() {
-        if (firstInWorldTick && client.theWorld != null) {
+        if (firstInWorldTick && client.world != null) {
             firstInWorldTick = false;
             return true;
-        } else if (client.theWorld == null) {
+        } else if (client.world == null) {
             firstInWorldTick = true;
         }
         return false;
@@ -64,7 +65,8 @@ public class Util {
      * @param lang_key key from lang-file
      */
     public static void printMessage(String lang_key) {
-        client.thePlayer.addChatMessage(new ChatComponentTranslation(lang_key));
+    	String translated = (new TextComponentTranslation(lang_key)).getUnformattedComponentText();
+        client.player.sendChatMessage(translated);
     }
 
 }

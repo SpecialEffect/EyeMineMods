@@ -12,12 +12,6 @@ package com.specialeffect.mods.moving;
 
 import java.nio.IntBuffer;
 import java.text.DecimalFormat;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -27,32 +21,19 @@ import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.IconOverlay;
-import com.specialeffect.messages.MovePlayerMessage;
-import com.specialeffect.mods.utils.SpecialEffectUtils;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiControls;
-import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -67,7 +48,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MouseHandler.MODID, version = ModUtils.VERSION, name = MouseHandler.NAME)
 public class MouseHandler extends BaseClassWithCallbacks implements ChildModWithConfig {
-	public static final String MODID = "specialeffect.MouseHandler";
+	public static final String MODID = "specialeffect.mousehandler";
 	public static final String NAME = "MouseHandler";
 
 	public enum InteractionState {
@@ -252,8 +233,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
 														// *after* other mods
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			mPendingMouseEvent = false;
 
 			this.processQueuedCallbacks(event);
@@ -311,6 +292,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		return mPendingMouseEvent && mLastEventWithinBounds;
 	}
 
+	private static long lastActualEventNanoseconds = 0;
+	
 	private void onMouseInputGrabbed(InputEvent.MouseInputEvent event) {
 		// Cancel any mouse events within a certain border. This avoids mouse
 		// movements outside the window (e.g. from
@@ -318,27 +301,37 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		float x_abs = Math.abs((float) Mouse.getEventDX()); // distance from
 															// centre
 		float y_abs = Math.abs((float) Mouse.getEventDY());
-
-		if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
-			// In v1.8, it would be sufficient to query getDX and DY to consume
-			// the deltas.
-			// ... but this doesn't work in 1.8.8, so we hack it by setting the
-			// mouse sensitivity down low.
-			// See:
-			// http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-			this.zeroSensitivity();
+		
+		boolean actualEvent = false; 
+		// in v1_11 (but not v_1_1_8) we get repeat mouse events every tick even 
+		// if mouse hasn't moved, but the timestamp reveals all secrets.
+		if (Mouse.getEventNanoseconds() > this.lastActualEventNanoseconds) {
+			this.lastActualEventNanoseconds = Mouse.getEventNanoseconds();
+			actualEvent = true;
 		}
-		// turn off anyway, if vanilla mouse movements turned off, but record
-		// pending event.
-		else if (mVanillaMouseMovementDisabled) {
-			this.zeroSensitivity();
-			mPendingMouseEvent = true;
-		} else {
-			this.resetSensitivity();
-			mPendingMouseEvent = true;
+		
+		if (actualEvent) {
+			if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
+				// In v1.8, it would be sufficient to query getDX and DY to consume
+				// the deltas.
+				// ... but this doesn't work in 1.8.8, so we hack it by setting the
+				// mouse sensitivity down low.
+				// See:
+				// http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
+				this.zeroSensitivity();
+			}
+			// turn off anyway, if vanilla mouse movements turned off, but record
+			// pending event.
+			else if (mVanillaMouseMovementDisabled) {
+				this.zeroSensitivity();
+				mPendingMouseEvent = true;
+			} else {
+				this.resetSensitivity();
+				mPendingMouseEvent = true;
+			}
+	
+			mIgnoreEventCount = Math.max(mIgnoreEventCount - 1, 0);
 		}
-
-		mIgnoreEventCount = Math.max(mIgnoreEventCount - 1, 0);
 	}
 
 	// x_abs and y_abs are from centre of minecraft window
@@ -383,7 +376,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 					@Override
 					public void onLiving(LivingUpdateEvent event) {
-						EntityPlayer player = (EntityPlayer) event.entity;
+						EntityPlayer player = (EntityPlayer) event.getEntity();
 						player.rotationPitch += dPitch;
 						player.rotationYaw += dYaw;
 					}
@@ -418,7 +411,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// we get any user updates to sensitivity.
 		
 		// This corresponds to the opening of the controls pane 
-		if (null != event.gui && event.gui.getClass() == GuiControls.class) {
+		if (null != event.getGui() && event.getGui().getClass() == GuiControls.class) {
 			this.resetSensitivity();			
 		}
 		// This corresponds to the opening/closing of *any other pane*.
@@ -429,7 +422,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		
 		// For any  open event, make sure cursor not overridden
-		if (null != event.gui) {
+		if (null != event.getGui()) {
 			try {
 				Mouse.setNativeCursor(null);
 			} catch (LWJGLException e) {

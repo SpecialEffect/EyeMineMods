@@ -10,9 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.util.Iterator;
-import java.util.Queue;
-
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
@@ -24,17 +21,16 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -46,7 +42,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.actors.threadpool.LinkedBlockingQueue;
+import scala.swing.TextComponent;
 
 @Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME)
 public class AutoFly 
@@ -110,24 +106,24 @@ implements ChildModWithConfig
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
-			EntityPlayer player = (EntityPlayer) event.entityLiving;
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
 				BlockPos playerPos = player.getPosition();
-				Vec3 lookVec = player.getLookVec();
+				Vec3d lookVec = player.getLookVec();
 
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {
 					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.xCoord,
 							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.zCoord);
 
-					World world = Minecraft.getMinecraft().theWorld;
+					World world = Minecraft.getMinecraft().world;
 					Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
 
 					// If there's a block in your way, and you're not already jumping over it...
-					if (world.getBlockState(blockPosInFrontOfPlayer).getBlock().getMaterial().blocksMovement() &&
+					if (world.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMovement() &&
 							player.motionY == 0) {
 						player.motionY += Math.max(mFlyHeightAuto / 4, 1);
 						break; // for yDiff = ...
@@ -172,7 +168,7 @@ implements ChildModWithConfig
 			public void onLiving(LivingUpdateEvent event) {
 //				mIsFlyingAuto = false;
 //				mIsFlyingManual = false;
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				player.capabilities.isFlying = false;
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 //				updateIcons();
@@ -187,7 +183,7 @@ implements ChildModWithConfig
 				mIsFlyingAuto = isAuto;
 				mIsFlyingManual = !isAuto;
 				
-				EntityPlayer player = (EntityPlayer) event.entityLiving;
+				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				if (player.capabilities.allowFlying) {
 					// stop sneaking (if we are), which prevents flying
 					Sneak.stop();
@@ -199,11 +195,12 @@ implements ChildModWithConfig
 						if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
 						if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
 					}
-					player.moveEntity(0, flyHeight, 0);
+					//TODO: MoverType SELF or PLAYER?
+					player.move(MoverType.SELF, 0, flyHeight, 0);
 					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 				}
 				else {
-					player.addChatComponentMessage(new ChatComponentText(
+					player.sendMessage(new TextComponentString(
 							"Player unable to fly"));
 				}
 				updateIcons();

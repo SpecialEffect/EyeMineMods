@@ -1,5 +1,6 @@
 package de.skate702.craftingkeys;
 
+
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -39,7 +40,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class CraftingKeys {
 
     public static final String MODID = "craftingkeys";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.2";
     public static final String NAME = "Crafting Keys";
 
     /**
@@ -100,9 +101,9 @@ public class CraftingKeys {
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (KeyBindings.openGuiBinding.isPressed()) {
             Logger.info("onKeyInput(e)", "Open Crafting Keys Config Gui.");
-            Util.client.thePlayer.openGui(instance, GuiConfig.GuiID, Util.client.theWorld,
-                    ((int) Util.client.thePlayer.posX), (int) Util.client.thePlayer.posY,
-                    (int) Util.client.thePlayer.posZ);
+            Util.client.player.openGui(instance, GuiConfig.GuiID, Util.client.world,
+                    ((int) Util.client.player.posX), (int) Util.client.player.posY,
+                    (int) Util.client.player.posZ);
         }
 
     }
@@ -114,7 +115,7 @@ public class CraftingKeys {
      */
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if (eventArgs.modID.equals(MODID)) {
+        if (eventArgs.getModID().equals(MODID)) { 
             Config.syncConfig();
             Logger.info("onConfigChanged(e)", "Changed config.");
         }
@@ -142,7 +143,6 @@ public class CraftingKeys {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent tick) {
 
-        // Get current Screen, then test
         GuiScreen currentScreen = Util.client.currentScreen;
 
         if (currentScreen != null) {

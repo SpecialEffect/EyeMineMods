@@ -10,43 +10,25 @@
 
 package com.specialeffect.mods.mining;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockFenceGate;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -55,9 +37,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
 public class MineOne {
@@ -91,13 +70,13 @@ public class MineOne {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.entityLiving)) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			
 			if (mDestroying) {
 
 				// Select the best tool from the inventory
-				World world = Minecraft.getMinecraft().theWorld;
-	    		EntityPlayer player = (EntityPlayer)event.entityLiving;
+				World world = Minecraft.getMinecraft().world;
+	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 				
 	    		// Not currently using -> separate out to another key binding?
 	    		//chooseBestTool(player.inventory, mBlockToDestroy);
@@ -114,7 +93,7 @@ public class MineOne {
 				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
-				MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
@@ -140,7 +119,7 @@ public class MineOne {
 	// May be null, if pointing at something other than a block.
 	private BlockPos getMouseOverBlockPos() {
 		BlockPos pos = null;
-		MovingObjectPosition mov = Minecraft.getMinecraft().objectMouseOver;
+		RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 		if (mov != null) {
 			pos = mov.getBlockPos(); // may still be null if there's an entity there
 		}
@@ -167,8 +146,9 @@ public class MineOne {
 	}
 	
 	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
-		ItemStack[] items = inventory.mainInventory;
-		World world = Minecraft.getMinecraft().theWorld;
+		NonNullList<ItemStack> items = inventory.mainInventory;
+		World world = Minecraft.getMinecraft().world;
+		EntityPlayer player = Minecraft.getMinecraft().player;
         Block block = world.getBlockState(blockPos).getBlock();
         IBlockState state = world.getBlockState(blockPos);
         state = state.getBlock().getActualState(state, world, blockPos);
@@ -179,12 +159,12 @@ public class MineOne {
         String toolType = block.getHarvestTool(state);
         
         // We'll swap the best item into slot one, and select it.
-        ItemStack oldItem0 = items[0];
-
-		for(int i = 0; i < items.length; i++){
-			ItemStack stack = items[i];
+        ItemStack oldItem0 = items.get(0);
+        
+		for(int i = 0; i < items.size(); i++){
+			ItemStack stack = items.get(i);
 			if (stack != null) {
-		        int toolLevel = stack.getItem().getHarvestLevel(stack, toolType);
+				int toolLevel = stack.getItem().getHarvestLevel(stack, toolType, player, state);		        
 		        if (toolLevel > bestToolLevel) {
 		        	bestToolLevel = toolLevel;
 		        	bestItem = stack;
