@@ -173,7 +173,7 @@ public class AutoPillar extends BaseClassWithCallbacks
 						    						  player.rotationYaw,
 						    						  pillarPitch - deltaPitch*j);
 						// This forces an update, otherwise you sometimes lose the
-						// last delta.
+						// last delta (maybe because we're just updating locally)
 						player.setPositionAndUpdate(player.posX,
 			    						  		 	  player.posY, 
 			    						  		 	  player.posZ);
