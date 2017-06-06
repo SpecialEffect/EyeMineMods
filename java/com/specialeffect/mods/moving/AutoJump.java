@@ -19,6 +19,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
@@ -62,6 +63,9 @@ implements ChildModWithConfig
     
     public void syncConfig() {
     	mDoingAutoJump = SpecialEffectMovements.defaultDoAutoJump;
+    	// Turn off vanilla autojump since it doesn't play nicely with 
+    	// our gaze-based walking methods.
+    	Minecraft.getMinecraft().gameSettings.autoJump = mDoingAutoJump;
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
@@ -89,13 +93,19 @@ implements ChildModWithConfig
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
     		
+    		// We can't rely solely on the vanilla autojump implementation,
+    		// since it doesn't play nicely with our gaze movement methods.
+    		// We'll keep it in sync though so that keyboard-play is consistent
+    		// with our autojump state (if you're moving with the keyboard you
+    		// get visually-nicer autojump behaviour).
     		if (mDoingAutoJump) {
     			player.stepHeight = 1.0f;
     		}
     		else {
     			player.stepHeight = 0.6f;
     		}
-    		
+	    	Minecraft.getMinecraft().gameSettings.autoJump = mDoingAutoJump;
+
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);
     	}
