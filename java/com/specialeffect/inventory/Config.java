@@ -200,8 +200,8 @@ public class Config {
         key8 = configFile.get(categoryInventory, "key8", Keyboard.KEY_NUMPAD8);
         key9 = configFile.get(categoryInventory, "key9", Keyboard.KEY_NUMPAD9);
 
-        keyPrev = configFile.get(categoryInventory, "keyPrev", Keyboard.KEY_LSHIFT);
-        keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RSHIFT);
+        keyPrev = configFile.get(categoryInventory, "keyPrev", Keyboard.KEY_LEFT);
+        keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RIGHT);
         keyTake = configFile.get(categoryInventory, "keyTake", Keyboard.KEY_RETURN);
    }
 
