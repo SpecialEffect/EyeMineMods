@@ -32,8 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 // so that it can be changed all in one place.
 @Mod(modid = SpecialEffectInventory.MODID, 
   	 version = ModUtils.VERSION, 
-	 name = SpecialEffectInventory.NAME, 
-	 guiFactory = "com.specialeffect.gui.GuiFactoryMovements")
+	 name = SpecialEffectInventory.NAME)
 public class SpecialEffectInventory extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.inventory";	
