@@ -12,6 +12,10 @@ package com.specialeffect.mods.mining;
 
 import org.lwjgl.input.Keyboard;
 
+import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.OnLivingCallback;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -21,10 +25,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,7 +46,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
-public class MineOne {
+public class MineOne extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String NAME = "AutoDestroy";
 
@@ -71,21 +78,26 @@ public class MineOne {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			
+			this.processQueuedCallbacks(event);
+
 			if (mDestroying) {
 
 				// Select the best tool from the inventory
 				World world = Minecraft.getMinecraft().world;
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-				
-	    		// Not currently using -> separate out to another key binding?
-	    		//chooseBestTool(player.inventory, mBlockToDestroy);
-				
-				// Check selected item can actually destroy block (only in survival)
-	    		if (!player.capabilities.isCreativeMode) {
+					    						
+	    		// Slightly different behaviour in survival vs creative:
+	    		// CREATIVE: Choose best tool for the job.
+	    		// SURVIVAL: Check selected item can actually destroy block .
+	    		// (but don't do the choosing, otherwise you'll waste good tools on easy blocks)
+	    		if (player.capabilities.isCreativeMode) {
+	    		//	chooseBestTool(player.inventory, mBlockToDestroy);
+	    		}
+	    		else {
 	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
 	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
-	    				System.out.println("Can't destroy this block with current item");
+	    				String message = "Can't destroy this block with current item";
+				        player.sendMessage(new TextComponentString(message));
 	    				this.stopDestroying();
 	    				return;
 	    			}
@@ -108,6 +120,26 @@ public class MineOne {
 		}
 	}
 	
+	private void startDestroying() {
+		mDestroying = true;
+		
+		final KeyBinding attackBinding = 
+				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
+		
+		// Select appropriate tool in creative
+		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+			@Override
+			public void onLiving(LivingUpdateEvent event) {
+				System.out.println("onLiving queued event");
+	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+				if (player.capabilities.isCreativeMode) {
+	    			chooseBestTool(player.inventory, mBlockToDestroy);
+	    		}
+			}
+		}));
+	}
+	
 	private void stopDestroying() {
 		final KeyBinding attackBinding = 
 				Minecraft.getMinecraft().gameSettings.keyBindAttack;
@@ -125,6 +157,7 @@ public class MineOne {
 		}
 		return pos;
 	}
+
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -135,49 +168,45 @@ public class MineOne {
 				return;
 			}
 			else {
-				mDestroying = true;
-
-				// Start attacking
-				final KeyBinding attackBinding = 
-						Minecraft.getMinecraft().gameSettings.keyBindAttack;
-				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
+				this.startDestroying();
 			}
 		}
 	}
 	
 	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
+		
+		// In creative mode, we can either select a pickaxe from the hotbar 
+		// or just rustle up a new one
+		System.out.println("chooseBestTool");
 		NonNullList<ItemStack> items = inventory.mainInventory;
-		World world = Minecraft.getMinecraft().world;
-		EntityPlayer player = Minecraft.getMinecraft().player;
-        Block block = world.getBlockState(blockPos).getBlock();
-        IBlockState state = world.getBlockState(blockPos);
-        state = state.getBlock().getActualState(state, world, blockPos);
-        
-		ItemStack bestItem = null;
-		int bestId = 0;
-		int bestToolLevel = -1;
-        String toolType = block.getHarvestTool(state);
-        
-        // We'll swap the best item into slot one, and select it.
-        ItemStack oldItem0 = items.get(0);
-        
-		for(int i = 0; i < items.size(); i++){
-			ItemStack stack = items.get(i);
-			if (stack != null) {
-				int toolLevel = stack.getItem().getHarvestLevel(stack, toolType, player, state);		        
-		        if (toolLevel > bestToolLevel) {
-		        	bestToolLevel = toolLevel;
-		        	bestItem = stack;
-		        	bestId = i;
-		        }
+		int pickaxeId = -1;
+		if (items != null) {			
+			for(int i = 0; i < inventory.getHotbarSize(); i++){
+				ItemStack stack = items.get(i);
+				if (stack != null && stack.getItem() != null) {
+					Item item = stack.getItem();
+					if ( item == Items.DIAMOND_PICKAXE || 
+						 item == Items.GOLDEN_PICKAXE ||
+						 item == Items.IRON_PICKAXE ||
+						 item == Items.STONE_PICKAXE ||
+						 item == Items.WOODEN_PICKAXE ) {
+						pickaxeId = i;
+					}
+				}
 			}
 		}
-		
-		// Swap bestItem into slot 0 and select it
-		if (bestId != 0) {
-			inventory.setInventorySlotContents(bestId, oldItem0);
-			inventory.setInventorySlotContents(0, bestItem);
+		if (pickaxeId > -1) {
+			inventory.currentItem = pickaxeId;
 		}
-		inventory.currentItem = 0;
+		else {
+			// conjure up a diamon pickaxe, stick it in a non-hotbar slot,
+			// and let the inventory figure out how best to move it to the
+			// inventory (e.g. to a new slot).
+			ItemStack pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
+
+			int slotId = 12; 
+			inventory.setInventorySlotContents(slotId, pickaxe);
+			inventory.pickItem(slotId);
+		}
 	}
 }
