@@ -11,6 +11,7 @@
 package com.specialeffect.utils;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
@@ -22,6 +23,11 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -136,5 +142,48 @@ public class ModUtils {
 
 		tessellator.draw();
 
+	}
+	
+	// Find an item in the hotbar which matches any of the given items.
+	public static int findItemInHotbar(InventoryPlayer inventory,
+									   ArrayList<Item> matchingItems) {
+		int itemId = -1;
+		NonNullList<ItemStack> items = inventory.mainInventory;
+		if (items != null) {			
+			for(int i = 0; i < inventory.getHotbarSize(); i++){
+				ItemStack stack = items.get(i);
+				if (stack != null && stack.getItem() != null) {
+					Item item = stack.getItem();
+					for (Item match : matchingItems) {
+						if (item == match) {
+							itemId = i;
+						}
+					}
+				}
+			}
+		}
+		return itemId;
+	}
+	
+	public static int findSwordInHotbar(InventoryPlayer inventory) {
+		ArrayList<Item> matchingItems = new ArrayList<Item>();
+		matchingItems.add(Items.DIAMOND_SWORD);
+		matchingItems.add(Items.GOLDEN_SWORD);
+		matchingItems.add(Items.IRON_SWORD);
+		matchingItems.add(Items.STONE_SWORD);
+		matchingItems.add(Items.WOODEN_SWORD);
+
+		return findItemInHotbar(inventory, matchingItems);
+	}
+	
+	public static int findPickaxeInHotbar(InventoryPlayer inventory) {
+		ArrayList<Item> matchingItems = new ArrayList<Item>();
+		matchingItems.add(Items.DIAMOND_PICKAXE);
+		matchingItems.add(Items.GOLDEN_PICKAXE);
+		matchingItems.add(Items.IRON_PICKAXE);
+		matchingItems.add(Items.STONE_PICKAXE);
+		matchingItems.add(Items.WOODEN_PICKAXE);
+
+		return findItemInHotbar(inventory, matchingItems);
 	}
 }

@@ -87,13 +87,10 @@ public class MineOne extends BaseClassWithCallbacks {
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 					    						
 	    		// Slightly different behaviour in survival vs creative:
-	    		// CREATIVE: Choose best tool for the job.
-	    		// SURVIVAL: Check selected item can actually destroy block .
+	    		// CREATIVE: A pickaxe was chosen when mining began
+	    		// SURVIVAL: Check selected item can actually destroy block
 	    		// (but don't do the choosing, otherwise you'll waste good tools on easy blocks)
-	    		if (player.capabilities.isCreativeMode) {
-	    		//	chooseBestTool(player.inventory, mBlockToDestroy);
-	    		}
-	    		else {
+	    		if (!player.capabilities.isCreativeMode) {
 	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
 	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
 	    				String message = "Can't destroy this block with current item";
@@ -134,7 +131,7 @@ public class MineOne extends BaseClassWithCallbacks {
 				System.out.println("onLiving queued event");
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 				if (player.capabilities.isCreativeMode) {
-	    			chooseBestTool(player.inventory, mBlockToDestroy);
+	    			choosePickaxe(player.inventory);
 	    		}
 			}
 		}));
@@ -173,33 +170,17 @@ public class MineOne extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private void chooseBestTool(InventoryPlayer inventory, BlockPos blockPos) {
+	static void choosePickaxe(InventoryPlayer inventory) {
 		
 		// In creative mode, we can either select a pickaxe from the hotbar 
 		// or just rustle up a new one
-		System.out.println("chooseBestTool");
-		NonNullList<ItemStack> items = inventory.mainInventory;
-		int pickaxeId = -1;
-		if (items != null) {			
-			for(int i = 0; i < inventory.getHotbarSize(); i++){
-				ItemStack stack = items.get(i);
-				if (stack != null && stack.getItem() != null) {
-					Item item = stack.getItem();
-					if ( item == Items.DIAMOND_PICKAXE || 
-						 item == Items.GOLDEN_PICKAXE ||
-						 item == Items.IRON_PICKAXE ||
-						 item == Items.STONE_PICKAXE ||
-						 item == Items.WOODEN_PICKAXE ) {
-						pickaxeId = i;
-					}
-				}
-			}
-		}
+
+		int pickaxeId = ModUtils.findPickaxeInHotbar(inventory);
 		if (pickaxeId > -1) {
 			inventory.currentItem = pickaxeId;
 		}
 		else {
-			// conjure up a diamon pickaxe, stick it in a non-hotbar slot,
+			// conjure up a diamond pickaxe, stick it in a non-hotbar slot,
 			// and let the inventory figure out how best to move it to the
 			// inventory (e.g. to a new slot).
 			ItemStack pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
