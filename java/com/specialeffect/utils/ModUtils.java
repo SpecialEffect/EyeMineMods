@@ -186,4 +186,14 @@ public class ModUtils {
 
 		return findItemInHotbar(inventory, matchingItems);
 	}
+	
+	// should be run from onliving
+	public static void moveItemToHotbarAndSelect(InventoryPlayer inventory,
+										    	 ItemStack item ) {
+		// stick the item in an arbitrary non-hotbar slot, then let the inventory 
+		// figure out how best to move it to the hotbar (e.g. to an empty slot).
+		int slotId = 12; 
+		inventory.setInventorySlotContents(slotId, item);
+		inventory.pickItem(slotId);
+	}
 }

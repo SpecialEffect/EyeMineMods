@@ -180,14 +180,8 @@ public class MineOne extends BaseClassWithCallbacks {
 			inventory.currentItem = pickaxeId;
 		}
 		else {
-			// conjure up a diamond pickaxe, stick it in a non-hotbar slot,
-			// and let the inventory figure out how best to move it to the
-			// inventory (e.g. to a new slot).
-			ItemStack pickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-
-			int slotId = 12; 
-			inventory.setInventorySlotContents(slotId, pickaxe);
-			inventory.pickItem(slotId);
+			ModUtils.moveItemToHotbarAndSelect(inventory, 
+					new ItemStack(Items.DIAMOND_PICKAXE));			
 		}
 	}
 }
