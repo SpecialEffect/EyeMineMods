@@ -27,7 +27,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -142,11 +146,36 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.sendMessage(new TextComponentString(
 			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
-				}		
+			        
+			        if (player.capabilities.isCreativeMode) {
+		    			chooseWeapon(player.inventory);
+		    		}
+		        }		
 			}));
 			
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
+		}
+	}
+	
+	private void chooseWeapon(InventoryPlayer inventory) {
+		
+		// In creative mode, we can either select a sword from the hotbar 
+		// or just rustle up a new one
+
+		int swordId = ModUtils.findSwordInHotbar(inventory);
+		if (swordId > -1) {
+			inventory.currentItem = swordId;
+		}
+		else {
+			// conjure up a diamond pickaxe, stick it in a non-hotbar slot,
+			// and let the inventory figure out how best to move it to the
+			// inventory (e.g. to a new slot).
+			ItemStack pickaxe = new ItemStack(Items.DIAMOND_SWORD);
+
+			int slotId = 12; 
+			inventory.setInventorySlotContents(slotId, pickaxe);
+			inventory.pickItem(slotId);
 		}
 	}
 }

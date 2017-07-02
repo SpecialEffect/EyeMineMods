@@ -138,6 +138,10 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.sendMessage(new TextComponentString(
 			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
+			        
+			        if (mIsAttacking && player.capabilities.isCreativeMode) {
+		    			MineOne.choosePickaxe(player.inventory);
+		    		}
 				}		
 			}));
 			
