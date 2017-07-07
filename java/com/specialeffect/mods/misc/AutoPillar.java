@@ -16,6 +16,8 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.JumpMessage;
+import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
@@ -63,6 +65,8 @@ public class AutoPillar extends BaseClassWithCallbacks {
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
+		network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 1, Side.SERVER);
+		network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 2, Side.SERVER);
 	}
 
 	@EventHandler
@@ -100,10 +104,9 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 
 		// Auto place is implemented as:
-		// - Next onLiving tick: look at floor, jump
-		// - After 10 ticks (when jump is high): place current item below
+		// - Next onLiving tick: look at floor, jump, place current item below
 		// player.
-		// - From 12 - 17ticks, gradually reset view
+		// - next few ticks, gradually reset view
 		// Technically there is no need to change player's view, but the user
 		// experience
 		// is weird if you don't (you don't really know what just happened).
@@ -129,55 +132,43 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					// alternating between 2 blocks)
 					// Also look down, purely for effect.
 					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-					player.setPositionAndRotation(Math.floor(player.posX) + 0.4, Math.floor(player.posY),
-							Math.floor(player.posZ) + 0.4, player.rotationYaw, pillarPitch);
-					System.out.println("jump movement factor: " + player.jumpMovementFactor);
-					System.out.println("posY before jump: " + player.posY);
-					// Then jump
-					player.jump();
+
+					double jumpHeight = 1.5;
+					double x = Math.floor(player.posX) + 0.4;
+					double y = Math.floor(player.posY);
+					double z = Math.floor(player.posZ) + 0.4;
+					
+					AutoPillar.network.sendToServer(
+							new SetPositionAndRotationMessage(
+									player.getName(),
+									x, y + jumpHeight, z,
+									player.rotationYaw, pillarPitch));
+
+					// Ask server to use item
+					BlockPos blockPos = new BlockPos(x, y, z);
+					AutoPillar.network.sendToServer(new UseItemAtPositionMessage(player, blockPos));
+					
+					// Make sure we get the animation
+					player.swingArm(EnumHand.MAIN_HAND);
 				}
 			}));
-			this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					World world = Minecraft.getMinecraft().world;
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-					BlockPos playerPos = player.getPosition();
 
-					ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);
-					System.out.println("posY when placing item: " + player.posY);
-
-					if (item != null) {
-						BlockPos blockPos = new BlockPos(playerPos.getX(), playerPos.getY() - 1, // y
-																									// =
-																									// up
-								playerPos.getZ());
-
-						// Ask server to use item
-						AutoPillar.network.sendToServer(new UseItemAtPositionMessage(item, blockPos));
-
-						// Make sure we get the animation
-						player.swingArm(EnumHand.MAIN_HAND);
-					}
-				}
-			}, 10)); // delayed by 10 ticks
-
-			for (int i = 1; i < numTicksReset + 1; i++) {
+			// gradually move head back up to original pitch
+			for (int i = 1; i < numTicksReset+1; i++) {
 				final int j = i;
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 					@Override
 					public void onLiving(LivingUpdateEvent event) {
 						EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
-						player.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw,
-								pillarPitch - deltaPitch * j);
-						// This forces an update, otherwise you sometimes lose
-						// the
-						// last delta (maybe because we're just updating
-						// locally)
-						player.setPositionAndUpdate(player.posX, player.posY, player.posZ);
+						AutoPillar.network.sendToServer(
+								new SetPositionAndRotationMessage(
+										player.getName(), 
+										player.posX, player.posY, player.posZ,
+										player.rotationYaw,
+										pillarPitch - deltaPitch * j));
 					}
-				}, 12 + j));
+				}, 1 + 2*j));
 			}
 		}
 

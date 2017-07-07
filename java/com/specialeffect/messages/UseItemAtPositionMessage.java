@@ -12,6 +12,7 @@ package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -26,19 +27,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class UseItemAtPositionMessage implements IMessage {
     
-    private ItemStack item;
     private BlockPos blockPos;
+    private String playerName;
 
     public UseItemAtPositionMessage() { }
 
-    public UseItemAtPositionMessage(ItemStack item, BlockPos pos) {
-        this.item = item;
+    public UseItemAtPositionMessage(EntityPlayer player, BlockPos pos) {
+    	this.playerName = player.getName();
         this.blockPos = pos;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        item = ByteBufUtils.readItemStack(buf);
+    	playerName = ByteBufUtils.readUTF8String(buf);
         int x = ByteBufUtils.readVarInt(buf, 5); 
         int y = ByteBufUtils.readVarInt(buf, 5); 
         int z = ByteBufUtils.readVarInt(buf, 5); 
@@ -47,7 +48,7 @@ public class UseItemAtPositionMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeItemStack(buf, item);
+        ByteBufUtils.writeUTF8String(buf, playerName);
         ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
         ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
@@ -60,16 +61,18 @@ public class UseItemAtPositionMessage implements IMessage {
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
-                    World world = player.getEntityWorld();
-                    
-                    message.item.onItemUse(player, world, 
-				                    	   message.blockPos, EnumHand.MAIN_HAND, 
-				                    	   EnumFacing.UP, 
-				                    	   0.0f, 0.0f, 0.0f);
-                    
-                    // TODO: Deprecate item stack in survival mode?
-                    // TODO: Animate item use?
+                    World world = ctx.getServerHandler().playerEntity.world;
+                    EntityPlayer player = world.getPlayerEntityByName(message.playerName);
+					ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);					
+					if (null != item)
+					{
+						int oldCount = item.getCount();
+	                    item.onItemUse(player, world, 
+					                    	   message.blockPos, EnumHand.MAIN_HAND, 
+					                    	   EnumFacing.UP, 
+					                    	   0.0f, 0.0f, 0.0f);
+	                    item.setCount(oldCount); //some items are decremented; others aren't
+                	}
                 }
             });
             return null; // no response in this case
