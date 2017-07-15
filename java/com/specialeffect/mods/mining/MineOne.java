@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -175,7 +176,7 @@ public class MineOne extends BaseClassWithCallbacks {
 		// In creative mode, we can either select a pickaxe from the hotbar 
 		// or just rustle up a new one
 
-		int pickaxeId = ModUtils.findPickaxeInHotbar(inventory);
+		int pickaxeId = ModUtils.findItemInHotbar(inventory, ItemPickaxe.class);
 		if (pickaxeId > -1) {
 			inventory.currentItem = pickaxeId;
 		}

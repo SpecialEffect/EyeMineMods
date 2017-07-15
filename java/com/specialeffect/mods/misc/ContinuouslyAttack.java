@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -163,7 +164,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		// In creative mode, we can either select a sword from the hotbar 
 		// or just rustle up a new one
 
-		int swordId = ModUtils.findSwordInHotbar(inventory);
+		int swordId = ModUtils.findItemInHotbar(inventory, ItemSword.class);
 		if (swordId > -1) {
 			inventory.currentItem = swordId;
 		}

@@ -200,7 +200,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		// In creative mode, we can either select a block from the hotbar 
 		// or just rustle up a new one
 
-		int blockId = ModUtils.findBlockInHotbar(inventory);
+		int blockId = ModUtils.findItemInHotbar(inventory, ItemBlock.class);
 		if (blockId > -1) {
 			inventory.currentItem = blockId;
 		}

@@ -144,61 +144,20 @@ public class ModUtils {
 		tessellator.draw();
 
 	}
-	
-	// Find an item in the hotbar which matches any of the given items.
+
+	// Find an item in the hotbar which matches the given class
+	// (this includes all subclasses)
 	public static int findItemInHotbar(InventoryPlayer inventory,
-									   ArrayList<Item> matchingItems) {
+								       Class<?> itemClass) {
 		int itemId = -1;
+		int currentItemId = inventory.currentItem;
 		NonNullList<ItemStack> items = inventory.mainInventory;
 		if (items != null) {			
 			for(int i = 0; i < inventory.getHotbarSize(); i++){
 				ItemStack stack = items.get(i);
 				if (stack != null && stack.getItem() != null) {
 					Item item = stack.getItem();
-					for (Item match : matchingItems) {
-						if (item == match) {
-							itemId = i;
-						}
-					}
-				}
-			}
-		}
-		return itemId;
-	}
-	
-	public static int findSwordInHotbar(InventoryPlayer inventory) {
-		ArrayList<Item> matchingItems = new ArrayList<Item>();
-		matchingItems.add(Items.DIAMOND_SWORD);
-		matchingItems.add(Items.GOLDEN_SWORD);
-		matchingItems.add(Items.IRON_SWORD);
-		matchingItems.add(Items.STONE_SWORD);
-		matchingItems.add(Items.WOODEN_SWORD);
-
-		return findItemInHotbar(inventory, matchingItems);
-	}
-	
-	public static int findPickaxeInHotbar(InventoryPlayer inventory) {
-		ArrayList<Item> matchingItems = new ArrayList<Item>();
-		matchingItems.add(Items.DIAMOND_PICKAXE);
-		matchingItems.add(Items.GOLDEN_PICKAXE);
-		matchingItems.add(Items.IRON_PICKAXE);
-		matchingItems.add(Items.STONE_PICKAXE);
-		matchingItems.add(Items.WOODEN_PICKAXE);
-
-		return findItemInHotbar(inventory, matchingItems);
-	}
-	
-	public static int findBlockInHotbar(InventoryPlayer inventory) {		
-		int itemId = -1;
-		int currentItemId = inventory.currentItem;
-		NonNullList<ItemStack> items = inventory.mainInventory;
-		// this is like findItemInHotbar, but tests item TYPE not instance.
-		if (items != null) {			
-			for(int i = 0; i < inventory.getHotbarSize(); i++){
-				ItemStack stack = items.get(i);
-				if (stack != null && stack.getItem() != null) {
-					Item item = stack.getItem();					
-					if (item instanceof ItemBlock) {
+					if (itemClass.isInstance(item)) {
 						itemId = i;
 						// Ideally we'd keep the current item if it
 						// happens to match the spec.
