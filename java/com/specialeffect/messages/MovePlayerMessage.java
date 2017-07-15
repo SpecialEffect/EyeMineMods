@@ -14,6 +14,7 @@ import javax.vecmath.Point2d;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -65,6 +66,7 @@ public class MovePlayerMessage implements IMessage {
 						if (null != riddenEntity) {
 							final double scaleMinecart = 1.0d/8.0d;
 							final double scaleAnimal = 1.0d/2.0d;
+							final double scaleBoat = 1.0d/3.0d;
 							final double scaleDefault = 1.0d/2.0d;
 							
 							if (riddenEntity instanceof EntityMinecart) {
@@ -94,6 +96,15 @@ public class MovePlayerMessage implements IMessage {
 									riddenEntity.move(MoverType.SELF, xyDiff.x, 0, xyDiff.y);
 									riddenEntity.updateRidden();
 								}
+							}
+							else if (riddenEntity instanceof EntityBoat) {
+								EntityBoat boat = (EntityBoat)riddenEntity;
+								message.moveAmount *= scaleBoat;
+								double yaw = Math.toRadians(riddenEntity.rotationYaw);
+								Point2d xyDiff = polarToCartesian(message.moveAmount, 
+																  message.moveAngle + yaw);
+								riddenEntity.move(MoverType.SELF, xyDiff.x, 0, xyDiff.y);
+								riddenEntity.updateRidden();
 							}
 							else {
 								// Not sure what else you can ride... this may need replacing 

@@ -17,6 +17,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.callbacks.DelayedOnLivingCallback;
+import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.mousehandling.MouseHandler;
@@ -27,7 +30,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.CPacketSteerBoat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -134,23 +140,69 @@ implements ChildModWithConfig
             	// Slow down when you're looking really far up/down
             	double slowDownPitch = slowdownFactorPitch(player);
 
-            	if (!player.isOnLadder()) {
-            		forward *= Math.min(slowDownCorners, slowDownPitch);
-            	}	
-            	
-            	// Adjust according to FPS (to get some consistency across installations)
-            	forward *= fpsFactor();
-            	
-            	if (player.isRiding()) {
-					// Ask server to move entity being ridden
-					WalkIncrements.network.sendToServer(
-						new MovePlayerMessage((float)forward, 0.0f));
+				if (!player.isOnLadder()) {
+					forward *= Math.min(slowDownCorners, slowDownPitch);
+				}
+
+				// Adjust according to FPS (to get some consistency across
+				// installations)
+				forward *= fpsFactor();
+
+				if (player.isRiding()) {
+
+					Entity riddenEntity = player.getRidingEntity();
+
+					if (null != riddenEntity) {
+						if (riddenEntity instanceof EntityBoat) {
+							// very special case: you can't steer a boat without keys,
+							// so we first steer left/right with keys until the boat
+							// and the player's view are aligned, only then move 
+							// forward 
+							float yawError = riddenEntity.rotationYaw - player.rotationYaw;
+							if (yawError < -180) {
+								yawError += 360;
+							}
+							if (yawError > 180) {
+								yawError -= 360;
+							}
+							
+							final KeyBinding kbLeft = Minecraft.getMinecraft().gameSettings.keyBindLeft;
+							final KeyBinding kbRight = Minecraft.getMinecraft().gameSettings.keyBindRight;
+
+							boolean needToRotate = Math.abs(yawError) > 20;
+
+							if (needToRotate) {
+								// press key, release after one tick
+								if (yawError > 0) {
+									KeyBinding.setKeyBindState(kbLeft.getKeyCode(), true);
+								}
+								else {
+									KeyBinding.setKeyBindState(kbRight.getKeyCode(), true);
+								}
+								this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
+									@Override
+									public void onLiving(LivingUpdateEvent event) {
+										KeyBinding.setKeyBindState(kbLeft.getKeyCode(), false);
+										KeyBinding.setKeyBindState(kbRight.getKeyCode(), false);
+									}
+								}, 1));
+							}
+							else { // riding boat, facing right direction
+								WalkIncrements.network.sendToServer(
+										new MovePlayerMessage((float)forward, 0.0f));
+							}
+						}
+						else { // riding something other than a boat
+							WalkIncrements.network.sendToServer(
+									new MovePlayerMessage((float)forward, 0.0f));
+						}
+					}
 				}
 				else {
 					player.moveEntityWithHeading(0.0f, (float)forward);
 				}            
-            }
-            
+			}
+
 			this.processQueuedCallbacks(event);
 			
     	}
