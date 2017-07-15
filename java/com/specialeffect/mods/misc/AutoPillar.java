@@ -18,14 +18,21 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
+import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
+import net.minecraft.block.Block;
 
+import net.minecraft.block.BlockGrass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -65,8 +72,9 @@ public class AutoPillar extends BaseClassWithCallbacks {
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
-		network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 1, Side.SERVER);
-		network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 2, Side.SERVER);
+		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 1, Side.SERVER);
+		network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 2, Side.SERVER);
+		network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 3, Side.SERVER);
 	}
 
 	@EventHandler
@@ -104,8 +112,8 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 
 		// Auto place is implemented as:
+		// - Make sure you're holding a block (in creative mode; in survival you're on your own)
 		// - Next onLiving tick: look at floor, jump, place current item below
-		// player.
 		// - next few ticks, gradually reset view
 		// Technically there is no need to change player's view, but the user
 		// experience
@@ -122,6 +130,15 @@ public class AutoPillar extends BaseClassWithCallbacks {
 			final float deltaPitch = (pillarPitch - origPitch) / numTicksReset;
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+				@Override
+				public void onLiving(LivingUpdateEvent event) {
+					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			        if (player.capabilities.isCreativeMode) {
+			        	chooseBlock(player.inventory);
+			        }
+				}
+			}));
+			this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					// It's important to make sure we're approximately - but not
@@ -151,7 +168,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					// Make sure we get the animation
 					player.swingArm(EnumHand.MAIN_HAND);
 				}
-			}));
+			}, 1));
 
 			// gradually move head back up to original pitch
 			for (int i = 1; i < numTicksReset+1; i++) {
@@ -176,6 +193,21 @@ public class AutoPillar extends BaseClassWithCallbacks {
 			Minecraft.getMinecraft().displayGuiScreen(new GuiChat());
 		}
 
+	}
+	
+	static void chooseBlock(InventoryPlayer inventory) {
+		
+		// In creative mode, we can either select a block from the hotbar 
+		// or just rustle up a new one
+
+		int blockId = ModUtils.findBlockInHotbar(inventory);
+		if (blockId > -1) {
+			inventory.currentItem = blockId;
+		}
+		else {
+			// Ask server to use item
+			AutoPillar.network.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
+		}
 	}
 
 }

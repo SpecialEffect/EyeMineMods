@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.ModMetadata;
@@ -185,6 +186,30 @@ public class ModUtils {
 		matchingItems.add(Items.WOODEN_PICKAXE);
 
 		return findItemInHotbar(inventory, matchingItems);
+	}
+	
+	public static int findBlockInHotbar(InventoryPlayer inventory) {		
+		int itemId = -1;
+		int currentItemId = inventory.currentItem;
+		NonNullList<ItemStack> items = inventory.mainInventory;
+		// this is like findItemInHotbar, but tests item TYPE not instance.
+		if (items != null) {			
+			for(int i = 0; i < inventory.getHotbarSize(); i++){
+				ItemStack stack = items.get(i);
+				if (stack != null && stack.getItem() != null) {
+					Item item = stack.getItem();					
+					if (item instanceof ItemBlock) {
+						itemId = i;
+						// Ideally we'd keep the current item if it
+						// happens to match the spec.
+						if (itemId == currentItemId) {
+							return itemId;
+						}
+					}
+				}
+			}
+		}
+		return itemId;	
 	}
 	
 	// should be run from onliving
