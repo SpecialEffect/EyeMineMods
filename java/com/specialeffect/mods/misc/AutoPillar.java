@@ -87,10 +87,6 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
-		openChatKB = new KeyBinding("open the chat blah", Keyboard.KEY_PERIOD, "SpecialEffect");
-		ClientRegistry.registerKeyBinding(openChatKB);
-
-		// Minecraft.getMinecraft().gameSettings.keyBindChat
 	}
 
 	private float lastPlayerPitch;
@@ -188,11 +184,6 @@ public class AutoPillar extends BaseClassWithCallbacks {
 				}, 1 + 2*j));
 			}
 		}
-
-		if (openChatKB.isPressed()) {
-			Minecraft.getMinecraft().displayGuiScreen(new GuiChat());
-		}
-
 	}
 	
 	static void chooseBlock(InventoryPlayer inventory) {
