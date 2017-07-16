@@ -56,7 +56,7 @@ public class MovePlayerMessage implements IMessage {
                 public void run() {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     if (player.isRiding()) {
-                    	player.moveForward = 1.0f;
+//                    	player.moveForward = 1.0f;
                     	Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
 							// Minecarts can only be moved forward/backward
