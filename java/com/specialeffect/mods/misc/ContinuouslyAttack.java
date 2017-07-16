@@ -90,11 +90,16 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
+	private int attackTimer = 0;
+	final private int ticksBetweenAttacks = 10;
+	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			attackTimer++;
+			attackTimer = attackTimer % ticksBetweenAttacks;
 			
-			if (mIsAttacking) {
+			if (mIsAttacking && attackTimer == 0) {
 				// Get entity being looked at
 				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 				Entity entity = mov.entityHit;
@@ -128,6 +133,7 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		
 		if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
+			attackTimer = -1;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
 			// Note: I'd like to use Minecraft.getMinecraft().gameSettings.keyBindAttack to
