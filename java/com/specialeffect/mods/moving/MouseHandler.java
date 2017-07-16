@@ -394,8 +394,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	@SubscribeEvent
 	public void onMouseInput(InputEvent.MouseInputEvent event) {
 
-		if (Mouse.getEventButton() > -1) {
-			// Don't hijack button events, let minecraft do it's own thing
+		// Button events and scroll events should be ignored and left to minecraft
+		if (Mouse.getEventButton() > -1 ||
+				Mouse.getEventDWheel() != 0) {
 			return;
 		}
 
