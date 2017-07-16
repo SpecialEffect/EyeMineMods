@@ -35,7 +35,8 @@ public class Config {
      */
     static Property key0, key1, key2, key3, key4,
     			    key5, key6, key7, key8, key9, 
-    			    keyNext, keyPrev, keyTake;
+    			    keyNext, keyPrev, 
+    			    keyNextItemRow, keyNextItemCol;
     
     /**
      * Provides the Suggested Config File.
@@ -87,7 +88,8 @@ public class Config {
 					flagKeyIfMatches(key9); 
 					flagKeyIfMatches(keyPrev); 
 					flagKeyIfMatches(keyNext); 
-					flagKeyIfMatches(keyTake); 
+					flagKeyIfMatches(keyNextItemRow); 
+					flagKeyIfMatches(keyNextItemCol); 
 				}
 			} catch (IOException e) {
 			} catch (NullPointerException e) {
@@ -139,8 +141,12 @@ public class Config {
     	return isKeyPressed(key9);
     }   
     
-    public static boolean isKeyTakePressed() {
-    	return isKeyPressed(keyTake);
+    public static boolean isKeyNextRowPressed() {
+    	return isKeyPressed(keyNextItemRow);
+    }    
+    
+    public static boolean isKeyNextColPressed() {
+    	return isKeyPressed(keyNextItemCol);
     }    
     
     public static boolean isKeyPrevPressed() {
@@ -187,6 +193,10 @@ public class Config {
      * Loads all properties from the configFile file.
      */
     private static void syncProperties() {
+    	// It's important any keys here don't get captured by the search box,
+    	// otherwise you get stuck in search tab.
+    	// This limits us to non-character keys, including numpad numbers.
+    	
         // Standard Keys
         key0 = configFile.get(categoryInventory, "key0", Keyboard.KEY_NUMPAD0);
         key1 = configFile.get(categoryInventory, "key1", Keyboard.KEY_NUMPAD1);
@@ -202,7 +212,8 @@ public class Config {
 
         keyPrev = configFile.get(categoryInventory, "keyPrev", Keyboard.KEY_LEFT);
         keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RIGHT);
-        keyTake = configFile.get(categoryInventory, "keyTake", Keyboard.KEY_RETURN);
+        keyNextItemRow = configFile.get(categoryInventory, "keyNextItemRow", Keyboard.KEY_F6);
+        keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", Keyboard.KEY_F7);
    }
 
 }
