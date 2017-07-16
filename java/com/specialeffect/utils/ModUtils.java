@@ -169,6 +169,7 @@ public class ModUtils {
 	}
 	
 	// should be run from onliving
+	// maybe also needs running from server??
 	public static void moveItemToHotbarAndSelect(InventoryPlayer inventory,
 										    	 ItemStack item ) {
 		// stick the item in an arbitrary non-hotbar slot, then let the inventory 
