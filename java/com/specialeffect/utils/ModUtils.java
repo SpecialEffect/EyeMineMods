@@ -131,11 +131,8 @@ public class ModUtils {
 
 		Tessellator tessellator = Tessellator.getInstance();
 		VertexBuffer buffer = tessellator.getBuffer();
-
-		// Ugh, these methods get proper names in forge 1.9
+		
 		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		// 2nd arg = DefaultVertexFormats.POSITION_TEX
-
 		buffer.pos(x        , y + height, 0).tex(0.0, 1.0).endVertex();
 		buffer.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
 		buffer.pos(x + width, y         , 0).tex(1.0, 0.0).endVertex();
