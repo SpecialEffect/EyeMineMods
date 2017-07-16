@@ -83,9 +83,6 @@ public class SpecialEffectInventory extends BaseClassWithCallbacks {
 	}
 	
 	public static void syncConfig() {
-		
-		// Currently none
-		
 		if (mConfig.hasChanged()) {
 			mConfig.save();
 		}
