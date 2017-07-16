@@ -354,7 +354,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// Don't allow vanilla processing
 		this.zeroSensitivity();
 
-		if (mDoingOwnMouseHandling) {
+		if (mDoingOwnMouseHandling &&  // don't handle mouse when GUI open
+				null == Minecraft.getMinecraft().currentScreen ) {
 			float x = Math.abs((float) Mouse.getEventX());
 			float y = Math.abs((float) Mouse.getEventY());
 

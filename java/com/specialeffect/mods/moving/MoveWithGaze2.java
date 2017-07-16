@@ -121,7 +121,9 @@ implements ChildModWithConfig
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
 
     		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
-    		if (mDoingAutoWalk && (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
+    		if (mDoingAutoWalk && 
+            		null == Minecraft.getMinecraft().currentScreen && // no gui visible
+            		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
     			
     			// Y gives distance to walk forward/back.
     			float walkForwardAmount = 0.0f;

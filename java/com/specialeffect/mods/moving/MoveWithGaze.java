@@ -118,7 +118,9 @@ implements ChildModWithConfig
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
-            if (mDoingAutoWalk && (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
+            if (mDoingAutoWalk && 
+            		null == Minecraft.getMinecraft().currentScreen && // no gui visible
+            		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
             	
             	double forward = (double)mCustomSpeedFactor; 
             	
