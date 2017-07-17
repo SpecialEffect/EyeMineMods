@@ -92,22 +92,24 @@ public class DefaultConfigForNewWorld {
 				ModUtils.entityIsMe(event.getEntityLiving())) {
 			System.out.println("first tick");
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			firstOnLivingTick = false;
 			
-			// Check inventory - if empty, we'll fill it with a default
-			// set of items
-			NonNullList<ItemStack> inventory = player.inventory.mainInventory;
-			boolean hasSomeItems = false;
-			for (ItemStack itemStack : inventory) {
-				if (itemStack != null && !(itemStack.getItem() instanceof ItemAir) ) {
-					hasSomeItems = true;
-					break;
+			if (player.capabilities.isCreativeMode) {
+				// Check inventory - if empty, we'll fill it with a default
+				// set of items
+				NonNullList<ItemStack> inventory = player.inventory.mainInventory;
+				boolean hasSomeItems = false;
+				for (ItemStack itemStack : inventory) {
+					if (itemStack != null && !(itemStack.getItem() instanceof ItemAir) ) {
+						hasSomeItems = true;
+						break;
+					}
+				}
+
+				if (!hasSomeItems) {
+					equipPlayer(player.inventory);
 				}
 			}
-
-			if (!hasSomeItems) {
-				equipPlayer(player.inventory);
-			}
+			firstOnLivingTick = false;
 		}
 	}
 
