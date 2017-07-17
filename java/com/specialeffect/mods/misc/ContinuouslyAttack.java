@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.utils.ModUtils;
 
@@ -45,12 +46,16 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = ContinuouslyAttack.MODID, version = ModUtils.VERSION, name = ContinuouslyAttack.NAME)
 public class ContinuouslyAttack extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
     private Robot robot;
+	public static SimpleNetworkWrapper network;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -59,6 +64,9 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
 
 	}
 
@@ -178,8 +186,8 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			inventory.currentItem = swordId;
 		}
 		else {
-			ModUtils.moveItemToHotbarAndSelect(inventory, 
-					new ItemStack(Items.DIAMOND_SWORD));	
+			// Ask server to put new item in hotbar
+			ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
 		}
 	}
 }

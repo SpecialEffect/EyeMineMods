@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
+import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
@@ -66,6 +67,10 @@ public class DefaultConfigForNewWorld {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Apply default config to new worlds");
 		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+
 	}
 
 	private boolean firstOnLivingTick = true;	
@@ -142,12 +147,18 @@ public class DefaultConfigForNewWorld {
 	}
 	
 	private void equipPlayer(InventoryPlayer inventory) {
-		inventory.setInventorySlotContents(0, new ItemStack(Items.DIAMOND_PICKAXE));
-		inventory.setInventorySlotContents(1, new ItemStack(Items.DIAMOND_SWORD));
-		inventory.setInventorySlotContents(2, new ItemStack(Blocks.SANDSTONE));
-		inventory.setInventorySlotContents(3, new ItemStack(Blocks.GLASS_PANE));
-		inventory.setInventorySlotContents(4, new ItemStack(Blocks.COBBLESTONE_WALL));
-
-		inventory.setInventorySlotContents(8, new ItemStack(Blocks.TORCH));
+		// Ask server to put new item in hotbar
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Items.DIAMOND_PICKAXE)));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Items.DIAMOND_SWORD)));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Blocks.SANDSTONE)));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Blocks.GLASS_PANE)));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Blocks.COBBLESTONE_WALL)));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Blocks.TORCH)));
 	}
 }

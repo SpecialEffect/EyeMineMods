@@ -196,7 +196,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 			inventory.currentItem = blockId;
 		}
 		else {
-			// Ask server to use item
+			// Ask server to put new item in hotbar
 			AutoPillar.network.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
 		}
 	}

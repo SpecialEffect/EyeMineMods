@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -45,11 +46,15 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
 public class MineOne extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String NAME = "AutoDestroy";
+	public static SimpleNetworkWrapper network;
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;
@@ -61,6 +66,10 @@ public class MineOne extends BaseClassWithCallbacks {
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
+
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+
 	}
 
 	@EventHandler
@@ -181,8 +190,8 @@ public class MineOne extends BaseClassWithCallbacks {
 			inventory.currentItem = pickaxeId;
 		}
 		else {
-			ModUtils.moveItemToHotbarAndSelect(inventory, 
-					new ItemStack(Items.DIAMOND_PICKAXE));			
+			// Ask server to put new item in hotbar
+			MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
 		}
 	}
 }
