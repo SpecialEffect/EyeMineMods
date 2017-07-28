@@ -14,10 +14,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -67,10 +70,16 @@ public class UseItemAtPositionMessage implements IMessage {
 					if (null != item)
 					{
 						int oldCount = item.getCount();
+	                    EnumActionResult result = 
 	                    item.onItemUse(player, world, 
 					                    	   message.blockPos, EnumHand.MAIN_HAND, 
 					                    	   EnumFacing.UP, 
 					                    	   0.0f, 0.0f, 0.0f);
+	                    if (result != EnumActionResult.SUCCESS)
+	                    {
+	                    	player.sendMessage(new TextComponentString(
+	                    			"Cannot place " + item.getDisplayName() + " here"));
+	                    }
 	                    item.setCount(oldCount); //some items are decremented; others aren't
                 	}
                 }
