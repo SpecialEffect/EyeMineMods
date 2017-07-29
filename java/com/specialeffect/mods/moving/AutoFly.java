@@ -87,7 +87,7 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
-		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_F, "SpecialEffect");
+		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_COMMA, "SpecialEffect");
 		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, "SpecialEffect");
 		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_UP, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
