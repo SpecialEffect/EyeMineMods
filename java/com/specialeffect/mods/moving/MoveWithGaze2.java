@@ -148,7 +148,9 @@ implements ChildModWithConfig
     			yawAmount*= mMaxYaw;
     			    			
     			// scaled by user sensitivity
-    			yawAmount *= MouseHandler.mUserMouseSensitivity;
+    			// TODO: sensitivity isn't linear :-S
+    			float sens = MouseHandler.mUserMouseSensitivity;
+    			yawAmount *= Math.max(sens, 0.05);
     			
     			// TODO: Scale by user sensitivity?
     			

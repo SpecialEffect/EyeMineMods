@@ -246,14 +246,12 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mSensivityUpKB.isPressed()) {
 			this.resetSensitivity();
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = 
-					Math.abs(Minecraft.getMinecraft().gameSettings.mouseSensitivity)*1.1f;
+			increaseSens();
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mSensivityDownKB.isPressed()) {
 			this.resetSensitivity();
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = 
-					Math.abs(Minecraft.getMinecraft().gameSettings.mouseSensitivity)/1.1f;
+			decreaseSens();
 			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
@@ -268,6 +266,28 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				}
 			}
 		}
+	}
+
+	private void decreaseSens() {
+		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
+		float inc = 0.05f;		
+		if (Math.abs(sens) < 0.2f) {
+			inc = 0.01f;
+		}
+		sens = sens - inc;
+		sens = Math.max(sens, MIN_SENS+0.05f);
+		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
+	}
+
+	private void increaseSens() {
+		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
+		float inc = 0.05f;		
+		if (Math.abs(sens) < 0.2f) {
+			inc = 0.01f;
+		}
+		sens = sens + inc;
+		sens = Math.min(sens, 1.0f);
+		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
 	}		
 
 	public void setMouseNotGrabbed() {
@@ -446,24 +466,29 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		this.resetSensitivity();
 	}
 
+	
 	private void resetSensitivity() {
-		if (mUserMouseSensitivity > 0) {
+//		if (mUserMouseSensitivity > 0) {
 			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
-		}
+//		}
 	}
-
+	
+	// See http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
+	// for magic number.
+	private static float MIN_SENS = -1F / 3F;
+		
 	private static void zeroSensitivity() {
 		// See http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
 		// for
 		// magic number.
-		Minecraft.getMinecraft().gameSettings.mouseSensitivity = -1F / 3F;
+		Minecraft.getMinecraft().gameSettings.mouseSensitivity = MIN_SENS;
 	}
 
 	private void querySensitivity() {
 		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-		if (sens > 0) {
+//		if (sens > 0) {
 			mUserMouseSensitivity = sens;
-		}
+//		}
 	}
 
 	String toPercent(float input) {
