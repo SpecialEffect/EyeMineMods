@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MouseHelper;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -96,13 +97,25 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();
+		this.syncConfig();			
+	
 	}
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(mIcon);
+		
+		// Set up mouse helpers; we'll switch between them to toggle vanilla
+		// mouse handling 
+		minecraftMouseHelper = Minecraft.getMinecraft().mouseHelper;
+		emptyMouseHelper = new MouseHelper() {
+			@Override
+			public void mouseXYChange() {
+				deltaX = 0;
+				deltaY = 0;
+			}
+		};		
 	}
 	
 	public static void setWalking(boolean doWalk) {
@@ -247,12 +260,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		if (mSensivityUpKB.isPressed()) {
 			this.resetSensitivity();
 			increaseSens();
-			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mSensivityDownKB.isPressed()) {
 			this.resetSensitivity();
 			decreaseSens();
-			this.querySensitivity();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
@@ -334,12 +345,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		
 		if (actualEvent) {
 			if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
-				// In v1.8, it would be sufficient to query getDX and DY to consume
-				// the deltas.
-				// ... but this doesn't work in 1.8.8, so we hack it by setting the
-				// mouse sensitivity down low.
-				// See:
-				// http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
 				this.zeroSensitivity();
 			}
 			// turn off anyway, if vanilla mouse movements turned off, but record
@@ -412,6 +417,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
+	private static MouseHelper minecraftMouseHelper;
+	private static MouseHelper emptyMouseHelper;
+	
 	@SubscribeEvent
 	public void onMouseInput(InputEvent.MouseInputEvent event) {
 
@@ -430,21 +438,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
-		// It's important that when the 'controls' menu is opened, we are
-		// not overriding the sensitivity setting. It's also important that
-		// we get any user updates to sensitivity.
-		
-		// This corresponds to the opening of the controls pane 
-		if (null != event.getGui() && event.getGui().getClass() == GuiControls.class) {
-			this.resetSensitivity();			
-		}
-		// This corresponds to the opening/closing of *any other pane*.
-		// NB: Important to know that new screens are opened before the controls
-		// pane is closed; and close events don't have guiscreens attached to them.
-		else {
-			this.querySensitivity();			
-		}
-		
 		// For any  open event, make sure cursor not overridden
 		if (null != event.getGui()) {
 			try {
@@ -465,30 +458,17 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void serverStopping(FMLServerStoppingEvent event) {
 		this.resetSensitivity();
 	}
-
 	
 	private void resetSensitivity() {
-//		if (mUserMouseSensitivity > 0) {
-			Minecraft.getMinecraft().gameSettings.mouseSensitivity = mUserMouseSensitivity;
-//		}
+		Minecraft.getMinecraft().mouseHelper = minecraftMouseHelper;
 	}
-	
-	// See http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-	// for magic number.
+
+	// This is the constant offset applied in MC source, corresponding
+	// to "mouse does not move"
 	private static float MIN_SENS = -1F / 3F;
 		
 	private static void zeroSensitivity() {
-		// See http://www.minecraftforge.net/forum/index.php?topic=29216.10;wap2
-		// for
-		// magic number.
-		Minecraft.getMinecraft().gameSettings.mouseSensitivity = MIN_SENS;
-	}
-
-	private void querySensitivity() {
-		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-//		if (sens > 0) {
-			mUserMouseSensitivity = sens;
-//		}
+		Minecraft.getMinecraft().mouseHelper = emptyMouseHelper;
 	}
 
 	String toPercent(float input) {

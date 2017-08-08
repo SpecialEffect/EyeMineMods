@@ -200,6 +200,9 @@ implements ChildModWithConfig
     		lastMouseX = Minecraft.getMinecraft().displayWidth/2;
     		lastMouseY = Minecraft.getMinecraft().displayHeight/2;
     	}
+    	
+    	// TODO: do we need to reset mouse to (0,0) when we're done? otherwise next mouse event
+    	// after turning this off will snap us round (probably fine with eye gaze though)
     }
 }
 
