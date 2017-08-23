@@ -281,25 +281,31 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			}
 		}
 	}
-
-	private void decreaseSens() {
+	
+	private float getSensitivityIncrement(float reference) {
+		// Get a roughly-proportional increment
+		// bearing in mind offset means we don't just take a linear scale
 		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
 		float inc = 0.05f;		
-		if (Math.abs(sens) < 0.2f) {
+		if (sens < 0.2f) {
 			inc = 0.01f;
 		}
-		sens = sens - inc;
+		else if (sens < 0.0f) {
+			inc = 0.005f;
+		}
+		return inc;
+	}
+	
+	private void decreaseSens() {
+		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
+		sens -= getSensitivityIncrement(sens);
 		sens = Math.max(sens, MIN_SENS+0.05f);
 		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
 	}
 
 	private void increaseSens() {
-		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
-		float inc = 0.05f;		
-		if (Math.abs(sens) < 0.2f) {
-			inc = 0.01f;
-		}
-		sens = sens + inc;
+		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;		
+		sens += getSensitivityIncrement(sens);
 		sens = Math.min(sens, 1.0f);
 		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
 	}		
