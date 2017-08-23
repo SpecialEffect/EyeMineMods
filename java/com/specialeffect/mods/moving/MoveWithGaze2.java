@@ -19,6 +19,7 @@ import org.lwjgl.input.Mouse;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 

@@ -8,7 +8,7 @@
  * of the License, or (at your option) any later version.
  */
 
-package com.specialeffect.mods.moving;
+package com.specialeffect.mods.mousehandling;
 
 import java.nio.IntBuffer;
 import java.text.DecimalFormat;
@@ -23,6 +23,9 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.IconOverlay;
+import com.specialeffect.mods.moving.MoveWithGaze;
+import com.specialeffect.mods.moving.MoveWithGaze2;
+import com.specialeffect.mods.moving.SpecialEffectMovements;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
