@@ -149,18 +149,24 @@ public class DefaultConfigForNewWorld {
 	}
 	
 	private void equipPlayer(InventoryPlayer inventory) {
-		// Ask server to put new item in hotbar
+		// Ask server to put new item in hotbar		
+
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Items.DIAMOND_PICKAXE)));
-		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Items.DIAMOND_SWORD)));
+				new ItemStack(Blocks.BRICK_BLOCK)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.SANDSTONE)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.GLASS_PANE)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Blocks.COBBLESTONE_WALL)));
+				new ItemStack(Blocks.MOSSY_COBBLESTONE)));
+		
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Blocks.TORCH)));
+				new ItemStack(Blocks.TORCH), 6));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Items.DIAMOND_PICKAXE), 7));
+		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+				new ItemStack(Items.DIAMOND_SWORD), 8));
+		
+		inventory.currentItem = 0;
 	}
 }
