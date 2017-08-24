@@ -28,21 +28,29 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class AddItemToHotbar implements IMessage {
     
     private ItemStack item;
+    private int slotId = -1;
 
     public AddItemToHotbar() { }
+
+    public AddItemToHotbar(ItemStack item, int id) {
+        this.item = item;
+        this.slotId = id;
+    }
 
     public AddItemToHotbar(ItemStack item) {
         this.item = item;
     }
-
+    
     @Override
     public void fromBytes(ByteBuf buf) {
         item = ByteBufUtils.readItemStack(buf);
+        slotId = ByteBufUtils.readVarInt(buf, 5);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
         ByteBufUtils.writeItemStack(buf, item);
+        ByteBufUtils.writeVarInt(buf, slotId, 5);
     }
 
     public static class Handler implements IMessageHandler<AddItemToHotbar, IMessage> {        
@@ -55,11 +63,10 @@ public class AddItemToHotbar implements IMessage {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;
                     InventoryPlayer inventory = player.inventory;
                     
-                    // stick the item in an arbitrary non-hotbar slot, then let the inventory 
-            		// figure out how best to move it to the hotbar (e.g. to an empty slot).
-            		int slotId = 12; 
-            		inventory.setInventorySlotContents(slotId, message.item);
-            		inventory.pickItem(slotId);
+                    if (message.slotId < 0) {
+                    	message.slotId = inventory.getBestHotbarSlot();
+                    }
+            		inventory.setInventorySlotContents(message.slotId, message.item);
                 }
             });
             return null; // no response in this case
