@@ -20,8 +20,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.MoveWithGaze2;
@@ -30,7 +28,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MouseHelper;
@@ -45,7 +42,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -55,33 +51,26 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public static final String MODID = "specialeffect.mousehandler";
 	public static final String NAME = "MouseHandler";
 
+	public static Configuration mConfig;
+
 	public enum InteractionState {
 	    EYETRACKER_NORMAL, EYETRACKER_WALK, EYETRACKER_LEGACY, 
 	    MOUSE_NOTHING, MOUSE_LOOK, MOUSE_WALK, MOUSE_LEGACY 
 	}
 	
 	public static InteractionState mInteractionState;
-	
-	public static Configuration mConfig;
-
-	private static KeyBinding mSensivityUpKB;
-	private static KeyBinding mSensivityDownKB;
-	private static KeyBinding mToggleMouseViewControlKB;
-
-	private static boolean mPendingMouseEvent = false;
-	public static boolean mLastEventWithinBounds = false;
-
-	public static float mUserMouseSensitivity = -1.0f; // internal cache of
-														// user's preference.
-	private static int mIgnoreEventCount = 0;
-	private static float mDeadBorder = 0.1f;
-
 	private static InputSource mInputSource = InputSource.EyeTracker;
-	private static boolean mVanillaMouseMovementDisabled = false;
-	private static boolean mDoingOwnMouseHandling = false;
+	
+	private static MouseHelperOwn ownMouseHelper;
+
+	private static KeyBinding mSensitivityUpKB;
+	private static KeyBinding mSensitivityDownKB;
+	private static KeyBinding mToggleMouseViewControlKB;
 	
 	private Cursor mEmptyCursor;
-	private static IconOverlay mIcon;
+	private static IconOverlay mIconEye;
+	
+	private static int mTicksSinceMouseEvent = 1000;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -90,13 +79,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
-		// Check the initial sensitivity setting.
-		mUserMouseSensitivity = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-		
 		// Set up icon rendering		
-		mIcon = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
-		mIcon.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
-		mIcon.setAlpha(0.2f);
+		mIconEye = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
+		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
+		mIconEye.setAlpha(0.2f);
 
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
@@ -107,77 +93,48 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		MinecraftForge.EVENT_BUS.register(mIcon);
+		MinecraftForge.EVENT_BUS.register(mIconEye);
 		
-		// Set up mouse helpers; we'll switch between them to toggle vanilla
-		// mouse handling 
-		minecraftMouseHelper = Minecraft.getMinecraft().mouseHelper;
-		emptyMouseHelper = new MouseHelper() {
-			@Override
-			public void mouseXYChange() {
-				deltaX = 0;
-				deltaY = 0;
-			}
-		};		
+		// Set up mouse helper to handle view control
+		ownMouseHelper = new MouseHelperOwn();
+		Minecraft.getMinecraft().mouseHelper = (MouseHelper)ownMouseHelper;
 	}
 	
 	public static void setWalking(boolean doWalk) {
 		if (mInputSource == InputSource.EyeTracker) {
-			if (doWalk) {
-				updateState(InteractionState.EYETRACKER_WALK);
-			}
-			else {
-				updateState(InteractionState.EYETRACKER_NORMAL);
-			}
+			if (doWalk) updateState(InteractionState.EYETRACKER_WALK);
+			else updateState(InteractionState.EYETRACKER_NORMAL);
 		}
 		else {
-			if (doWalk) {
-				updateState(InteractionState.MOUSE_WALK);
-			}
-			else {
-				updateState(InteractionState.MOUSE_NOTHING);
-			}			
+			if (doWalk) updateState(InteractionState.MOUSE_WALK);
+			else updateState(InteractionState.MOUSE_NOTHING);
 		}
 	}
 	
 	public static void setLegacyWalking(boolean doWalk) {
 		if (mInputSource == InputSource.EyeTracker) {
-			if (doWalk) {
-				updateState(InteractionState.EYETRACKER_LEGACY);
-			}
-			else {
-				updateState(InteractionState.EYETRACKER_NORMAL);
-			}
+			if (doWalk) updateState(InteractionState.EYETRACKER_LEGACY);
+			else updateState(InteractionState.EYETRACKER_NORMAL);
 		}
 		else {
-			if (doWalk) {
-				updateState(InteractionState.MOUSE_LEGACY);
-			}
-			else {
-				updateState(InteractionState.MOUSE_NOTHING);
-			}			
+			if (doWalk) updateState(InteractionState.MOUSE_LEGACY);
+			else updateState(InteractionState.MOUSE_NOTHING);
 		}
 	}
 	
 	private static void updateIconForState(InteractionState state) {
 		boolean showIcon = (state == InteractionState.MOUSE_LOOK ||
 							state == InteractionState.MOUSE_WALK);
-		mIcon.setVisible(showIcon);								
+		mIconEye.setVisible(showIcon);								
 	}
 	
 	private static void updateMouseForState(InteractionState state) {
 		boolean disabled = (state == InteractionState.MOUSE_NOTHING ||
-							state == InteractionState.MOUSE_LOOK ||
-							state == InteractionState.MOUSE_WALK ||
 							state == InteractionState.MOUSE_LEGACY ||
 							state == InteractionState.EYETRACKER_LEGACY);
-		mVanillaMouseMovementDisabled = disabled;
-		
-		boolean ownMouseControl = (state == InteractionState.MOUSE_LOOK ||
-								   state == InteractionState.MOUSE_WALK);
-		mDoingOwnMouseHandling = ownMouseControl;
-		
-		System.out.println("Setting mouse disabled? : "+ mVanillaMouseMovementDisabled);
+		if (ownMouseHelper != null) {
+			ownMouseHelper.setDoVanillaMovements(!disabled);
+		}
 	}
 	
 	private static void updateState(InteractionState state) {
@@ -189,7 +146,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			MoveWithGaze2.stop();
 		}
 		else if (state == InteractionState.MOUSE_LEGACY || state == InteractionState.EYETRACKER_LEGACY) {
-			MoveWithGaze.stop();
+			MoveWithGaze.stop();			
 		}
 		else {
 			MoveWithGaze.stop();
@@ -199,7 +156,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	public void syncConfig() {
 		System.out.println("syncConfig MouseHandler");
-		mDeadBorder = SpecialEffectMovements.mDeadBorder;
 		if (SpecialEffectMovements.usingMouseEmulation) {
 			System.out.println("using mouse");
 			mInputSource = InputSource.Mouse;
@@ -210,7 +166,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			// always enabled
 			this.updateState(InteractionState.EYETRACKER_NORMAL); 
 		}
-		mIcon.setVisible(false);
+		mIconEye.setVisible(false);
 	}
 
 	@EventHandler
@@ -223,11 +179,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
 
 		// Register key bindings
-		mSensivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_RIGHT, "SpecialEffect");
-		ClientRegistry.registerKeyBinding(mSensivityUpKB);
+		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_RIGHT, "SpecialEffect");
+		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
 
-		mSensivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_LEFT, "SpecialEffect");
-		ClientRegistry.registerKeyBinding(mSensivityDownKB);
+		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_LEFT, "SpecialEffect");
+		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
 
 		// Used to turn 'look with gaze' on and off when using mouse emulation
 		// instead of an
@@ -251,8 +207,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			mPendingMouseEvent = false;
 
+			if (ownMouseHelper.hasPendingEvent()) {
+				mTicksSinceMouseEvent = 0;
+				ownMouseHelper.consumePendingEvent();
+			}
+			else {
+				mTicksSinceMouseEvent++;
+			}
+			
 			this.processQueuedCallbacks(event);
 		}
 	}
@@ -260,12 +223,12 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // important we get this
 														// *before* other mods
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		if (mSensivityUpKB.isPressed()) {
-			this.resetSensitivity();
+		if (mSensitivityUpKB.isPressed()) {
+			this.turnOnVanillaMouse();
 			increaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
-		} else if (mSensivityDownKB.isPressed()) {
-			this.resetSensitivity();
+		} else if (mSensitivityDownKB.isPressed()) {
+			this.turnOnVanillaMouse();
 			decreaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
@@ -310,8 +273,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
 	}		
 
-	public void setMouseNotGrabbed() {
-		Mouse.setGrabbed(false);
+	public void setMouseNotGrabbed() {		
+		ownMouseHelper.ungrabMouseCursor();
 		try {
 			System.out.println("setting empty cursor");
 			Mouse.setNativeCursor(mEmptyCursor);
@@ -322,127 +285,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
-	public static void setIgnoreNextEvent() {
-		mIgnoreEventCount++;
-	}
-
 	public static boolean hasPendingEvent() {
-		return mPendingMouseEvent;
-	}
-
-	public boolean lastEventWithinBounds() {
-		return mPendingMouseEvent && mLastEventWithinBounds;
-	}
-
-	private static long lastActualEventNanoseconds = 0;
-	
-	private void onMouseInputGrabbed(InputEvent.MouseInputEvent event) {
-		// Cancel any mouse events within a certain border. This avoids mouse
-		// movements outside the window (e.g. from
-		// eye gaze system) from having an impact on view direction.
-		float x_abs = Math.abs((float) Mouse.getEventDX()); // distance from
-															// centre
-		float y_abs = Math.abs((float) Mouse.getEventDY());
-		
-		boolean actualEvent = false; 
-		// in v1_11 (but not v_1_1_8) we get repeat mouse events every tick even 
-		// if mouse hasn't moved, but the timestamp reveals all secrets.
-		if (Mouse.getEventNanoseconds() > this.lastActualEventNanoseconds) {
-			this.lastActualEventNanoseconds = Mouse.getEventNanoseconds();
-			actualEvent = true;
-		}
-		
-		if (actualEvent) {
-			if (mIgnoreEventCount > 0 || !isPointInBounds(x_abs, y_abs)) {
-				this.zeroSensitivity();
-			}
-			// turn off anyway, if vanilla mouse movements turned off, but record
-			// pending event.
-			else if (mVanillaMouseMovementDisabled) {
-				this.zeroSensitivity();
-				mPendingMouseEvent = true;
-			} else {
-				this.resetSensitivity();
-				mPendingMouseEvent = true;
-			}
-	
-			mIgnoreEventCount = Math.max(mIgnoreEventCount - 1, 0);
-		}
-	}
-
-	// x_abs and y_abs are from centre of minecraft window
-	private boolean isPointInBounds(float x_abs, float y_abs) {
-		float r = 2 * mDeadBorder;
-
-		float w_half = (float) Minecraft.getMinecraft().displayWidth / 2;
-		float h_half = (float) Minecraft.getMinecraft().displayHeight / 2;
-
-		if (x_abs > w_half * (1 - r) || y_abs > h_half * (1 - r)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private void onMouseInputNotGrabbed(InputEvent.MouseInputEvent event) {
-		// Don't allow vanilla processing
-		this.zeroSensitivity();
-
-		if (mDoingOwnMouseHandling &&  // don't handle mouse when GUI open
-				null == Minecraft.getMinecraft().currentScreen ) {
-			float x = Math.abs((float) Mouse.getEventX());
-			float y = Math.abs((float) Mouse.getEventY());
-
-			float w_half = (float) Minecraft.getMinecraft().displayWidth / 2;
-			float h_half = (float) Minecraft.getMinecraft().displayHeight / 2;
-
-			float dx = x - w_half;
-			float dy = y - h_half;
-
-			if (isPointInBounds(dx, dy)) {
-				float s = mUserMouseSensitivity;
-
-				// handle yaw
-				final float mMaxYaw = 35/2; // at 100% sensitivity
-				final float dYaw = mMaxYaw * s * dx / w_half;
-
-				// handle pitch
-				final float mMaxPitch = -40/2; // at 100% sensitivity
-				final float dPitch = mMaxPitch * s * dy / w_half;
-
-				this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-					@Override
-					public void onLiving(LivingUpdateEvent event) {
-						EntityPlayer player = (EntityPlayer) event.getEntity();
-						player.rotationPitch += dPitch;
-						player.rotationYaw += dYaw;
-					}
-				}));
-
-				mPendingMouseEvent = true;
-			}
-		} else {
-			mPendingMouseEvent = true;
-		}
-	}
-
-	private static MouseHelper minecraftMouseHelper;
-	private static MouseHelper emptyMouseHelper;
-	
-	@SubscribeEvent
-	public void onMouseInput(InputEvent.MouseInputEvent event) {
-
-		// Button events and scroll events should be ignored and left to minecraft
-		if (Mouse.getEventButton() > -1 ||
-				Mouse.getEventDWheel() != 0) {
-			return;
-		}
-
-		if (mInputSource == InputSource.EyeTracker) {
-			this.onMouseInputGrabbed(event);
-		} else if (mInputSource == InputSource.Mouse) {
-			this.onMouseInputNotGrabbed(event);
-		}
+		return mTicksSinceMouseEvent < 2;
 	}
 	
 	@SubscribeEvent
@@ -462,22 +306,17 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			}
 		}
 	}
-
-	@EventHandler
-	public void serverStopping(FMLServerStoppingEvent event) {
-		this.resetSensitivity();
-	}
 	
-	private void resetSensitivity() {
-		Minecraft.getMinecraft().mouseHelper = minecraftMouseHelper;
+	private void turnOnVanillaMouse() {		
+//		mouseHelper.
 	}
 
 	// This is the constant offset applied in MC source, corresponding
 	// to "mouse does not move"
 	private static float MIN_SENS = -1F / 3F;
 		
-	private static void zeroSensitivity() {
-		Minecraft.getMinecraft().mouseHelper = emptyMouseHelper;
+	private static void turnOffVanillaMouse() {
+//		Minecraft.getMinecraft().mouseHelper = emptyMouseHelper;
 	}
 
 	String toPercent(float input) {

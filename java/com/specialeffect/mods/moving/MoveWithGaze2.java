@@ -150,7 +150,7 @@ implements ChildModWithConfig
     			    			
     			// scaled by user sensitivity
     			// TODO: sensitivity isn't linear :-S
-    			float sens = MouseHandler.mUserMouseSensitivity;
+    			float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
     			yawAmount *= Math.max(sens, 0.05);
     			
     			// TODO: Scale by user sensitivity?

@@ -104,7 +104,6 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-
     		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
     		
        		// Add current look dir to queue
@@ -119,10 +118,15 @@ implements ChildModWithConfig
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
+       		if (mDoingAutoWalk) {
+    		System.out.println("walk: " + 
+    				 MouseHandler.hasPendingEvent());
+       		}
             if (mDoingAutoWalk && 
             		null == Minecraft.getMinecraft().currentScreen && // no gui visible
             		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
-            	
+        		System.out.println("walk");
+
             	double forward = (double)mCustomSpeedFactor; 
             	
             	// Slow down when you've been turning a corner
