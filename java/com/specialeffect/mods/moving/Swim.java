@@ -111,7 +111,7 @@ public class Swim extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsSwimming = false;
+	private boolean mIsSwimming = true;
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
