@@ -169,6 +169,10 @@ public class MineOne extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mDestroyKB.isPressed()) {
+			// turn off continuous mining
+			ContinuouslyMine.stop();
+			
+			// mine the block you're facing
 			mBlockToDestroy = this.getMouseOverBlockPos();
 			if (mBlockToDestroy == null) {
 				System.out.println("Nothing to attack");
