@@ -22,6 +22,8 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.mining.ContinuouslyMine;
+import com.specialeffect.mods.mining.SpecialEffectMining;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -51,12 +53,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = ContinuouslyAttack.MODID, version = ModUtils.VERSION, name = ContinuouslyAttack.NAME)
-public class ContinuouslyAttack extends BaseClassWithCallbacks {
+public class ContinuouslyAttack 
+extends BaseClassWithCallbacks 
+implements ChildModWithConfig {
 	public static final String MODID = "specialeffect.continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
     private Robot robot;
 	public static SimpleNetworkWrapper network;
-
+	private boolean mAutoSelectSword = true;
+	private static int mIconIndex;
+	private static KeyBinding mAttackKB;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -76,6 +83,9 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		
+		// Register for config changes from parent
+		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+		
 		// Register key bindings	
 		mAttackKB = new KeyBinding("Attack", Keyboard.KEY_R, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mAttackKB);
@@ -90,8 +100,11 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 	}
 	
-	private static int mIconIndex;
-	private static KeyBinding mAttackKB;
+	@Override
+	public void syncConfig() {
+		mAutoSelectSword = SpecialEffectMisc.mAutoSelectSword;	
+	}
+	
 	
 	public static void stop() {
 		mIsAttacking = false;
@@ -165,7 +178,8 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			        player.sendMessage(new TextComponentString(
 			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
 			        
-			        if (player.capabilities.isCreativeMode) {
+			        if (player.capabilities.isCreativeMode &&
+			        		mAutoSelectSword) {
 		    			chooseWeapon(player.inventory);
 		    		}
 		        }		
@@ -189,5 +203,5 @@ public class ContinuouslyAttack extends BaseClassWithCallbacks {
 			// Ask server to put new item in hotbar
 			ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
 		}
-	}
+	}	
 }

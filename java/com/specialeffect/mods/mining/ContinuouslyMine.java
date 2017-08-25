@@ -18,6 +18,7 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -37,11 +38,16 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(modid = ContinuouslyMine.MODID, version = ModUtils.VERSION, name = ContinuouslyMine.NAME)
-public class ContinuouslyMine extends BaseClassWithCallbacks {
+public class ContinuouslyMine 
+extends BaseClassWithCallbacks 
+implements ChildModWithConfig 
+{
 	public static final String MODID = "specialeffect.continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";
 	private static int mIconIndex;
-	
+	private static KeyBinding mDestroyKB;
+	private boolean mAutoSelectTool = true;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -57,7 +63,10 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		// Subscribe to event buses
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
-		
+
+		// Register for config changes from parent
+		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
+
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mDestroyKB);
@@ -66,7 +75,9 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
 	}
 	
-	private static KeyBinding mDestroyKB;
+	public void syncConfig() {
+		mAutoSelectTool = SpecialEffectMining.mAutoSelectTool;
+	}
 	
 	public static void stop() {
 		mIsAttacking = false;
@@ -139,7 +150,9 @@ public class ContinuouslyMine extends BaseClassWithCallbacks {
 			        player.sendMessage(new TextComponentString(
 			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
 			        
-			        if (mIsAttacking && player.capabilities.isCreativeMode) {
+			        if (mIsAttacking && 
+			        		player.capabilities.isCreativeMode &&
+			        			mAutoSelectTool) {
 		    			MineOne.choosePickaxe(player.inventory);
 		    		}
 				}		

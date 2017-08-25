@@ -17,6 +17,10 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.mods.misc.SpecialEffectMisc;
+import com.specialeffect.mods.mousehandling.MouseHandler.InteractionState;
+import com.specialeffect.mods.moving.SpecialEffectMovements;
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -37,6 +41,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -51,13 +56,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
-public class MineOne extends BaseClassWithCallbacks {
+public class MineOne 
+extends BaseClassWithCallbacks 
+implements ChildModWithConfig
+{
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String NAME = "AutoDestroy";
 	public static SimpleNetworkWrapper network;
+	public static Configuration mConfig;
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;
+	private static KeyBinding mDestroyKB;
+	private boolean mAutoSelectTool = true;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -70,6 +81,9 @@ public class MineOne extends BaseClassWithCallbacks {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
 
+		// Set up config
+		mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		this.syncConfig();
 	}
 
 	@EventHandler
@@ -78,12 +92,18 @@ public class MineOne extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		
+		// Register for config changes from parent
+		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
+		
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_N, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mDestroyKB);
+				
 	}
-	
-	private static KeyBinding mDestroyKB;
+		
+	public void syncConfig() {
+		mAutoSelectTool = SpecialEffectMining.mAutoSelectTool;
+	}
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -96,11 +116,10 @@ public class MineOne extends BaseClassWithCallbacks {
 				World world = Minecraft.getMinecraft().world;
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 					    						
-	    		// Slightly different behaviour in survival vs creative:
-	    		// CREATIVE: A pickaxe was chosen when mining began
-	    		// SURVIVAL: Check selected item can actually destroy block
-	    		// (but don't do the choosing, otherwise you'll waste good tools on easy blocks)
-	    		if (!player.capabilities.isCreativeMode) {
+	    		// If tool wasn't preselected, we need to check whether the 
+	    		// selected item can actually destroy the block
+	    		boolean pickaxeSelected = mAutoSelectTool && player.capabilities.isCreativeMode; 
+	    		if (!pickaxeSelected) {
 	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
 	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
 	    				String message = "Can't destroy this block with current item";
@@ -140,7 +159,8 @@ public class MineOne extends BaseClassWithCallbacks {
 			public void onLiving(LivingUpdateEvent event) {
 				System.out.println("onLiving queued event");
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-				if (player.capabilities.isCreativeMode) {
+				if (player.capabilities.isCreativeMode && 
+						mAutoSelectTool) {
 	    			choosePickaxe(player.inventory);
 	    		}
 			}

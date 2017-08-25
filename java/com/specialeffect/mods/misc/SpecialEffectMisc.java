@@ -38,7 +38,7 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.misc";	
 	public static final String NAME = "SpecialEffectsMisc";
-
+	
 	public static Configuration mConfig;	
 
 	// AutoOpenDoors
@@ -46,6 +46,9 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 	
     // OpenTablesChests
     public static int mRadiusChests = 5;
+    
+    // ContinuouslyAttack
+    public static boolean mAutoSelectSword;
     
     private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
     
@@ -98,6 +101,10 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 		mRadiusChests = mConfig.getInt("Distance to open chests/crafting tables", Configuration.CATEGORY_GENERAL, mRadiusChests, 
 				1, 6, "How far away a player needs to be from a chest/table to be able to open it");
         
+		// ContinuouslyAttack
+		mAutoSelectSword = mConfig.getBoolean("Auto-select sword", Configuration.CATEGORY_GENERAL, 
+				true, "When attacking, do you want sword selected automatically?");
+		
 		if (mConfig.hasChanged()) {
 			mConfig.save();
 		}
