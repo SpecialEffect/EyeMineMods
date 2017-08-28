@@ -70,6 +70,8 @@ public class Swim extends BaseClassWithCallbacks {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/swim.png");
 
+		StateOverlay.setStateLeftIcon(mIconIndex, mIsSwimming);
+
 	}
 	
 	private int mIconIndex;
