@@ -162,9 +162,12 @@ implements ChildModWithConfig
     }
     
     private double slowdownFactorPitch(EntityPlayer player) {
-    	float f = player.rotationPitch;
-    	if (f < -60 || f > 60) {
-    		return 0.0f;
+    	float f = player.rotationPitch;    	
+    	if (f < -75 || f > 75) {
+    		return 0.15f;
+    	}
+    	else if (f < -60 || f > 60) {
+    		return 0.3f;
     	}
     	else if (f < -30 || f > 40) {
     		return 0.5f;
