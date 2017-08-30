@@ -10,10 +10,12 @@
 
 package com.specialeffect.messages;
 
+import javax.vecmath.Point2d;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.Vec3d;
@@ -58,35 +60,63 @@ public class MovePlayerMessage implements IMessage {
                     if (player.isRiding()) {
 //                    	player.moveForward = 1.0f;
                     	Entity riddenEntity = player.getRidingEntity();
+                    	
+                    	
 						if (null != riddenEntity) {
-							// Minecarts can only be moved forward/backward
+							final double scaleMinecart = 1.0d/8.0d;
+							final double scaleAnimal = 1.0d/2.0d;
+							final double scaleDefault = 1.0d/2.0d;
+							
 							if (riddenEntity instanceof EntityMinecart) {
 								EntityMinecart minecart = (EntityMinecart)riddenEntity;
-								Vec3d lookVec = player.getLookVec();
-								int lookYaw = (int)player.rotationYaw;
-								int yawDiff = ((int)riddenEntity.rotationYaw - lookYaw) % 360;
-								if (yawDiff < 90 || yawDiff > 270) {
-									message.moveAngle = 0.0f;
-								}
-								else {
-									message.moveAngle = (float) Math.PI;
-								}
-								// slower for minecarts
-								message.moveAmount /= 2.0f;
-							}
-							
-							double yaw = Math.toRadians(riddenEntity.rotationYaw);
-							
-							float xDiff =  -(float)(message.moveAmount*Math.sin(yaw+message.moveAngle));
-							float yDiff = (float)(message.moveAmount*Math.cos(yaw+message.moveAngle));
+								message.moveAmount *= scaleMinecart;
 
-							// TODO: check if type is correct.
-							riddenEntity.move(MoverType.SELF, xDiff, 0, yDiff);
+								Vec3d lookVec = player.getLookVec();
+								System.out.println(message.moveAmount);
+								minecart.motionX = lookVec.xCoord*message.moveAmount;
+								minecart.motionZ = lookVec.zCoord*message.moveAmount;
+								minecart.moveMinecartOnRail(null);
+							}
+							else if (riddenEntity instanceof EntityAnimal) {
+								EntityAnimal animal = (EntityAnimal)riddenEntity;
+								message.moveAmount *= scaleAnimal;
+								
+								// Make sure riding doesn't hurt animal (this can happen
+								// if you ride down a drop, or collide) 
+								animal.setHealth(animal.getMaxHealth());
+								
+								double yaw = Math.toRadians(riddenEntity.rotationYaw);
+								Point2d xyDiff = polarToCartesian(message.moveAmount, 
+																  message.moveAngle + yaw);
+								
+								// don't drive animal forward while it goes over a cliff
+								if (!riddenEntity.isAirBorne) {
+									riddenEntity.move(MoverType.SELF, xyDiff.x, 0, xyDiff.y);
+									riddenEntity.updateRidden();
+								}
+							}
+							else {
+								// Not sure what else you can ride... this may need replacing 
+								// with specialised behaviour 
+								double yaw = Math.toRadians(riddenEntity.rotationYaw);
+								Point2d xyDiff = polarToCartesian(message.moveAmount, 
+																  message.moveAngle + yaw);
+								riddenEntity.move(MoverType.SELF, xyDiff.x, 0, xyDiff.y);
+								riddenEntity.updateRidden();
+							}
 						}
                     }
                 }
             });
             return null; // no response in this case
         }
+    }
+    
+    private static Point2d polarToCartesian(double amount, double angle) {
+    	Point2d xy = new Point2d();
+    	xy.x =  -(float)(amount*Math.sin(angle));
+		xy.y = (float)(amount*Math.cos(angle));
+		
+		return xy;
     }
 }
