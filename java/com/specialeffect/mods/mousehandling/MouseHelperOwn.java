@@ -100,7 +100,6 @@ extends MouseHelper
 
 			// Carry out the change if we're doing vanilla movements
 			if (doVanillaMovements) {
-				System.out.println("setting (" + x + ", " + y + ")");                                                        
 				this.deltaX = deltaX;
 				this.deltaY = deltaY;
 			}
