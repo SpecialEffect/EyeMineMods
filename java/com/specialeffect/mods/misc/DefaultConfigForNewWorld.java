@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
@@ -56,11 +57,13 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = DefaultConfigForNewWorld.MODID, version = ModUtils.VERSION, name = DefaultConfigForNewWorld.NAME)
 public class DefaultConfigForNewWorld {
-	public static final String MODID = "specialeffect.defaultconfig";
-	public static final String NAME = "DefaultConfig";
+	public static final String MODID = "specialeffect.defaultconfigworld";
+	public static final String NAME = "DefaultConfigWorld";
 
 	public static SimpleNetworkWrapper network;
-
+	private boolean firstWorldLoad = false;
+	private boolean firstOnLivingTick = true;	
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(this);
@@ -70,10 +73,10 @@ public class DefaultConfigForNewWorld {
 		
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+		network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 1, Side.SERVER);
 
 	}
 
-	private boolean firstOnLivingTick = true;	
 
 	@SubscribeEvent
 	public void onSpawn(EntityJoinWorldEvent event) {
@@ -88,28 +91,42 @@ public class DefaultConfigForNewWorld {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (firstOnLivingTick &&
-				ModUtils.entityIsMe(event.getEntityLiving())) {
-			System.out.println("first tick");
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+
+			// First onliving tick, we check inventory and fill it with default set
+			// of items if it's empty
+			if (firstOnLivingTick) {
+				firstOnLivingTick = false;
 			
-			if (player.capabilities.isCreativeMode) {
-				// Check inventory - if empty, we'll fill it with a default
-				// set of items
-				NonNullList<ItemStack> inventory = player.inventory.mainInventory;
-				boolean hasSomeItems = false;
-				for (ItemStack itemStack : inventory) {
-					if (itemStack != null && !(itemStack.getItem() instanceof ItemAir) ) {
-						hasSomeItems = true;
-						break;
+				if (player.capabilities.isCreativeMode) {
+					NonNullList<ItemStack> inventory = player.inventory.mainInventory;
+					boolean hasSomeItems = false;
+					for (ItemStack itemStack : inventory) {
+						if (itemStack != null && !(itemStack.getItem() instanceof ItemAir) ) {
+							hasSomeItems = true;
+							break;
+						}
+					}
+	
+					if (!hasSomeItems) {
+						equipPlayer(player.inventory);
 					}
 				}
-
-				if (!hasSomeItems) {
-					equipPlayer(player.inventory);
-				}
 			}
-			firstOnLivingTick = false;
+			// The first time the world loads, we set our preferred game rules
+			// Users may override them manually later.
+			if (firstWorldLoad) {	
+				if (player.capabilities.isCreativeMode) {
+					WorldServer worldServer = DimensionManager.getWorld(0); // default world
+					if (worldServer.getTotalWorldTime() < 10) {
+						GameRules gameRules = worldServer.getGameRules();
+						printGameRules(gameRules);
+						setDefaultGameRules(gameRules);
+					}
+				}
+				firstWorldLoad = false;
+			}
 		}
 	}
 
@@ -122,15 +139,11 @@ public class DefaultConfigForNewWorld {
 
 	@EventHandler
 	public void onWorldLoad(FMLServerStartedEvent event) {
-
+		// Note first time world loads, we'll make changes on next
+		// onliving tick
 		WorldServer worldServer = DimensionManager.getWorld(0); // default world
-		GameRules gameRules = worldServer.getGameRules();
-		printGameRules(gameRules);
-
-		// The first time the world loads, we set our preferred game rules
-		// Users may override them manually later.
 		if (worldServer.getTotalWorldTime() < 10) {
-			setDefaultGameRules(gameRules);
+			firstWorldLoad = true;
 		}
 	}
 
@@ -138,6 +151,11 @@ public class DefaultConfigForNewWorld {
 		rules.setOrCreateGameRule("doDaylightCycle", "False");
 		rules.setOrCreateGameRule("doWeatherCycle", "False");
 		rules.setOrCreateGameRule("keepInventory", "True");
+
+		// we've just turned off daylightcycle while time = morning... 
+		// we prefer full daylight!
+		sendCommand("/time set day");
+
 	}
 
 	private void printGameRules(GameRules rules) {
@@ -146,6 +164,10 @@ public class DefaultConfigForNewWorld {
 		for (String key : keys) {
 			System.out.println(key + ": " + rules.getString(key));
 		}
+	}
+	
+	private void sendCommand(String cmd ) {
+		DefaultConfigForNewWorld.network.sendToServer(new SendCommandMessage(cmd));
 	}
 	
 	private void equipPlayer(InventoryPlayer inventory) {
