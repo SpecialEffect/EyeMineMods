@@ -120,7 +120,9 @@ public class CreativeInventoryManager {
 			this.switchToTab(3);
 		} else if (Config.isKey4Pressed()) {
 			this.switchToTab(4);			
-		} 
+		} else if (Config.isKeySearchPressed()) {
+			this.switchToTab(5);
+		}
 		// 5 tabs on bottom (not inc survival since it's unlikely you need it)
 		// Note indices are offset by one since we skipped search.
 		else if (Config.isKey5Pressed()) {

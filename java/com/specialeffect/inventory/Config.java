@@ -35,7 +35,7 @@ public class Config {
      */
     static Property key0, key1, key2, key3, key4,
     			    key5, key6, key7, key8, key9, 
-    			    keyNext, keyPrev, 
+    			    keyNext, keyPrev, keySearch,
     			    keyNextItemRow, keyNextItemCol;
     
     /**
@@ -90,6 +90,7 @@ public class Config {
 					flagKeyIfMatches(keyNext); 
 					flagKeyIfMatches(keyNextItemRow); 
 					flagKeyIfMatches(keyNextItemCol); 
+					flagKeyIfMatches(keySearch); 
 				}
 			} catch (IOException e) {
 			} catch (NullPointerException e) {
@@ -157,6 +158,10 @@ public class Config {
     	return isKeyPressed(keyNext);
     }
     
+    public static boolean isKeySearchPressed() {
+    	return isKeyPressed(keySearch);
+    }
+    
     /**
      * Initializes the configFile Files, loads all values (or sets them to default).
      *
@@ -214,6 +219,8 @@ public class Config {
         keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RIGHT);
         keyNextItemRow = configFile.get(categoryInventory, "keyNextItemRow", Keyboard.KEY_F6);
         keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", Keyboard.KEY_F7);
+        
+        keySearch = configFile.get(categoryInventory, "keySearch", Keyboard.KEY_DOWN);
    }
 
 }
