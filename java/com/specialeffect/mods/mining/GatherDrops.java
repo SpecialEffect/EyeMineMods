@@ -118,26 +118,30 @@ public class GatherDrops extends BaseClassWithCallbacks
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-					World world = Minecraft.getMinecraft().world;
-
-					BlockPos playerPos = player.getPosition();
-					double dx, dy, dz;
-					dx = dy = dz = 5;
-
-					AxisAlignedBB aaBb = new AxisAlignedBB(playerPos.subtract(new Vec3i(dx, dy, dz)), 
-							playerPos.add(new Vec3i(dx, dy, dz)));
-					ArrayList<EntityItem> items = (ArrayList<EntityItem>)world.getEntitiesWithinAABB(EntityItem.class,aaBb);
-
-					if(items != null && !items.isEmpty()) {
-						System.out.println("gathering " + items.size() + " nearby items");
-						// Ask server to move items
-						for (int i = 0; i < items.size(); i++) {
-							GatherDrops.network.sendToServer(
-									new PickBlockMessage(items.get(i).getEntityId()));
-						}
-					}
+					GatherDrops.gatherBlocks(player);
 				}
 			}));
+		}
+	}
+	
+	public static void gatherBlocks(EntityPlayer player) {
+		World world = Minecraft.getMinecraft().world;
+
+		BlockPos playerPos = player.getPosition();
+		double dx, dy, dz;
+		dx = dy = dz = 5;
+
+		AxisAlignedBB aaBb = new AxisAlignedBB(playerPos.subtract(new Vec3i(dx, dy, dz)), 
+				playerPos.add(new Vec3i(dx, dy, dz)));
+		ArrayList<EntityItem> items = (ArrayList<EntityItem>)world.getEntitiesWithinAABB(EntityItem.class,aaBb);
+
+		if(items != null && !items.isEmpty()) {
+			System.out.println("gathering " + items.size() + " nearby items");
+			// Ask server to move items
+			for (int i = 0; i < items.size(); i++) {
+				GatherDrops.network.sendToServer(
+						new PickBlockMessage(items.get(i).getEntityId()));
+			}
 		}
 	}
 

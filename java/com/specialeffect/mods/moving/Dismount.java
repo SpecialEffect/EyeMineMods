@@ -16,11 +16,18 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.BlockAir;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -52,13 +59,12 @@ public class Dismount extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add custom key binding to dismount");
+				"Add custom key binding to mount/dismount animals");
     	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(DismountPlayerMessage.Handler.class, 
         						DismountPlayerMessage.class, 0, Side.SERVER);
-
 	}
 
 	@EventHandler
@@ -89,19 +95,34 @@ public class Dismount extends BaseClassWithCallbacks {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 
 					if (player.isRiding()) {
-
 						Entity riddenEntity = player.getRidingEntity();
 						if (null != riddenEntity) {
 							player.dismountRidingEntity();
 							player.motionY += 0.5D;
+						}			
+						// Dismount player on server
+						Dismount.network.sendToServer(
+								new DismountPlayerMessage());						
+					}
+					else {
+						World world = Minecraft.getMinecraft().world;			    			    		
+						RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+						Entity hitEntity = mov.entityHit;
+						if (hitEntity != null) {
+							// Riding entity programmatically seems to not do everything that 
+							// a "Use" action would do, so we:
+							// - drop current item to ensure empty hand
+							// - "use" entity you're pointing at
+							// - pick up dropped item again
+							player.dropItem(true);
+							int useItemKeyCode = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode();
+							KeyBinding.onTick(useItemKeyCode);
+							GatherDrops.gatherBlocks(player);
 						}
+						
 					}
 				}
-			}));
-			
-			// Dismount player on server
-			this.network.sendToServer(
-					new DismountPlayerMessage());
+			}));	
 		}
 	}
 
