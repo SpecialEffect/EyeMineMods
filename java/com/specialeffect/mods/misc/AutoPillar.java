@@ -124,16 +124,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 			final int numTicksReset = 5;
 
 			final float deltaPitch = (pillarPitch - origPitch) / numTicksReset;
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			        if (player.capabilities.isCreativeMode) {
-			        	chooseBlock(player.inventory);
-			        }
-				}
-			}));
+			
 			this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
