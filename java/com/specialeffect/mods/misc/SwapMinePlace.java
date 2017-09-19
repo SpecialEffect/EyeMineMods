@@ -77,9 +77,8 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSwapKB = new KeyBinding("Swap mine/place keys", Keyboard.KEY_F11, "SpecialEffect");
-		ClientRegistry.registerKeyBinding(mSwapKB);
-
+		mSwapKB = new KeyBinding("Swap mine/place keys", Keyboard.KEY_F10, "SpecialEffect");
+		ClientRegistry.registerKeyBinding(mSwapKB);		
 	}
 	
 	@SubscribeEvent
