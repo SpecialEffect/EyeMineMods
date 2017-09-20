@@ -47,6 +47,7 @@ implements ChildModWithConfig
 	private static int mIconIndex;
 	private static KeyBinding mDestroyKB;
 	private boolean mAutoSelectTool = true;
+	private boolean mWaitingForPickaxe = false;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -96,9 +97,26 @@ implements ChildModWithConfig
 			final KeyBinding attackBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindAttack;
 			
-			// Set mouse in correct state - shouldn't attack unless there's an
-			// accompanying mouse movement.
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			
 			if (mIsAttacking) {
+				// always select tool - first time we might need to ask server to
+				// create a new one
+				if (player.capabilities.isCreativeMode && 
+						mAutoSelectTool) {
+	    			boolean havePickaxe = MineOne.choosePickaxe(player.inventory);
+	    			if (havePickaxe) {
+	    				mWaitingForPickaxe = false;
+	    			}
+	    			else if(!mWaitingForPickaxe) 
+	    			{
+	    				MineOne.requestCreatePickaxe();
+		    			mWaitingForPickaxe = true;		    		
+	    			}
+	    		}
+				
+				// Set mouse in correct state - shouldn't attack unless there's an
+				// accompanying mouse movement.	
 				if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
 					KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
 				}
@@ -110,13 +128,12 @@ implements ChildModWithConfig
 			// When attacking programmatically, the player doesn't swing unless
 			// an attackable-block is in reach. We fix that here.
 			if (attackBinding.isKeyDown()) {
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 				player.swingArm(EnumHand.MAIN_HAND);
 			}
 			
 			// Remember mouse status so we can have one tick of grace
 			// (necessary if minecraft running faster than eye tracker).
-			mMouseEventLastTick =MouseHandler.hasPendingEvent();
+			mMouseEventLastTick = MouseHandler.hasPendingEvent();
 			
 			this.processQueuedCallbacks(event);
 		}
@@ -141,22 +158,6 @@ implements ChildModWithConfig
 			else {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
 			}
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.sendMessage(new TextComponentString(
-			        		 "Mining: " + (mIsAttacking ? "ON" : "OFF")));
-			        
-			        if (mIsAttacking && 
-			        		player.capabilities.isCreativeMode &&
-			        			mAutoSelectTool) {
-		    			MineOne.choosePickaxe(player.inventory);
-		    		}
-				}		
-			}));
 			
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyAttack.stop();

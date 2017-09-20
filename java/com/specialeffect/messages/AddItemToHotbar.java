@@ -67,6 +67,7 @@ public class AddItemToHotbar implements IMessage {
                     	message.slotId = inventory.getBestHotbarSlot();
                     }
             		inventory.setInventorySlotContents(message.slotId, message.item);
+            		inventory.currentItem = message.slotId;
                 }
             });
             return null; // no response in this case

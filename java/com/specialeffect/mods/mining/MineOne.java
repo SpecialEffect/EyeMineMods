@@ -69,6 +69,7 @@ implements ChildModWithConfig
 	private BlockPos mBlockToDestroy;
 	private static KeyBinding mDestroyKB;
 	private boolean mAutoSelectTool = true;
+	private boolean mWaitingForPickaxe = false;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -115,11 +116,21 @@ implements ChildModWithConfig
 				// Select the best tool from the inventory
 				World world = Minecraft.getMinecraft().world;
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-					    						
-	    		// If tool wasn't preselected, we need to check whether the 
-	    		// selected item can actually destroy the block
-	    		boolean pickaxeSelected = mAutoSelectTool && player.capabilities.isCreativeMode; 
-	    		if (!pickaxeSelected) {
+	    		if (player.capabilities.isCreativeMode && 
+						mAutoSelectTool) {
+	    			boolean havePickaxe = choosePickaxe(player.inventory);
+	    			if (havePickaxe) {
+	    				mWaitingForPickaxe = false;
+	    			}
+	    			else if(!mWaitingForPickaxe) 
+	    			{
+	    				requestCreatePickaxe();
+		    			mWaitingForPickaxe = true;		    		
+	    			}
+	    		}
+	    		else {					    						
+		    		// If tool wasn't preselected, we need to check whether the 
+		    		// selected item can actually destroy the block
 	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
 	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
 	    				String message = "Can't destroy this block with current item";
@@ -151,20 +162,8 @@ implements ChildModWithConfig
 		
 		final KeyBinding attackBinding = 
 				Minecraft.getMinecraft().gameSettings.keyBindAttack;
-		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);
-		
-		// Select appropriate tool in creative
-		this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-			@Override
-			public void onLiving(LivingUpdateEvent event) {
-				System.out.println("onLiving queued event");
-	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-				if (player.capabilities.isCreativeMode && 
-						mAutoSelectTool) {
-	    			choosePickaxe(player.inventory);
-	    		}
-			}
-		}));
+		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);	
+
 	}
 	
 	private void stopDestroying() {
@@ -204,18 +203,30 @@ implements ChildModWithConfig
 		}
 	}
 	
-	static void choosePickaxe(InventoryPlayer inventory) {
+	// returns true if successful
+	static boolean choosePickaxe(InventoryPlayer inventory) {
 		
 		// In creative mode, we can either select a pickaxe from the hotbar 
-		// or just rustle up a new one
-
-		int pickaxeId = ModUtils.findItemInHotbar(inventory, ItemPickaxe.class);
-		if (pickaxeId > -1) {
-			inventory.currentItem = pickaxeId;
+		// or just rustle up a new one		
+		if (inventory.getCurrentItem().getItem() instanceof ItemPickaxe)
+		{
+			return true;
 		}
-		else {
-			// Ask server to put new item in hotbar
-			MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
-		}
+		else
+		{
+			int pickaxeId = ModUtils.findItemInHotbar(inventory, ItemPickaxe.class);
+			if (pickaxeId > -1) {
+				inventory.currentItem = pickaxeId;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}		
 	}
+	
+	static void requestCreatePickaxe() {
+		// Ask server to put new item in hotbar
+		MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
+	}	
 }

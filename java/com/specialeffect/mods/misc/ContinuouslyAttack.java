@@ -32,6 +32,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.EnumHand;
@@ -63,6 +64,8 @@ implements ChildModWithConfig {
 	private boolean mAutoSelectSword = true;
 	private static int mIconIndex;
 	private static KeyBinding mAttackKB;
+	
+	private boolean mWaitingForSword = false;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -117,27 +120,40 @@ implements ChildModWithConfig {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+
 			attackTimer++;
 			attackTimer = attackTimer % ticksBetweenAttacks;
 			
-			if (mIsAttacking && attackTimer == 0) {
-				// Get entity being looked at
-				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
-				Entity entity = mov.entityHit;
-				if (null != entity) {
-					// It feels like we should be able to just call 
-					// player.attackTargetEntityWithCurrentItem but
-					// it doesn't seem to work. 
-					robot.mousePress(KeyEvent.BUTTON1_MASK);
-					robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+			if (mIsAttacking) {
+				if (player.capabilities.isCreativeMode && 
+						mAutoSelectSword) {
+	    			boolean haveSword = chooseWeapon(player.inventory);
+	    			if (haveSword) {
+	    				mWaitingForSword = false;
+	    			}
+	    			else if(!mWaitingForSword) 
+	    			{
+	    				requestCreateSword();
+		    			mWaitingForSword = true;		    		
+	    			}
+	    		}			
+				if (attackTimer == 0) {
+					// Get entity being looked at
+					RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+					Entity entity = mov.entityHit;
+					if (null != entity) {
+						// It feels like we should be able to just call 
+						// player.attackTargetEntityWithCurrentItem but
+						// it doesn't seem to work. 
+						robot.mousePress(KeyEvent.BUTTON1_MASK);
+						robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+					}
 				}
-			}
 			
 
-			// When attacking programmatically, the player doesn't swing unless
-			// an attackable-block is in reach. We fix that here, for better feedback.
-			if (mIsAttacking) {
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+				// When attacking programmatically, the player doesn't swing unless
+				// an attackable-block is in reach. We fix that here, for better feedback.
 				if (!player.isSwingInProgress) {
 					player.swingArm(EnumHand.MAIN_HAND);
 				}
@@ -157,51 +173,35 @@ implements ChildModWithConfig {
 			attackTimer = -1;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
-			// Note: I'd like to use Minecraft.getMinecraft().gameSettings.keyBindAttack to
-			// make this robust to key changes in the config. However, through minecraft key 
-			// API you can only set key bind state, which misses the key press event you need
-			// for attacking. So we use java.awt.Robot, which requires explicitly using a 
-			// mouse event rather than a keyboard event. This is a shame.
-			
-//			if (mIsAttacking && !Mouse.isButtonDown(0)) {
-//				robot.mousePress(KeyEvent.BUTTON1_MASK);
-//			}
-//			else if (Mouse.isButtonDown(0)) {
-//				robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-//			}
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			        player.sendMessage(new TextComponentString(
-			        		 "Attacking: " + (mIsAttacking ? "ON" : "OFF")));
-			        
-			        if (player.capabilities.isCreativeMode &&
-			        		mAutoSelectSword) {
-		    			chooseWeapon(player.inventory);
-		    		}
-		        }		
-			}));
-			
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
 		}
 	}
 	
-	private void chooseWeapon(InventoryPlayer inventory) {
+	//returns true if successful
+	private boolean chooseWeapon(InventoryPlayer inventory) {
 		
 		// In creative mode, we can either select a sword from the hotbar 
 		// or just rustle up a new one
-
-		int swordId = ModUtils.findItemInHotbar(inventory, ItemSword.class);
-		if (swordId > -1) {
-			inventory.currentItem = swordId;
+		if (inventory.getCurrentItem().getItem() instanceof ItemSword)
+		{
+			return true;
 		}
-		else {
-			// Ask server to put new item in hotbar
-			ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
-		}
+		else
+		{
+			int swordId = ModUtils.findItemInHotbar(inventory, ItemSword.class);
+			if (swordId > -1) {
+				inventory.currentItem = swordId;
+				return true;
+			}
+			else {
+				return false;
+			}
+		}		
 	}	
+	
+	private void requestCreateSword() {
+		// Ask server to put new item in hotbar
+		ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
+	}
 }
