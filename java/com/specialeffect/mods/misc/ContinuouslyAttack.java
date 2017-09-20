@@ -21,6 +21,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.SpecialEffectMining;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -59,7 +60,6 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig {
 	public static final String MODID = "specialeffect.continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
-    private Robot robot;
 	public static SimpleNetworkWrapper network;
 	private boolean mAutoSelectSword = true;
 	private static int mIconIndex;
@@ -77,6 +77,7 @@ implements ChildModWithConfig {
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+		network.registerMessage(AttackEntityMessage.Handler.class, AttackEntityMessage.class, 1, Side.SERVER);
 
 	}
 
@@ -93,12 +94,6 @@ implements ChildModWithConfig {
 		mAttackKB = new KeyBinding("Attack", Keyboard.KEY_R, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
-		try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-		
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 	}
@@ -114,17 +109,11 @@ implements ChildModWithConfig {
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
-	private int attackTimer = 0;
-	final private int ticksBetweenAttacks = 10;
-	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
-			attackTimer++;
-			attackTimer = attackTimer % ticksBetweenAttacks;
-			
 			if (mIsAttacking) {
 				if (player.capabilities.isCreativeMode && 
 						mAutoSelectSword) {
@@ -137,21 +126,17 @@ implements ChildModWithConfig {
 	    				requestCreateSword();
 		    			mWaitingForSword = true;		    		
 	    			}
-	    		}			
-				if (attackTimer == 0) {
-					// Get entity being looked at
-					RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
-					Entity entity = mov.entityHit;
-					if (null != entity) {
-						// It feels like we should be able to just call 
-						// player.attackTargetEntityWithCurrentItem but
-						// it doesn't seem to work. 
-						robot.mousePress(KeyEvent.BUTTON1_MASK);
-						robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-					}
+	    		}
+				
+				// Get entity being looked at
+				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+				Entity entity = mov.entityHit;
+				if (null != entity) {
+					// Attack locally and on server
+					player.attackTargetEntityWithCurrentItem(entity);
+					ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
 				}
 			
-
 				// When attacking programmatically, the player doesn't swing unless
 				// an attackable-block is in reach. We fix that here, for better feedback.
 				if (!player.isSwingInProgress) {
@@ -170,7 +155,6 @@ implements ChildModWithConfig {
 		
 		if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
-			attackTimer = -1;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
 			// Don't allow mining *and* attacking at same time
