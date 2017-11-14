@@ -78,6 +78,7 @@ public class MovePlayerMessage implements IMessage {
 								minecart.motionX = lookVec.xCoord*message.moveAmount;
 								minecart.motionZ = lookVec.zCoord*message.moveAmount;
 								minecart.moveMinecartOnRail(null);
+								minecart.onUpdate();
 							}
 							else if (riddenEntity instanceof EntityAnimal) {
 								EntityAnimal animal = (EntityAnimal)riddenEntity;
