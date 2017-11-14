@@ -70,25 +70,27 @@ public class Swim extends BaseClassWithCallbacks {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/swim.png");
 
-		StateOverlay.setStateLeftIcon(mIconIndex, mIsSwimming);
+		StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 
 	}
 	
 	private int mIconIndex;
+	private boolean mJumpKeyOverridden = false;
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			
-			if (mIsSwimming) {
+			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 
 						Minecraft.getMinecraft().gameSettings.keyBindJump;
 
 				// Only hold down the swim button when actually in water.
 				if (player.isInWater() && 						
 						!swimBinding.isKeyDown() ) {
-					KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);
+					KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);			
+					mJumpKeyOverridden = true;
 				}
 				// Switch off when on land
 				else if (!player.isInWater() &&
@@ -104,7 +106,10 @@ public class Swim extends BaseClassWithCallbacks {
 						// do nothing
 					}
 					else {
-						KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+						if (mJumpKeyOverridden) {
+							KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+							mJumpKeyOverridden = false;
+						}
 					}
 				}
 			}
@@ -113,7 +118,7 @@ public class Swim extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mIsSwimming = true;
+	private boolean mSwimmingTurnedOn = true;
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -121,11 +126,11 @@ public class Swim extends BaseClassWithCallbacks {
 			final KeyBinding swimBinding = 
 					Minecraft.getMinecraft().gameSettings.keyBindJump;
 			
-			mIsSwimming = !mIsSwimming;
+			mSwimmingTurnedOn = !mSwimmingTurnedOn;
 
-			StateOverlay.setStateLeftIcon(mIconIndex, mIsSwimming);
+			StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 			
-			if (!mIsSwimming) {
+			if (!mSwimmingTurnedOn) {
 				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
 			}
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
@@ -134,7 +139,7 @@ public class Swim extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 			        player.sendMessage(new TextComponentString(
-			        		 "Swimming: " + (mIsSwimming? "ON" : "OFF")));
+			        		 "Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF")));
 				}		
 			}));
 		}
