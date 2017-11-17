@@ -35,10 +35,10 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ModUtils {
 
 	// This is where we specify the version that all our mods use
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "1.0.2";
 
 	// version of optikey to use
-	public static final String OPTIKEY_VERSION = "1.0.0";
+	public static final String OPTIKEY_VERSION = "1.0.2";
 
 	// A helper function to replace mcmod.info. Must be called with 
 	// a pre-init event.
@@ -54,7 +54,7 @@ public class ModUtils {
 		m.name = modName;
 		m.url = "https://github.com/kirstymcnaught/SpecialEffectMinecraftMods";
 		m.description = modDescription;
-		m.description += "\n\nFor eye control, use OptiKey version " + OPTIKEY_VERSION;
+		m.description += "\n\nFor eye control, use OptiKeyMinecraft version " + OPTIKEY_VERSION;
 		m.authorList.add("Kirsty McNaught");
 		m.credits = "Written in collaboration with SpecialEffect";
 	}
