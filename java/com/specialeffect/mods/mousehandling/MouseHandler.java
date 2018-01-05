@@ -83,7 +83,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mIconEye = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
 		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
 		mIconEye.setAlpha(0.2f);
-
+		mIconEye.setVisible(false);								
+		
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
 		this.syncConfig();			
@@ -98,6 +99,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		// Set up mouse helper to handle view control
 		ownMouseHelper = new MouseHelperOwn();
 		Minecraft.getMinecraft().mouseHelper = (MouseHelper)ownMouseHelper;
+
+		// Rejig the state after mouse helper has been created
+		setupInitialState();
+
 	}
 	
 	public static void setWalking(boolean doWalk) {
@@ -154,19 +159,41 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
-	public void syncConfig() {
-		System.out.println("syncConfig MouseHandler");
+	public void setupInitialState() {
 		if (SpecialEffectMovements.usingMouseEmulation) {
-			System.out.println("using mouse");
 			mInputSource = InputSource.Mouse;
-			this.updateState(InteractionState.MOUSE_NOTHING); 
-		} else {
-			System.out.println("using eyetracker");
+			this.updateState(InteractionState.MOUSE_NOTHING); 			
+		}
+		else {
 			mInputSource = InputSource.EyeTracker;
-			// always enabled
 			this.updateState(InteractionState.EYETRACKER_NORMAL); 
 		}
-		mIconEye.setVisible(false);
+	}
+		
+	public void syncConfig() {
+		System.out.println("syncConfig MouseHandler");
+		System.out.println("usingMouseEmulation: " + 
+				SpecialEffectMovements.usingMouseEmulation);
+		
+		if (SpecialEffectMovements.usingMouseEmulation) {
+			if (mInputSource != InputSource.Mouse) {
+				System.out.println("using mouse");
+				mInputSource = InputSource.Mouse;
+				this.updateState(InteractionState.MOUSE_NOTHING); 
+			}
+			else {
+				System.out.println("nothing to change");
+			}
+		} else {
+			if (mInputSource != InputSource.EyeTracker) {
+				System.out.println("using eyetracker");
+				mInputSource = InputSource.EyeTracker;
+				this.updateState(InteractionState.EYETRACKER_NORMAL); 
+			} 
+			else {
+				System.out.println("nothing to change");
+			}
+		}
 	}
 
 	@EventHandler

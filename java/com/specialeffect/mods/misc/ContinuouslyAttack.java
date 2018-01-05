@@ -148,7 +148,7 @@ implements ChildModWithConfig {
 		}
 	}
 	
-	private static boolean mIsAttacking = false;
+	public static boolean mIsAttacking = false;
 	
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {

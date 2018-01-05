@@ -19,6 +19,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -102,11 +103,48 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 		}
 	}
 	
+	public static void saveConfig() {
+		
+		// EVERYTHING IN HERE SHOULD BE REFLECTED IN SYNCCONFIG
+		
+		// Flying
+		mConfig.get(Configuration.CATEGORY_GENERAL, "Fly height manual", flyHeightManual).set(flyHeightManual);				
+		mConfig.get(Configuration.CATEGORY_GENERAL, "Fly height auto",  flyHeightAuto).set(flyHeightAuto);
+		
+		// Move with gaze
+		mConfig.get(Configuration.CATEGORY_GENERAL, "Smoothness filter", filterLength).set(filterLength);
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Move when mouse stationary", moveWhenMouseStationary).set(moveWhenMouseStationary);
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Speed factor", customSpeedFactor).set(customSpeedFactor);
+        
+        // OptiKey adjustments
+        mConfig.get(Configuration.CATEGORY_GENERAL, "View adjustment (degrees)", viewIncrement).set(viewIncrement);
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Move adjustment", (float)moveIncrement).set((float)moveIncrement);
+        
+        // AutoJump
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Auto-jump switched on by default?", defaultDoAutoJump).set(defaultDoAutoJump);
+       
+        // MouseHandler
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Mousehandler dead border size", mDeadBorder).set(mDeadBorder); 
+        mConfig.get(Configuration.CATEGORY_GENERAL, "Enable mouse-emulation compatibility mode", usingMouseEmulation).set(usingMouseEmulation);
+        
+		if (mConfig.hasChanged()) {
+			mConfig.save();
+			
+			for (ChildModWithConfig child : childrenWithConfig) {
+				child.syncConfig();
+			}
+		}			
+	}
+	
 	public static void syncConfig() {
 
+		// EVERYTHING IN HERE SHOULD BE REFLECTED IN SAVECONFIG
+		
 		// Flying
-		flyHeightManual = mConfig.getInt("Fly height manual", Configuration.CATEGORY_GENERAL, flyHeightManual, 1, 20, "How high to fly in manual mode");
-		flyHeightAuto = mConfig.getInt("Fly height auto", Configuration.CATEGORY_GENERAL, flyHeightAuto, 1, 20, "How high to fly in auto mode");
+		flyHeightManual = mConfig.getInt("Fly height manual", Configuration.CATEGORY_GENERAL, 
+				flyHeightManual, 1, 20, "How high to fly in manual mode");
+		flyHeightAuto = mConfig.getInt("Fly height auto", Configuration.CATEGORY_GENERAL, 
+				flyHeightAuto, 1, 20, "How high to fly in auto mode");
 		
 		// Move with gaze
 		filterLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, filterLength, 

@@ -10,6 +10,7 @@
 
 package com.specialeffect.mods.moving;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,6 +23,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
@@ -31,6 +33,7 @@ import net.minecraft.block.BlockLadder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketSteerBoat;
@@ -62,7 +65,9 @@ implements ChildModWithConfig
     public static final String NAME = "MoveWithGaze";
 
     private static KeyBinding mToggleAutoWalkKB;
-    
+    private static KeyBinding mIncreaseWalkSpeedKB;
+    private static KeyBinding mDecreaseWalkSpeedKB;
+     
     public static Configuration mConfig;
     private static int mQueueLength = 50;
 
@@ -98,6 +103,10 @@ implements ChildModWithConfig
     	// Register key bindings	
     	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
+        mIncreaseWalkSpeedKB = new KeyBinding("Increase walk speed", Keyboard.KEY_UP, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
+        mDecreaseWalkSpeedKB = new KeyBinding("Decrease walk speed", Keyboard.KEY_DOWN, "SpecialEffect");
+        ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
@@ -139,15 +148,32 @@ implements ChildModWithConfig
             	
             	// Slow down when you're looking really far up/down
             	double slowDownPitch = slowdownFactorPitch(player);
-
+            			
 				if (!player.isOnLadder()) {
 					forward *= Math.min(slowDownCorners, slowDownPitch);
+				}
+
+            	// Slow down if you're facing an animal/mob while attacking
+				// (without this it's easy to run past)
+				if (ContinuouslyAttack.mIsAttacking) {
+	            	forward *= slowdownFactorEntity(player);
 				}
 
 				// Adjust according to FPS (to get some consistency across
 				// installations)
 				forward *= fpsFactor();
+				
 
+            	// since the user-configurable range of speeds should allow 
+            	// faster than MC's maximum walking speed, we request half 
+            	// the overall distance twice. If we request any more than
+            	// moveEntityWithHeading( ..., forward=1.0), we don't travel
+            	// any further.
+				float halfForward = (float)(forward/2.0);
+				
+				// If riding, we need to move the ridden entity, not the player
+				// This is a little tricky for some rideable things, and isn't 
+				// guaranteed to work perfectly
 				if (player.isRiding()) {
 
 					Entity riddenEntity = player.getRidingEntity();
@@ -186,21 +212,27 @@ implements ChildModWithConfig
 										KeyBinding.setKeyBindState(kbRight.getKeyCode(), false);
 									}
 								}, 1));
-							}
+							}							
 							else { // riding boat, facing right direction
-								WalkIncrements.network.sendToServer(
-										new MovePlayerMessage((float)forward, 0.0f));
+								for (int i = 0; i < 2; i++) {
+									WalkIncrements.network.sendToServer(
+										new MovePlayerMessage(halfForward, 0.0f));
+								}
 							}
 						}
 						else { // riding something other than a boat
-							WalkIncrements.network.sendToServer(
-									new MovePlayerMessage((float)forward, 0.0f));
+							for (int i = 0; i < 2; i++) {
+								WalkIncrements.network.sendToServer(
+									new MovePlayerMessage(halfForward, 0.0f));
+							}
 						}
 					}
 				}
 				else {
-					player.moveEntityWithHeading(0.0f, (float)forward);
-				}            
+					for (int i = 0; i < 2; i++) {
+						player.moveEntityWithHeading(0.0f, halfForward);
+					}
+				}
 			}
 
 			this.processQueuedCallbacks(event);
@@ -274,6 +306,18 @@ implements ChildModWithConfig
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
 		}
     	return false;
+    }
+    
+    private double slowdownFactorEntity(EntityPlayer player) {    	
+		RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+		Entity hitEntity = mov.entityHit;
+		if (hitEntity != null) {
+			EntityLiving liveEntity = (EntityLiving)hitEntity;
+			if (liveEntity != null) {
+				return 0.2f;
+			}
+		}
+		return 1.0f;
     }
     
     private double slowdownFactorWall(EntityPlayer player) {
@@ -373,8 +417,25 @@ implements ChildModWithConfig
         	StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
+        if(mDecreaseWalkSpeedKB.isPressed()) {
+        	SpecialEffectMovements.customSpeedFactor = 
+        			Math.max(0.1f, 0.9f*SpecialEffectMovements.customSpeedFactor);
+        	SpecialEffectMovements.saveConfig();
+        	displayCurrentSpeed();
+        }
+        if(mIncreaseWalkSpeedKB.isPressed()) {
+        	SpecialEffectMovements.customSpeedFactor = 
+        			Math.min(2.0f, SpecialEffectMovements.customSpeedFactor*1.1f);
+        	SpecialEffectMovements.saveConfig();
+    		displayCurrentSpeed();
+        }
     }
     
+    private void displayCurrentSpeed() {
+    	DecimalFormat myFormatter = new DecimalFormat("#0.00");
+		String speedString = myFormatter.format(SpecialEffectMovements.customSpeedFactor);
+    	this.queueChatMessage("Walking speed: " + speedString);     
+    }
 }
 
 
