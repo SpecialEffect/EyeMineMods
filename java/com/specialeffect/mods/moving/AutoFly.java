@@ -89,7 +89,7 @@ implements ChildModWithConfig
 		// Register key bindings
 		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_COMMA, "SpecialEffect");
 		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, "SpecialEffect");
-		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_UP, "SpecialEffect");
+		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_PERIOD, "SpecialEffect");
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
 		ClientRegistry.registerKeyBinding(mFlyAutoKB);
 		ClientRegistry.registerKeyBinding(mFlyUpKB);
