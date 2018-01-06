@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -93,17 +94,17 @@ public class SpecialEffectMisc extends BaseClassWithCallbacks {
 	
 	public static void syncConfig() {
 		// AutoOpenDoors
-		mRadiusDoors = mConfig.getInt("Distance to open doors", Configuration.CATEGORY_GENERAL, mRadiusDoors, 
+		mRadiusDoors = mConfig.getInt(CommonStrings.PRO + "Distance to open doors", Configuration.CATEGORY_GENERAL, mRadiusDoors, 
 				1, 20, "How far away a player needs to be from a door to automatically open/close");
 
 		// OpenTablesChests
 		// This is limited to 6 blocks since the gui doesn't appear if block is too far away
-		mRadiusChests = mConfig.getInt("Distance to open chests/crafting tables", Configuration.CATEGORY_GENERAL, mRadiusChests, 
+		mRadiusChests = mConfig.getInt(CommonStrings.PRO + "Distance to open chests/crafting tables", Configuration.CATEGORY_GENERAL, mRadiusChests, 
 				1, 6, "How far away a player needs to be from a chest/table to be able to open it");
         
 		// ContinuouslyAttack
-		mAutoSelectSword = mConfig.getBoolean("Auto-select sword", Configuration.CATEGORY_GENERAL, 
-				true, "When attacking, do you want sword selected automatically?");
+		mAutoSelectSword = mConfig.getBoolean(CommonStrings.PRO + "Auto-select weapon when attacking", Configuration.CATEGORY_GENERAL, 
+				true, "When attacking, do you want a sword selected automatically?");
 		
 		if (mConfig.hasChanged()) {
 			mConfig.save();

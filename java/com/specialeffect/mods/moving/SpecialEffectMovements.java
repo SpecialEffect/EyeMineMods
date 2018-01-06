@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -108,24 +109,24 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 		// EVERYTHING IN HERE SHOULD BE REFLECTED IN SYNCCONFIG
 		
 		// Flying
-		mConfig.get(Configuration.CATEGORY_GENERAL, "Fly height manual", flyHeightManual).set(flyHeightManual);				
-		mConfig.get(Configuration.CATEGORY_GENERAL, "Fly height auto",  flyHeightAuto).set(flyHeightAuto);
+		mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.PRO + "Fly height (manual)", flyHeightManual).set(flyHeightManual);				
+		mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.PRO + "Fly height (auto)",  flyHeightAuto).set(flyHeightAuto);
 		
 		// Move with gaze
-		mConfig.get(Configuration.CATEGORY_GENERAL, "Smoothness filter", filterLength).set(filterLength);
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Move when mouse stationary", moveWhenMouseStationary).set(moveWhenMouseStationary);
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Speed factor", customSpeedFactor).set(customSpeedFactor);
+		mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.WIZARD + "Smoothness filter for walking", filterLength).set(filterLength);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.PRO + "Keep moving when mouse is stationary", moveWhenMouseStationary).set(moveWhenMouseStationary);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.BASIC + "Walking speed", customSpeedFactor).set(customSpeedFactor);
         
         // OptiKey adjustments
-        mConfig.get(Configuration.CATEGORY_GENERAL, "View adjustment (degrees)", viewIncrement).set(viewIncrement);
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Move adjustment", (float)moveIncrement).set((float)moveIncrement);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.WIZARD + "View adjustment (degrees)", viewIncrement).set(viewIncrement);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.WIZARD + "Move adjustment", (float)moveIncrement).set((float)moveIncrement);
         
         // AutoJump
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Auto-jump switched on by default?", defaultDoAutoJump).set(defaultDoAutoJump);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.BASIC + "Auto-jump switched on by default?", defaultDoAutoJump).set(defaultDoAutoJump);
        
         // MouseHandler
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Mousehandler dead border size", mDeadBorder).set(mDeadBorder); 
-        mConfig.get(Configuration.CATEGORY_GENERAL, "Enable mouse-emulation compatibility mode", usingMouseEmulation).set(usingMouseEmulation);
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.PRO + "Mousehandler dead border size", mDeadBorder).set(mDeadBorder); 
+        mConfig.get(Configuration.CATEGORY_GENERAL, CommonStrings.BASIC + "Enable mouse-emulation compatibility mode", usingMouseEmulation).set(usingMouseEmulation);
         
 		if (mConfig.hasChanged()) {
 			mConfig.save();
@@ -141,35 +142,35 @@ public class SpecialEffectMovements extends BaseClassWithCallbacks {
 		// EVERYTHING IN HERE SHOULD BE REFLECTED IN SAVECONFIG
 		
 		// Flying
-		flyHeightManual = mConfig.getInt("Fly height manual", Configuration.CATEGORY_GENERAL, 
+		flyHeightManual = mConfig.getInt(CommonStrings.PRO + "Fly height (manual)", Configuration.CATEGORY_GENERAL, 
 				flyHeightManual, 1, 20, "How high to fly in manual mode");
-		flyHeightAuto = mConfig.getInt("Fly height auto", Configuration.CATEGORY_GENERAL, 
+		flyHeightAuto = mConfig.getInt(CommonStrings.PRO + "Fly height (auto)", Configuration.CATEGORY_GENERAL, 
 				flyHeightAuto, 1, 20, "How high to fly in auto mode");
 		
 		// Move with gaze
-		filterLength = mConfig.getInt("Smoothness filter", Configuration.CATEGORY_GENERAL, filterLength, 
+		filterLength = mConfig.getInt(CommonStrings.WIZARD + "Smoothness filter for walking", Configuration.CATEGORY_GENERAL, filterLength, 
 									  1, 200, "How many ticks to take into account for slowing down while looking around. (smaller number = faster)");
-        moveWhenMouseStationary = mConfig.getBoolean("Move when mouse stationary", Configuration.CATEGORY_GENERAL, 
+        moveWhenMouseStationary = mConfig.getBoolean(CommonStrings.PRO + "Move when mouse is stationary", Configuration.CATEGORY_GENERAL, 
         									moveWhenMouseStationary, "Continue walking forward when the mouse is stationary. Recommended to be turned off for eye gaze control, on for joysticks.");
-        customSpeedFactor = mConfig.getFloat("Speed factor", Configuration.CATEGORY_GENERAL, customSpeedFactor, 0.0f, 1.0f, 
+        customSpeedFactor = mConfig.getFloat(CommonStrings.BASIC + "Walking speed", Configuration.CATEGORY_GENERAL, customSpeedFactor, 0.0f, 1.0f, 
         						"A scaling factor for speed of walk-with-gaze. 1.0 = maximum."); 
         
         // OptiKey adjustments
-        viewIncrement = mConfig.getInt("View adjustment (degrees)", Configuration.CATEGORY_GENERAL, 
+        viewIncrement = mConfig.getInt(CommonStrings.WIZARD + "View adjustment (degrees)", Configuration.CATEGORY_GENERAL, 
         								viewIncrement, 1, 45, 
         								"Fixed rotation for small view adjustments");
-        moveIncrement = (double)mConfig.getFloat("Move adjustment", Configuration.CATEGORY_GENERAL, (float)moveIncrement, 
+        moveIncrement = (double)mConfig.getFloat(CommonStrings.WIZARD + "Move adjustment", Configuration.CATEGORY_GENERAL, (float)moveIncrement, 
         										 0.1f, 10.0f,
         										 "Fixed distance for small movement adjustments");
         
         // AutoJump
-        defaultDoAutoJump = mConfig.getBoolean("Auto-jump switched on by default?", Configuration.CATEGORY_GENERAL, defaultDoAutoJump,
+        defaultDoAutoJump = mConfig.getBoolean(CommonStrings.BASIC + "Auto-jump switched on by default?", Configuration.CATEGORY_GENERAL, defaultDoAutoJump,
         									   "Whether auto-jump is on at the beginning of a new game.");
        
         // MouseHandler
-        mDeadBorder = mConfig.getFloat("Mousehandler dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
+        mDeadBorder = mConfig.getFloat(CommonStrings.WIZARD + "Mousehandler dead border size", Configuration.CATEGORY_GENERAL, mDeadBorder, 0.001f, 0.25f, 
         		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
-        usingMouseEmulation = mConfig.getBoolean("Enable mouse-emulation compatibility mode", Configuration.CATEGORY_GENERAL, false, 
+        usingMouseEmulation = mConfig.getBoolean(CommonStrings.BASIC + "Enable mouse-emulation compatibility mode", Configuration.CATEGORY_GENERAL, false, 
         		"Turn this on if you're using mouse position as an input to OptiKey");
         
 		if (mConfig.hasChanged()) {

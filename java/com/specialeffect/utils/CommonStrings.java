@@ -22,8 +22,8 @@ public class CommonStrings {
 	public static final String EYEGAZE_ADVANCED = "EyeGaze: Super Advanced Things";
 	
 	// Mod config category prefices
-	public static final String BASIC = "(basic config) ";
-	public static final String PRO = "(pro config) ";
-	public static final String WIZARD = "(wizard config) ";
+	public static final String BASIC = " ";
+	public static final String PRO = "(advanced) ";
+	public static final String WIZARD = "(super-user) ";
 
 }

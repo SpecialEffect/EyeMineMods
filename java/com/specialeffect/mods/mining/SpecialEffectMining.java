@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -84,8 +85,8 @@ public class SpecialEffectMining extends BaseClassWithCallbacks {
 	
     public static void syncConfig() {
     	// MineOne/ContinuouslyMine
-    	mAutoSelectTool = mConfig.getBoolean("Auto-select pickaxe", Configuration.CATEGORY_GENERAL, 
-    			true, "When mining, do you want tool selected automatically?");
+    	mAutoSelectTool = mConfig.getBoolean(CommonStrings.PRO + "Auto-select tool for mining", Configuration.CATEGORY_GENERAL, 
+    			true, "When mining, do you want a pickaxe selected automatically?");
     	
 		if (mConfig.hasChanged()) {
 			mConfig.save();
