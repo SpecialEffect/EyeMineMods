@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -49,10 +50,10 @@ public class UseItem extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mUseItemOnceKB = new KeyBinding("Use Item", Keyboard.KEY_NUMPAD0, "SpecialEffect");
+		mUseItemOnceKB = new KeyBinding("Use Item", Keyboard.KEY_NUMPAD0, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mUseItemOnceKB);
 
-		mUseItemContinuouslyKB = new KeyBinding("Use Item Continuously", Keyboard.KEY_NUMPAD1, "SpecialEffect");
+		mUseItemContinuouslyKB = new KeyBinding("Use Item Continuously", Keyboard.KEY_NUMPAD1, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mUseItemContinuouslyKB);
 
 	}

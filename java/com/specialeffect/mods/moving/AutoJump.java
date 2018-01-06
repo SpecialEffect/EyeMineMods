@@ -17,6 +17,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -77,7 +78,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);
     	
     	// Register key bindings
-        autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, "SpecialEffect");
+        autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
         
         // Register an icon for the overlay

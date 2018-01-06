@@ -18,6 +18,7 @@ import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -87,9 +88,10 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
-		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_COMMA, "SpecialEffect");
-		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, "SpecialEffect");
-		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_PERIOD, "SpecialEffect");
+		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
+		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, CommonStrings.EYEGAZE_COMMON);
+		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_PERIOD, CommonStrings.EYEGAZE_EXTRA);
+		
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
 		ClientRegistry.registerKeyBinding(mFlyAutoKB);
 		ClientRegistry.registerKeyBinding(mFlyUpKB);

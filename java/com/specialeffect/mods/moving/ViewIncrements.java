@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 
@@ -90,10 +91,10 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
-    	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", Keyboard.KEY_U, "SpecialEffect");
+    	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", Keyboard.KEY_U, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(viewDirectionKeyBinding);
         
-    	moveViewKB = new KeyBinding("Apply view delta", Keyboard.KEY_I, "SpecialEffect");
+    	moveViewKB = new KeyBinding("Apply view delta", Keyboard.KEY_I, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(moveViewKB);
         
     }

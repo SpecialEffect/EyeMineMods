@@ -21,6 +21,7 @@ import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -85,7 +86,7 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk legacy", Keyboard.KEY_B, "SpecialEffect");
+    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk legacy", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();

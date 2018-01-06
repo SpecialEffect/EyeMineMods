@@ -21,6 +21,7 @@ import com.specialeffect.mods.misc.SpecialEffectMisc;
 import com.specialeffect.mods.mousehandling.MouseHandler.InteractionState;
 import com.specialeffect.mods.moving.SpecialEffectMovements;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -97,7 +98,7 @@ implements ChildModWithConfig
 		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_N, "SpecialEffect");
+		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_N, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 				
 	}

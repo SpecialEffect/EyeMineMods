@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.SendCommandMessage;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -77,7 +78,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSwapKB = new KeyBinding("Swap mine/place keys", Keyboard.KEY_F10, "SpecialEffect");
+		mSwapKB = new KeyBinding("Swap mine/place keys", Keyboard.KEY_F10, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwapKB);		
 	}
 	

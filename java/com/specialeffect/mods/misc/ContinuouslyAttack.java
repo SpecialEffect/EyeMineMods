@@ -25,6 +25,7 @@ import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.SpecialEffectMining;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -91,7 +92,7 @@ implements ChildModWithConfig {
 		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mAttackKB = new KeyBinding("Attack", Keyboard.KEY_R, "SpecialEffect");
+		mAttackKB = new KeyBinding("Attack", Keyboard.KEY_R, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
 		// Register an icon for the overlay

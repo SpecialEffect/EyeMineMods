@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public class OpenChat extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mOpenChatKB = new KeyBinding("Open Chat", Keyboard.KEY_BACKSLASH, "SpecialEffect");
+		mOpenChatKB = new KeyBinding("Open Chat", Keyboard.KEY_BACKSLASH, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChatKB);
 
 	}

@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -64,7 +65,7 @@ public class Swim extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSwimKB = new KeyBinding("Toggle swimming", Keyboard.KEY_V, "SpecialEffect");
+		mSwimKB = new KeyBinding("Toggle swimming", Keyboard.KEY_V, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwimKB);
 		
 		// Register an icon for the overlay

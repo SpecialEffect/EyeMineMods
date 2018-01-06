@@ -26,6 +26,7 @@ import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -101,11 +102,11 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, "SpecialEffect");
+    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
-        mIncreaseWalkSpeedKB = new KeyBinding("Increase walk speed", Keyboard.KEY_UP, "SpecialEffect");
+        mIncreaseWalkSpeedKB = new KeyBinding("Increase walk speed", Keyboard.KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
-        mDecreaseWalkSpeedKB = new KeyBinding("Decrease walk speed", Keyboard.KEY_DOWN, "SpecialEffect");
+        mDecreaseWalkSpeedKB = new KeyBinding("Decrease walk speed", Keyboard.KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();

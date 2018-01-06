@@ -19,6 +19,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -69,7 +70,7 @@ implements ChildModWithConfig
 		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
 
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, "SpecialEffect");
+		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 		
 		// Register an icon for the overlay

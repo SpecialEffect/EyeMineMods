@@ -25,6 +25,7 @@ import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.mods.moving.SpecialEffectMovements;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -206,16 +207,16 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
 
 		// Register key bindings
-		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_RIGHT, "SpecialEffect");
+		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
 
-		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_LEFT, "SpecialEffect");
+		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
 
 		// Used to turn 'look with gaze' on and off when using mouse emulation
 		// instead of an
 		// eyetracker
-		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, "SpecialEffect");
+		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
 
 		// Set up an empty cursor to use when doing own mouse handling

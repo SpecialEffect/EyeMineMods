@@ -19,6 +19,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 
@@ -95,10 +96,10 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
-    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, "SpecialEffect");
+    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
         
-    	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, "SpecialEffect");
+    	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(walkKeyBinding);
         
     }

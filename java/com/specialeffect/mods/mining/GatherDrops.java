@@ -18,6 +18,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.PickBlockMessage;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -86,7 +87,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		// Register key bindings	
-		mGatherKB = new KeyBinding("Gather items", Keyboard.KEY_X, "SpecialEffect");
+		mGatherKB = new KeyBinding("Gather items", Keyboard.KEY_X, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
 	}
 

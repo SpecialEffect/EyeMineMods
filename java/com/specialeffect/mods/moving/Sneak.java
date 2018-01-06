@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -64,7 +65,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSneakKB = new KeyBinding("Toggle sneak", Keyboard.KEY_Z, "SpecialEffect");
+		mSneakKB = new KeyBinding("Toggle sneak", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSneakKB);
 		
 		// Register an icon for the overlay

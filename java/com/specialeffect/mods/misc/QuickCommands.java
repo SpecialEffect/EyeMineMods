@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.SendCommandMessage;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -79,10 +80,10 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mNightVisionKB = new KeyBinding("Toggle night vision", Keyboard.KEY_F12, "SpecialEffect");
+		mNightVisionKB = new KeyBinding("Toggle night vision", Keyboard.KEY_F12, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNightVisionKB);
 
-		mDayNightKB = new KeyBinding("Toggle day/night cycle", Keyboard.KEY_F14, "SpecialEffect");
+		mDayNightKB = new KeyBinding("Toggle day/night cycle", Keyboard.KEY_F14, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDayNightKB);
 
 	}

@@ -17,6 +17,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.utils.ChildModWithConfig;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -91,8 +92,8 @@ implements ChildModWithConfig
 		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
 				
 		// Register key bindings	
-		mOpenChestKB = new KeyBinding("Open chest", Keyboard.KEY_LBRACKET, "SpecialEffect");
-		mOpenCraftingTableKB = new KeyBinding("Open crafting table", Keyboard.KEY_RBRACKET, "SpecialEffect");
+		mOpenChestKB = new KeyBinding("Open chest", Keyboard.KEY_LBRACKET, CommonStrings.EYEGAZE_EXTRA);
+		mOpenCraftingTableKB = new KeyBinding("Open crafting table", Keyboard.KEY_RBRACKET, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChestKB);
 		ClientRegistry.registerKeyBinding(mOpenCraftingTableKB);
 	}

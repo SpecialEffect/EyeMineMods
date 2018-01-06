@@ -20,6 +20,7 @@ import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Block;
@@ -84,7 +85,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, "SpecialEffect");
+		autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
 	}

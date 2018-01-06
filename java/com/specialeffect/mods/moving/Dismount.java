@@ -17,6 +17,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.DismountPlayerMessage;
 import com.specialeffect.mods.mining.GatherDrops;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.BlockAir;
@@ -74,7 +75,7 @@ public class Dismount extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mDismountKB = new KeyBinding("Dismount", Keyboard.KEY_C, "SpecialEffect");
+		mDismountKB = new KeyBinding("Dismount", Keyboard.KEY_C, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);
 	}
 

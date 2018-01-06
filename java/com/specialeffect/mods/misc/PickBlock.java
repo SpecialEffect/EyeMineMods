@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -49,7 +50,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mPickBlockKB = new KeyBinding("Pick Block", Keyboard.KEY_NUMPAD2, "SpecialEffect");
+		mPickBlockKB = new KeyBinding("Pick Block", Keyboard.KEY_NUMPAD2, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mPickBlockKB);
 
 	}
