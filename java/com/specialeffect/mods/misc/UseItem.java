@@ -50,10 +50,10 @@ public class UseItem extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mUseItemOnceKB = new KeyBinding("Use Item", Keyboard.KEY_NUMPAD0, CommonStrings.EYEGAZE_COMMON);
+		mUseItemOnceKB = new KeyBinding("Use item", Keyboard.KEY_NUMPAD0, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mUseItemOnceKB);
 
-		mUseItemContinuouslyKB = new KeyBinding("Use Item Continuously", Keyboard.KEY_NUMPAD1, CommonStrings.EYEGAZE_EXTRA);
+		mUseItemContinuouslyKB = new KeyBinding("Use item continuously", Keyboard.KEY_NUMPAD1, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mUseItemContinuouslyKB);
 
 	}

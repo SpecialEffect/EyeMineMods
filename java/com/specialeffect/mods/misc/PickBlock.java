@@ -50,7 +50,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mPickBlockKB = new KeyBinding("Pick Block", Keyboard.KEY_NUMPAD2, CommonStrings.EYEGAZE_COMMON);
+		mPickBlockKB = new KeyBinding("Pick block", Keyboard.KEY_NUMPAD2, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mPickBlockKB);
 
 	}

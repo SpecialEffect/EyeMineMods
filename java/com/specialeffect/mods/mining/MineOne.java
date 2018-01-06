@@ -98,7 +98,7 @@ implements ChildModWithConfig
 		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Auto-Destroy", Keyboard.KEY_N, CommonStrings.EYEGAZE_COMMON);
+		mDestroyKB = new KeyBinding("Mine one block", Keyboard.KEY_N, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 				
 	}

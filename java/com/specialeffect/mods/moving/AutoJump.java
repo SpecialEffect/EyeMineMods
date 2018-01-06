@@ -78,7 +78,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);
     	
     	// Register key bindings
-        autoJumpKeyBinding = new KeyBinding("Toggle Auto-Jump", Keyboard.KEY_J, CommonStrings.EYEGAZE_COMMON);
+        autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", Keyboard.KEY_J, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
         
         // Register an icon for the overlay

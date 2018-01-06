@@ -85,7 +85,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		autoPlaceKeyBinding = new KeyBinding("Auto-place block", Keyboard.KEY_L, CommonStrings.EYEGAZE_EXTRA);
+		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", Keyboard.KEY_L, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
 	}

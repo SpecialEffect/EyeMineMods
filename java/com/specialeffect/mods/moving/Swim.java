@@ -65,7 +65,7 @@ public class Swim extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSwimKB = new KeyBinding("Toggle swimming", Keyboard.KEY_V, CommonStrings.EYEGAZE_EXTRA);
+		mSwimKB = new KeyBinding("Start/stop swimming", Keyboard.KEY_V, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwimKB);
 		
 		// Register an icon for the overlay

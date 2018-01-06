@@ -80,10 +80,10 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mNightVisionKB = new KeyBinding("Toggle night vision", Keyboard.KEY_F12, CommonStrings.EYEGAZE_EXTRA);
+		mNightVisionKB = new KeyBinding("Turn night vision on/off", Keyboard.KEY_F12, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNightVisionKB);
 
-		mDayNightKB = new KeyBinding("Toggle day/night cycle", Keyboard.KEY_F14, CommonStrings.EYEGAZE_EXTRA);
+		mDayNightKB = new KeyBinding("Turn day/night cycle on/off", Keyboard.KEY_F14, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDayNightKB);
 
 	}

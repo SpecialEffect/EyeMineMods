@@ -75,7 +75,7 @@ public class Dismount extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mDismountKB = new KeyBinding("Dismount", Keyboard.KEY_C, CommonStrings.EYEGAZE_EXTRA);
+		mDismountKB = new KeyBinding("Ride or dismount", Keyboard.KEY_C, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);
 	}
 

@@ -88,8 +88,8 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
-		mFlyManualKB = new KeyBinding("Fly (manual)", Keyboard.KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
-		mFlyAutoKB = new KeyBinding("Fly (auto)", Keyboard.KEY_G, CommonStrings.EYEGAZE_COMMON);
+		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", Keyboard.KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
+		mFlyAutoKB = new KeyBinding("Start/stop flying (auto)", Keyboard.KEY_G, CommonStrings.EYEGAZE_COMMON);
 		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_PERIOD, CommonStrings.EYEGAZE_EXTRA);
 		
 		ClientRegistry.registerKeyBinding(mFlyManualKB);

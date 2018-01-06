@@ -92,7 +92,7 @@ implements ChildModWithConfig {
 		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mAttackKB = new KeyBinding("Attack", Keyboard.KEY_R, CommonStrings.EYEGAZE_COMMON);
+		mAttackKB = new KeyBinding("Start/stop attacking", Keyboard.KEY_R, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
 		// Register an icon for the overlay

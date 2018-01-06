@@ -70,7 +70,7 @@ implements ChildModWithConfig
 		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
 
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Mine", Keyboard.KEY_M, CommonStrings.EYEGAZE_COMMON);
+		mDestroyKB = new KeyBinding("Start/stop mining", Keyboard.KEY_M, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 		
 		// Register an icon for the overlay

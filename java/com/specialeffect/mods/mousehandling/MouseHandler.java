@@ -207,16 +207,16 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
 
 		// Register key bindings
-		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity UP", Keyboard.KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
+		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", Keyboard.KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
 
-		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity DOWN", Keyboard.KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
+		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity down", Keyboard.KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
 
 		// Used to turn 'look with gaze' on and off when using mouse emulation
 		// instead of an
 		// eyetracker
-		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze", Keyboard.KEY_Y, CommonStrings.EYEGAZE_EXTRA);
+		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", Keyboard.KEY_Y, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
 
 		// Set up an empty cursor to use when doing own mouse handling

@@ -102,11 +102,11 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk", Keyboard.KEY_H, CommonStrings.EYEGAZE_COMMON);
+    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", Keyboard.KEY_H, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
-        mIncreaseWalkSpeedKB = new KeyBinding("Increase walk speed", Keyboard.KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
+        mIncreaseWalkSpeedKB = new KeyBinding("Turn walk speed up", Keyboard.KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
-        mDecreaseWalkSpeedKB = new KeyBinding("Decrease walk speed", Keyboard.KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
+        mDecreaseWalkSpeedKB = new KeyBinding("Turn walk speed down", Keyboard.KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();

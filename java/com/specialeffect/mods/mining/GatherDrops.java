@@ -87,7 +87,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		// Register key bindings	
-		mGatherKB = new KeyBinding("Gather items", Keyboard.KEY_X, CommonStrings.EYEGAZE_EXTRA);
+		mGatherKB = new KeyBinding("Gather dropped items", Keyboard.KEY_X, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
 	}
 

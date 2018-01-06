@@ -65,7 +65,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
-		mSneakKB = new KeyBinding("Toggle sneak", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);
+		mSneakKB = new KeyBinding("Start/stop sneaking", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSneakKB);
 		
 		// Register an icon for the overlay

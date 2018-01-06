@@ -86,7 +86,7 @@ implements ChildModWithConfig
     	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Toggle auto-walk legacy", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
+    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
