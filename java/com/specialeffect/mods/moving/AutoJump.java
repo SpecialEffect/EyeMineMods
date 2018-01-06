@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -58,12 +59,12 @@ implements ChildModWithConfig
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically step over blocks.");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
     }
     
     public void syncConfig() {
-    	mDoingAutoJump = SpecialEffectMovements.defaultDoAutoJump;
+    	mDoingAutoJump = EyeGaze.defaultDoAutoJump;
     	// Turn off vanilla autojump since it doesn't play nicely with 
     	// our gaze-based walking methods.
     	Minecraft.getMinecraft().gameSettings.autoJump = mDoingAutoJump;
@@ -86,7 +87,7 @@ implements ChildModWithConfig
         
         // Subscribe to parent's config changes
         // This has to happen after texture is registered, since it will trigger a syncConfig call.
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     }
 	
     @SubscribeEvent

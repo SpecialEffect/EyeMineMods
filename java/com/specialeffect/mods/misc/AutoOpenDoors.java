@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.specialeffect.messages.UseDoorAtPositionMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.utils.OpenableBlock;
@@ -53,7 +54,7 @@ implements ChildModWithConfig
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically open doors/gates and close them behind you.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
@@ -71,13 +72,13 @@ implements ChildModWithConfig
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register for config changes from parent
-		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		mOpenedDoors = new LinkedList<BlockPos>();
 	}
 	
 	public void syncConfig() {
-        mDoorRadius = SpecialEffectMisc.mRadiusDoors;
+        mDoorRadius = EyeGaze.mRadiusDoors;
 	}
 	
 	// A list of the position of any doors we've opened that haven't yet been closed

@@ -23,7 +23,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.mining.ContinuouslyMine;
-import com.specialeffect.mods.mining.SpecialEffectMining;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -74,7 +74,7 @@ implements ChildModWithConfig {
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
@@ -89,7 +89,7 @@ implements ChildModWithConfig {
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		// Register for config changes from parent
-		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
 		mAttackKB = new KeyBinding("Start/stop attacking", Keyboard.KEY_R, CommonStrings.EYEGAZE_COMMON);
@@ -101,7 +101,7 @@ implements ChildModWithConfig {
 	
 	@Override
 	public void syncConfig() {
-		mAutoSelectSword = SpecialEffectMisc.mAutoSelectSword;	
+		mAutoSelectSword = EyeGaze.mAutoSelectSword;	
 	}
 	
 	

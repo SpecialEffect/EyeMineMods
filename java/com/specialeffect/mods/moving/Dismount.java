@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -61,7 +62,7 @@ public class Dismount extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add custom key binding to mount/dismount animals");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(DismountPlayerMessage.Handler.class, 

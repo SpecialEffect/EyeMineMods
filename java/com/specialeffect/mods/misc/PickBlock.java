@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.input.Keyboard;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -39,7 +40,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to pick block without mouse.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 	}
 

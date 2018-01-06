@@ -18,6 +18,7 @@ import com.mojang.authlib.GameProfile;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.messages.UseDoorAtPositionMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.utils.OpenableBlock;
@@ -69,7 +70,7 @@ public class DefaultConfigForNewWorld {
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Apply default config to new worlds");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);

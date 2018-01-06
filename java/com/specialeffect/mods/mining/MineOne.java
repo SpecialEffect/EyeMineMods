@@ -17,9 +17,8 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.AddItemToHotbar;
-import com.specialeffect.mods.misc.SpecialEffectMisc;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mousehandling.MouseHandler.InteractionState;
-import com.specialeffect.mods.moving.SpecialEffectMovements;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -78,7 +77,7 @@ implements ChildModWithConfig
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
@@ -95,7 +94,7 @@ implements ChildModWithConfig
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		// Register for config changes from parent
-		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine one block", Keyboard.KEY_N, CommonStrings.EYEGAZE_COMMON);
@@ -104,7 +103,7 @@ implements ChildModWithConfig
 	}
 		
 	public void syncConfig() {
-		mAutoSelectTool = SpecialEffectMining.mAutoSelectTool;
+		mAutoSelectTool = EyeGaze.mAutoSelectTool;
 	}
 	
 	@SubscribeEvent

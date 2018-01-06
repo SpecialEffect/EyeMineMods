@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -56,7 +57,7 @@ implements ChildModWithConfig
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
 	}
 
@@ -67,7 +68,7 @@ implements ChildModWithConfig
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register for config changes from parent
-		SpecialEffectMining.registerForConfigUpdates((ChildModWithConfig)this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Start/stop mining", Keyboard.KEY_M, CommonStrings.EYEGAZE_COMMON);
@@ -78,7 +79,7 @@ implements ChildModWithConfig
 	}
 	
 	public void syncConfig() {
-		mAutoSelectTool = SpecialEffectMining.mAutoSelectTool;
+		mAutoSelectTool = EyeGaze.mAutoSelectTool;
 	}
 	
 	public static void stop() {

@@ -10,6 +10,7 @@
 
 package com.specialeffect.mods.moving;
 
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -42,7 +43,7 @@ public class EasyLadderClimb {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically turn to face ladders, to simplify climbing with eye control.");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
 	}
 

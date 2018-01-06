@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -70,7 +71,7 @@ implements ChildModWithConfig
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to open nearby chests/crafting tables.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(ActivateBlockAtPosition.Handler.class, 
@@ -89,7 +90,7 @@ implements ChildModWithConfig
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		// Register for config changes from parent
-		SpecialEffectMisc.registerForConfigUpdates((ChildModWithConfig)this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 				
 		// Register key bindings	
 		mOpenChestKB = new KeyBinding("Open chest", Keyboard.KEY_LBRACKET, CommonStrings.EYEGAZE_EXTRA);
@@ -99,7 +100,7 @@ implements ChildModWithConfig
 	}
 
 	public void syncConfig() {
-        mRadius = SpecialEffectMisc.mRadiusChests;
+        mRadius = EyeGaze.mRadiusChests;
 	}
 
 	@SubscribeEvent

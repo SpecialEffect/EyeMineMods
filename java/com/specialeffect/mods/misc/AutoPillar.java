@@ -20,6 +20,7 @@ import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
@@ -69,7 +70,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to create pillar, or 'nerd-pole'.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);

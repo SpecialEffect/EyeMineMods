@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.SendCommandMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -63,7 +64,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to swap mine/place key bindings.");
-		ModUtils.setAsParent(event, SpecialEffectMisc.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Register for server messages
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);

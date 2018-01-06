@@ -12,6 +12,7 @@ package com.specialeffect.mods.utils;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -37,7 +38,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Overlay icons to show state of mods.");
-    	ModUtils.setAsParent(event, SpecialEffectUtils.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// This needs to be initialised in preinit because other mods will 
 		// try to register with it in postinit.

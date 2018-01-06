@@ -18,6 +18,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.PickBlockMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -68,7 +69,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to gather nearby dropped items.");
-		ModUtils.setAsParent(event, SpecialEffectMining.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(PickBlockMessage.Handler.class, 

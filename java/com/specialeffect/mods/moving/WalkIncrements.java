@@ -18,6 +18,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
@@ -67,7 +68,7 @@ implements ChildModWithConfig
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to walk fixed amount, for alternative inputs.");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
         
         network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);
@@ -82,7 +83,7 @@ implements ChildModWithConfig
 	}
     
     public void syncConfig() {       
-        mWalkDistance = SpecialEffectMovements.moveIncrement;
+        mWalkDistance = EyeGaze.moveIncrement;
     }
     
     @EventHandler
@@ -93,7 +94,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);
     	
     	// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
     	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, CommonStrings.EYEGAZE_ADVANCED);

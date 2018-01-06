@@ -21,9 +21,9 @@ import org.lwjgl.input.Mouse;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.MoveWithGaze2;
-import com.specialeffect.mods.moving.SpecialEffectMovements;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -78,7 +78,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		FMLCommonHandler.instance().bus().register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
-		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
@@ -161,7 +161,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	public void setupInitialState() {
-		if (SpecialEffectMovements.usingMouseEmulation) {
+		if (EyeGaze.usingMouseEmulation) {
 			mInputSource = InputSource.Mouse;
 			this.updateState(InteractionState.MOUSE_NOTHING); 			
 		}
@@ -174,9 +174,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void syncConfig() {
 		System.out.println("syncConfig MouseHandler");
 		System.out.println("usingMouseEmulation: " + 
-				SpecialEffectMovements.usingMouseEmulation);
+				EyeGaze.usingMouseEmulation);
 		
-		if (SpecialEffectMovements.usingMouseEmulation) {
+		if (EyeGaze.usingMouseEmulation) {
 			if (mInputSource != InputSource.Mouse) {
 				System.out.println("using mouse");
 				mInputSource = InputSource.Mouse;
@@ -204,7 +204,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Subscribe to config changes from parent
-		SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
 
 		// Register key bindings
 		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", Keyboard.KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);

@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
+import com.specialeffect.mods.EyeGaze;
+
 /**
  * Configuration Management for Keys, etc.
  * Heavily based on CraftingKeys.Config
@@ -169,7 +171,7 @@ public class Config {
      */
     public static void loadConfig(FMLPreInitializationEvent event) {
 
-        configFile = new Configuration(event.getSuggestedConfigurationFile(), SpecialEffectInventory.VERSION);
+        configFile = new Configuration(event.getSuggestedConfigurationFile(), EyeGaze.VERSION);
 
         configFile.load();
 

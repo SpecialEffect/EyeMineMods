@@ -17,6 +17,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
@@ -83,7 +84,7 @@ implements ChildModWithConfig
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to access tabs in creative inventory");
-		ModUtils.setAsParent(event, SpecialEffectInventory.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		Config.loadConfig(event);
 

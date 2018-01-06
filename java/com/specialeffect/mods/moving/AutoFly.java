@@ -17,6 +17,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -71,7 +72,7 @@ implements ChildModWithConfig
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop flying, and automatically fly over hills.");
-		ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
@@ -85,7 +86,7 @@ implements ChildModWithConfig
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
 		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", Keyboard.KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
@@ -102,8 +103,8 @@ implements ChildModWithConfig
 	}
 
 	public void syncConfig() {
-		mFlyHeightManual = SpecialEffectMovements.flyHeightManual;
-		mFlyHeightAuto = SpecialEffectMovements.flyHeightAuto;
+		mFlyHeightManual = EyeGaze.flyHeightManual;
+		mFlyHeightAuto = EyeGaze.flyHeightAuto;
 	}
 
 	@SubscribeEvent

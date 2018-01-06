@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -42,7 +43,7 @@ public class DebugAverageFps
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Log the average FPS, for debugging");
-    	ModUtils.setAsParent(event, SpecialEffectUtils.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
 	}
 

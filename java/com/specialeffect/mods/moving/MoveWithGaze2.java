@@ -19,6 +19,7 @@ import org.lwjgl.input.Mouse;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
@@ -64,7 +65,7 @@ implements ChildModWithConfig
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
     	
     	mOverlay = new JoystickControlOverlay(Minecraft.getMinecraft());
     }
@@ -83,7 +84,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);    	
 
     	// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
     	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
@@ -108,8 +109,8 @@ implements ChildModWithConfig
     }
 	
 	public void syncConfig() {
-        mMoveWhenMouseStationary = SpecialEffectMovements.moveWhenMouseStationary;
-        mCustomSpeedFactor = SpecialEffectMovements.customSpeedFactor;
+        mMoveWhenMouseStationary = EyeGaze.moveWhenMouseStationary;
+        mCustomSpeedFactor = EyeGaze.customSpeedFactor;
 	}
 	
 	// Some hard-coded fudge factors for maximums.

@@ -23,6 +23,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -81,14 +82,14 @@ implements ChildModWithConfig
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
     }    
 	
 	public void syncConfig() {
-        mQueueLength = SpecialEffectMovements.filterLength;
-        mMoveWhenMouseStationary = SpecialEffectMovements.moveWhenMouseStationary;
-        mCustomSpeedFactor = SpecialEffectMovements.customSpeedFactor;
+        mQueueLength = EyeGaze.filterLength;
+        mMoveWhenMouseStationary = EyeGaze.moveWhenMouseStationary;
+        mCustomSpeedFactor = EyeGaze.customSpeedFactor;
 	}
 	
     @EventHandler
@@ -99,7 +100,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);    	
 
     	// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
     	mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", Keyboard.KEY_H, CommonStrings.EYEGAZE_COMMON);
@@ -419,22 +420,22 @@ implements ChildModWithConfig
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
         if(mDecreaseWalkSpeedKB.isPressed()) {
-        	SpecialEffectMovements.customSpeedFactor = 
-        			Math.max(0.1f, 0.9f*SpecialEffectMovements.customSpeedFactor);
-        	SpecialEffectMovements.saveConfig();
+        	float newSpeed =  
+        			Math.max(0.1f, 0.9f*EyeGaze.customSpeedFactor);
+        	EyeGaze.setWalkingSpeed(newSpeed);
         	displayCurrentSpeed();
         }
         if(mIncreaseWalkSpeedKB.isPressed()) {
-        	SpecialEffectMovements.customSpeedFactor = 
-        			Math.min(2.0f, SpecialEffectMovements.customSpeedFactor*1.1f);
-        	SpecialEffectMovements.saveConfig();
+        	float newSpeed =  
+        			Math.min(2.0f, EyeGaze.customSpeedFactor*1.1f);
+        	EyeGaze.setWalkingSpeed(newSpeed);
     		displayCurrentSpeed();
         }
     }
     
     private void displayCurrentSpeed() {
     	DecimalFormat myFormatter = new DecimalFormat("#0.00");
-		String speedString = myFormatter.format(SpecialEffectMovements.customSpeedFactor);
+		String speedString = myFormatter.format(EyeGaze.customSpeedFactor);
     	this.queueChatMessage("Walking speed: " + speedString);     
     }
 }

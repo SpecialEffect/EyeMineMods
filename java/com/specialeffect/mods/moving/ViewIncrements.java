@@ -19,6 +19,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.KeyPressCounter;
@@ -69,7 +70,7 @@ implements ChildModWithConfig
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to change view by fixed amount, for alternative inputs.");
-    	ModUtils.setAsParent(event, SpecialEffectMovements.MODID);
+    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
     	network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
@@ -77,7 +78,7 @@ implements ChildModWithConfig
     }
     
     public void syncConfig() {
-    	mViewDeltaRelative = SpecialEffectMovements.viewIncrement;
+    	mViewDeltaRelative = EyeGaze.viewIncrement;
     }
     
     @EventHandler
@@ -88,7 +89,7 @@ implements ChildModWithConfig
     	MinecraftForge.EVENT_BUS.register(this);
 
     	// Subscribe to parent's config changes
-    	SpecialEffectMovements.registerForConfigUpdates((ChildModWithConfig) this);
+    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
     	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", Keyboard.KEY_U, CommonStrings.EYEGAZE_ADVANCED);

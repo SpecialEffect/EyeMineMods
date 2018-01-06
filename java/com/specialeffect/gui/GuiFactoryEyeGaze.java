@@ -12,11 +12,11 @@ package com.specialeffect.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 
-public class GuiFactoryMining extends GuiFactoryGeneric 
+public class GuiFactoryEyeGaze extends GuiFactoryGeneric 
 {
     @Override
     public Class<? extends GuiScreen> mainConfigGuiClass() 
     {
-        return GuiConfigMining.class;
+        return GuiConfigEyeGaze.class;
     }
 }
