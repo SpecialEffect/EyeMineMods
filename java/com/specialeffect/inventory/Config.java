@@ -38,7 +38,7 @@ public class Config {
     static Property key0, key1, key2, key3, key4,
     			    key5, key6, key7, key8, key9, 
     			    keyNext, keyPrev, keySearch,
-    			    keyNextItemRow, keyNextItemCol;
+    			    keyNextItemRow, keyNextItemCol, keyDrop;
     
     /**
      * Provides the Suggested Config File.
@@ -92,7 +92,8 @@ public class Config {
 					flagKeyIfMatches(keyNext); 
 					flagKeyIfMatches(keyNextItemRow); 
 					flagKeyIfMatches(keyNextItemCol); 
-					flagKeyIfMatches(keySearch); 
+					flagKeyIfMatches(keySearch);
+					flagKeyIfMatches(keyDrop);
 				}
 			} catch (IOException e) {
 			} catch (NullPointerException e) {
@@ -150,6 +151,10 @@ public class Config {
     
     public static boolean isKeyNextColPressed() {
     	return isKeyPressed(keyNextItemCol);
+    }    
+
+    public static boolean isKeyDropPressed() {
+    	return isKeyPressed(keyDrop);
     }    
     
     public static boolean isKeyPrevPressed() {
@@ -223,6 +228,7 @@ public class Config {
         keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", Keyboard.KEY_F7);
         
         keySearch = configFile.get(categoryInventory, "keySearch", Keyboard.KEY_DOWN);
+        keyDrop = configFile.get(categoryInventory, "keyDrop", Keyboard.KEY_HOME);
    }
 
 }

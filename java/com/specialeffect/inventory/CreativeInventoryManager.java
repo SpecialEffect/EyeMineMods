@@ -151,7 +151,9 @@ public class CreativeInventoryManager {
 			// first position on a page starts at -1, -1
 			itemRow = Math.max(itemRow, 0);
 			this.hoverItem();
-		}		
+		} else if (Config.isKeyDropPressed()) {
+			this.switchToTab(-1);
+		}
 		
 	}
 	
@@ -172,6 +174,11 @@ public class CreativeInventoryManager {
 		int xPos = -1;
 		int yPos = -1;
 		switch(iTab) {
+		case -1:
+			// this is proxy for "drop by clicking outside inventory"
+			xPos = leftColXPos - tabWidth;
+			yPos = topRowYPos;
+			break;
 		case 0:
 			xPos = leftColXPos;
 			yPos = topRowYPos;
