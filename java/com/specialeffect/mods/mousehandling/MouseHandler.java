@@ -262,6 +262,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
+				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");
+				this.queueChatMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
 			} else {
 				if (this.mInteractionState == InteractionState.MOUSE_LOOK) {
 					this.updateState(InteractionState.MOUSE_NOTHING);
