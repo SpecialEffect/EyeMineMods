@@ -34,44 +34,32 @@ def safeExit():
 	sys.exit(1)
 #	safeProcess("git reset --hard head")
 
-def updateModVersion(filename):
-	pattern = re.compile("(String\s*VERSION\s*=\s*\")(\d.)(\d*)");
+def get_version(filename):
+    pattern = re.compile("String\s*VERSION\s*=\s*\"(\d*.\d*.\d*)\"");
+    for line in fileinput.input(filename):
+        if re.search(pattern, line): 
+            print(pattern.search(line).groups())
+            version = pattern.search(line).groups()[0]
+            return version
+    return None;        
 
-	for line in fileinput.input(filename, inplace=True):
-		if re.search(pattern, line): 
-			majorVersion = pattern.search(line).groups()[1]
-			oldMinorVersion = pattern.search(line).groups()[2]
-			newMinorVersion = str(int(oldMinorVersion) + 1);
-			line = re.sub(pattern, "\\g<1>\\g<2>" + newMinorVersion, line);		
-		print(line.rstrip('\n'))
-	return majorVersion +newMinorVersion;
-		
-		
 # Don't continue if working copy is dirty
 if not safeProcess('git diff-index --quiet HEAD --'):
 	print( "Cannot build, git working copy dirty")
 	safeExit()
 	
-# Make sure the mod reports the new version.
-version_file = "java/com/specialeffect/utils/ModUtils.java"
-newVersion = updateModVersion(version_file);
-print(newVersion)
-
 # Go to forge code, and build
 os.chdir(forgePath);
 if not safeProcess("bash gradlew build"):
-	print("Building mod failed, resetting code")
+	print("Building mod failed, won't continue")
 	os.chdir(origPath);	
-	safeProcess("git checkout {}".format(version_file))
 	safeExit(); 
-
-# Commit changes
-os.chdir(origPath);
-safeProcess("git add com/specialeffect/eyegazemod/SpecialEffectEyeGaze.java")
-safeProcess('git commit -m "Update version number to ' + newVersion + '"')
-	
-# Tag code
-safeProcess("git tag release/" + newVersion)
+    
+# Tag code by version
+os.chdir(origPath);	
+version_file = "java/com/specialeffect/utils/ModUtils.java"
+version = get_version(version_file)
+safeProcess("git tag release/{}".format(version))
 
 
 
