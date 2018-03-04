@@ -53,7 +53,8 @@ if not safeProcess('git diff-index --quiet HEAD --'):
 	safeExit()
 	
 # Make sure the mod reports the new version.
-newVersion = updateModVersion("com/specialeffect/eyegazemod/SpecialEffectEyeGaze.java");
+version_file = "java/com/specialeffect/utils/ModUtils.java"
+newVersion = updateModVersion(version_file);
 print(newVersion)
 
 # Go to forge code, and build
@@ -61,7 +62,7 @@ os.chdir(forgePath);
 if not safeProcess("bash gradlew build"):
 	print("Building mod failed, resetting code")
 	os.chdir(origPath);	
-	safeProcess("git checkout com/specialeffect/eyegazemod/SpecialEffectEyeGaze.java")
+	safeProcess("git checkout {}".format(version_file))
 	safeExit(); 
 
 # Commit changes
