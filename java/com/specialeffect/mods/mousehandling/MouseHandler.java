@@ -113,7 +113,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		else {
 			if (doWalk) updateState(InteractionState.MOUSE_WALK);
-			else updateState(InteractionState.MOUSE_NOTHING);
+			else updateState(InteractionState.MOUSE_LOOK);
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 		else {
 			if (doWalk) updateState(InteractionState.MOUSE_LEGACY);
-			else updateState(InteractionState.MOUSE_NOTHING);
+			else updateState(InteractionState.MOUSE_LOOK);
 		}
 	}
 	
@@ -265,12 +265,12 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");
 				this.queueChatMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
 			} else {
-				if (this.mInteractionState == InteractionState.MOUSE_LOOK) {
-					this.updateState(InteractionState.MOUSE_NOTHING);
-				}
-				else {
+				if (this.mInteractionState == InteractionState.MOUSE_NOTHING) {
 					this.updateState(InteractionState.MOUSE_LOOK);
 				}
+				else {
+					this.updateState(InteractionState.MOUSE_NOTHING);
+				}				
 			}
 		}
 	}
