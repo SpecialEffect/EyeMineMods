@@ -38,7 +38,8 @@ public class ModUtils {
 	public static final String VERSION = "1.0.3";
 
 	// version of optikey to use
-	public static final String OPTIKEY_VERSION = "1.0.3";
+	// for now we're keeping them in lockstep
+	public static final String OPTIKEY_VERSION = ModUtils.VERSION;
 
 	// A helper function to replace mcmod.info. Must be called with 
 	// a pre-init event.
