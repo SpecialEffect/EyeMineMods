@@ -50,9 +50,12 @@ if not safeProcess('git diff-index --quiet HEAD --'):
 	
 # Go to forge code, and build
 os.chdir(forgePath);
+if not safeProcess("bash gradlew clean"):
+	print("Building mod failed, won't continue")
+	safeExit(); 
+    
 if not safeProcess("bash gradlew build"):
 	print("Building mod failed, won't continue")
-	os.chdir(origPath);	
 	safeExit(); 
     
 # Tag code by version
