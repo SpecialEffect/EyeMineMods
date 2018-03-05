@@ -183,7 +183,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
         mDeadBorder = mConfig.getFloat( "Mousehandler dead border size", CATEGORY_EXPERT, mDeadBorder, 0.001f, 0.25f, 
         		"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.");
         usingMouseEmulation = mConfig.getBoolean( "Enable mouse-emulation compatibility mode", CATEGORY_BASIC, false, 
-        		"Turn this on if you're using mouse position as an input to OptiKey");
+        		"Turn this on if you're using mouse position as an input to EyeMine");
         
         // AutoOpenDoors
   		mRadiusDoors = mConfig.getInt( "Distance to open doors", CATEGORY_ADVANCED, mRadiusDoors, 
