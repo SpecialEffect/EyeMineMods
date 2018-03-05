@@ -41,8 +41,9 @@ def safeExit():
 #    safeProcess("git reset --hard head")
 
 def updateModVersion(filename, version_level):
-    pattern = re.compile("(String\s*VERSION\s*=\s*\")(\d).(\d).(\d)\"");
+    pattern = re.compile("(String\s*VERSION\s*=\s*\")(\d*).(\d*).(\d*)\"");
 
+    new_version = None
     for line in fileinput.input(filename, inplace=True):
         if re.search(pattern, line): 
             major = int(pattern.search(line).groups()[1])
@@ -61,6 +62,8 @@ def updateModVersion(filename, version_level):
             new_version =  "{}.{}.{}".format(major, minor, revision)
             line = re.sub(pattern, "String VERSION  = \"{}\"".format(new_version), line);        
         print(line.rstrip('\n'))
+    if not new_version:
+        raise Exception("Could not find version in file {}".format(filename))
     return new_version;        
         
 # Don't continue if working copy is dirty
