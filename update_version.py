@@ -19,7 +19,7 @@ origPath = os.getcwd();
 version_level = sys.argv[1];
 valid_version_levels = ['--major', '--minor', '--revision']
 if version_level not in valid_version_levels:
-    print("Version level not recognised, must be one of")
+    print('Version level "{}" not recognised, must be one of:'.format(version_level))
     print(valid_version_levels)
     sys.exit(1)
 
