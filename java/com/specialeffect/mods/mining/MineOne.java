@@ -68,7 +68,11 @@ implements ChildModWithConfig
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;
 	private static KeyBinding mDestroyKB;
-	private boolean mAutoSelectTool = true;
+	
+	// Mine one doesn't now respect the user config for auto-selecting pickaxe, since
+	// it's typically used when building and you don't want to have to keep switching
+	// back to your building material. 
+	private boolean mAutoSelectTool = false;
 	private boolean mWaitingForPickaxe = false;
 	
 	@EventHandler
@@ -102,8 +106,7 @@ implements ChildModWithConfig
 				
 	}
 		
-	public void syncConfig() {
-		mAutoSelectTool = EyeGaze.mAutoSelectTool;
+	public void syncConfig() {		
 	}
 	
 	@SubscribeEvent
