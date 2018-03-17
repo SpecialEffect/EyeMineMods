@@ -33,10 +33,12 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.CPacketSteerBoat;
@@ -233,23 +235,49 @@ implements ChildModWithConfig
 				}
 				else {					
 					if (player.isInWater() && Swim.isSwimmingOn()) {
-						// if the player is swimming, and is more than one block under, swim up
-						BlockPos playerPos = player.getPosition();
-						BlockPos blockBelow = new BlockPos(playerPos.getX(),
-								playerPos.getY()+1, playerPos.getZ());
+						// if the player is swimming, and is more than one block under, don't move forward yet
+						
+						// if the player is swimming and there's a block in front, or in-front-one-down,
+						// then jump before moving
 				    	World world = Minecraft.getMinecraft().world;
-						Block block = world.getBlockState(blockBelow).getBlock();
-						if (block != null && block instanceof BlockLiquid) {
-							// do nothing
-						}						            
-						else {
+
+						BlockPos playerPos = player.getPosition();
+						Vec3d posVec = player.getPositionVector();
+						Vec3d forwardVec = player.getForward();
+						
+						BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
+								playerPos.getY()+1, playerPos.getZ());
+
+						BlockPos blockInFrontPos = new BlockPos(
+								posVec.xCoord + forwardVec.xCoord,
+								posVec.yCoord + forwardVec.yCoord,
+								posVec.zCoord + forwardVec.zCoord);
+						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
+									
+						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
+				    	
+				    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
+				    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
+				    			    	
+				    	// only move if not in deep water
+				    	if (blockAbove != null && !(blockAbove instanceof BlockLiquid)) {
+				    		
+				    		// if there's an obstruction in front, move up slightly first
+				    		if ((materialInFront != null  && materialInFront.isSolid()) ||
+				    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
+				    		{
+				    			player.move(MoverType.SELF, 0, 0.2, 0);
+				    		}
+				    		
 							for (int i = 0; i < 2; i++) {
 								player.moveEntityWithHeading(0.0f, halfForward);
 							}
+							
 						}
 					}
 					else {
 						for (int i = 0; i < 2; i++) {
+//							player.handleWaterMovement();
 							player.moveEntityWithHeading(0.0f, halfForward);
 						}
 					}

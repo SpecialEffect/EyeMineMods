@@ -99,9 +99,9 @@ public class Swim extends BaseClassWithCallbacks {
 					mJumpKeyOverridden = true;
 				}
 				
-				// Switch off when on land
-				else if (player.onGround && 						
-						 swimBinding.isKeyDown()) {
+				// Switch off when on land or if flying
+				else if ((player.onGround || player.capabilities.isFlying) &&
+						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {
 						KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
