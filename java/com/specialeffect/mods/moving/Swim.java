@@ -76,6 +76,10 @@ public class Swim extends BaseClassWithCallbacks {
 
 	}
 	
+	public static boolean isSwimmingOn() {
+		return mSwimmingTurnedOn;
+	}
+	
 	private int mIconIndex;
 	private boolean mJumpKeyOverridden = false;
 
@@ -120,7 +124,7 @@ public class Swim extends BaseClassWithCallbacks {
 		}
 	}
 	
-	private boolean mSwimmingTurnedOn = true;
+	private static boolean mSwimmingTurnedOn = true;
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {

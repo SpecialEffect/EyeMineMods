@@ -32,6 +32,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLadder;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -230,9 +231,27 @@ implements ChildModWithConfig
 						}
 					}
 				}
-				else {
-					for (int i = 0; i < 2; i++) {
-						player.moveEntityWithHeading(0.0f, halfForward);
+				else {					
+					if (player.isInWater() && Swim.isSwimmingOn()) {
+						// if the player is swimming, and is more than one block under, swim up
+						BlockPos playerPos = player.getPosition();
+						BlockPos blockBelow = new BlockPos(playerPos.getX(),
+								playerPos.getY()+1, playerPos.getZ());
+				    	World world = Minecraft.getMinecraft().world;
+						Block block = world.getBlockState(blockBelow).getBlock();
+						if (block != null && block instanceof BlockLiquid) {
+							// do nothing
+						}						            
+						else {
+							for (int i = 0; i < 2; i++) {
+								player.moveEntityWithHeading(0.0f, halfForward);
+							}
+						}
+					}
+					else {
+						for (int i = 0; i < 2; i++) {
+							player.moveEntityWithHeading(0.0f, halfForward);
+						}
 					}
 				}
 			}
