@@ -92,30 +92,20 @@ public class Swim extends BaseClassWithCallbacks {
 				final KeyBinding swimBinding = 
 						Minecraft.getMinecraft().gameSettings.keyBindJump;
 
-				// Only hold down the swim button when actually in water.
+				// Switch on swim key when in water
 				if (player.isInWater() && 						
 						!swimBinding.isKeyDown() ) {
 					KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);			
 					mJumpKeyOverridden = true;
 				}
+				
 				// Switch off when on land
-				else if (!player.isInWater() &&
-						swimBinding.isKeyDown() ) {
-					// If water is underneath, don't stop swimming yet (probably in the
-					// process of swimming).
-					BlockPos playerPos = player.getPosition();
-					BlockPos blockBelow = new BlockPos(playerPos.getX(),
-							playerPos.getY()-1, playerPos.getZ());
-			    	World world = Minecraft.getMinecraft().world;
-					Block block = world.getBlockState(blockBelow).getBlock();
-					if (block != null && block instanceof BlockLiquid) {
-						// do nothing
-					}
-					else {
-						if (mJumpKeyOverridden) {
-							KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
-							mJumpKeyOverridden = false;
-						}
+				else if (player.onGround && 						
+						 swimBinding.isKeyDown()) {
+
+					if (mJumpKeyOverridden) {
+						KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+						mJumpKeyOverridden = false;
 					}
 				}
 			}
