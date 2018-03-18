@@ -17,12 +17,14 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MovementInput;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -34,6 +36,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 
 @Mod(modid = Sneak.MODID, version = ModUtils.VERSION, name = Sneak.NAME)
@@ -44,10 +48,13 @@ public class Sneak extends BaseClassWithCallbacks {
 	public static final String NAME = "SneakToggle";
 
 	private static KeyBinding mSneakKB;
-	private static KeyBinding mMCSneakBinding;
-	private boolean mIsSneaking;
+	private static boolean mIsSneaking = false;
 	
 	private static int mIconIndex;
+	  
+	private Minecraft mMinecraft;
+	
+	private MovementInputFromOptionsOverride mMovementOverride;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -64,6 +71,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		// Subscribe to event buses
 		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
+	    mMinecraft = Minecraft.getMinecraft();
 
 		// Register key bindings
 		mSneakKB = new KeyBinding("Start/stop sneaking", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);
@@ -72,9 +80,17 @@ public class Sneak extends BaseClassWithCallbacks {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
 		
-		// Query sneak key binding
-		mMCSneakBinding = Minecraft.getMinecraft().gameSettings.keyBindSneak;
-
+	}
+	
+	@SubscribeEvent
+	public void onClientTick(ClientTickEvent event)
+	{		
+		if ((mMinecraft.player != null)) {
+			if (null == mMovementOverride) {
+				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);
+				mMinecraft.player.movementInput = mMovementOverride;
+			}			
+		}
 	}
 	
 	@SubscribeEvent
@@ -83,22 +99,26 @@ public class Sneak extends BaseClassWithCallbacks {
 			this.processQueuedCallbacks(event);
 			
 			// Make sure icon up to date
-    		StateOverlay.setStateLeftIcon(mIconIndex, mMCSneakBinding.isKeyDown());
+    		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 		}
 	}
 	
 	public static void stop() {
-		KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), false);
+		mIsSneaking = false;
 	}
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
+//		
 		if(mSneakKB.isPressed()) {
-			if (mMCSneakBinding.isKeyDown()) {
-				KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), false);
+			mIsSneaking = !mIsSneaking;
+			if (mMovementOverride != null) 
+			{
+				mMovementOverride.setSneakOverride(mIsSneaking);
 			}
-			else {
-				KeyBinding.setKeyBindState(mMCSneakBinding.getKeyCode(), true);
+			else{
+				System.out.println("null handler");
+				mIsSneaking = false;
 			}
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
@@ -106,8 +126,9 @@ public class Sneak extends BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+
 			        player.sendMessage(new TextComponentString(
-			        		 "Sneaking: " + (mMCSneakBinding.isKeyDown() ? "ON" : "OFF")));
+			        		 "Sneaking: " + (mIsSneaking ? "ON" : "OFF")));
 				}		
 			}));
 		}
