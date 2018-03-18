@@ -86,10 +86,15 @@ public class Sneak extends BaseClassWithCallbacks {
 	public void onClientTick(ClientTickEvent event)
 	{		
 		if ((mMinecraft.player != null)) {
+
 			if (null == mMovementOverride) {
-				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);
-				mMinecraft.player.movementInput = mMovementOverride;
+				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);				
 			}			
+
+			if (!(mMinecraft.player.movementInput instanceof MovementInputFromOptionsOverride))
+			{
+				mMinecraft.player.movementInput = mMovementOverride;	
+			}
 		}
 	}
 	
