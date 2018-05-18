@@ -153,12 +153,25 @@ public class CreativeInventoryManager {
 			this.hoverItem();
 		} else if (Config.isKeyDropPressed()) {
 			this.switchToTab(-1);
+		} else if (Config.isScrollUpPressed()) {
+			this.scrollDown(-2);
+		} else if (Config.isScrollDownPressed()) {
+			this.scrollDown(+2);
 		}
+		
 		
 	}
 	
 	private int itemRow = -1;
 	private int itemCol = -1;
+	
+	private void scrollDown(int amount) {
+		// Warning: requesting more than 1 notch probably won't work,
+		// minecraft seems to ignore multiple notch requests.
+		// If you want to support more, you'll have to dig deeper into
+		// minecraft.
+		robot.mouseWheel(amount);	
+	}
 	
 	private void hoverItem() {		
 		int yPos = topItemYPos - itemRow*itemWidth;

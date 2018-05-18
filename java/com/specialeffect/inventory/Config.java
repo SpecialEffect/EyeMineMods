@@ -38,6 +38,7 @@ public class Config {
     static Property key0, key1, key2, key3, key4,
     			    key5, key6, key7, key8, key9, 
     			    keyNext, keyPrev, keySearch,
+    			    keyScrollUp, keyScrollDown,
     			    keyNextItemRow, keyNextItemCol, keyDrop;
     
     /**
@@ -94,6 +95,8 @@ public class Config {
 					flagKeyIfMatches(keyNextItemCol); 
 					flagKeyIfMatches(keySearch);
 					flagKeyIfMatches(keyDrop);
+					flagKeyIfMatches(keyScrollUp);
+					flagKeyIfMatches(keyScrollDown);				
 				}
 			} catch (IOException e) {
 			} catch (NullPointerException e) {
@@ -165,8 +168,16 @@ public class Config {
     	return isKeyPressed(keyNext);
     }
     
-    public static boolean isKeySearchPressed() {
+	public static boolean isKeySearchPressed() {
     	return isKeyPressed(keySearch);
+    }
+	
+	public static boolean isScrollUpPressed() {
+    	return isKeyPressed(keyScrollUp);
+    }
+	
+	public static boolean isScrollDownPressed() {
+    	return isKeyPressed(keyScrollDown);
     }
     
     /**
@@ -226,6 +237,9 @@ public class Config {
         keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RIGHT);
         keyNextItemRow = configFile.get(categoryInventory, "keyNextItemRow", Keyboard.KEY_F6);
         keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", Keyboard.KEY_F7);
+        
+        keyScrollUp = configFile.get(categoryInventory, "keyScrollUp", Keyboard.KEY_F8);
+        keyScrollDown = configFile.get(categoryInventory, "keyScrollDown", Keyboard.KEY_F9);
         
         keySearch = configFile.get(categoryInventory, "keySearch", Keyboard.KEY_DOWN);
         keyDrop = configFile.get(categoryInventory, "keyDrop", Keyboard.KEY_HOME);
