@@ -34,6 +34,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -131,12 +132,11 @@ implements ChildModWithConfig
 		    			mWaitingForPickaxe = true;		    		
 	    			}
 	    		}
-	    		else {					    						
-		    		// If tool wasn't preselected, we need to check whether the 
-		    		// selected item can actually destroy the block
-	    			Block blockIn = world.getBlockState(mBlockToDestroy).getBlock();
-	    			if (!ForgeHooks.canHarvestBlock(blockIn, player, world, mBlockToDestroy)) {
-	    				String message = "Can't destroy this block with current item";
+	    		else {			
+	    			
+	    			// Swords can't destroy blocks: warn user
+	    			if (player.getHeldItemMainhand().getItem() instanceof ItemSword) {
+	    				String message = "Can't destroy blocks with a sword, please select another item";
 				        player.sendMessage(new TextComponentString(message));
 	    				this.stopDestroying();
 	    				return;
