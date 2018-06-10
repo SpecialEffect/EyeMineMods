@@ -166,6 +166,9 @@ public class CreativeInventoryManager {
 	private int itemCol = -1;
 	
 	private void scrollDown(int amount) {
+		// Make sure mouse is over window before scrolling
+		this.moveMouseIntoWindow();
+		
 		// Warning: requesting more than 1 notch probably won't work,
 		// minecraft seems to ignore multiple notch requests.
 		// If you want to support more, you'll have to dig deeper into
@@ -179,6 +182,16 @@ public class CreativeInventoryManager {
 		
 		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
 				(int)(yPos*this.yScale));
+	}
+	
+	private void moveMouseIntoWindow() {
+		// move mouse to location in window before e.g. mouse event
+		int xPos = leftColXPos - tabWidth;
+		int yPos = topRowYPos;
+	
+		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
+												(int)(yPos*this.yScale));
+
 	}
 	
 	private void switchToTab(int iTab) {
