@@ -252,7 +252,14 @@ public class CreativeInventoryManager {
 			// NB: We use lwjgl to move the mouse because it uses coordinates
 			// relative to minecraft window. We use a java robot to click because
 			// I don't know how else to.
-			robot.mousePress(KeyEvent.BUTTON1_MASK);
+			
+			// IMPORTANT NB: If you do a separate press and release, while using eye gaze
+			// mouse emulation, it's quite common for the mouse press to persist long 
+			// enough that the mouse gets pressed *where the user is looking* in addition
+			// to the inventory location. This causes minecraft to lose focus and eye mine
+			// stops working. It seems to work fine just to send a mouseRelease event, but
+			// a better solution would be good...
+			//robot.mousePress(KeyEvent.BUTTON1_MASK);
 			robot.mouseRelease(KeyEvent.BUTTON1_MASK);
 			
 			// we want to trigger 'tabChanged' if user has explicitly selected
