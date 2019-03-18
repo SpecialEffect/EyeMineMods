@@ -102,8 +102,6 @@ public class CreativeInventoryManager {
 		Config.pollKeyPresses();
 
 		// Handle key press
-		int xPos = -1;
-		int yPos = -1;
 		// First 5 tabs on top (not inc search which has it's own key already)
 		if (Config.isKey0Pressed()) {
 			this.switchToTab(0);

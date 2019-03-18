@@ -26,7 +26,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -101,7 +100,6 @@ public class Dismount extends BaseClassWithCallbacks {
 								new DismountPlayerMessage());						
 					}
 					else {
-						World world = Minecraft.getMinecraft().world;			    			    		
 						RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
 						Entity hitEntity = mov.entityHit;
 						if (hitEntity != null) {

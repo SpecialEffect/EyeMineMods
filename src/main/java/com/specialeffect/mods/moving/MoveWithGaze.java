@@ -344,7 +344,6 @@ implements ChildModWithConfig
     
     private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
     	Vec3d lookVec = player.getLookVec();
-    	Vec3d posVec = player.getPositionVector();
     	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
@@ -364,8 +363,8 @@ implements ChildModWithConfig
 		return 1.0f;
     }
     
-    private double slowdownFactorWall(EntityPlayer player) {
-    	BlockPos playerPos = player.getPosition();
+    @SuppressWarnings("unused")
+	private double slowdownFactorWall(EntityPlayer player) {
     	Vec3d lookVec = player.getLookVec();
     	Vec3d posVec = player.getPositionVector();
 		
@@ -442,7 +441,6 @@ implements ChildModWithConfig
 	}
 
 	private static boolean mDoingAutoWalk = false;
-    private double mWalkDistance = 1.0f;
     private Queue<Vec3d> mPrevLookDirs;
     
     public static void stop() {

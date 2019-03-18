@@ -68,7 +68,6 @@ public class MovePlayerMessage implements IMessage {
 							final double scaleMinecart = 1.0d/8.0d;
 							final double scaleAnimal = 1.0d/2.0d;
 							final double scaleBoat = 1.0d/3.0d;
-							final double scaleDefault = 1.0d/2.0d;
 							
 							if (riddenEntity instanceof EntityMinecart) {
 								EntityMinecart minecart = (EntityMinecart)riddenEntity;
@@ -100,7 +99,6 @@ public class MovePlayerMessage implements IMessage {
 								}
 							}
 							else if (riddenEntity instanceof EntityBoat) {
-								EntityBoat boat = (EntityBoat)riddenEntity;
 								message.moveAmount *= scaleBoat;
 								double yaw = Math.toRadians(riddenEntity.rotationYaw);
 								Point2d xyDiff = polarToCartesian(message.moveAmount, 

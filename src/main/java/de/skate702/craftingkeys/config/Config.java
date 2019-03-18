@@ -150,7 +150,8 @@ public class Config {
     	return isKeyPressed(keyDrop);
     }
 
-    private static boolean isNumPadEnabled() {
+    @SuppressWarnings("unused")
+	private static boolean isNumPadEnabled() {
         return enableNumPad.getBoolean(true);
     }
 

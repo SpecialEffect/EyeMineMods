@@ -30,7 +30,6 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MouseHelper;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -231,7 +230,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 														// *after* other mods
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 
 			if (ownMouseHelper.hasPendingEvent()) {
 				mTicksSinceMouseEvent = 0;

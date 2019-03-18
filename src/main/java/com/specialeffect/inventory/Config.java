@@ -44,10 +44,6 @@ public class Config {
      * Provides the Suggested Config File.
      */
     private static Configuration configFile = null;
-    /**
-     * Defines, if NumPad is always active for crafting.
-     */
-    private static Property enableNumPad;
 
     private static Map<Property, Boolean> keyStates = new HashMap<Property, Boolean>();
     

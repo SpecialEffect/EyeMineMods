@@ -10,9 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -28,7 +25,6 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -86,8 +82,6 @@ implements ChildModWithConfig
     	// Register key bindings	
     	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
-        
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/legacy-mode.png");
@@ -163,8 +157,6 @@ implements ChildModWithConfig
     }
     
 	private static boolean mDoingAutoWalk = false;
-    private double mWalkDistance = 1.0f;
-    private Queue<Vec3d> mPrevLookDirs;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -179,7 +171,6 @@ implements ChildModWithConfig
         }
     }
     
-    private int i = 0;
     private int lastMouseX = 0;
     private int lastMouseY = 0;
     

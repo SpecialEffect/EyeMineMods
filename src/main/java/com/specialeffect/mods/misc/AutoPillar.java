@@ -21,7 +21,6 @@ import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
-import com.specialeffect.utils.KeyPressCounter;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.settings.KeyBinding;
@@ -54,8 +53,6 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	public static KeyBinding openChatKB;
 
 	public static SimpleNetworkWrapper network;
-
-	private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
 
 	@EventHandler
 	@SuppressWarnings("static-access")

@@ -56,11 +56,8 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 	public static Configuration mConfig;
 	private static KeyBinding mGatherKB;
-	private static KeyBinding mOpenCraftingTableKB;	
 
 	public static SimpleNetworkWrapper network;
-
-	private static int mRadius = 5;
 
 	@EventHandler
 	@SuppressWarnings("static-access")

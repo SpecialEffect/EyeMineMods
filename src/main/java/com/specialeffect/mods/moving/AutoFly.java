@@ -22,7 +22,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.MoverType;
@@ -119,7 +118,6 @@ implements ChildModWithConfig
 							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.zCoord);
 
 					World world = Minecraft.getMinecraft().world;
-					Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();
 
 					// If there's a block in your way, and you're not already jumping over it...
 					if (world.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMovement() &&
