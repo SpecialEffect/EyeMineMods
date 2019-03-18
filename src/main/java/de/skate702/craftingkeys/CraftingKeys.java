@@ -57,7 +57,6 @@ public class CraftingKeys {
     /**
      * Current Instance of CraftingKeys.
      */
-    @SuppressWarnings("WeakerAccess")
     @Instance(value = MODID)
     public static CraftingKeys instance;
 
@@ -101,12 +100,10 @@ public class CraftingKeys {
      *
      * @param event Input Event from FML
      */
-    @SuppressWarnings("EmptyMethod")
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
     }
 
-    @SuppressWarnings("UnusedParameters")
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         if (KeyBindings.openGuiBinding.isPressed()) {
@@ -136,7 +133,7 @@ public class CraftingKeys {
      *
      * @param event Some Forge input event
      */
-    @SuppressWarnings({"EmptyMethod", "UnusedParameters"})
+    @SuppressWarnings({})
     @SubscribeEvent
     public void onGuiOpened(GuiOpenEvent event) {
         //if (event.gui instanceof GuiMainMenu) {
@@ -149,7 +146,6 @@ public class CraftingKeys {
      *
      * @param tick This is a tick. What did you think about it?
      */
-    @SuppressWarnings("UnusedParameters")
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent tick) {
 

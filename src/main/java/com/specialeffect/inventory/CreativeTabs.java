@@ -42,7 +42,6 @@ implements ChildModWithConfig
 	/**
 	 * Current Instance.
 	 */
-	@SuppressWarnings("WeakerAccess")
 	@Instance(value = MODID)
 	public static CreativeTabs instance;
 
@@ -71,7 +70,6 @@ implements ChildModWithConfig
 	/*
 	 * This is where we handle key inputs within the creative inventory
 	 */
-	@SuppressWarnings("UnusedParameters")
 	@SubscribeEvent
 	public void onTick(TickEvent.ClientTickEvent tick) {
 

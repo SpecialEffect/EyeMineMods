@@ -40,7 +40,6 @@ public class GuiConfig extends GuiScreen {
     private int guiShowState;
     private long lastTime = 0;
     private long currentTime;
-    @SuppressWarnings("FieldCanBeLocal")
     private ArrayList<GuiButton> configButtons;
     private int selectedButtonID = -1;
 

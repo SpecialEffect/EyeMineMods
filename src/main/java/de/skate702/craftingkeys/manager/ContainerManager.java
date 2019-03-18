@@ -86,7 +86,6 @@ public abstract class ContainerManager {
     /**
      * Handles what to do when the DropKey is pressed in acceptKey().
      */
-    @SuppressWarnings("WeakerAccess")
     void onDropKeyPressed() {
 
         // Drop every defined dropSlot-Item
