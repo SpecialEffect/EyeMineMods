@@ -99,6 +99,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
     
     
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -111,6 +112,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("static-access")
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();

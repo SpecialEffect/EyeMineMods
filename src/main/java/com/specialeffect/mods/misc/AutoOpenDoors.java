@@ -48,6 +48,7 @@ implements ChildModWithConfig
     public static SimpleNetworkWrapper network;
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 		

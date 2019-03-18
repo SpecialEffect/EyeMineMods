@@ -35,6 +35,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 	public static final String NAME = "PickBlock";
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

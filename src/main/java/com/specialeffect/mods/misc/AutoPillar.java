@@ -58,6 +58,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

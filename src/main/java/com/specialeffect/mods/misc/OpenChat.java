@@ -35,6 +35,7 @@ public class OpenChat extends BaseClassWithCallbacks {
 	public static final String NAME = "OpenChat";
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

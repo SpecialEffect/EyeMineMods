@@ -73,6 +73,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private static int mTicksSinceMouseEvent = 1000;
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

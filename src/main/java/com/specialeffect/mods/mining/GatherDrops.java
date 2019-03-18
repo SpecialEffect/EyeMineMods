@@ -63,6 +63,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 	private static int mRadius = 5;
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {    
 		MinecraftForge.EVENT_BUS.register(this);    	
 
@@ -88,6 +89,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 	}
 
 	@SubscribeEvent
+	@SuppressWarnings("static-access")
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if(eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();

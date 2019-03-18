@@ -59,6 +59,7 @@ implements ChildModWithConfig
     private static float mCustomSpeedFactor = 0.8f;
 
     @EventHandler
+	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);  
     	

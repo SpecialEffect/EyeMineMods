@@ -65,6 +65,7 @@ implements ChildModWithConfig
     private static int mRadius = 5;
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {    
 		MinecraftForge.EVENT_BUS.register(this);    	
 		

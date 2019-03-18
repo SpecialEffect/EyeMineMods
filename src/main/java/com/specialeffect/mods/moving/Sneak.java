@@ -54,6 +54,7 @@ public class Sneak extends BaseClassWithCallbacks {
 	private MovementInputFromOptionsOverride mMovementOverride;
 	
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

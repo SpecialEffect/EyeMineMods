@@ -36,6 +36,7 @@ public class EasyLadderClimb {
 	public static final String NAME = "EasyLadderClimb";
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

@@ -61,6 +61,7 @@ implements ChildModWithConfig
 
 
     @EventHandler
+	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());

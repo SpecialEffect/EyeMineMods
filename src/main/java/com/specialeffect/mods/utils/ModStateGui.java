@@ -31,6 +31,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 	private StateOverlay mStateOverlay;
 
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 

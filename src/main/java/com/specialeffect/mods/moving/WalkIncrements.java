@@ -60,6 +60,7 @@ implements ChildModWithConfig
     private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
 
     @EventHandler
+	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
@@ -75,6 +76,7 @@ implements ChildModWithConfig
     }
     
     @SubscribeEvent
+	@SuppressWarnings("static-access")
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if(eventArgs.getModID().equals(this.MODID)) {
 			syncConfig();

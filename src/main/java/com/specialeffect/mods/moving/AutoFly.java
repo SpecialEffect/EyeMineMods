@@ -65,6 +65,7 @@ implements ChildModWithConfig
 	private static int mIconIndexManual;
 	
 	@EventHandler
+	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
