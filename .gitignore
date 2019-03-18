@@ -1,0 +1,12 @@
+build/**
+.gradle/**
+/bin/
+.metadata/**
+.settings/**
+run/**
+.project
+**.swp
+*.launch
+.classpath
+/.gradle/
+/build/
