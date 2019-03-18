@@ -15,10 +15,10 @@ import java.util.List;
 
 import com.specialeffect.mods.EyeGaze;
 
+import de.skate702.craftingkeys.config.GuiConfig;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.DummyConfigElement;
-import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class GuiConfigEyeGaze extends GuiConfig {

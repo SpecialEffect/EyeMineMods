@@ -10,6 +10,8 @@
 
 package com.specialeffect.messages;
 
+import javax.xml.ws.handler.MessageContext;
+
 import com.specialeffect.utils.OpenableBlock;
 
 import io.netty.buffer.ByteBuf;
@@ -22,7 +24,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class UseDoorAtPositionMessage implements IMessage {
     

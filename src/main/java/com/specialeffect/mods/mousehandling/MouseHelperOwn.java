@@ -1,9 +1,7 @@
 package com.specialeffect.mods.mousehandling;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-
-import net.minecraft.util.MouseHelper;
+import net.java.games.input.Mouse;
+import net.minecraft.client.MouseHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

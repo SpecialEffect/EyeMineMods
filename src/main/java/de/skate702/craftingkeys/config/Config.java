@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.lwjgl.input.Keyboard;
-
 import de.skate702.craftingkeys.CraftingKeys;
 import de.skate702.craftingkeys.util.Logger;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**

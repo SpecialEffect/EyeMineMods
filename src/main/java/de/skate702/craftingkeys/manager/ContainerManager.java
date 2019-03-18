@@ -1,12 +1,11 @@
 package de.skate702.craftingkeys.manager;
 
-import org.lwjgl.input.Keyboard;
-
 import de.skate702.craftingkeys.CraftingKeys;
 import de.skate702.craftingkeys.config.Config;
 import de.skate702.craftingkeys.util.InputUtil;
 import de.skate702.craftingkeys.util.Logger;
 import de.skate702.craftingkeys.util.Util;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
