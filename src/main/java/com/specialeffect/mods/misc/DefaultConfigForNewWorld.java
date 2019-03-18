@@ -10,21 +10,10 @@
 
 package com.specialeffect.mods.misc;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.UUID;
-
-import com.mojang.authlib.GameProfile;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.SendCommandMessage;
-import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.utils.OpenableBlock;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -32,17 +21,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAir;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;

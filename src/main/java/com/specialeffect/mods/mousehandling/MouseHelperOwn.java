@@ -1,12 +1,10 @@
 package com.specialeffect.mods.mousehandling;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.MouseHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.util.Point;
 
 // Based on the vanilla MouseHelper in forge, but also:
 // - allows normal mouse control with an ungrabbed mouse

@@ -10,7 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.awt.AWTException;
 import java.awt.Point;
 
 import org.lwjgl.input.Keyboard;

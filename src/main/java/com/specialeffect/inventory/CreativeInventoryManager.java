@@ -7,12 +7,7 @@ import java.awt.event.KeyEvent;
 
 import com.specialeffect.utils.ModUtils;
 
-import de.skate702.craftingkeys.CraftingKeys;
-import de.skate702.craftingkeys.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 
 /**
  * Manages a Inventory GUI Inventory.

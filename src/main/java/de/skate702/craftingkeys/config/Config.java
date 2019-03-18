@@ -10,7 +10,6 @@ import net.minecraftforge.common.config.Property;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 
