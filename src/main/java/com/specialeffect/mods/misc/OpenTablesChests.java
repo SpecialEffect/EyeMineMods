@@ -109,7 +109,7 @@ implements ChildModWithConfig
 	// Search for closest block of a certain class, within maximum radius
 	private static BlockPos findClosestBlockOfType(String className, EntityPlayer player, World world, int radius) {
 		BlockPos playerPos = player.getPosition();		
-	    Class classType;
+	    Class<?> classType;
     	BlockPos closestBlockPos = null;
 
 		try {
