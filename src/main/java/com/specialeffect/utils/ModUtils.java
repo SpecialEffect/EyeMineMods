@@ -13,20 +13,13 @@ package com.specialeffect.utils;
 import java.awt.Point;
 import java.util.UUID;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModUtils {
@@ -112,30 +105,30 @@ public class ModUtils {
 		}
 		return p;
 	}
-
-	public static Point getScaledDisplaySize(Minecraft mc) {
-		Point p = new Point(0, 0);
-		ScaledResolution res = new ScaledResolution(mc);
-		p.setLocation(res.getScaledWidth(), res.getScaledHeight());
-
-		return p;
-
-	}
-
-	public static void drawTexQuad(double x, double y, double width, double height) {
-
-		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer buffer = tessellator.getBuffer();
-
-		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		buffer.pos(x, y + height, 0).tex(0.0, 1.0).endVertex();
-		buffer.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
-		buffer.pos(x + width, y, 0).tex(1.0, 0.0).endVertex();
-		buffer.pos(x, y, 0).tex(0.0, 0.0).endVertex();
-
-		tessellator.draw();
-
-	}
+//
+//	public static Point getScaledDisplaySize(Minecraft mc) {
+//		Point p = new Point(0, 0);
+//		ScaledResolution res = new ScaledResolution(mc);
+//		p.setLocation(res.getScaledWidth(), res.getScaledHeight());
+//
+//		return p;
+//
+//	}
+//
+//	public static void drawTexQuad(double x, double y, double width, double height) {
+//
+//		Tessellator tessellator = Tessellator.getInstance();
+//		VertexBuffer buffer = tessellator.getBuffer();
+//
+//		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+//		buffer.pos(x, y + height, 0).tex(0.0, 1.0).endVertex();
+//		buffer.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
+//		buffer.pos(x + width, y, 0).tex(1.0, 0.0).endVertex();
+//		buffer.pos(x, y, 0).tex(0.0, 0.0).endVertex();
+//
+//		tessellator.draw();
+//
+//	}
 
 	// Find an item in the hotbar which matches the given class
 	// (this includes all subclasses)

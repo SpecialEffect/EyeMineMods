@@ -10,44 +10,50 @@
 
 package com.specialeffect.mods.misc;
 
+import java.awt.event.KeyEvent;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(PickBlock.MODID)
 public class PickBlock extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.pickblock";
 	public static final String NAME = "PickBlock";
 
-	@EventHandler
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(this);
+	
+	public PickBlock() {
+		// Register the setup method for modloading
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);        
+    }
+	
+	
+    private void setup(final FMLCommonSetupEvent event) {
 
+    	// preinit
+    
+	    MinecraftForge.EVENT_BUS.register(this);
+	
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to pick block without mouse.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
-
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-
+	
+		// init
+		
 		// Register key bindings
-		mPickBlockKB = new KeyBinding("Pick block", Keyboard.KEY_NUMPAD2, CommonStrings.EYEGAZE_COMMON);
+		mPickBlockKB = new KeyBinding("Pick block", KeyEvent.VK_NUMPAD2, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mPickBlockKB);
 
 	}
@@ -64,9 +70,9 @@ public class PickBlock extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		final int pickBlockKeyCode = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKeyCode();
+		final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
 		if (mPickBlockKB.isPressed()) {
-			KeyBinding.onTick(pickBlockKeyCode);
+			KeyBinding.onTick(pickBlockKey);
 		}
 	}
 }
