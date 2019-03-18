@@ -14,9 +14,8 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GuiFactoryEyeGaze extends GuiFactoryGeneric 
 {
-    @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() 
-    {
-        return GuiConfigEyeGaze.class;
-    }
+	@Override
+	public GuiScreen createConfigGui(GuiScreen parentScreen) {
+		return new GuiConfigEyeGaze(parentScreen);
+	}
 }

@@ -19,7 +19,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 // A base class that provides the necessary overrides for IModGuiFactory.
 // Generally mod-specific gui factories can extend this class and *only*
 // have to override mainConfigGuiClass with a mod-specific class.
-public class GuiFactoryGeneric implements IModGuiFactory 
+public abstract class GuiFactoryGeneric implements IModGuiFactory 
 {
     @Override
     public void initialize(Minecraft minecraftInstance) 
@@ -43,4 +43,10 @@ public class GuiFactoryGeneric implements IModGuiFactory
     {
         return null;
     }
+
+	@Override
+	public boolean hasConfigGui() {
+		return true;
+	}
+
 }
