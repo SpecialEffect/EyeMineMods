@@ -64,7 +64,7 @@ public class OpenChat extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		final int chatKeyCode = Minecraft.getMinecraft().gameSettings.keyBindChat.getKeyCode();
+		final int chatKeyCode = Minecraft.getInstance().gameSettings.keyBindChat.getKeyCode();
 		if (mOpenChatKB.isPressed()) {
 			KeyBinding.onTick(chatKeyCode);
 		}

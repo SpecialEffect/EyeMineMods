@@ -59,7 +59,7 @@ implements ChildModWithConfig
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
     	
-    	mOverlay = new JoystickControlOverlay(Minecraft.getMinecraft());
+    	mOverlay = new JoystickControlOverlay(Minecraft.getInstance());
     }
     
     @EventHandler
@@ -112,12 +112,12 @@ implements ChildModWithConfig
 
     		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
     		if (mDoingAutoWalk && 
-            		null == Minecraft.getMinecraft().currentScreen && // no gui visible
+            		null == Minecraft.getInstance().currentScreen && // no gui visible
             		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
     			
     			// Y gives distance to walk forward/back.
     			float walkForwardAmount = 0.0f;
-    			float h = (float)Minecraft.getMinecraft().displayHeight;
+    			float h = (float)Minecraft.getInstance().displayHeight;
     			float h3 = h/3.0f;
 
     			if (lastMouseY < h3) {
@@ -131,7 +131,7 @@ implements ChildModWithConfig
     			walkForwardAmount *= mCustomSpeedFactor;
 
     			// X gives how far to rotate viewpoint
-    			float w = (float)Minecraft.getMinecraft().displayWidth;
+    			float w = (float)Minecraft.getInstance().displayWidth;
     			float w2 = w/2.0f;
 
     			float yawAmount = (lastMouseX - w2)/w2;
@@ -139,7 +139,7 @@ implements ChildModWithConfig
     			    			
     			// scaled by user sensitivity
     			// TODO: sensitivity isn't linear :-S
-    			float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
+    			float sens = Minecraft.getInstance().gameSettings.mouseSensitivity;
     			yawAmount *= Math.max(sens, 0.05);
     			
     			// TODO: Scale by user sensitivity?
@@ -175,8 +175,8 @@ implements ChildModWithConfig
     	if (mDoingAutoWalk) {
     		if (Mouse.isGrabbed()) {
 	    		// when mouse is captured, x and y pos are encoded in deltas.
-	    		lastMouseX = Minecraft.getMinecraft().displayWidth/2 + Mouse.getEventDX();
-	    		lastMouseY = Minecraft.getMinecraft().displayHeight/2 + Mouse.getEventDY();
+	    		lastMouseX = Minecraft.getInstance().displayWidth/2 + Mouse.getEventDX();
+	    		lastMouseY = Minecraft.getInstance().displayHeight/2 + Mouse.getEventDY();
     		}
     		else {
     			lastMouseX = Mouse.getEventX();
@@ -184,8 +184,8 @@ implements ChildModWithConfig
     		}
     	}
     	else {
-    		lastMouseX = Minecraft.getMinecraft().displayWidth/2;
-    		lastMouseY = Minecraft.getMinecraft().displayHeight/2;
+    		lastMouseX = Minecraft.getInstance().displayWidth/2;
+    		lastMouseY = Minecraft.getInstance().displayHeight/2;
     	}
     	
     	// TODO: do we need to reset mouse to (0,0) when we're done? otherwise next mouse event

@@ -78,7 +78,7 @@ implements ChildModWithConfig
 	public static void stop() {
 		mIsAttacking = false;
 		final KeyBinding attackBinding = 
-				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+				Minecraft.getInstance().gameSettings.keyBindAttack;
 		
 		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), mIsAttacking);
 		
@@ -90,7 +90,7 @@ implements ChildModWithConfig
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			
 			final KeyBinding attackBinding = 
-					Minecraft.getMinecraft().gameSettings.keyBindAttack;
+					Minecraft.getInstance().gameSettings.keyBindAttack;
 			
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			
@@ -145,7 +145,7 @@ implements ChildModWithConfig
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
 			final KeyBinding attackBinding = 
-					Minecraft.getMinecraft().gameSettings.keyBindAttack;
+					Minecraft.getInstance().gameSettings.keyBindAttack;
 			
 			if (mIsAttacking) {
 				KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);

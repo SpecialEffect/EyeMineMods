@@ -79,7 +79,7 @@ public class UseItem extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		
-		final KeyBinding useItemKeyBinding = Minecraft.getMinecraft().gameSettings.keyBindUseItem;
+		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
 				
 		if (mUseItemContinuouslyKB.isPressed()) {
 			boolean useItemNewState = !useItemKeyBinding.isKeyDown();

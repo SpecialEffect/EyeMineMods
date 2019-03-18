@@ -119,7 +119,7 @@ public class IconOverlay extends Gui
 		}
 		
 		// Don't show if the debug screen is open
-		if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+		if (Minecraft.getInstance().gameSettings.showDebugInfo) {
 			return;
 		}
 		

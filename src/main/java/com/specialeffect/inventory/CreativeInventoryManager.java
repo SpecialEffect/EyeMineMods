@@ -89,7 +89,7 @@ public class CreativeInventoryManager {
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
 		
 		// Sizes need scaling before turning into click locations
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		Point size = ModUtils.getScaledDisplaySize(mc);
 		this.xScale = (float) (mc.displayWidth)/(float)size.getX();
 		this.yScale = (float) (mc.displayHeight)/(float)size.getY();			

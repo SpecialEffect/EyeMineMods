@@ -63,7 +63,7 @@ implements ChildModWithConfig
     	mDoingAutoJump = EyeGaze.defaultDoAutoJump;
     	// Turn off vanilla autojump since it doesn't play nicely with 
     	// our gaze-based walking methods.
-    	Minecraft.getMinecraft().gameSettings.autoJump = mDoingAutoJump;
+    	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
@@ -99,7 +99,7 @@ implements ChildModWithConfig
     		else {
     			player.stepHeight = 0.6f;
     		}
-	    	Minecraft.getMinecraft().gameSettings.autoJump = mDoingAutoJump;
+	    	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
 
     		// Process any events which were queued by key events
     		this.processQueuedCallbacks(event);

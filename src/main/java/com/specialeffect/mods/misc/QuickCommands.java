@@ -109,7 +109,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					String gameRule = "doDaylightCycle";
-					GameRules rules = Minecraft.getMinecraft().world.getGameRules();	
+					GameRules rules = Minecraft.getInstance().world.getGameRules();	
 					boolean newBool = !rules.getBoolean(gameRule);
 					
 					// Ask server to change gamerule

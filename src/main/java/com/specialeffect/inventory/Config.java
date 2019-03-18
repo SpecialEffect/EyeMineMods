@@ -67,7 +67,7 @@ public class Config {
     	while (Keyboard.next()) {
 	    	try {
 				// First offer the key event to the vanilla GUI
-				Minecraft.getMinecraft().currentScreen.handleKeyboardInput();
+				Minecraft.getInstance().currentScreen.handleKeyboardInput();
 				
 				// Now flag appropriate key if it's relevant to us.
 				if (Keyboard.getEventKeyState()) {

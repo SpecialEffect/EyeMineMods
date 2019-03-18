@@ -43,15 +43,15 @@ public class SendCommandMessage implements IMessage {
     public static class Handler implements IMessageHandler<SendCommandMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final SendCommandMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
 
                 	MinecraftServer server;
-                	server = Minecraft.getMinecraft().world.getMinecraftServer();
+                	server = Minecraft.getInstance().world.getMinecraftServer();
                 	if (null == server) { // this is for non-network worlds
-                		server = Minecraft.getMinecraft().getIntegratedServer();
+                		server = Minecraft.getInstance().getIntegratedServer();
                 	}
                 	if (null == server) {
                 		System.out.println("Server is null, cannot send command");

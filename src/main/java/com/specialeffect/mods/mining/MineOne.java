@@ -104,7 +104,7 @@ implements ChildModWithConfig
 			if (mDestroying) {
 
 				// Select the best tool from the inventory
-				World world = Minecraft.getMinecraft().world;
+				World world = Minecraft.getInstance().world;
 	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
 	    		if (player.capabilities.isCreativeMode && 
 						mAutoSelectTool) {
@@ -131,7 +131,7 @@ implements ChildModWithConfig
 				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
-				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
@@ -150,14 +150,14 @@ implements ChildModWithConfig
 		mDestroying = true;
 		
 		final KeyBinding attackBinding = 
-				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+				Minecraft.getInstance().gameSettings.keyBindAttack;
 		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);	
 
 	}
 	
 	private void stopDestroying() {
 		final KeyBinding attackBinding = 
-				Minecraft.getMinecraft().gameSettings.keyBindAttack;
+				Minecraft.getInstance().gameSettings.keyBindAttack;
 		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
 		mDestroying = false;
 	}
@@ -166,7 +166,7 @@ implements ChildModWithConfig
 	// May be null, if pointing at something other than a block.
 	private BlockPos getMouseOverBlockPos() {
 		BlockPos pos = null;
-		RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		if (mov != null) {
 			pos = mov.getBlockPos(); // may still be null if there's an entity there
 		}

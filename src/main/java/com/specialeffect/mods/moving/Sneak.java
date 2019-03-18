@@ -66,7 +66,7 @@ public class Sneak extends BaseClassWithCallbacks {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 
-	    mMinecraft = Minecraft.getMinecraft();
+	    mMinecraft = Minecraft.getInstance();
 
 		// Register key bindings
 		mSneakKB = new KeyBinding("Start/stop sneaking", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);

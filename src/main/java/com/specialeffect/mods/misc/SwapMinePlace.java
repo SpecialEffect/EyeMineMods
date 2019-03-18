@@ -72,10 +72,10 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mSwapKB.isPressed()) {
-			KeyBinding kbAttack = Minecraft.getMinecraft().gameSettings.keyBindAttack;
-			KeyBinding kbPlace = Minecraft.getMinecraft().gameSettings.keyBindUseItem;
-			Minecraft.getMinecraft().gameSettings.keyBindAttack = kbPlace;
-			Minecraft.getMinecraft().gameSettings.keyBindUseItem = kbAttack;			
+			KeyBinding kbAttack = Minecraft.getInstance().gameSettings.keyBindAttack;
+			KeyBinding kbPlace = Minecraft.getInstance().gameSettings.keyBindUseItem;
+			Minecraft.getInstance().gameSettings.keyBindAttack = kbPlace;
+			Minecraft.getInstance().gameSettings.keyBindUseItem = kbAttack;			
 			this.queueChatMessage("Swapping mine and place keys");			
 		}
 	}

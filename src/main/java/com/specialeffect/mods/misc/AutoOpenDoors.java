@@ -87,7 +87,7 @@ implements ChildModWithConfig
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			World world = Minecraft.getMinecraft().world;
+			World world = Minecraft.getInstance().world;
 
 			BlockPos playerPos = player.getPosition();
 

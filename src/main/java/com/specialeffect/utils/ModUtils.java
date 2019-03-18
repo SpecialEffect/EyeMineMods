@@ -67,7 +67,7 @@ public class ModUtils {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
 			UUID playerUUID = player.getUniqueID();
-			EntityPlayer myself = Minecraft.getMinecraft().player;
+			EntityPlayer myself = Minecraft.getInstance().player;
 			if (null == myself) {
 				return false;
 			}

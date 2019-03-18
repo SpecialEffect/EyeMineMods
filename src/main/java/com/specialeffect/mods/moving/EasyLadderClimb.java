@@ -51,11 +51,11 @@ public class EasyLadderClimb {
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			World world = Minecraft.getMinecraft().world;
+			World world = Minecraft.getInstance().world;
 
 			if (event.getEntityLiving().isOnLadder()) {
 				System.out.println("LADDER");
-				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 				if (mov != null) {
 					BlockPos blockPos = mov.getBlockPos(); // may still be null
 															// if there's an

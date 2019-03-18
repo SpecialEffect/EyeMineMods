@@ -99,7 +99,7 @@ public class Dismount extends BaseClassWithCallbacks {
 								new DismountPlayerMessage());						
 					}
 					else {
-						RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+						RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 						Entity hitEntity = mov.entityHit;
 						if (hitEntity != null) {
 							// Riding entity programmatically seems to not do everything that 
@@ -108,7 +108,7 @@ public class Dismount extends BaseClassWithCallbacks {
 							// - "use" entity you're pointing at
 							// - pick up dropped item again
 							player.dropItem(true);
-							int useItemKeyCode = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode();
+							int useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKeyCode();
 							KeyBinding.onTick(useItemKeyCode);
 							GatherDrops.gatherBlocks(player);
 						}

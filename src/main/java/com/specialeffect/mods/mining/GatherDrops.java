@@ -117,7 +117,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 	}
 	
 	public static void gatherBlocks(EntityPlayer player) {
-		World world = Minecraft.getMinecraft().world;
+		World world = Minecraft.getInstance().world;
 
 		BlockPos playerPos = player.getPosition();
 		double dx, dy, dz;

@@ -78,7 +78,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Set up icon rendering		
-		mIconEye = new IconOverlay(Minecraft.getMinecraft(), "specialeffect:icons/eye.png");
+		mIconEye = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/eye.png");
 		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
 		mIconEye.setAlpha(0.2f);
 		mIconEye.setVisible(false);								
@@ -96,7 +96,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		
 		// Set up mouse helper to handle view control
 		ownMouseHelper = new MouseHelperOwn();
-		Minecraft.getMinecraft().mouseHelper = (MouseHelper)ownMouseHelper;
+		Minecraft.getInstance().mouseHelper = (MouseHelper)ownMouseHelper;
 
 		// Rejig the state after mouse helper has been created
 		setupInitialState();
@@ -246,10 +246,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mSensitivityUpKB.isPressed()) {
 			increaseSens();
-			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
 		} else if (mSensitivityDownKB.isPressed()) {
 			decreaseSens();
-			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
+			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
@@ -269,7 +269,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private float getSensitivityIncrement(float reference) {
 		// Get a roughly-proportional increment
 		// bearing in mind offset means we don't just take a linear scale
-		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
+		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;
 		float inc = 0.05f;		
 		if (sens < 0.2f) {
 			inc = 0.01f;
@@ -281,17 +281,17 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 	
 	private void decreaseSens() {
-		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;
+		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;
 		sens -= getSensitivityIncrement(sens);
 		sens = Math.max(sens, MIN_SENS+0.05f);
-		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
+		Minecraft.getInstance().gameSettings.mouseSensitivity = sens;
 	}
 
 	private void increaseSens() {
-		float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity ;		
+		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;		
 		sens += getSensitivityIncrement(sens);
 		sens = Math.min(sens, 1.0f);
-		Minecraft.getMinecraft().gameSettings.mouseSensitivity = sens;
+		Minecraft.getInstance().gameSettings.mouseSensitivity = sens;
 	}		
 
 	public void setMouseNotGrabbed() {		

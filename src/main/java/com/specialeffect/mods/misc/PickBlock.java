@@ -64,7 +64,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 
 	@SubscribeEvent
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		final int pickBlockKeyCode = Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getKeyCode();
+		final int pickBlockKeyCode = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKeyCode();
 		if (mPickBlockKB.isPressed()) {
 			KeyBinding.onTick(pickBlockKeyCode);
 		}

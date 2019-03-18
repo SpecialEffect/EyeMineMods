@@ -53,7 +53,7 @@ public class AddItemToHotbar implements IMessage {
     public static class Handler implements IMessageHandler<AddItemToHotbar, IMessage> {        
     	@Override
         public IMessage onMessage(final AddItemToHotbar message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {

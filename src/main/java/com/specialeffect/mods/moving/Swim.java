@@ -82,7 +82,7 @@ public class Swim extends BaseClassWithCallbacks {
 			
 			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 
-						Minecraft.getMinecraft().gameSettings.keyBindJump;
+						Minecraft.getInstance().gameSettings.keyBindJump;
 
 				// Switch on swim key when in water
 				if (player.isInWater() && 						
@@ -112,7 +112,7 @@ public class Swim extends BaseClassWithCallbacks {
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if(mSwimKB.isPressed()) {
 			final KeyBinding swimBinding = 
-					Minecraft.getMinecraft().gameSettings.keyBindJump;
+					Minecraft.getInstance().gameSettings.keyBindJump;
 			
 			mSwimmingTurnedOn = !mSwimmingTurnedOn;
 

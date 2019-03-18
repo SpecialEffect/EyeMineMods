@@ -44,7 +44,7 @@ public class AttackEntityMessage implements IMessage {
     public static class Handler implements IMessageHandler<AttackEntityMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final AttackEntityMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {

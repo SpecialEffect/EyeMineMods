@@ -41,7 +41,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 
 		// This needs to be initialised in preinit because other mods will 
 		// try to register with it in postinit.
-		mStateOverlay = new StateOverlay(Minecraft.getMinecraft());
+		mStateOverlay = new StateOverlay(Minecraft.getInstance());
 	}
 	
 	@EventHandler

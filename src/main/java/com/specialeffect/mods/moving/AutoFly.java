@@ -116,7 +116,7 @@ implements ChildModWithConfig
 					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.xCoord,
 							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.zCoord);
 
-					World world = Minecraft.getMinecraft().world;
+					World world = Minecraft.getInstance().world;
 
 					// If there's a block in your way, and you're not already jumping over it...
 					if (world.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMovement() &&

@@ -117,7 +117,7 @@ implements ChildModWithConfig {
 	    		}
 				
 				// Get entity being looked at
-				RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 				Entity entity = mov.entityHit;
 				if (null != entity) {
 					// Attack locally and on server

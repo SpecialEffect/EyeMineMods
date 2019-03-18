@@ -130,7 +130,7 @@ implements ChildModWithConfig
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
             if (mDoingAutoWalk && 
-            		null == Minecraft.getMinecraft().currentScreen && // no gui visible
+            		null == Minecraft.getInstance().currentScreen && // no gui visible
             		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
 
             	double forward = (double)mCustomSpeedFactor; 
@@ -188,8 +188,8 @@ implements ChildModWithConfig
 								yawError -= 360;
 							}
 							
-							final KeyBinding kbLeft = Minecraft.getMinecraft().gameSettings.keyBindLeft;
-							final KeyBinding kbRight = Minecraft.getMinecraft().gameSettings.keyBindRight;
+							final KeyBinding kbLeft = Minecraft.getInstance().gameSettings.keyBindLeft;
+							final KeyBinding kbRight = Minecraft.getInstance().gameSettings.keyBindRight;
 
 							boolean needToRotate = Math.abs(yawError) > 20;
 
@@ -230,7 +230,7 @@ implements ChildModWithConfig
 						
 						// if the player is swimming and there's a block in front, or in-front-one-down,
 						// then jump before moving
-				    	World world = Minecraft.getMinecraft().world;
+				    	World world = Minecraft.getInstance().world;
 
 						BlockPos playerPos = player.getPosition();
 						Vec3d posVec = player.getPositionVector();
@@ -337,7 +337,7 @@ implements ChildModWithConfig
     // Check if there's a block at the given position which
     // blocks movement.
     private boolean doesBlockMovement(BlockPos pos) {
-    	World world = Minecraft.getMinecraft().world;
+    	World world = Minecraft.getInstance().world;
 		return world.getBlockState(pos).getMaterial().blocksMovement();
     }
     
@@ -351,7 +351,7 @@ implements ChildModWithConfig
     }
     
     private double slowdownFactorEntity(EntityPlayer player) {    	
-		RayTraceResult mov = Minecraft.getMinecraft().objectMouseOver;
+		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		Entity hitEntity = mov.entityHit;
 		if (hitEntity != null) {
 			EntityLiving liveEntity = (EntityLiving)hitEntity;
@@ -412,7 +412,7 @@ implements ChildModWithConfig
     }
 
 	private boolean isLadder(BlockPos pos) {
-		World world = Minecraft.getMinecraft().world;
+		World world = Minecraft.getInstance().world;
 		Block block = world.getBlockState(pos).getBlock();		
 		return ( block != null && block instanceof BlockLadder);
 	}
