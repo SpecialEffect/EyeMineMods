@@ -26,10 +26,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@Mod(modid = DebugAverageFps.MODID, 
-version = ModUtils.VERSION,
-name = DebugAverageFps.NAME)
-
+@Mod(DebugAverageFps.MODID)
 public class DebugAverageFps
 {
 

@@ -45,9 +45,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = GatherDrops.MODID, 
-version = ModUtils.VERSION,
-name = GatherDrops.NAME)
+@Mod(GatherDrops.MODID)
 public class GatherDrops extends BaseClassWithCallbacks
 {
 

@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@Mod(modid = EasyLadderClimb.MODID, version = ModUtils.VERSION, name = EasyLadderClimb.NAME)
+@Mod(EasyLadderClimb.MODID)
 public class EasyLadderClimb {
 	public static final String MODID = "specialeffect.easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";

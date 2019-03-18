@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = MineOne.MODID, version = ModUtils.VERSION, name = MineOne.NAME)
+@Mod(MineOne.MODID)
 public class MineOne 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig

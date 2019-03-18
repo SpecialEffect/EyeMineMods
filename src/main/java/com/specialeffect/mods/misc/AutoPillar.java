@@ -43,7 +43,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = AutoPillar.MODID, version = ModUtils.VERSION, name = AutoPillar.NAME)
+@Mod(AutoPillar.MODID)
 public class AutoPillar extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.autopillar";
 	public static final String NAME = "AutoPillar";

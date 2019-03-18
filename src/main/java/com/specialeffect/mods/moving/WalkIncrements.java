@@ -41,9 +41,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = WalkIncrements.MODID, 
-	 version = ModUtils.VERSION,
-	 name = WalkIncrements.NAME)
+@Mod(WalkIncrements.MODID)
 public class WalkIncrements 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig

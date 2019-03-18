@@ -36,9 +36,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-@Mod(modid = AutoJump.MODID, 
-	 version = ModUtils.VERSION,
-	 name = AutoJump.NAME)
+@Mod(AutoJump.MODID)
 public class AutoJump 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig

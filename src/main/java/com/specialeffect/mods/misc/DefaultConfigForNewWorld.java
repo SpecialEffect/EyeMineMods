@@ -38,7 +38,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = DefaultConfigForNewWorld.MODID, version = ModUtils.VERSION, name = DefaultConfigForNewWorld.NAME)
+@Mod(DefaultConfigForNewWorld.MODID)
 public class DefaultConfigForNewWorld {
 	public static final String MODID = "specialeffect.defaultconfigworld";
 	public static final String NAME = "DefaultConfigWorld";

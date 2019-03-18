@@ -40,7 +40,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = QuickCommands.MODID, version = ModUtils.VERSION, name = QuickCommands.NAME)
+@Mod(QuickCommands.MODID)
 public class QuickCommands extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.quickcommands";
 	public static final String NAME = "QuickCommands";

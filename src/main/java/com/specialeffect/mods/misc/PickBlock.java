@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-@Mod(modid = PickBlock.MODID, version = ModUtils.VERSION, name = PickBlock.NAME)
+@Mod(PickBlock.MODID)
 public class PickBlock extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.pickblock";
 	public static final String NAME = "PickBlock";

@@ -56,9 +56,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-@Mod(modid = MoveWithGaze.MODID, 
-	 version = ModUtils.VERSION,
-	 name = MoveWithGaze.NAME)
+@Mod(MoveWithGaze.MODID)
 public class MoveWithGaze 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig 

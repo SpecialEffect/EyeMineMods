@@ -30,7 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-@Mod(modid = CreativeTabs.MODID, version = ModUtils.VERSION, name = CreativeTabs.NAME)
+@Mod(CreativeTabs.MODID)
 public class CreativeTabs 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig 

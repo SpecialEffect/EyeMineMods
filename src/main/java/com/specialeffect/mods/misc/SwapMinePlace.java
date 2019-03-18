@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = SwapMinePlace.MODID, version = ModUtils.VERSION, name = SwapMinePlace.NAME)
+@Mod(SwapMinePlace.MODID)
 public class SwapMinePlace extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.swapmineplace";
 	public static final String NAME = "SwapMinePlace";

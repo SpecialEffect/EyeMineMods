@@ -30,10 +30,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 // The parent (this mod) handles configuration so that it can all
 // be changed by the user in one place.
 
-@Mod(modid = EyeGaze.MODID, 
-  	 version = ModUtils.VERSION, 
-	 name = EyeGaze.NAME, 
-	 guiFactory = "com.specialeffect.gui.GuiFactoryEyeGaze")
+@Mod(EyeGaze.MODID)
 public class EyeGaze extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.eyegaze";	

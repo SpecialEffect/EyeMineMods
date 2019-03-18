@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = ModStateGui.MODID, version = ModUtils.VERSION, name = ModStateGui.NAME)
+@Mod(ModStateGui.MODID)
 public class ModStateGui extends BaseClassWithCallbacks {
 
 	public static final String MODID = "specialeffect.modstategui";

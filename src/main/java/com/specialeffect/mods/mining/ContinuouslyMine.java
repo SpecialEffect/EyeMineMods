@@ -35,7 +35,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
-@Mod(modid = ContinuouslyMine.MODID, version = ModUtils.VERSION, name = ContinuouslyMine.NAME)
+@Mod(ContinuouslyMine.MODID)
 public class ContinuouslyMine 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig 

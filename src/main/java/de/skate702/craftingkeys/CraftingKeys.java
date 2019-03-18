@@ -47,7 +47,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
  *
  * @author skate702
  */
-@Mod(modid = CraftingKeys.MODID, name = CraftingKeys.NAME, version = CraftingKeys.VERSION)
+@Mod(CraftingKeys.MODID)
 public class CraftingKeys {
 
     public static final String MODID = "craftingkeys";
