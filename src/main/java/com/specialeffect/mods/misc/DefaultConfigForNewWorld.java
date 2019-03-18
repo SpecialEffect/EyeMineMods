@@ -151,7 +151,7 @@ public class DefaultConfigForNewWorld {
 		// Ask server to put new item in hotbar		
 
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Blocks.BRICK_BLOCK)));
+				new ItemStack(Blocks.BRICKS)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.SANDSTONE)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
