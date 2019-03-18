@@ -249,11 +249,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 														// *before* other mods
 	public void onKeyInput(InputEvent.KeyInputEvent event) {
 		if (mSensitivityUpKB.isPressed()) {
-			this.turnOnVanillaMouse();
 			increaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mSensitivityDownKB.isPressed()) {
-			this.turnOnVanillaMouse();
 			decreaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getMinecraft().gameSettings.mouseSensitivity));
 		} else if (mToggleMouseViewControlKB.isPressed()) {
@@ -333,18 +331,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			}
 		}
 	}
-	
-	private void turnOnVanillaMouse() {		
-//		mouseHelper.
-	}
 
 	// This is the constant offset applied in MC source, corresponding
 	// to "mouse does not move"
 	private static float MIN_SENS = -1F / 3F;
-		
-	private static void turnOffVanillaMouse() {
-//		Minecraft.getMinecraft().mouseHelper = emptyMouseHelper;
-	}
 
 	String toPercent(float input) {
 		DecimalFormat myFormatter = new DecimalFormat("#0.0");
