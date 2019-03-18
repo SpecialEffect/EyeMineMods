@@ -50,7 +50,7 @@ public class DefaultConfigForNewWorld {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Apply default config to new worlds");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
@@ -117,7 +117,7 @@ public class DefaultConfigForNewWorld {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

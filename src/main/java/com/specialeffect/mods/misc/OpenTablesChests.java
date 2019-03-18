@@ -67,7 +67,7 @@ implements ChildModWithConfig
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {    
-		FMLCommonHandler.instance().bus().register(this);    	
+		MinecraftForge.EVENT_BUS.register(this);    	
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to open nearby chests/crafting tables.");
@@ -86,7 +86,7 @@ implements ChildModWithConfig
 	public void init(FMLInitializationEvent event)
 	{
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		// Register for config changes from parent

@@ -78,7 +78,7 @@ public class CraftingKeys {
     public void load(FMLInitializationEvent event) {
 
         // Registering
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(this);
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiConfigHandler());
         KeyBindings.init();

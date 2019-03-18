@@ -51,7 +51,7 @@ implements ChildModWithConfig
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to access tabs in creative inventory");
@@ -65,7 +65,7 @@ implements ChildModWithConfig
 	public void load(FMLInitializationEvent event) {
 
 		// Registering
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiConfigHandler());
 

@@ -65,7 +65,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {    
-		FMLCommonHandler.instance().bus().register(this);    	
+		MinecraftForge.EVENT_BUS.register(this);    	
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to gather nearby dropped items.");
@@ -84,7 +84,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 	public void init(FMLInitializationEvent event)
 	{
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		// Register key bindings	

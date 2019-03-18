@@ -39,7 +39,7 @@ public class EasyLadderClimb {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically turn to face ladders, to simplify climbing with eye control.");
@@ -50,7 +50,7 @@ public class EasyLadderClimb {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

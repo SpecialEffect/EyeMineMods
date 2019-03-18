@@ -39,7 +39,7 @@ public class DebugAverageFps
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {    
-		FMLCommonHandler.instance().bus().register(this);    	
+		MinecraftForge.EVENT_BUS.register(this);    	
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Log the average FPS, for debugging");
@@ -51,7 +51,7 @@ public class DebugAverageFps
 	public void init(FMLInitializationEvent event)
 	{
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);    	
 		
 		mPrevFps = new LinkedBlockingQueue<Integer>();

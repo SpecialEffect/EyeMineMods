@@ -62,7 +62,7 @@ implements ChildModWithConfig
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {    
-    	FMLCommonHandler.instance().bus().register(this);
+    	MinecraftForge.EVENT_BUS.register(this);
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
     	this.syncConfig();
         
@@ -90,7 +90,7 @@ implements ChildModWithConfig
     public void init(FMLInitializationEvent event)
     {
 		// Subscribe to event buses
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     	MinecraftForge.EVENT_BUS.register(this);
     	
     	// Subscribe to parent's config changes

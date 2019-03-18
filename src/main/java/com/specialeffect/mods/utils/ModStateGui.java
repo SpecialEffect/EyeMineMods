@@ -34,7 +34,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Overlay icons to show state of mods.");
@@ -54,7 +54,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 
 	}
