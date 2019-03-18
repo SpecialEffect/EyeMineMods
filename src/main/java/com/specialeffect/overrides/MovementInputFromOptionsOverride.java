@@ -1,9 +1,8 @@
 package com.specialeffect.overrides;
 
-import net.minecraft.client.settings.GameSettings;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MovementInputFromOptions;
 
 // Copied from net.minecraft.util.MovementInputFromOptions, changes to sneak only

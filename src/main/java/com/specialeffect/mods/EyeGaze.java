@@ -17,6 +17,7 @@ import java.util.List;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;

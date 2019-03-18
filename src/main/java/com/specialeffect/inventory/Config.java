@@ -1,18 +1,19 @@
 package com.specialeffect.inventory;
 
 
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lwjgl.input.Keyboard;
+
+import com.specialeffect.mods.EyeGaze;
+
 import de.skate702.craftingkeys.util.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.lwjgl.input.Keyboard;
-
-import com.specialeffect.mods.EyeGaze;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
  * Configuration Management for Keys, etc.

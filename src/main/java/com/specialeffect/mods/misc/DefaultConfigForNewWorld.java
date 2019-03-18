@@ -14,6 +14,7 @@ import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
