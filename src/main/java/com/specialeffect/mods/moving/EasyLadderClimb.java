@@ -66,8 +66,7 @@ public class EasyLadderClimb {
 						IBlockState state = world.getBlockState(blockPos);
 						state = state.getBlock().getActualState(state, world, blockPos);
 						if (block instanceof BlockLadder) {
-							BlockLadder ladder = (BlockLadder) block;
-							EnumFacing facing = (EnumFacing) state.getProperties().get(ladder.FACING);
+							EnumFacing facing = (EnumFacing) state.getProperties().get(BlockLadder.FACING);
 							Vec3d playerPos = player.getPositionVector();
 							
 							// Rotate player to face ladder.

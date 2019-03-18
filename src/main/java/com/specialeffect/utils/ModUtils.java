@@ -144,7 +144,7 @@ public class ModUtils {
 		int currentItemId = inventory.currentItem;
 		NonNullList<ItemStack> items = inventory.mainInventory;
 		if (items != null) {
-			for (int i = 0; i < inventory.getHotbarSize(); i++) {
+			for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++) {
 				ItemStack stack = items.get(i);
 				if (stack != null && stack.getItem() != null) {
 					Item item = stack.getItem();

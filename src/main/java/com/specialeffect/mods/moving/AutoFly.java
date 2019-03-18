@@ -234,7 +234,7 @@ implements ChildModWithConfig
 		else if (mFlyUpKB.isPressed()) {
 			this.setFlying(true, mIsFlyingAuto);
 		}
-		this.updateIcons();
+		AutoFly.updateIcons();
 	}
 
 }

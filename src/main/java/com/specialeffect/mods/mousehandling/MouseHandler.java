@@ -77,7 +77,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
+		ModUtils.setupModInfo(event, MouseHandler.MODID, MouseHandler.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Set up icon rendering		
@@ -163,11 +163,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void setupInitialState() {
 		if (EyeGaze.usingMouseEmulation) {
 			mInputSource = InputSource.Mouse;
-			this.updateState(InteractionState.MOUSE_NOTHING); 			
+			MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 			
 		}
 		else {
 			mInputSource = InputSource.EyeTracker;
-			this.updateState(InteractionState.EYETRACKER_NORMAL); 
+			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL); 
 		}
 	}
 		
@@ -180,7 +180,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			if (mInputSource != InputSource.Mouse) {
 				System.out.println("using mouse");
 				mInputSource = InputSource.Mouse;
-				this.updateState(InteractionState.MOUSE_NOTHING); 
+				MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 
 			}
 			else {
 				System.out.println("nothing to change");
@@ -189,7 +189,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			if (mInputSource != InputSource.EyeTracker) {
 				System.out.println("using eyetracker");
 				mInputSource = InputSource.EyeTracker;
-				this.updateState(InteractionState.EYETRACKER_NORMAL); 
+				MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL); 
 			} 
 			else {
 				System.out.println("nothing to change");
@@ -260,11 +260,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");
 				this.queueChatMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
 			} else {
-				if (this.mInteractionState == InteractionState.MOUSE_NOTHING) {
-					this.updateState(InteractionState.MOUSE_LOOK);
+				if (MouseHandler.mInteractionState == InteractionState.MOUSE_NOTHING) {
+					MouseHandler.updateState(InteractionState.MOUSE_LOOK);
 				}
 				else {
-					this.updateState(InteractionState.MOUSE_NOTHING);
+					MouseHandler.updateState(InteractionState.MOUSE_NOTHING);
 				}				
 			}
 		}
