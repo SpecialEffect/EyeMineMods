@@ -73,9 +73,6 @@ public class AutoPillar extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
 		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", Keyboard.KEY_L, CommonStrings.EYEGAZE_EXTRA);

@@ -64,10 +64,6 @@ public class QuickCommands extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-
 		// Register key bindings
 		mNightVisionKB = new KeyBinding("Turn night vision on/off", Keyboard.KEY_F12, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNightVisionKB);

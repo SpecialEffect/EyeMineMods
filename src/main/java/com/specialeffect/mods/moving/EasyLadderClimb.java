@@ -47,12 +47,6 @@ public class EasyLadderClimb {
 
 	}
 
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-	}
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {

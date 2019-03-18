@@ -68,10 +68,7 @@ public class Dismount extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-
+		
 		// Register key bindings
 		mDismountKB = new KeyBinding("Ride or dismount", Keyboard.KEY_C, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);

@@ -199,9 +199,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
 
 		// Subscribe to config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);

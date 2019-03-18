@@ -46,10 +46,7 @@ public class OpenChat extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-
+		
 		// Register key bindings
 		mOpenChatKB = new KeyBinding("Open chat", Keyboard.KEY_END, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChatKB);

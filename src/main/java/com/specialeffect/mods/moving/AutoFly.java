@@ -80,10 +80,7 @@ implements ChildModWithConfig
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-		
+
 		// Subscribe to parent's config changes
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	

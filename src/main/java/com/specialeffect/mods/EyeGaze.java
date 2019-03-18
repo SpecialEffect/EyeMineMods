@@ -112,13 +112,6 @@ public class EyeGaze extends BaseClassWithCallbacks {
 		this.syncConfig();
 	}
 
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
 		if (eventArgs.getModID().equals(this.MODID)) {

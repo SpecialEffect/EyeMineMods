@@ -46,9 +46,6 @@ public class PickBlock extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
 		mPickBlockKB = new KeyBinding("Pick block", Keyboard.KEY_NUMPAD2, CommonStrings.EYEGAZE_COMMON);

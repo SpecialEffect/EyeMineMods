@@ -50,12 +50,7 @@ public class DebugAverageFps
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);    	
-		
 		mPrevFps = new LinkedBlockingQueue<Integer>();
-
 	}
 
 	@SubscribeEvent

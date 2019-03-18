@@ -66,9 +66,7 @@ public class Sneak extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
+
 	    mMinecraft = Minecraft.getMinecraft();
 
 		// Register key bindings

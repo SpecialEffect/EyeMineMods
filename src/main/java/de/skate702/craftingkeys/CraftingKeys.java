@@ -79,7 +79,6 @@ public class CraftingKeys {
 
         // Registering
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(this);
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiConfigHandler());
         KeyBindings.init();
         Logger.info("load(e)", "Registered Mod.");

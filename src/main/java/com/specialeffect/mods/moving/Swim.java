@@ -57,9 +57,6 @@ public class Swim extends BaseClassWithCallbacks {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
 
 		// Register key bindings
 		mSwimKB = new KeyBinding("Start/stop swimming", Keyboard.KEY_V, CommonStrings.EYEGAZE_EXTRA);

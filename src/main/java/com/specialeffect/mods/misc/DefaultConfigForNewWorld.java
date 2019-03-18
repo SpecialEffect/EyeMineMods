@@ -115,13 +115,6 @@ public class DefaultConfigForNewWorld {
 	}
 
 	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	@EventHandler
 	public void onWorldLoad(FMLServerStartedEvent event) {
 		// Note first time world loads, we'll make changes on next
 		// onliving tick
