@@ -251,6 +251,8 @@ implements ChildModWithConfig
 				    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
 				    			    	
 				    	// only move if not in deep water
+				    	
+				    	// TODO: replace with LiquidBlockMatcher ?
 				    	if (blockAbove != null && !(blockAbove instanceof BlockLiquid)) {
 				    		
 				    		// if there's an obstruction in front, move up slightly first
@@ -261,6 +263,7 @@ implements ChildModWithConfig
 				    		}
 				    		
 							for (int i = 0; i < 2; i++) {
+								// TODO: moveRelative (but not sure about friction)
 								player.moveEntityWithHeading(0.0f, halfForward);
 							}
 							
