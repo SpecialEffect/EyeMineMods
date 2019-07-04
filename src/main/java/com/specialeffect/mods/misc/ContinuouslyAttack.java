@@ -118,19 +118,25 @@ implements ChildModWithConfig {
 	    			}
 	    		}
 				
-				// Get entity being looked at				
+				// Get entity being looked at
 				EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
+				boolean recharging = false;
 				if (null != entityResult) {
 					Entity entity = entityResult.getEntity();
 					
 					// Attack locally and on server
-					player.attackTargetEntityWithCurrentItem(entity);
-					//FIXME ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
-				}
+					if (player.getCooledAttackStrength(0) > 0.95) {
+						player.attackTargetEntityWithCurrentItem(entity);
+						//FIXME: ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
+					}
+					else {
+						recharging = true;
+					}
+				}				
 			
 				// When attacking programmatically, the player doesn't swing unless
 				// an attackable-block is in reach. We fix that here, for better feedback.
-				if (!player.isSwingInProgress) {
+				if (!player.isSwingInProgress && !recharging) {
 					player.swingArm(Hand.MAIN_HAND);
 				}
 			}
