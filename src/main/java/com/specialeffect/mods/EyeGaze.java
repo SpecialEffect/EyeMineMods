@@ -111,6 +111,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
 
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		mConfig.load();
 		this.syncConfig();
 	}
 

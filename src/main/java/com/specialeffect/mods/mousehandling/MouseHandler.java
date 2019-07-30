@@ -88,6 +88,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		mConfig.load();
 		this.syncConfig();			
 	
 	}

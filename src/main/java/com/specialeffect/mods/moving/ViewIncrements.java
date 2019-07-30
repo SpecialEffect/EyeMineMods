@@ -66,7 +66,8 @@ implements ChildModWithConfig
     public void preInit(FMLPreInitializationEvent event) {    
     	FMLCommonHandler.instance().bus().register(this);
     	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
+        mConfig.load();
+        this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to change view by fixed amount, for alternative inputs.");

@@ -77,6 +77,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		mConfig.load();
 		this.syncConfig();
 	}
 
