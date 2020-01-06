@@ -29,8 +29,8 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLadder;
-import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.LadderBlock;
+import net.minecraft.block.LiquidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -38,7 +38,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -115,7 +115,7 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
+    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
@@ -253,7 +253,7 @@ implements ChildModWithConfig
 				    	// only move if not in deep water
 				    	
 				    	// TODO: replace with LiquidBlockMatcher ?
-				    	if (blockAbove != null && !(blockAbove instanceof BlockLiquid)) {
+				    	if (blockAbove != null && !(blockAbove instanceof LiquidBlock)) {
 				    		
 				    		// if there's an obstruction in front, move up slightly first
 				    		if ((materialInFront != null  && materialInFront.isSolid()) ||
@@ -283,7 +283,7 @@ implements ChildModWithConfig
     	}
     }
     
-    private double slowdownFactorPitch(EntityPlayer player) {
+    private double slowdownFactorPitch(PlayerEntity player) {
     	float f = player.rotationPitch;    	
     	if (f < -75 || f > 75) {
     		return 0.15f;
@@ -341,7 +341,7 @@ implements ChildModWithConfig
 		return world.getBlockState(pos).getMaterial().blocksMovement();
     }
     
-    private boolean isPlayerDirectlyFacingBlock(EntityPlayer player) {
+    private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) {
     	Vec3d lookVec = player.getLookVec();
     	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
@@ -350,7 +350,7 @@ implements ChildModWithConfig
     	return false;
     }
     
-    private double slowdownFactorEntity(EntityPlayer player) {    	
+    private double slowdownFactorEntity(PlayerEntity player) {    	
 		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		Entity hitEntity = mov.entityHit;
 		if (hitEntity != null) {
@@ -363,7 +363,7 @@ implements ChildModWithConfig
     }
     
     @SuppressWarnings("unused")
-	private double slowdownFactorWall(EntityPlayer player) {
+	private double slowdownFactorWall(PlayerEntity player) {
     	Vec3d lookVec = player.getLookVec();
     	Vec3d posVec = player.getPositionVector();
 		
@@ -414,7 +414,7 @@ implements ChildModWithConfig
 	private boolean isLadder(BlockPos pos) {
 		World world = Minecraft.getInstance().world;
 		Block block = world.getBlockState(pos).getBlock();		
-		return ( block != null && block instanceof BlockLadder);
+		return ( block != null && block instanceof LadderBlock);
 	}
 
 	private double slowdownFactorViewDirs() {

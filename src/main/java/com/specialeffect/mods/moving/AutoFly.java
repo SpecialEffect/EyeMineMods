@@ -24,7 +24,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
@@ -104,7 +104,7 @@ implements ChildModWithConfig
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.capabilities.allowFlying && player.capabilities.isFlying) {
@@ -164,7 +164,7 @@ implements ChildModWithConfig
 			public void onLiving(LivingUpdateEvent event) {
 //				mIsFlyingAuto = false;
 //				mIsFlyingManual = false;
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 				player.capabilities.isFlying = false;
 				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 //				updateIcons();
@@ -179,7 +179,7 @@ implements ChildModWithConfig
 				mIsFlyingAuto = isAuto;
 				mIsFlyingManual = !isAuto;
 				
-				EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 				if (player.capabilities.allowFlying) {
 					// stop sneaking (if we are), which prevents flying
 					Sneak.stop();

@@ -13,7 +13,7 @@ package com.specialeffect.messages;
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -72,7 +72,7 @@ public class SetPositionAndRotationMessage implements IMessage {
             	
                 @Override
                 public void run() {
-                    EntityPlayer player = world.getPlayerEntityByName(message.playerName);
+                    PlayerEntity player = world.getPlayerEntityByName(message.playerName);
                     if (null != player) {
                     	player.setPositionAndRotation(message.x, message.y, message.z,
 												  	  message.yaw, message.pitch);

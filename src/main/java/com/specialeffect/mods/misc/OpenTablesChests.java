@@ -22,10 +22,10 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockWorkbench;
+import net.minecraft.block.WorkbenchBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.TextComponentString;
@@ -103,7 +103,7 @@ implements ChildModWithConfig
 	}
 	
 	// Search for closest block of a certain class, within maximum radius
-	private static BlockPos findClosestBlockOfType(String className, EntityPlayer player, World world, int radius) {
+	private static BlockPos findClosestBlockOfType(String className, PlayerEntity player, World world, int radius) {
 		BlockPos playerPos = player.getPosition();		
 	    Class<?> classType;
     	BlockPos closestBlockPos = null;
@@ -144,11 +144,11 @@ implements ChildModWithConfig
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					World world = Minecraft.getInstance().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
-							BlockChest.class.getName(), player, world, mRadius);
+							ChestBlock.class.getName(), player, world, mRadius);
 					
 					// Ask server to open 
 					if (null == closestBlockPos) {
@@ -166,11 +166,11 @@ implements ChildModWithConfig
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					World world = Minecraft.getInstance().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
-							BlockWorkbench.class.getName(), player, world, mRadius);
+							WorkbenchBlock.class.getName(), player, world, mRadius);
 
 					// Ask server to open 
 					if (null == closestBlockPos) {

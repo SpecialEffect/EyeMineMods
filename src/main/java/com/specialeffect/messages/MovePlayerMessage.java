@@ -19,7 +19,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
@@ -58,7 +58,7 @@ public class MovePlayerMessage implements IMessage {
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+                    PlayerEntity player = ctx.getServerHandler().playerEntity;
                     if (player.isRiding()) {
 //                    	player.moveForward = 1.0f;
                     	Entity riddenEntity = player.getRidingEntity();

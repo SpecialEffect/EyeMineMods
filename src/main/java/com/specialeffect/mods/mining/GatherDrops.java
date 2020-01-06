@@ -24,7 +24,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -109,14 +109,14 @@ public class GatherDrops extends BaseClassWithCallbacks
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					GatherDrops.gatherBlocks(player);
 				}
 			}));
 		}
 	}
 	
-	public static void gatherBlocks(EntityPlayer player) {
+	public static void gatherBlocks(PlayerEntity player) {
 		World world = Minecraft.getInstance().world;
 
 		BlockPos playerPos = player.getPosition();

@@ -20,7 +20,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -93,7 +93,7 @@ public class UseItem extends BaseClassWithCallbacks {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					player.inventory.changeCurrentItem(1);
 				}
 			}));
@@ -102,7 +102,7 @@ public class UseItem extends BaseClassWithCallbacks {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					player.inventory.changeCurrentItem(-1);
 				}
 			}));

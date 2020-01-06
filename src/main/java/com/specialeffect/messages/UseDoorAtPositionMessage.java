@@ -16,7 +16,7 @@ import com.specialeffect.utils.OpenableBlock;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -61,7 +61,7 @@ public class UseDoorAtPositionMessage implements IMessage {
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+                    PlayerEntity player = ctx.getServerHandler().playerEntity;
                     World world = player.getEntityWorld();
 					Block block = world.getBlockState(message.blockPos).getBlock();
 					if (message.toBeOpened) {

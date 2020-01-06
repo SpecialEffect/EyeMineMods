@@ -24,7 +24,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -123,7 +123,7 @@ implements ChildModWithConfig
 			    	int dYaw = (int)p.getX() * mViewDeltaRelative;
 			    	int dPitch = - (int)p.getY() * mViewDeltaRelative; // pitch is opposite to what you expect
 
-			    	EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+			    	PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 
 			    	Vec3d pos = player.getPositionVector();
 	    			float yaw = player.rotationYaw;

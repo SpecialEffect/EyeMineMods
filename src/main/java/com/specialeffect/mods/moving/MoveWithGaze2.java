@@ -23,7 +23,7 @@ import net.java.games.input.Keyboard;
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -110,7 +110,7 @@ implements ChildModWithConfig
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
 
-    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();    		
+    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
     		if (mDoingAutoWalk && 
             		null == Minecraft.getInstance().currentScreen && // no gui visible
             		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {

@@ -14,30 +14,35 @@ import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLadder;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(EasyLadderClimb.MODID)
 public class EasyLadderClimb {
 	public static final String MODID = "specialeffect.easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";
 
-	@EventHandler
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public EasyLadderClimb() {
+	    // Register methods on event bus
+	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);	    
+	}
+		
+    private void setup(final FMLCommonSetupEvent event) {
+
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -46,41 +51,44 @@ public class EasyLadderClimb {
 
 	}
 
-
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			World world = Minecraft.getInstance().world;
 
 			if (event.getEntityLiving().isOnLadder()) {
 				System.out.println("LADDER");
 				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 				if (mov != null) {
-					BlockPos blockPos = mov.getBlockPos(); // may still be null
-															// if there's an
-															// entity there
-					if (blockPos != null) {
-
+					// FIXME: test for 1.14
+					if (mov.getType() == Type.BLOCK) {
+					
+						BlockPos blockPos = new BlockPos(mov.getHitVec()); 					
 						Block block = world.getBlockState(blockPos).getBlock();
-						IBlockState state = world.getBlockState(blockPos);
-						state = state.getBlock().getActualState(state, world, blockPos);
-						if (block instanceof BlockLadder) {
-							EnumFacing facing = (EnumFacing) state.getProperties().get(BlockLadder.FACING);
+						if (block instanceof LadderBlock) {
+							
+							LadderBlock ladder = (LadderBlock)block;
+							
+							
+							BlockState state = world.getBlockState(blockPos);						
+							Direction facing = (Direction) state.get(LadderBlock.FACING);
 							Vec3d playerPos = player.getPositionVector();
 							
 							// Rotate player to face ladder.
-							player.setPositionAndRotation(playerPos.xCoord,
-									playerPos.yCoord, playerPos.zCoord,
+							player.setPositionAndRotation(playerPos.x,
+									playerPos.y, playerPos.z,
 									getYawFromEnumFacing(facing), player.rotationPitch);
+							System.out.println("facing ladder");
 						}
+					
 					}
 				}
 			}
 		}
 	}
 
-	private float getYawFromEnumFacing(EnumFacing facing) {
+	private float getYawFromEnumFacing(Direction facing) {
 		switch (facing) {
 		case NORTH:
 			return 0.0f;

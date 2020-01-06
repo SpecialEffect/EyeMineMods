@@ -13,7 +13,7 @@ package com.specialeffect.messages;
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -34,7 +34,7 @@ public class UseItemAtPositionMessage implements IMessage {
 
     public UseItemAtPositionMessage() { }
 
-    public UseItemAtPositionMessage(EntityPlayer player, BlockPos pos) {
+    public UseItemAtPositionMessage(PlayerEntity player, BlockPos pos) {
     	this.playerName = player.getName();
         this.blockPos = pos;
     }
@@ -64,7 +64,7 @@ public class UseItemAtPositionMessage implements IMessage {
                 @Override
                 public void run() {
                     World world = ctx.getServerHandler().playerEntity.world;
-                    EntityPlayer player = world.getPlayerEntityByName(message.playerName);
+                    PlayerEntity player = world.getPlayerEntityByName(message.playerName);
 					ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);					
 					if (null != item)
 					{

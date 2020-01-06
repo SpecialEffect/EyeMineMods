@@ -21,7 +21,7 @@ import com.specialeffect.utils.OpenableBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -86,7 +86,7 @@ implements ChildModWithConfig
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			World world = Minecraft.getInstance().world;
 
 			BlockPos playerPos = player.getPosition();

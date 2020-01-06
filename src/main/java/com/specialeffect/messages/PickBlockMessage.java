@@ -14,7 +14,7 @@ import javax.xml.ws.handler.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -48,7 +48,7 @@ public class PickBlockMessage implements IMessage {
                 @Override
                 public void run() {
 					if(message.entityId != 0) {
-	                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+	                    PlayerEntity player = ctx.getServerHandler().playerEntity;
 			            World world = player.getEntityWorld();
 			            Entity target = world.getEntityByID(message.entityId);
 			            if(target != null && target instanceof EntityItem) {

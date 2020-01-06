@@ -13,7 +13,7 @@ package com.specialeffect.messages;
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IThreadListener;
@@ -57,7 +57,7 @@ public class AddItemToHotbar implements IMessage {
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+                    PlayerEntity player = ctx.getServerHandler().playerEntity;
                     InventoryPlayer inventory = player.inventory;
                     
                     if (message.slotId < 0) {

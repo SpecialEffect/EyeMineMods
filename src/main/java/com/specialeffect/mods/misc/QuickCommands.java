@@ -21,7 +21,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -89,7 +89,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					if (ModUtils.entityIsMe(event.getEntityLiving())) {
-						EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 						Potion nightVision = MobEffects.NIGHT_VISION;
 						if (player.isPotionActive(nightVision)) {
 							System.out.println("clearing");

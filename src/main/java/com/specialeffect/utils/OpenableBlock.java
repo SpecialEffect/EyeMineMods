@@ -11,9 +11,12 @@
 package com.specialeffect.utils;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockFenceGate;
-import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.TrapDoorBlock;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.TrapDoorBlock;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -42,14 +45,14 @@ public class OpenableBlock {
 	}
 
 	private static PropertyBool getOpenProp(Block block) {
-	    if (block instanceof BlockDoor) {
-	    	return BlockDoor.OPEN;
+	    if (block instanceof DoorBlock) {
+	    	return DoorBlock.OPEN;
 	    }
-	    else if (block instanceof BlockFenceGate) {
-	    	return BlockFenceGate.OPEN;
+	    else if (block instanceof FenceGateBlock) {
+	    	return FenceGateBlock.OPEN;
 	    }
-	    else if (block instanceof BlockTrapDoor) {
-	    	return BlockTrapDoor.OPEN;
+	    else if (block instanceof TrapDoorBlock) {
+	    	return TrapDoorBlock.OPEN;
 	    }
 	    else {
 	    	return null;
@@ -76,9 +79,9 @@ public class OpenableBlock {
 	}
 	
 	public static boolean isOpenableBlock(Block block) {
-		return (block instanceof BlockFenceGate) ||
-			   (block instanceof BlockDoor) ||
-			   (block instanceof BlockTrapDoor);
+		return (block instanceof FenceGateBlock) ||
+			   (block instanceof DoorBlock) ||
+			   (block instanceof TrapDoorBlock);
 				
 	}
 }

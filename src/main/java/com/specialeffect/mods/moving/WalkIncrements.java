@@ -24,7 +24,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -59,8 +59,8 @@ implements ChildModWithConfig
 	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
+    	//FIXME mConfig = new Configuration(event.getSuggestedConfigurationFile());
+    	//FIXME this.syncConfig();
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key bindings to walk fixed amount, for alternative inputs.");
@@ -126,7 +126,7 @@ implements ChildModWithConfig
             this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 					Point p = ModUtils.getCompassPoint(i);
 
 					float theta = (float)Math.atan2(p.getX(), p.getY());

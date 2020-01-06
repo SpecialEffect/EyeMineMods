@@ -23,7 +23,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -82,7 +82,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			synchronized (mOnLivingQueue) {
 				this.lastPlayerPitch = player.rotationPitch;
 			}
@@ -123,7 +123,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					// with integer positions you often find your position
 					// alternating between 2 blocks)
 					// Also look down, purely for effect.
-					EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 					double jumpHeight = 1.5;
 					double x = Math.floor(player.posX) + 0.4;
@@ -151,7 +151,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 					@Override
 					public void onLiving(LivingUpdateEvent event) {
-						EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 						AutoPillar.network.sendToServer(
 								new SetPositionAndRotationMessage(

@@ -13,7 +13,7 @@ package com.specialeffect.messages;
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -50,7 +50,7 @@ public class JumpMessage implements IMessage {
 //                public void run() {
 //                	System.out.println("jumping player " + message.playerName);
 //                    World world = ctx.getServerHandler().playerEntity.world;
-//                    EntityPlayer player = world.getPlayerEntityByName(message.playerName);
+//                    PlayerEntity player = world.getPlayerEntityByName(message.playerName);
 //					player.jump();
 //                }
 //            });
@@ -59,7 +59,7 @@ public class JumpMessage implements IMessage {
 
     			@Override
     			public void run() {
-    				EntityPlayer player = world.getPlayerEntityByName(message.playerName);
+    				PlayerEntity player = world.getPlayerEntityByName(message.playerName);
     				if (null != player) {
     					System.out.println("jumping player " + player.getName());
     					player.jump();

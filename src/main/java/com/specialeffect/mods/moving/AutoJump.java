@@ -22,7 +22,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -86,7 +86,7 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
     		
     		// We can't rely solely on the vanilla autojump implementation,
     		// since it doesn't play nicely with our gaze movement methods.
@@ -117,7 +117,7 @@ implements ChildModWithConfig
         	{				
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
-					EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			        player.sendMessage(new TextComponentString(
 			        		 "Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
 				}		

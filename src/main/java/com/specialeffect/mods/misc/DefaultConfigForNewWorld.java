@@ -16,7 +16,7 @@ import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -65,8 +65,8 @@ public class DefaultConfigForNewWorld {
 	@SubscribeEvent
 	public void onSpawn(EntityJoinWorldEvent event) {
 		Entity entity = event.getEntity();
-		if (entity != null && entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer)entity;
+		if (entity != null && entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity)entity;
 			if (ModUtils.entityIsMe(player)) {
 				firstOnLivingTick = true;
 			}
@@ -76,7 +76,7 @@ public class DefaultConfigForNewWorld {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
+			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 			// First onliving tick, we check inventory and fill it with default set
 			// of items if it's empty

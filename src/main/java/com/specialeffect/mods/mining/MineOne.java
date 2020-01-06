@@ -18,10 +18,11 @@ import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemPickaxe;
@@ -105,7 +106,7 @@ implements ChildModWithConfig
 
 				// Select the best tool from the inventory
 				World world = Minecraft.getInstance().world;
-	    		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+	    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 	    		if (player.capabilities.isCreativeMode && 
 						mAutoSelectTool) {
 	    			boolean havePickaxe = choosePickaxe(player.inventory);
@@ -132,7 +133,7 @@ implements ChildModWithConfig
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof BlockAir);
+				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof AirBlock);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
 				if (pos != null) {
