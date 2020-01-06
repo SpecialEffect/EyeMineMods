@@ -14,9 +14,9 @@ import java.awt.Point;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -56,11 +56,11 @@ public class ModUtils {
 
 	// Check if entityliving is the current player (and not another
 	// player on the network, for instance)
-	public static boolean entityIsMe(EntityLivingBase entity) {
-		if (entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) entity;
+	public static boolean entityIsMe(Entity entity) {				
+		if (entity instanceof PlayerEntity) {
+			PlayerEntity player = (PlayerEntity) entity;
 			UUID playerUUID = player.getUniqueID();
-			EntityPlayer myself = Minecraft.getInstance().player;
+			PlayerEntity myself = Minecraft.getInstance().player;
 			if (null == myself) {
 				return false;
 			}
@@ -132,12 +132,12 @@ public class ModUtils {
 
 	// Find an item in the hotbar which matches the given class
 	// (this includes all subclasses)
-	public static int findItemInHotbar(InventoryPlayer inventory, Class<?> itemClass) {
+	public static int findItemInHotbar(PlayerInventory inventory, Class<?> itemClass) {
 		int itemId = -1;
 		int currentItemId = inventory.currentItem;
 		NonNullList<ItemStack> items = inventory.mainInventory;
 		if (items != null) {
-			for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++) {
+			for (int i = 0; i < PlayerInventory.getHotbarSize(); i++) {
 				ItemStack stack = items.get(i);
 				if (stack != null && stack.getItem() != null) {
 					Item item = stack.getItem();
@@ -157,7 +157,7 @@ public class ModUtils {
 
 	// should be run from onliving
 	// maybe also needs running from server??
-	public static void moveItemToHotbarAndSelect(InventoryPlayer inventory, ItemStack item) {
+	public static void moveItemToHotbarAndSelect(PlayerInventory inventory, ItemStack item) {
 		// stick the item in an arbitrary non-hotbar slot, then let the
 		// inventory
 		// figure out how best to move it to the hotbar (e.g. to an empty slot).

@@ -28,11 +28,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.MouseInputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -59,16 +56,6 @@ public class PickBlock extends BaseClassWithCallbacks {
 		mPickBlockKB = new KeyBinding("Pick block", GLFW.GLFW_KEY_KP_2, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mPickBlockKB);
     }
-	
-	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event) {
-		System.out.println("pickblock2 onKeyInput");
-		if (mPickBlockKB.isPressed()) {
-			final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
-			System.out.println("pickblock onKeykey is pressed");
-			KeyBinding.onTick(pickBlockKey);
-		}
-	}
 	
 	@SubscribeEvent
     public void onClientTickEvent(final ClientTickEvent event) {
