@@ -108,6 +108,10 @@ public class UseItem extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 					player.inventory.changeCurrentItem(-1);
+					
+					// TODO: need to tell server about this too??
+					// about 25% of the time, there's a mismatch between what you see in 
+					// hotbar, and what gets used (with a glitch sometimes when you place).
 				}
 			}));
 		}
