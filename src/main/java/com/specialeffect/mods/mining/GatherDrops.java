@@ -17,6 +17,8 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.messages.ActivateBlockAtPosition;
+import com.specialeffect.messages.PickBlockMessage;
 //import com.specialeffect.messages.PickBlockMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
@@ -27,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -43,6 +46,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(GatherDrops.MODID)
 public class GatherDrops extends BaseClassWithCallbacks
@@ -50,11 +54,12 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 	public static final String MODID = "gatherdrops";
 	public static final String NAME = "GatherDrops";
+    private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	//FIXME public static Configuration mConfig;
 	private static KeyBinding mGatherKB;
 
-	//FIXME for 1.14 public static SimpleNetworkWrapper network;
+    public static SimpleChannel channel;
 
 	public GatherDrops() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -68,9 +73,15 @@ public class GatherDrops extends BaseClassWithCallbacks
 				"Add key binding to gather nearby dropped items.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		//FIXME //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		//FIXME //FIXME network.registerMessage(PickBlockMessage.Handler.class, 
-				//PickBlockMessage.class, 0, Side.SERVER);
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","opentableschests")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0;
+        
+        channel.registerMessage(id++, PickBlockMessage.class, PickBlockMessage::encode, 
+        		PickBlockMessage::decode, PickBlockMessage.Handler::handle);        
 
 		// Set up config
 		/* FIXME mConfig = new Configuration(event.getSuggestedConfigurationFile());
@@ -132,8 +143,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 			System.out.println("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (int i = 0; i < items.size(); i++) {
-				//FIXME GatherDrops.network.sendToServer(
-						//new PickBlockMessage(items.get(i).getEntityId()));
+                channel.sendToServer(new PickBlockMessage(items.get(i).getEntityId()));
 			}
 		}
 	}

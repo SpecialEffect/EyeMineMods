@@ -9,19 +9,24 @@
  */
 
 package com.specialeffect.messages;
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PickBlockMessage implements IMessage {
+public class PickBlockMessage {
     private int entityId = 0;
 
     public PickBlockMessage() { }
@@ -30,38 +35,32 @@ public class PickBlockMessage implements IMessage {
         this.entityId = id;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-    	entityId = buf.readInt();
+    public static PickBlockMessage decode(PacketBuffer buf) {
+    	return new PickBlockMessage(buf.readInt());
     }
     
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entityId);
+    public static void encode(PickBlockMessage pkt, PacketBuffer buf) {
+        buf.writeInt(pkt.entityId);
     }
 
-    public static class Handler implements IMessageHandler<PickBlockMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final PickBlockMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-					if(message.entityId != 0) {
-	                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-			            World world = player.getEntityWorld();
-			            Entity target = world.getEntityByID(message.entityId);
-			            if(target != null && target instanceof ItemEntity) {
-			            	// Move item next to player to be picked up automatically
-			                target.setPosition(player.posX,player.posY+0.5,player.posZ);
-			            }
-			        }
-
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+    public static class Handler {
+		public static void handle(final PickBlockMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+	            
+            World world = player.getEntityWorld();
+            Entity target = world.getEntityByID(pkt.entityId);
+            if(target != null && target instanceof ItemEntity) {
+            	// Move item next to player to be picked up automatically
+                target.setPosition(player.posX,player.posY+0.5,player.posZ);
+            }
+			
+			ctx.get().setPacketHandled(true);
+		}
+	}
+    
 }
 
 
