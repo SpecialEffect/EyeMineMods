@@ -29,7 +29,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -142,7 +142,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					//FIXME AutoPillar.network.sendToServer(new UseItemAtPositionMessage(player, blockPos));
 					
 					// Make sure we get the animation
-					player.swingArm(EnumHand.MAIN_HAND);
+					player.swingArm(Hand.MAIN_HAND);
 				}
 			}, 1));
 

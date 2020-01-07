@@ -109,7 +109,7 @@ implements ChildModWithConfig
 				// Select the best tool from the inventory
 				World world = Minecraft.getInstance().world;
 	    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-	    		if (player.capabilities.isCreativeMode && 
+	    		if (player.isCreative() && 
 						mAutoSelectTool) {
 	    			boolean havePickaxe = choosePickaxe(player.inventory);
 	    			if (havePickaxe) {
@@ -154,14 +154,14 @@ implements ChildModWithConfig
 		
 		final KeyBinding attackBinding = 
 				Minecraft.getInstance().gameSettings.keyBindAttack;
-		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), true);	
+		KeyBinding.setKeyBindState(attackBinding.getKey(), true);	
 
 	}
 	
 	private void stopDestroying() {
 		final KeyBinding attackBinding = 
 				Minecraft.getInstance().gameSettings.keyBindAttack;
-		KeyBinding.setKeyBindState(attackBinding.getKeyCode(), false);
+		KeyBinding.setKeyBindState(attackBinding.getKey(), false);
 		mDestroying = false;
 	}
 	

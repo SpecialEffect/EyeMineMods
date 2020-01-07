@@ -90,7 +90,7 @@ public class Swim extends BaseClassWithCallbacks {
 				// Switch on swim key when in water
 				if (player.isInWater() && 						
 						!swimBinding.isKeyDown() ) {
-					KeyBinding.setKeyBindState(swimBinding.getKeyCode(), true);			
+					KeyBinding.setKeyBindState(swimBinding.getKey(), true);			
 					mJumpKeyOverridden = true;
 				}
 				
@@ -99,7 +99,7 @@ public class Swim extends BaseClassWithCallbacks {
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {
-						KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+						KeyBinding.setKeyBindState(swimBinding.getKey(), false);
 						mJumpKeyOverridden = false;
 					}
 				}
@@ -122,7 +122,7 @@ public class Swim extends BaseClassWithCallbacks {
 			StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 			
 			if (!mSwimmingTurnedOn) {
-				KeyBinding.setKeyBindState(swimBinding.getKeyCode(), false);
+				KeyBinding.setKeyBindState(swimBinding.getKey(), false);
 			}
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				

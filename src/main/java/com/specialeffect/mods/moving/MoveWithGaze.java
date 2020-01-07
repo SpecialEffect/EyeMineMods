@@ -203,16 +203,16 @@ implements ChildModWithConfig
 							if (needToRotate) {
 								// press key, release after one tick
 								if (yawError > 0) {
-									KeyBinding.setKeyBindState(kbLeft.getKeyCode(), true);
+									KeyBinding.setKeyBindState(kbLeft.getKey(), true);
 								}
 								else {
-									KeyBinding.setKeyBindState(kbRight.getKeyCode(), true);
+									KeyBinding.setKeyBindState(kbRight.getKey(), true);
 								}
 								this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 									@Override
 									public void onLiving(LivingUpdateEvent event) {
-										KeyBinding.setKeyBindState(kbLeft.getKeyCode(), false);
-										KeyBinding.setKeyBindState(kbRight.getKeyCode(), false);
+										KeyBinding.setKeyBindState(kbLeft.getKey(), false);
+										KeyBinding.setKeyBindState(kbRight.getKey(), false);
 									}
 								}, 1));
 							}							

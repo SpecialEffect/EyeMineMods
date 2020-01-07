@@ -31,7 +31,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -105,7 +105,7 @@ implements ChildModWithConfig {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 			if (mIsAttacking) {
-				if (player.capabilities.isCreativeMode && 
+				if (player.isCreative() && 
 						mAutoSelectSword) {
 	    			boolean haveSword = chooseWeapon(player.inventory);
 	    			if (haveSword) {
@@ -130,7 +130,7 @@ implements ChildModWithConfig {
 				// When attacking programmatically, the player doesn't swing unless
 				// an attackable-block is in reach. We fix that here, for better feedback.
 				if (!player.isSwingInProgress) {
-					player.swingArm(EnumHand.MAIN_HAND);
+					player.swingArm(Hand.MAIN_HAND);
 				}
 			}
 			

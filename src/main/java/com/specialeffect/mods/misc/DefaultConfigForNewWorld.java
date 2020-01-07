@@ -84,7 +84,7 @@ public class DefaultConfigForNewWorld {
 			if (firstOnLivingTick) {
 				firstOnLivingTick = false;
 			
-				if (player.capabilities.isCreativeMode) {
+				if (player.isCreative()) {
 					NonNullList<ItemStack> inventory = player.inventory.mainInventory;
 					boolean hasSomeItems = false;
 					for (ItemStack itemStack : inventory) {
@@ -102,7 +102,7 @@ public class DefaultConfigForNewWorld {
 			// The first time the world loads, we set our preferred game rules
 			// Users may override them manually later.
 			if (firstWorldLoad) {	
-				if (player.capabilities.isCreativeMode) {
+				if (player.isCreative()) {
 					WorldServer worldServer = DimensionManager.getWorld(0); // default world
 					if (worldServer.getTotalWorldTime() < 10) {
 						GameRules gameRules = worldServer.getGameRules();

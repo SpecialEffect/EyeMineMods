@@ -108,7 +108,7 @@ public class Dismount extends BaseClassWithCallbacks {
 							// - "use" entity you're pointing at
 							// - pick up dropped item again
 							player.dropItem(true);
-							int useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKeyCode();
+							int useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
 							KeyBinding.onTick(useItemKeyCode);
 							GatherDrops.gatherBlocks(player);
 						}

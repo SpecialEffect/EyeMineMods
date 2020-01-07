@@ -87,11 +87,11 @@ public class UseItem extends BaseClassWithCallbacks {
 				
 		if (mUseItemContinuouslyKB.isPressed()) {
 			boolean useItemNewState = !useItemKeyBinding.isKeyDown();
-			KeyBinding.setKeyBindState(useItemKeyBinding.getKeyCode(), useItemNewState);			
+			KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), useItemNewState);			
 			this.queueChatMessage("Using item: " + (useItemNewState ? "ON" : "OFF"));
 		}
 		else if (mUseItemOnceKB.isPressed()) {
-			KeyBinding.onTick(useItemKeyBinding.getKeyCode());
+			KeyBinding.onTick(useItemKeyBinding.getKey());
 		}
 		else if (mPrevItemKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {				
