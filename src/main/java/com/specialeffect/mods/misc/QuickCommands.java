@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -22,22 +24,18 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(QuickCommands.MODID)
 public class QuickCommands extends BaseClassWithCallbacks {
@@ -45,9 +43,12 @@ public class QuickCommands extends BaseClassWithCallbacks {
 	public static final String NAME = "QuickCommands";
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public QuickCommands() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key bindings for some useful commands.");
@@ -56,13 +57,11 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		// Register for server messages
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         //FIXME network.registerMessage(SendCommandMessage.Handler.class, 
-        						SendCommandMessage.class, 0, Side.SERVER);
+        		//				SendCommandMessage.class, 0, Side.SERVER);
 
 
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
+		// init
+		
 		// Register key bindings
 		mNightVisionKB = new KeyBinding("Turn night vision on/off", GLFW.GLFW_KEY_F12, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNightVisionKB);
@@ -83,13 +82,17 @@ public class QuickCommands extends BaseClassWithCallbacks {
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
 		if (mNightVisionKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onLiving(LivingUpdateEvent event) {
 					if (ModUtils.entityIsMe(event.getEntityLiving())) {
 						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+
+						/* FIXME
 						Potion nightVision = MobEffects.NIGHT_VISION;
 						if (player.isPotionActive(nightVision)) {
 							System.out.println("clearing");
@@ -98,7 +101,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 						else {
 							System.out.println("night vision");
 							player.addPotionEffect(new PotionEffect(nightVision));
-						}
+						}*/
 					}
 				}
 			}));
@@ -110,10 +113,10 @@ public class QuickCommands extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					String gameRule = "doDaylightCycle";
 					GameRules rules = Minecraft.getInstance().world.getGameRules();	
-					boolean newBool = !rules.getBoolean(gameRule);
+					// FIXME boolean newBool = !rules.getBoolean(gameRule);
 					
 					// Ask server to change gamerule
-					String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
+					// FIXME String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
 					//FIXME QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
 				}
 			}));			

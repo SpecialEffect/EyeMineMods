@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 //import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -20,17 +22,15 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(SwapMinePlace.MODID)
 public class SwapMinePlace extends BaseClassWithCallbacks {
@@ -38,9 +38,12 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public SwapMinePlace() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to swap mine/place key bindings.");
@@ -50,10 +53,8 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		//FIXME network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 0, Side.SERVER);
 
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
+	
+		//init
 
 		// Register key bindings
 		mSwapKB = new KeyBinding("Swap mine/place keys", GLFW.GLFW_KEY_F10, CommonStrings.EYEGAZE_EXTRA);
@@ -70,12 +71,16 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	private static KeyBinding mSwapKB;
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
 		if (mSwapKB.isPressed()) {
 			KeyBinding kbAttack = Minecraft.getInstance().gameSettings.keyBindAttack;
 			KeyBinding kbPlace = Minecraft.getInstance().gameSettings.keyBindUseItem;
-			Minecraft.getInstance().gameSettings.keyBindAttack = kbPlace;
-			Minecraft.getInstance().gameSettings.keyBindUseItem = kbAttack;			
+			// FIXME: test this!
+			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, kbPlace.getKey());
+			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, kbAttack.getKey());
+
 			this.queueChatMessage("Swapping mine and place keys");			
 		}
 	}

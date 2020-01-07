@@ -28,23 +28,20 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(ContinuouslyAttack.MODID)
 public class ContinuouslyAttack 
@@ -59,9 +56,12 @@ implements ChildModWithConfig {
 	
 	private boolean mWaitingForSword = false;
 	
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public ContinuouslyAttack() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -72,10 +72,8 @@ implements ChildModWithConfig {
 		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
 		//FIXME network.registerMessage(AttackEntityMessage.Handler.class, AttackEntityMessage.class, 1, Side.SERVER);
 
-	}
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
+		// init
 		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
@@ -141,9 +139,10 @@ implements ChildModWithConfig {
 	public static boolean mIsAttacking = false;
 	
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
-		
-		if(mAttackKB.isPressed()) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
+        if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
