@@ -14,8 +14,8 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
-import com.specialeffect.messages.AddItemToHotbar;
-import com.specialeffect.messages.AttackEntityMessage;
+//import com.specialeffect.messages.AddItemToHotbar;
+//import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -30,7 +30,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
@@ -157,13 +157,13 @@ implements ChildModWithConfig {
 		
 		// In creative mode, we can either select a sword from the hotbar 
 		// or just rustle up a new one
-		if (inventory.getCurrentItem().getItem() instanceof ItemSword)
+		if (inventory.getCurrentItem().getItem() instanceof SwordItem)
 		{
 			return true;
 		}
 		else
 		{
-			int swordId = ModUtils.findItemInHotbar(inventory, ItemSword.class);
+			int swordId = ModUtils.findItemInHotbar(inventory, SwordItem.class);
 			if (swordId > -1) {
 				inventory.currentItem = swordId;
 				return true;

@@ -21,7 +21,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.gui.StateOverlay;
-import com.specialeffect.messages.MovePlayerMessage;
+//import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;

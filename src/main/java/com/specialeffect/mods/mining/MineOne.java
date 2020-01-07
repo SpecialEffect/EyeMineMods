@@ -13,7 +13,7 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.messages.AddItemToHotbar;
+//import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
@@ -21,15 +21,12 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.block.AirBlock;
-import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
@@ -41,15 +38,10 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+
 
 @Mod(MineOne.MODID)
 public class MineOne 
@@ -130,7 +122,7 @@ implements ChildModWithConfig
 	    		else {			
 	    			
 	    			// Swords can't destroy blocks: warn user
-	    			if (player.getHeldItemMainhand().getItem() instanceof ItemSword) {
+	    			if (player.getHeldItemMainhand().getItem() instanceof SwordItem) {
 	    				String message = "Can't destroy blocks with a sword, please select another item";
 				        player.sendMessage(new StringTextComponent(message));
 				        

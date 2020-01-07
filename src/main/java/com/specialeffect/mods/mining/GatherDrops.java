@@ -12,10 +12,12 @@ package com.specialeffect.mods.mining;
 
 import java.util.ArrayList;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.PickBlockMessage;
+//import com.specialeffect.messages.PickBlockMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -30,18 +32,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(GatherDrops.MODID)
 public class GatherDrops extends BaseClassWithCallbacks
@@ -50,14 +50,17 @@ public class GatherDrops extends BaseClassWithCallbacks
 	public static final String MODID = "specialeffect.gatherdrops";
 	public static final String NAME = "GatherDrops";
 
-	public static Configuration mConfig;
+	//FIXME public static Configuration mConfig;
 	private static KeyBinding mGatherKB;
 
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {    
+	public GatherDrops() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -66,16 +69,13 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 		//FIXME //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		//FIXME //FIXME network.registerMessage(PickBlockMessage.Handler.class, 
-				PickBlockMessage.class, 0, Side.SERVER);
+				//PickBlockMessage.class, 0, Side.SERVER);
 
 		// Set up config
-		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();
-	}
+		/* FIXME mConfig = new Configuration(event.getSuggestedConfigurationFile());
+		this.syncConfig();*/
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event)
-	{
+		// init
 		// Register key bindings	
 		mGatherKB = new KeyBinding("Gather dropped items", GLFW.GLFW_KEY_X, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
@@ -90,9 +90,9 @@ public class GatherDrops extends BaseClassWithCallbacks
 	}
 
 	public static void syncConfig() {
-		if (mConfig.hasChanged()) {
+		/* FIXME if (mConfig.hasChanged()) {
 			mConfig.save();
-		}
+		}*/
 	}
 
 	@SubscribeEvent
@@ -103,7 +103,9 @@ public class GatherDrops extends BaseClassWithCallbacks
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
 		if(mGatherKB.isPressed()) {
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {

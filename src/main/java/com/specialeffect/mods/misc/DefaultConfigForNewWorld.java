@@ -10,8 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
-import com.specialeffect.messages.AddItemToHotbar;
-import com.specialeffect.messages.SendCommandMessage;
+//import com.specialeffect.messages.AddItemToHotbar;
+//import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 

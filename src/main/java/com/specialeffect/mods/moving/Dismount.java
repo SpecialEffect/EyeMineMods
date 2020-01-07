@@ -13,7 +13,7 @@ package com.specialeffect.mods.moving;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.DismountPlayerMessage;
+//import com.specialeffect.messages.DismountPlayerMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.CommonStrings;
