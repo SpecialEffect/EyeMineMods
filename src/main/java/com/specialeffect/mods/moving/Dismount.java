@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.moving;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -22,21 +24,21 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 
 @Mod(Dismount.MODID)
@@ -50,9 +52,12 @@ public class Dismount extends BaseClassWithCallbacks {
 	
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public Dismount() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		// preinit
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -61,11 +66,9 @@ public class Dismount extends BaseClassWithCallbacks {
 
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         //FIXME network.registerMessage(DismountPlayerMessage.Handler.class, 
-        						DismountPlayerMessage.class, 0, Side.SERVER);
-	}
+        						//DismountPlayerMessage.class, 0, Side.SERVER);
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
+        // init
 		
 		// Register key bindings
 		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_C, CommonStrings.EYEGAZE_EXTRA);
@@ -80,7 +83,9 @@ public class Dismount extends BaseClassWithCallbacks {
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
 		if(mDismountKB.isPressed()) {
 			// Dismount player locally
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
@@ -88,31 +93,34 @@ public class Dismount extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 
-					if (player.isRiding()) {
-						Entity riddenEntity = player.getRidingEntity();
-						if (null != riddenEntity) {
-							player.dismountRidingEntity();
-							player.motionY += 0.5D;
-						}			
+					if (player.isPassenger()) {
+						player.detach();						
+						// FIXME??	player.motionY += 0.5D;
+						
 						// Dismount player on server
 						//FIXME Dismount.network.sendToServer(
 								//new DismountPlayerMessage());						
 					}
 					else {
-						RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-						Entity hitEntity = mov.entityHit;
-						if (hitEntity != null) {
-							// Riding entity programmatically seems to not do everything that 
-							// a "Use" action would do, so we:
-							// - drop current item to ensure empty hand
-							// - "use" entity you're pointing at
-							// - pick up dropped item again
-							player.dropItem(true);
-							int useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
-							KeyBinding.onTick(useItemKeyCode);
-							GatherDrops.gatherBlocks(player);
-						}
+						RayTraceResult mov = Minecraft.getInstance().objectMouseOver;						
 						
+						if (mov != null) {
+							// FIXME: test for 1.14
+							if (mov.getType() == Type.ENTITY) {
+						
+								// FIXME: see if there's a better way to do this now
+								//
+								// Riding entity programmatically seems to not do everything that 
+								// a "Use" action would do, so we:
+								// - drop current item to ensure empty hand
+								// - "use" entity you're pointing at
+								// - pick up dropped item again
+								player.dropItem(true);
+								Input useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
+								KeyBinding.onTick(useItemKeyCode);
+								GatherDrops.gatherBlocks(player);							
+							}
+						}
 					}
 				}
 			}));	

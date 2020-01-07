@@ -26,14 +26,12 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -95,7 +93,7 @@ public class Swim extends BaseClassWithCallbacks {
 				}
 				
 				// Switch off when on land or if flying
-				else if ((player.onGround || player.capabilities.isFlying) &&
+				else if ((player.onGround || player.isAirBorne) && // TESTME isAirborne?
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {
@@ -112,7 +110,9 @@ public class Swim extends BaseClassWithCallbacks {
 	private static boolean mSwimmingTurnedOn = true;
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+        
 		if(mSwimKB.isPressed()) {
 			final KeyBinding swimBinding = 
 					Minecraft.getInstance().gameSettings.keyBindJump;
