@@ -10,23 +10,24 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class ActivateBlockAtPosition implements IMessage {
+public class ActivateBlockAtPosition {
     
     private BlockPos blockPos;
 
@@ -35,40 +36,38 @@ public class ActivateBlockAtPosition implements IMessage {
     public ActivateBlockAtPosition(BlockPos pos) {
         this.blockPos = pos;
     }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        int x = ByteBufUtils.readVarInt(buf, 5); 
-        int y = ByteBufUtils.readVarInt(buf, 5); 
-        int z = ByteBufUtils.readVarInt(buf, 5); 
-        blockPos = new BlockPos(x, y, z);
+           
+	public static ActivateBlockAtPosition decode(PacketBuffer buf) {
+    	int x = buf.readInt(); 
+        int y = buf.readInt(); 
+        int z = buf.readInt(); 
+        return new ActivateBlockAtPosition(new BlockPos(x, y, z));
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
+    public static void encode(ActivateBlockAtPosition pkt, PacketBuffer buf) {
+    	BlockPos blockPos = pkt.blockPos;
+    	buf.writeInt(blockPos.getX());
+    	buf.writeInt(blockPos.getY());
+    	buf.writeInt(blockPos.getZ());       
     }
 
-    public static class Handler implements IMessageHandler<ActivateBlockAtPosition, IMessage> {        
-    	@Override
-        public IMessage onMessage(final ActivateBlockAtPosition message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-                    World world = player.getEntityWorld();
-					Block block = world.getBlockState(message.blockPos).getBlock();
-
-					IBlockState state = world.getBlockState(message.blockPos);								    
-					block.onBlockActivated(world, message.blockPos, state, player, 
-							EnumHand.MAIN_HAND, Direction.NORTH, 0.5f, 0.5f, 0.5f);	
-
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+    public static class Handler {
+		public static void handle(final ActivateBlockAtPosition pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+	            
+            World world = player.getEntityWorld();			
+			BlockState state = world.getBlockState(pkt.blockPos);
+			Block block = state.getBlock();			
+						
+			// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks
+			// this is a good reason not to use state.onBlockActivated instead.
+			BlockRayTraceResult hit = null;  			
+			block.onBlockActivated(state, world, pkt.blockPos, player, Hand.MAIN_HAND, hit);
+			
+			ctx.get().setPacketHandled(true);
+		}
+	}
 }

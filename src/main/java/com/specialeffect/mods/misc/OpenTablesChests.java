@@ -10,39 +10,43 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-//import com.specialeffect.messages.ActivateBlockAtPosition;
-import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
 import net.minecraft.block.ChestBlock;
-import net.minecraft.block.WorkbenchBlock;
+import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
 
 @Mod(OpenTablesChests.MODID)
 public class OpenTablesChests 
@@ -53,47 +57,48 @@ implements ChildModWithConfig
 	public static final String MODID = "opentableschests";
 	public static final String NAME = "OpenTablesChests";
 
-    public static Configuration mConfig;
 	private static KeyBinding mOpenChestKB;
 	private static KeyBinding mOpenCraftingTableKB;	
 	
-    //FIXME for 1.14 public static SimpleNetworkWrapper network;
+    public static SimpleChannel channel;
     
     private static int mRadius = 5;
+    
+    public OpenTablesChests() {
+        // Register methods on event bus
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    }
+    
+    private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {    
+    private void setup(final FMLCommonSetupEvent event)
+    {
 		MinecraftForge.EVENT_BUS.register(this);    	
 		
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key bindings to open nearby chests/crafting tables.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
+		//ModUtils.setupModInfo(event, this.MODID, this.NAME,
+			//	"Add key bindings to open nearby chests/crafting tables.");
+		//ModUtils.setAsParent(event, EyeGaze.MODID);
 		
-        //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        //FIXME network.registerMessage(ActivateBlockAtPosition.Handler.class, 
-        						ActivateBlockAtPosition.class, 0, Side.SERVER);
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","opentableschests")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0;
         
-		// Set up config
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
-	}
+        channel.registerMessage(id++, ActivateBlockAtPosition.class, ActivateBlockAtPosition::encode, 
+        		ActivateBlockAtPosition::decode, ActivateBlockAtPosition.Handler::handle);
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event)
-	{
-		// Register for config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 				
 		// Register key bindings	
-		mOpenChestKB = new KeyBinding("Open chest", GLFW.GLFW_KEY_LBRACKET, CommonStrings.EYEGAZE_EXTRA);
-		mOpenCraftingTableKB = new KeyBinding("Open crafting table", GLFW.GLFW_KEY_RBRACKET, CommonStrings.EYEGAZE_EXTRA);
+		mOpenChestKB = new KeyBinding("Open chest", GLFW.GLFW_KEY_LEFT_BRACKET, CommonStrings.EYEGAZE_EXTRA);
+		mOpenCraftingTableKB = new KeyBinding("Open crafting table", GLFW.GLFW_KEY_RIGHT_BRACKET, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChestKB);
 		ClientRegistry.registerKeyBinding(mOpenCraftingTableKB);
 	}
 
 	public void syncConfig() {
-        mRadius = EyeGaze.mRadiusChests;
+        
 	}
 
 	@SubscribeEvent
@@ -138,9 +143,9 @@ implements ChildModWithConfig
 	    return closestBlockPos;
 	}
 
-	
-	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+
+    @SubscribeEvent
+    public void onKeyInput(KeyInputEvent event) { 
 		if(mOpenChestKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
@@ -157,8 +162,7 @@ implements ChildModWithConfig
 								"No chests found in range"));
 					}
 					else {
-						//FIXME OpenTablesChests.network.sendToServer(
-								//new ActivateBlockAtPosition(closestBlockPos));
+		                channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));
@@ -171,7 +175,7 @@ implements ChildModWithConfig
 					World world = Minecraft.getInstance().world;
 
 					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
-							WorkbenchBlock.class.getName(), player, world, mRadius);
+							CraftingTableBlock.class.getName(), player, world, mRadius);
 
 					// Ask server to open 
 					if (null == closestBlockPos) {
@@ -179,8 +183,7 @@ implements ChildModWithConfig
 								"No crafting tables found in range"));
 					}
 					else {
-						//FIXME OpenTablesChests.network.sendToServer(
-								//new ActivateBlockAtPosition(closestBlockPos));
+						channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));
