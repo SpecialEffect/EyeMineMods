@@ -213,28 +213,28 @@ public class Config {
     	// This limits us to non-character keys, including numpad numbers.
     	
         // Standard Keys
-        key0 = configFile.get(categoryInventory, "key0", Keyboard.KEY_NUMPAD0);
-        key1 = configFile.get(categoryInventory, "key1", Keyboard.KEY_NUMPAD1);
-        key2 = configFile.get(categoryInventory, "key2", Keyboard.KEY_NUMPAD2);
-        key3 = configFile.get(categoryInventory, "key3", Keyboard.KEY_NUMPAD3);
-        key4 = configFile.get(categoryInventory, "key4", Keyboard.KEY_NUMPAD4);
+        key0 = configFile.get(categoryInventory, "key0", GLFW.GLFW_KEY_KP_0);
+        key1 = configFile.get(categoryInventory, "key1", GLFW.GLFW_KEY_KP_1);
+        key2 = configFile.get(categoryInventory, "key2", GLFW.GLFW_KEY_KP_2);
+        key3 = configFile.get(categoryInventory, "key3", GLFW.GLFW_KEY_KP_3);
+        key4 = configFile.get(categoryInventory, "key4", GLFW.GLFW_KEY_KP_4);
        
-        key5 = configFile.get(categoryInventory, "key5", Keyboard.KEY_NUMPAD5);
-        key6 = configFile.get(categoryInventory, "key6", Keyboard.KEY_NUMPAD6);
-        key7 = configFile.get(categoryInventory, "key7", Keyboard.KEY_NUMPAD7);
-        key8 = configFile.get(categoryInventory, "key8", Keyboard.KEY_NUMPAD8);
-        key9 = configFile.get(categoryInventory, "key9", Keyboard.KEY_NUMPAD9);
+        key5 = configFile.get(categoryInventory, "key5", GLFW.GLFW_KEY_KP_5);
+        key6 = configFile.get(categoryInventory, "key6", GLFW.GLFW_KEY_KP_6);
+        key7 = configFile.get(categoryInventory, "key7", GLFW.GLFW_KEY_KP_7);
+        key8 = configFile.get(categoryInventory, "key8", GLFW.GLFW_KEY_KP_8);
+        key9 = configFile.get(categoryInventory, "key9", GLFW.GLFW_KEY_KP_9);
 
-        keyPrev = configFile.get(categoryInventory, "keyPrev", Keyboard.KEY_LEFT);
-        keyNext = configFile.get(categoryInventory, "keyNext", Keyboard.KEY_RIGHT);
-        keyNextItemRow = configFile.get(categoryInventory, "keyNextItemRow", Keyboard.KEY_F6);
-        keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", Keyboard.KEY_F7);
+        keyPrev = configFile.get(categoryInventory, "keyPrev", GLFW.GLFW_KEY_LEFT);
+        keyNext = configFile.get(categoryInventory, "keyNext", GLFW.GLFW_KEY_RIGHT);
+        keyNextItemRow = configFile.get(categoryInventory, "keyNextItemRow", GLFW.GLFW_KEY_F6);
+        keyNextItemCol = configFile.get(categoryInventory, "keyNextItemCol", GLFW.GLFW_KEY_F7);
         
-        keyScrollUp = configFile.get(categoryInventory, "keyScrollUp", Keyboard.KEY_F8);
-        keyScrollDown = configFile.get(categoryInventory, "keyScrollDown", Keyboard.KEY_F9);
+        keyScrollUp = configFile.get(categoryInventory, "keyScrollUp", GLFW.GLFW_KEY_F8);
+        keyScrollDown = configFile.get(categoryInventory, "keyScrollDown", GLFW.GLFW_KEY_F9);
         
-        keySearch = configFile.get(categoryInventory, "keySearch", Keyboard.KEY_DOWN);
-        keyDrop = configFile.get(categoryInventory, "keyDrop", Keyboard.KEY_HOME);
+        keySearch = configFile.get(categoryInventory, "keySearch", GLFW.GLFW_KEY_DOWN);
+        keyDrop = configFile.get(categoryInventory, "keyDrop", GLFW.GLFW_KEY_HOME);
    }
 
 }

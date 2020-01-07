@@ -16,7 +16,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +72,7 @@ public class UseItemAtPositionMessage implements IMessage {
 	                    EnumActionResult result = 
 	                    item.onItemUse(player, world, 
 					                    	   message.blockPos, EnumHand.MAIN_HAND, 
-					                    	   EnumFacing.UP, 
+					                    	   Direction.UP, 
 					                    	   0.0f, 0.0f, 0.0f);
 	                    if (result != EnumActionResult.SUCCESS)
 	                    {

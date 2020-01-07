@@ -54,7 +54,7 @@ public class ModUtils {
 //		m.parent = parentModID;
 	}
 
-	// Check if entityliving is the current player (and not another
+	// Check if LivingEntity is the current player (and not another
 	// player on the network, for instance)
 	public static boolean entityIsMe(Entity entity) {				
 		if (entity instanceof PlayerEntity) {

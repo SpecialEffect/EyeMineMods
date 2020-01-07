@@ -23,7 +23,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +35,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -53,9 +53,9 @@ public class GatherDrops extends BaseClassWithCallbacks
 	public static Configuration mConfig;
 	private static KeyBinding mGatherKB;
 
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {    
 		MinecraftForge.EVENT_BUS.register(this);    	
@@ -64,8 +64,8 @@ public class GatherDrops extends BaseClassWithCallbacks
 				"Add key binding to gather nearby dropped items.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(PickBlockMessage.Handler.class, 
+		//FIXME //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME //FIXME network.registerMessage(PickBlockMessage.Handler.class, 
 				PickBlockMessage.class, 0, Side.SERVER);
 
 		// Set up config
@@ -73,11 +73,11 @@ public class GatherDrops extends BaseClassWithCallbacks
 		this.syncConfig();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event)
 	{
 		// Register key bindings	
-		mGatherKB = new KeyBinding("Gather dropped items", Keyboard.KEY_X, CommonStrings.EYEGAZE_EXTRA);
+		mGatherKB = new KeyBinding("Gather dropped items", GLFW.GLFW_KEY_X, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
 	}
 
@@ -125,14 +125,14 @@ public class GatherDrops extends BaseClassWithCallbacks
 
 		AxisAlignedBB aaBb = new AxisAlignedBB(playerPos.subtract(new Vec3i(dx, dy, dz)), 
 				playerPos.add(new Vec3i(dx, dy, dz)));
-		ArrayList<EntityItem> items = (ArrayList<EntityItem>)world.getEntitiesWithinAABB(EntityItem.class,aaBb);
+		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)world.getEntitiesWithinAABB(ItemEntity.class,aaBb);
 
 		if(items != null && !items.isEmpty()) {
 			System.out.println("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (int i = 0; i < items.size(); i++) {
-				GatherDrops.network.sendToServer(
-						new PickBlockMessage(items.get(i).getEntityId()));
+				//FIXME GatherDrops.network.sendToServer(
+						//new PickBlockMessage(items.get(i).getEntityId()));
 			}
 		}
 	}

@@ -31,7 +31,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -51,12 +51,12 @@ implements ChildModWithConfig
     public static KeyBinding moveViewKB;
 	public static KeyBinding viewDirectionKeyBinding;
     
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
     
     private KeyPressCounter keyCounterViewDir = new KeyPressCounter();
 
 
-    @EventHandler
+    @SubscribeEvent
 	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
@@ -67,8 +67,8 @@ implements ChildModWithConfig
 				"Add key bindings to change view by fixed amount, for alternative inputs.");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-    	network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
+    	//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
         
     }
     
@@ -76,17 +76,17 @@ implements ChildModWithConfig
     	mViewDeltaRelative = EyeGaze.viewIncrement;
     }
     
-    @EventHandler
+    @SubscribeEvent
     public void init(FMLInitializationEvent event)
     {
     	// Subscribe to parent's config changes
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
-    	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", Keyboard.KEY_U, CommonStrings.EYEGAZE_ADVANCED);
+    	viewDirectionKeyBinding = new KeyBinding("Configure direction for view delta", GLFW.GLFW_KEY_U, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(viewDirectionKeyBinding);
         
-    	moveViewKB = new KeyBinding("Apply view delta", Keyboard.KEY_I, CommonStrings.EYEGAZE_ADVANCED);
+    	moveViewKB = new KeyBinding("Apply view delta", GLFW.GLFW_KEY_I, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(moveViewKB);
         
     }
@@ -129,7 +129,7 @@ implements ChildModWithConfig
 	    			float yaw = player.rotationYaw;
 	    			float pitch = player.rotationPitch; 
 	    			
-	    			player.setPositionAndRotation(pos.xCoord, pos.yCoord, pos.zCoord, 
+	    			player.setPositionAndRotation(pos.x, pos.y, pos.z, 
 	    					(float)(yaw+dYaw), (float)(pitch+dPitch));
 				}
 			}));

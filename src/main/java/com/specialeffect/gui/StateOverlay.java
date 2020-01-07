@@ -51,10 +51,10 @@ public class StateOverlay extends Gui
 		// Scale icon sizes to fit screen
 		Point size = ModUtils.getScaledDisplaySize(mc);
 		mDisplayWidth = size.x;
-		mDisplayHeight = size.y;
+		mcurrentScreen.height = size.y;
 
 		int maxSizeByWidth = mDisplayWidth/(mIconsPerRow+mIconPadding);
-		int maxSizeByHeight = 2*mDisplayHeight/(mIconsPerRow+mIconPadding);
+		int maxSizeByHeight = 2*mcurrentScreen.height/(mIconsPerRow+mIconPadding);
 		mIconSize = Math.min(maxSizeByWidth, maxSizeByHeight);
 		//mIconSize = 18*2;
 	}
@@ -62,7 +62,7 @@ public class StateOverlay extends Gui
 	private static int mIconSize = 30;
 	private static int mIconPadding = 5;
 	private int mDisplayWidth;
-	private int mDisplayHeight;
+	private int mcurrentScreen.height;
 	private static final int mIconsPerRow = 10;
 
 	// Lists of icons to draw on each half of screen

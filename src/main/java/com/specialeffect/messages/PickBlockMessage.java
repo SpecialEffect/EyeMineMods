@@ -13,7 +13,7 @@ import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
@@ -51,7 +51,7 @@ public class PickBlockMessage implements IMessage {
 	                    PlayerEntity player = ctx.getServerHandler().playerEntity;
 			            World world = player.getEntityWorld();
 			            Entity target = world.getEntityByID(message.entityId);
-			            if(target != null && target instanceof EntityItem) {
+			            if(target != null && target instanceof ItemEntity) {
 			            	// Move item next to player to be picked up automatically
 			                target.setPosition(player.posX,player.posY+0.5,player.posZ);
 			            }

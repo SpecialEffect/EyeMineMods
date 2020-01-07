@@ -22,6 +22,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.WorkbenchBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -35,7 +36,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -56,11 +57,11 @@ implements ChildModWithConfig
 	private static KeyBinding mOpenChestKB;
 	private static KeyBinding mOpenCraftingTableKB;	
 	
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
     
     private static int mRadius = 5;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {    
 		MinecraftForge.EVENT_BUS.register(this);    	
@@ -69,8 +70,8 @@ implements ChildModWithConfig
 				"Add key bindings to open nearby chests/crafting tables.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(ActivateBlockAtPosition.Handler.class, 
+        //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(ActivateBlockAtPosition.Handler.class, 
         						ActivateBlockAtPosition.class, 0, Side.SERVER);
         
 		// Set up config
@@ -78,15 +79,15 @@ implements ChildModWithConfig
     	this.syncConfig();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event)
 	{
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 				
 		// Register key bindings	
-		mOpenChestKB = new KeyBinding("Open chest", Keyboard.KEY_LBRACKET, CommonStrings.EYEGAZE_EXTRA);
-		mOpenCraftingTableKB = new KeyBinding("Open crafting table", Keyboard.KEY_RBRACKET, CommonStrings.EYEGAZE_EXTRA);
+		mOpenChestKB = new KeyBinding("Open chest", GLFW.GLFW_KEY_LBRACKET, CommonStrings.EYEGAZE_EXTRA);
+		mOpenCraftingTableKB = new KeyBinding("Open crafting table", GLFW.GLFW_KEY_RBRACKET, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChestKB);
 		ClientRegistry.registerKeyBinding(mOpenCraftingTableKB);
 	}
@@ -156,8 +157,8 @@ implements ChildModWithConfig
 								"No chests found in range"));
 					}
 					else {
-						OpenTablesChests.network.sendToServer(
-								new ActivateBlockAtPosition(closestBlockPos));
+						//FIXME OpenTablesChests.network.sendToServer(
+								//new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));
@@ -178,8 +179,8 @@ implements ChildModWithConfig
 								"No crafting tables found in range"));
 					}
 					else {
-						OpenTablesChests.network.sendToServer(
-								new ActivateBlockAtPosition(closestBlockPos));
+						//FIXME OpenTablesChests.network.sendToServer(
+								//new ActivateBlockAtPosition(closestBlockPos));
 					}
 				}
 			}));

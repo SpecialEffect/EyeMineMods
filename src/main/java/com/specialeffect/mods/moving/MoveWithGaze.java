@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
@@ -35,11 +37,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -49,10 +51,12 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MoveWithGaze.MODID)
 public class MoveWithGaze 
@@ -72,10 +76,13 @@ implements ChildModWithConfig
     private static boolean mMoveWhenMouseStationary = false;
     public static float mCustomSpeedFactor = 0.8f;
 
-    @EventHandler
-	@SuppressWarnings("static-access")
-    public void preInit(FMLPreInitializationEvent event) {    
-    	MinecraftForge.EVENT_BUS.register(this);  
+    public MoveWithGaze() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		
+		MinecraftForge.EVENT_BUS.register(this);  
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
@@ -89,7 +96,7 @@ implements ChildModWithConfig
         mCustomSpeedFactor = EyeGaze.customSpeedFactor;
 	}
 	
-    @EventHandler
+    @SubscribeEvent
     public void init(FMLInitializationEvent event)
     {   	
 
@@ -97,11 +104,11 @@ implements ChildModWithConfig
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", Keyboard.KEY_H, CommonStrings.EYEGAZE_COMMON);
+    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", GLFW.GLFW_KEY_H, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
-        mIncreaseWalkSpeedKB = new KeyBinding("Turn walk speed up", Keyboard.KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
+        mIncreaseWalkSpeedKB = new KeyBinding("Turn walk speed up", GLFW.GLFW_KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
-        mDecreaseWalkSpeedKB = new KeyBinding("Turn walk speed down", Keyboard.KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
+        mDecreaseWalkSpeedKB = new KeyBinding("Turn walk speed down", GLFW.GLFW_KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
         ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
         
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
@@ -175,7 +182,7 @@ implements ChildModWithConfig
 					Entity riddenEntity = player.getRidingEntity();
 
 					if (null != riddenEntity) {
-						if (riddenEntity instanceof EntityBoat) {
+						if (riddenEntity instanceof BoatEntity) {
 							// very special case: you can't steer a boat without keys,
 							// so we first steer left/right with keys until the boat
 							// and the player's view are aligned, only then move 
@@ -211,15 +218,15 @@ implements ChildModWithConfig
 							}							
 							else { // riding boat, facing right direction
 								for (int i = 0; i < 2; i++) {
-									WalkIncrements.network.sendToServer(
-										new MovePlayerMessage(halfForward, 0.0f));
+									//FIXME WalkIncrements.network.sendToServer(
+										//new MovePlayerMessage(halfForward, 0.0f));
 								}
 							}
 						}
 						else { // riding something other than a boat
 							for (int i = 0; i < 2; i++) {
-								WalkIncrements.network.sendToServer(
-									new MovePlayerMessage(halfForward, 0.0f));
+								//FIXME WalkIncrements.network.sendToServer(
+									//new MovePlayerMessage(halfForward, 0.0f));
 							}
 						}
 					}
@@ -240,9 +247,9 @@ implements ChildModWithConfig
 								playerPos.getY()+1, playerPos.getZ());
 
 						BlockPos blockInFrontPos = new BlockPos(
-								posVec.xCoord + forwardVec.xCoord,
-								posVec.yCoord + forwardVec.yCoord,
-								posVec.zCoord + forwardVec.zCoord);
+								posVec.x + forwardVec.x,
+								posVec.y + forwardVec.y,
+								posVec.z + forwardVec.z);
 						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
 									
 						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
@@ -305,26 +312,26 @@ implements ChildModWithConfig
 		return Math.min(1.0, (double)standardFps/(double)currFps);
 	}
 
-	private boolean isDirectlyFacingSideHit(EnumFacing sideHit, Vec3d lookVec) {
+	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3d lookVec) {
     	double thresh = 0.8;
     	switch(sideHit) {
 		case NORTH:
-			if (lookVec.zCoord > thresh){
+			if (lookVec.z > thresh){
 				return true;
 			}
 			break;
 		case EAST:
-			if (lookVec.xCoord < -thresh){
+			if (lookVec.x < -thresh){
 				return true;
 			}
 			break;
 		case SOUTH:
-			if (lookVec.zCoord < -thresh){
+			if (lookVec.z < -thresh){
 				return true;
 			}
 			break;
 		case WEST:
-			if (lookVec.xCoord > thresh){
+			if (lookVec.x > thresh){
 				return true;
 			}
 			break;
@@ -354,7 +361,7 @@ implements ChildModWithConfig
 		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		Entity hitEntity = mov.entityHit;
 		if (hitEntity != null) {
-			EntityLiving liveEntity = (EntityLiving)hitEntity;
+			LivingEntity liveEntity = (LivingEntity)hitEntity;
 			if (liveEntity != null) {
 				return 0.2f;
 			}
@@ -369,19 +376,19 @@ implements ChildModWithConfig
 		
 		// Check block in front of player, and the one above it.
 		// Also same two blocks in front.
-		BlockPos posInFront = new BlockPos(posVec.xCoord + lookVec.xCoord,
-				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFront = new BlockPos(posVec.x + lookVec.x,
+				posVec.y, posVec.z + lookVec.z);
 		
 		//isPlayerDirectlyFacingBlock(player, posInFront);
 		
-		BlockPos posInFrontAbove = new BlockPos(posVec.xCoord + lookVec.xCoord,
-				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontAbove = new BlockPos(posVec.x + lookVec.x,
+				posVec.y+1, posVec.z + lookVec.z);
 		
-		BlockPos posInFrontTwo = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
-				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontTwo = new BlockPos(posVec.x + 2*lookVec.x,
+				posVec.y, posVec.z + lookVec.z);
 		
-		BlockPos posInFrontTwoAbove = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
-				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontTwoAbove = new BlockPos(posVec.x + 2*lookVec.x,
+				posVec.y+1, posVec.z + lookVec.z);
 
 		if (doesBlockMovement(posInFront) &&
 				doesBlockMovement(posInFrontAbove)) {

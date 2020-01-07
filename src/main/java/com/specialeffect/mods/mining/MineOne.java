@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.mining;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.EyeGaze;
@@ -23,7 +25,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
@@ -37,7 +39,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -52,7 +54,7 @@ implements ChildModWithConfig
 {
 	public static final String MODID = "specialeffect.autodestroy";
 	public static final String NAME = "AutoDestroy";
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 	public static Configuration mConfig;
 
 	private boolean mDestroying = false;
@@ -65,7 +67,7 @@ implements ChildModWithConfig
 	private boolean mAutoSelectTool = false;
 	private boolean mWaitingForPickaxe = false;
 	
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -74,22 +76,22 @@ implements ChildModWithConfig
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
 
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
 		this.syncConfig();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mDestroyKB = new KeyBinding("Mine one block", Keyboard.KEY_N, CommonStrings.EYEGAZE_COMMON);
+		mDestroyKB = new KeyBinding("Mine one block", GLFW.GLFW_KEY_N, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 				
 	}
@@ -194,7 +196,7 @@ implements ChildModWithConfig
 	}
 	
 	// returns true if successful
-	static boolean choosePickaxe(InventoryPlayer inventory) {
+	static boolean choosePickaxe(PlayerInventory inventory) {
 		
 		// In creative mode, we can either select a pickaxe from the hotbar 
 		// or just rustle up a new one		
@@ -217,6 +219,6 @@ implements ChildModWithConfig
 	
 	static void requestCreatePickaxe() {
 		// Ask server to put new item in hotbar
-		MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
+		//FIXME MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
 	}	
 }

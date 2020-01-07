@@ -22,7 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -33,7 +33,7 @@ public class DebugAverageFps
 	public static final String MODID = "specialeffect.debugfps";
 	public static final String NAME = "DebugAverageFps";
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {    
 		MinecraftForge.EVENT_BUS.register(this);    	
@@ -44,7 +44,7 @@ public class DebugAverageFps
 
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event)
 	{
 		mPrevFps = new LinkedBlockingQueue<Integer>();

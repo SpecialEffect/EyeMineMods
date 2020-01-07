@@ -30,7 +30,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -48,9 +48,9 @@ public class Dismount extends BaseClassWithCallbacks {
 
 	private static KeyBinding mDismountKB;
 	
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -59,16 +59,16 @@ public class Dismount extends BaseClassWithCallbacks {
 				"Add custom key binding to mount/dismount animals");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(DismountPlayerMessage.Handler.class, 
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(DismountPlayerMessage.Handler.class, 
         						DismountPlayerMessage.class, 0, Side.SERVER);
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 		
 		// Register key bindings
-		mDismountKB = new KeyBinding("Ride or dismount", Keyboard.KEY_C, CommonStrings.EYEGAZE_EXTRA);
+		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_C, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);
 	}
 
@@ -95,8 +95,8 @@ public class Dismount extends BaseClassWithCallbacks {
 							player.motionY += 0.5D;
 						}			
 						// Dismount player on server
-						Dismount.network.sendToServer(
-								new DismountPlayerMessage());						
+						//FIXME Dismount.network.sendToServer(
+								//new DismountPlayerMessage());						
 					}
 					else {
 						RayTraceResult mov = Minecraft.getInstance().objectMouseOver;

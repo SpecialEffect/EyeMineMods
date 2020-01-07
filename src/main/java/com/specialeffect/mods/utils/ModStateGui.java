@@ -18,7 +18,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -30,7 +30,8 @@ public class ModStateGui extends BaseClassWithCallbacks {
 
 	private StateOverlay mStateOverlay;
 
-	@EventHandler
+	
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -44,7 +45,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
 		mStateOverlay = new StateOverlay(Minecraft.getInstance());
 	}
 	
-	@EventHandler
+	@SubscribeEvent
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(mStateOverlay);

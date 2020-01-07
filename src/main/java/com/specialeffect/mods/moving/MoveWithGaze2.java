@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.moving;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.gui.StateOverlay;
@@ -29,11 +31,13 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MoveWithGaze2.MODID)
 public class MoveWithGaze2 
@@ -50,25 +54,25 @@ implements ChildModWithConfig
     private static boolean mMoveWhenMouseStationary = false;
     private static float mCustomSpeedFactor = 0.8f;
 
-    @EventHandler
-	@SuppressWarnings("static-access")
-    public void preInit(FMLPreInitializationEvent event) {    
-    	MinecraftForge.EVENT_BUS.register(this);  
+    public MoveWithGaze2() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		
+		MinecraftForge.EVENT_BUS.register(this);  
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
     	
     	mOverlay = new JoystickControlOverlay(Minecraft.getInstance());
-    }
     
-    @EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+    	// postInit
 		MinecraftForge.EVENT_BUS.register(mOverlay);
 	}
 	
-    @EventHandler
+    @SubscribeEvent
     public void init(FMLInitializationEvent event)
     {	
 
@@ -76,7 +80,7 @@ implements ChildModWithConfig
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", Keyboard.KEY_B, CommonStrings.EYEGAZE_COMMON);
+    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", GLFW.GLFW_KEY_B, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
 		// Register an icon for the overlay
@@ -117,7 +121,7 @@ implements ChildModWithConfig
     			
     			// Y gives distance to walk forward/back.
     			float walkForwardAmount = 0.0f;
-    			float h = (float)Minecraft.getInstance().displayHeight;
+    			float h = (float)Minecraft.getInstance().currentScreen.height;
     			float h3 = h/3.0f;
 
     			if (lastMouseY < h3) {
@@ -131,7 +135,7 @@ implements ChildModWithConfig
     			walkForwardAmount *= mCustomSpeedFactor;
 
     			// X gives how far to rotate viewpoint
-    			float w = (float)Minecraft.getInstance().displayWidth;
+    			float w = (float)Minecraft.getInstance().currentScreen.width;
     			float w2 = w/2.0f;
 
     			float yawAmount = (lastMouseX - w2)/w2;
@@ -139,13 +143,14 @@ implements ChildModWithConfig
     			    			
     			// scaled by user sensitivity
     			// TODO: sensitivity isn't linear :-S
-    			float sens = Minecraft.getInstance().gameSettings.mouseSensitivity;
+    			float sens = (float) Minecraft.getInstance().gameSettings.mouseSensitivity;
     			yawAmount *= Math.max(sens, 0.05);
     			
     			// TODO: Scale by user sensitivity?
     			
     			player.rotationYaw += yawAmount;
-    			player.moveEntityWithHeading(0.0f, walkForwardAmount);
+    			//FIXME player.moveEntityWithHeading(0.0f, walkForwardAmount);
+    			
     		}
 			this.processQueuedCallbacks(event);
 			
@@ -175,8 +180,8 @@ implements ChildModWithConfig
     	if (mDoingAutoWalk) {
     		if (Mouse.isGrabbed()) {
 	    		// when mouse is captured, x and y pos are encoded in deltas.
-	    		lastMouseX = Minecraft.getInstance().displayWidth/2 + Mouse.getEventDX();
-	    		lastMouseY = Minecraft.getInstance().displayHeight/2 + Mouse.getEventDY();
+	    		lastMouseX = Minecraft.getInstance().currentScreen.width/2 + Mouse.getEventDX();
+	    		lastMouseY = Minecraft.getInstance().currentScreen.height/2 + Mouse.getEventDY();
     		}
     		else {
     			lastMouseX = Mouse.getEventX();
@@ -184,8 +189,8 @@ implements ChildModWithConfig
     		}
     	}
     	else {
-    		lastMouseX = Minecraft.getInstance().displayWidth/2;
-    		lastMouseY = Minecraft.getInstance().displayHeight/2;
+    		lastMouseX = Minecraft.getInstance().currentScreen.width/2;
+    		lastMouseY = Minecraft.getInstance().currentScreen.height/2;
     	}
     	
     	// TODO: do we need to reset mouse to (0,0) when we're done? otherwise next mouse event

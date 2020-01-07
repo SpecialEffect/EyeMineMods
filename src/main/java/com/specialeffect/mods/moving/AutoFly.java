@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.moving;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -34,7 +36,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -57,12 +59,12 @@ implements ChildModWithConfig
 
 	private static int mFlyHeightManual = 2;
 	private static int mFlyHeightAuto = 6;
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
 	private static int mIconIndexAuto;
 	private static int mIconIndexManual;
 	
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -71,21 +73,21 @@ implements ChildModWithConfig
 				"Add key binding to start/stop flying, and automatically fly over hills.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME network.registerMessage(ChangeFlyingStateMessage.Handler.class, ChangeFlyingStateMessage.class, 1, Side.SERVER);
 
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 
 		// Subscribe to parent's config changes
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
-		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", Keyboard.KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
-		mFlyAutoKB = new KeyBinding("Start/stop flying (auto)", Keyboard.KEY_G, CommonStrings.EYEGAZE_COMMON);
-		mFlyUpKB = new KeyBinding("Fly higher", Keyboard.KEY_PERIOD, CommonStrings.EYEGAZE_EXTRA);
+		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", GLFW.GLFW_KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
+		mFlyAutoKB = new KeyBinding("Start/stop flying (auto)", GLFW.GLFW_KEY_G, CommonStrings.EYEGAZE_COMMON);
+		mFlyUpKB = new KeyBinding("Fly higher", GLFW.GLFW_KEY_PERIOD, CommonStrings.EYEGAZE_EXTRA);
 		
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
 		ClientRegistry.registerKeyBinding(mFlyAutoKB);
@@ -113,8 +115,8 @@ implements ChildModWithConfig
 
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {
-					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.xCoord,
-							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.zCoord);
+					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.x,
+							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.z);
 
 					World world = Minecraft.getInstance().world;
 
@@ -166,7 +168,7 @@ implements ChildModWithConfig
 //				mIsFlyingManual = false;
 				PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 				player.capabilities.isFlying = false;
-				AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
+				//FIXME AutoFly.network.sendToServer(new ChangeFlyingStateMessage(false, 0));
 //				updateIcons();
 			}
 		}));	
@@ -193,7 +195,7 @@ implements ChildModWithConfig
 					}
 					//TODO: MoverType SELF or PLAYER?
 					player.move(MoverType.SELF, 0, flyHeight, 0);
-					AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
+					//FIXME AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 				}
 				else {
 					player.sendMessage(new TextComponentString(

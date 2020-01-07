@@ -91,8 +91,8 @@ public class CreativeInventoryManager {
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
 		Point size = ModUtils.getScaledDisplaySize(mc);
-		this.xScale = (float) (mc.displayWidth)/(float)size.getX();
-		this.yScale = (float) (mc.displayHeight)/(float)size.getY();			
+		this.xScale = (float) (mc.currentScreen.width)/(float)size.getX();
+		this.yScale = (float) (mc.currentScreen.height)/(float)size.getY();			
 		
 	}
 

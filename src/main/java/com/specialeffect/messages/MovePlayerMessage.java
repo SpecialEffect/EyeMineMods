@@ -16,9 +16,9 @@ import javax.xml.ws.handler.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.MinecartEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.Vec3d;
@@ -69,19 +69,19 @@ public class MovePlayerMessage implements IMessage {
 							final double scaleAnimal = 1.0d/2.0d;
 							final double scaleBoat = 1.0d/3.0d;
 							
-							if (riddenEntity instanceof EntityMinecart) {
-								EntityMinecart minecart = (EntityMinecart)riddenEntity;
+							if (riddenEntity instanceof MinecartEntity) {
+								MinecartEntity minecart = (MinecartEntity)riddenEntity;
 								message.moveAmount *= scaleMinecart;
 
 								Vec3d lookVec = player.getLookVec();
 								System.out.println(message.moveAmount);
-								minecart.motionX = lookVec.xCoord*message.moveAmount;
-								minecart.motionZ = lookVec.zCoord*message.moveAmount;
+								minecart.motionX = lookVec.x*message.moveAmount;
+								minecart.motionZ = lookVec.z*message.moveAmount;
 								minecart.moveMinecartOnRail(null);
 								minecart.onUpdate();
 							}
-							else if (riddenEntity instanceof EntityAnimal) {
-								EntityAnimal animal = (EntityAnimal)riddenEntity;
+							else if (riddenEntity instanceof AnimalEntity) {
+								AnimalEntity animal = (AnimalEntity)riddenEntity;
 								message.moveAmount *= scaleAnimal;
 								
 								// Make sure riding doesn't hurt animal (this can happen
@@ -98,7 +98,7 @@ public class MovePlayerMessage implements IMessage {
 									riddenEntity.updateRidden();
 								}
 							}
-							else if (riddenEntity instanceof EntityBoat) {
+							else if (riddenEntity instanceof BoatEntity) {
 								message.moveAmount *= scaleBoat;
 								double yaw = Math.toRadians(riddenEntity.rotationYaw);
 								Point2d xyDiff = polarToCartesian(message.moveAmount, 

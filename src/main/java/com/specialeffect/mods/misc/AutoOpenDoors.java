@@ -29,7 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -44,9 +44,9 @@ implements ChildModWithConfig
 	public static final String NAME = "AutoOpenDoors";
     public static Configuration mConfig;
 
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -55,8 +55,8 @@ implements ChildModWithConfig
 				"Automatically open doors/gates and close them behind you.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
+        //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
         						UseDoorAtPositionMessage.class, 0, Side.SERVER);
 
         // Set up config
@@ -64,7 +64,7 @@ implements ChildModWithConfig
     	this.syncConfig();
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 
 		// Register for config changes from parent
@@ -117,8 +117,8 @@ implements ChildModWithConfig
 											mOpenedDoors.add(blockPos);
 
 											// Ask server to open door too
-											AutoOpenDoors.network.sendToServer(
-													new UseDoorAtPositionMessage(blockPos, true));
+											//FIXME AutoOpenDoors.network.sendToServer(
+													//new UseDoorAtPositionMessage(blockPos, true));
 										}
 									}
 								}
@@ -138,8 +138,8 @@ implements ChildModWithConfig
 							OpenableBlock.close(world, block, pos);
 
 							// Ask server to close door too
-							AutoOpenDoors.network.sendToServer(
-									new UseDoorAtPositionMessage(pos, false));
+							//FIXME AutoOpenDoors.network.sendToServer(
+									//new UseDoorAtPositionMessage(pos, false));
 
 							// Remove from list
 							iterator.remove();

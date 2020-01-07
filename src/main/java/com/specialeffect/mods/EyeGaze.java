@@ -164,7 +164,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
     
 //  TODO: 
 // Reinstate this somewhere, somehow
-//	@EventHandler
+//	@SubscribeEvent
 //	@SuppressWarnings("static-access")
 //	public void preInit(FMLPreInitializationEvent event) {
 //		MinecraftForge.EVENT_BUS.register(this);

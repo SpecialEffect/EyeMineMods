@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.moving;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -29,11 +31,13 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 
 @Mod(Sneak.MODID)
@@ -51,25 +55,23 @@ public class Sneak extends BaseClassWithCallbacks {
 	private Minecraft mMinecraft;
 	
 	private MovementInputFromOptionsOverride mMovementOverride;
+		
+
+	public Sneak() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
 	
-	@EventHandler
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	private void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop sneaking");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-
 	    mMinecraft = Minecraft.getInstance();
 
 		// Register key bindings
-		mSneakKB = new KeyBinding("Start/stop sneaking", Keyboard.KEY_Z, CommonStrings.EYEGAZE_EXTRA);
+		mSneakKB = new KeyBinding("Start/stop sneaking", GLFW.GLFW_KEY_Z, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSneakKB);
 		
 		// Register an icon for the overlay

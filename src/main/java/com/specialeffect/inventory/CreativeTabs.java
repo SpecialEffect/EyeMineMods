@@ -23,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -47,7 +47,7 @@ implements ChildModWithConfig
 
 	public static final Minecraft client = FMLClientHandler.instance().getClient();
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -60,7 +60,7 @@ implements ChildModWithConfig
 
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void load(FMLInitializationEvent event) {
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiConfigHandler());

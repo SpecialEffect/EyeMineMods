@@ -15,6 +15,7 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
@@ -37,7 +38,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -69,7 +70,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	
 	private static int mTicksSinceMouseEvent = 1000;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -89,7 +90,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	
 	}
 	
-	@EventHandler
+	@SubscribeEvent
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(mIconEye);
@@ -194,23 +195,23 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 
 		// Subscribe to config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
 
 		// Register key bindings
-		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", Keyboard.KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
+		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", GLFW.GLFW_KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
 
-		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity down", Keyboard.KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
+		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity down", GLFW.GLFW_KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
 
 		// Used to turn 'look with gaze' on and off when using mouse emulation
 		// instead of an
 		// eyetracker
-		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", Keyboard.KEY_Y, CommonStrings.EYEGAZE_EXTRA);
+		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", GLFW.GLFW_KEY_Y, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
 
 		// Set up an empty cursor to use when doing own mouse handling

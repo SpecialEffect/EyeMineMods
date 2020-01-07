@@ -24,7 +24,8 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -51,9 +52,9 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	public static KeyBinding autoPlaceKeyBinding;
 	public static KeyBinding openChatKB;
 
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -61,18 +62,18 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to create pillar, or 'nerd-pole'.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
-		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 1, Side.SERVER);
-		network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 2, Side.SERVER);
-		network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 3, Side.SERVER);
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME network.registerMessage(UseItemAtPositionMessage.Handler.class, UseItemAtPositionMessage.class, 0, Side.SERVER);
+		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 1, Side.SERVER);
+		//FIXME network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 2, Side.SERVER);
+		//FIXME network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 3, Side.SERVER);
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 
 		// Register key bindings
-		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", Keyboard.KEY_L, CommonStrings.EYEGAZE_EXTRA);
+		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_L, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
 	}
@@ -130,15 +131,15 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					double y = Math.floor(player.posY);
 					double z = Math.floor(player.posZ) + 0.4;
 					
-					AutoPillar.network.sendToServer(
-							new SetPositionAndRotationMessage(
+					//FIXME AutoPillar.network.sendToServer(
+							/*new SetPositionAndRotationMessage(
 									player.getName(),
 									x, y + jumpHeight, z,
-									player.rotationYaw, pillarPitch));
+									player.rotationYaw, pillarPitch));*/
 
 					// Ask server to use item
 					BlockPos blockPos = new BlockPos(x, y, z);
-					AutoPillar.network.sendToServer(new UseItemAtPositionMessage(player, blockPos));
+					//FIXME AutoPillar.network.sendToServer(new UseItemAtPositionMessage(player, blockPos));
 					
 					// Make sure we get the animation
 					player.swingArm(EnumHand.MAIN_HAND);
@@ -153,7 +154,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					public void onLiving(LivingUpdateEvent event) {
 						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-						AutoPillar.network.sendToServer(
+						//FIXME AutoPillar.network.sendToServer(
 								new SetPositionAndRotationMessage(
 										player.getName(), 
 										player.posX, player.posY, player.posZ,
@@ -165,7 +166,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		}
 	}
 	
-	static void chooseBlock(InventoryPlayer inventory) {
+	static void chooseBlock(PlayerInventory inventory) {
 		
 		// In creative mode, we can either select a block from the hotbar 
 		// or just rustle up a new one
@@ -176,7 +177,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		}
 		else {
 			// Ask server to put new item in hotbar
-			AutoPillar.network.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
+			// FIXME for 1.14			AutoPillar.network.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
 		}
 	}
 

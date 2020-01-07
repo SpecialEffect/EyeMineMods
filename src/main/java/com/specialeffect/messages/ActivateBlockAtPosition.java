@@ -16,7 +16,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +64,7 @@ public class ActivateBlockAtPosition implements IMessage {
 
 					IBlockState state = world.getBlockState(message.blockPos);								    
 					block.onBlockActivated(world, message.blockPos, state, player, 
-							EnumHand.MAIN_HAND, EnumFacing.NORTH, 0.5f, 0.5f, 0.5f);	
+							EnumHand.MAIN_HAND, Direction.NORTH, 0.5f, 0.5f, 0.5f);	
 
                 }
             });

@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -26,40 +28,42 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(UseItem.MODID)
 public class UseItem extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.useitem";
 	public static final String NAME = "UseItem";
 
-	@EventHandler
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public UseItem() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to use item without mouse");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
+		// FMLInitializationEvent
 
 		// Register key bindings
-		mUseItemOnceKB = new KeyBinding("Use item", Keyboard.KEY_NUMPAD0, CommonStrings.EYEGAZE_COMMON);
+		mUseItemOnceKB = new KeyBinding("Use item", GLFW.GLFW_KEY_KP_0, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mUseItemOnceKB);
 
-		mUseItemContinuouslyKB = new KeyBinding("Use item continuously", Keyboard.KEY_NUMPAD1, CommonStrings.EYEGAZE_EXTRA);
+		mUseItemContinuouslyKB = new KeyBinding("Use item continuously", GLFW.GLFW_KEY_KP_1, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mUseItemContinuouslyKB);
 
-		mPrevItemKB = new KeyBinding("Select previous item", Keyboard.KEY_NUMPAD4, CommonStrings.EYEGAZE_EXTRA);
+		mPrevItemKB = new KeyBinding("Select previous item", GLFW.GLFW_KEY_KP_4, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mPrevItemKB);
 
-		mNextItemKB = new KeyBinding("Select next item", Keyboard.KEY_NUMPAD5, CommonStrings.EYEGAZE_EXTRA);
+		mNextItemKB = new KeyBinding("Select next item", GLFW.GLFW_KEY_KP_5, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNextItemKB);
 
 	}

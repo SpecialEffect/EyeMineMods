@@ -17,7 +17,8 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAir;
@@ -31,7 +32,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -43,11 +44,11 @@ public class DefaultConfigForNewWorld {
 	public static final String MODID = "specialeffect.defaultconfigworld";
 	public static final String NAME = "DefaultConfigWorld";
 
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 	private boolean firstWorldLoad = false;
 	private boolean firstOnLivingTick = true;	
 	
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -55,9 +56,9 @@ public class DefaultConfigForNewWorld {
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Apply default config to new worlds");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
-		network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 1, Side.SERVER);
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+		//FIXME network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 1, Side.SERVER);
 
 	}
 
@@ -114,7 +115,7 @@ public class DefaultConfigForNewWorld {
 		}
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void onWorldLoad(FMLServerStartedEvent event) {
 		// Note first time world loads, we'll make changes on next
 		// onliving tick
@@ -147,10 +148,11 @@ public class DefaultConfigForNewWorld {
 		DefaultConfigForNewWorld.network.sendToServer(new SendCommandMessage(cmd));
 	}
 	
-	private void equipPlayer(InventoryPlayer inventory) {
+	private void equipPlayer(PlayerInventory inventory) {
 		// Ask server to put new item in hotbar		
 
-		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
+		//FIXME
+		/*DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.BRICKS)));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.SANDSTONE)));
@@ -164,7 +166,7 @@ public class DefaultConfigForNewWorld {
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
 				new ItemStack(Items.DIAMOND_PICKAXE), 7));
 		DefaultConfigForNewWorld.network.sendToServer(new AddItemToHotbar(
-				new ItemStack(Items.DIAMOND_SWORD), 8));
+				new ItemStack(Items.DIAMOND_SWORD), 8));*/
 		
 		inventory.currentItem = 0;
 	}

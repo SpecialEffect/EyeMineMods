@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.moving;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -29,7 +31,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -48,7 +50,7 @@ implements ChildModWithConfig
     private boolean mDoingAutoJump = true;
 	private int mIconIndex;
 
-    @EventHandler
+    @SubscribeEvent
 	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
@@ -67,12 +69,12 @@ implements ChildModWithConfig
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
-	@EventHandler
+	@SubscribeEvent
     public void init(FMLInitializationEvent event)
     {
     	
     	// Register key bindings
-        autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", Keyboard.KEY_J, CommonStrings.EYEGAZE_COMMON);
+        autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", GLFW.GLFW_KEY_J, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
         
         // Register an icon for the overlay

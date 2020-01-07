@@ -46,11 +46,11 @@ public class JoystickControlOverlay extends Gui
 		// Scale icon sizes to fit screen		
 		Point size = ModUtils.getScaledDisplaySize(mc);
 		mDisplayWidth = size.x;
-		mDisplayHeight = size.y;
+		mcurrentScreen.height = size.y;
 	}
 
 	private int mDisplayWidth;
-	private int mDisplayHeight;
+	private int mcurrentScreen.height;
 
 	// Lists of icons to draw on each half of screen
 	ResourceLocation mResource;
@@ -90,7 +90,7 @@ public class JoystickControlOverlay extends Gui
 
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 
-			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mDisplayHeight);
+			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mcurrentScreen.height);
 
 			// reset GL attributes!
 			GL11.glPopAttrib();

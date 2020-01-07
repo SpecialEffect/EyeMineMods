@@ -31,7 +31,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -43,9 +43,9 @@ import net.minecraftforge.fml.relauncher.Side;
 public class QuickCommands extends BaseClassWithCallbacks {
 	public static final String MODID = "specialeffect.quickcommands";
 	public static final String NAME = "QuickCommands";
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -54,20 +54,20 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
 		// Register for server messages
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(SendCommandMessage.Handler.class, 
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(SendCommandMessage.Handler.class, 
         						SendCommandMessage.class, 0, Side.SERVER);
 
 
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 		// Register key bindings
-		mNightVisionKB = new KeyBinding("Turn night vision on/off", Keyboard.KEY_F12, CommonStrings.EYEGAZE_EXTRA);
+		mNightVisionKB = new KeyBinding("Turn night vision on/off", GLFW.GLFW_KEY_F12, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNightVisionKB);
 
-		mDayNightKB = new KeyBinding("Turn day/night cycle on/off", Keyboard.KEY_F14, CommonStrings.EYEGAZE_EXTRA);
+		mDayNightKB = new KeyBinding("Turn day/night cycle on/off", GLFW.GLFW_KEY_F14, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDayNightKB);
 
 	}
@@ -114,7 +114,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 					
 					// Ask server to change gamerule
 					String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
-					QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
+					//FIXME QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
 				}
 			}));			
 		}

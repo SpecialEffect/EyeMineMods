@@ -32,7 +32,7 @@ public class IconOverlay extends Gui
 	
 	private boolean mVisible = false;
 	
-	private int mDisplayHeight;
+	private int mcurrentScreen.height;
 	private int mDisplayWidth;
 	private float mAlpha = 1.0f;
 	
@@ -72,7 +72,7 @@ public class IconOverlay extends Gui
 		Point size = ModUtils.getScaledDisplaySize(mc);
 		
 		mDisplayWidth = size.x;
-		mDisplayHeight = size.y;
+		mcurrentScreen.height = size.y;
 	}
 
 
@@ -80,10 +80,10 @@ public class IconOverlay extends Gui
 	private void drawTexture()
 	{
 		// calculate position
-		int height = (int)(mDisplayHeight*mHeight);
+		int height = (int)(mcurrentScreen.height*mHeight);
 		int width = (int)(height*mAspectRatio);
 		int centreX = (int)(mCentreX*mDisplayWidth);
-		int centreY = (int)(mCentreY*mDisplayHeight);
+		int centreY = (int)(mCentreY*mcurrentScreen.height);
 		
 		GL11.glDisable(GL11.GL_LIGHTING); 
 		GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);

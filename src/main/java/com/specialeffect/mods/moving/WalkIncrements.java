@@ -12,6 +12,8 @@ package com.specialeffect.mods.moving;
 
 import java.awt.Point;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
@@ -31,7 +33,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -51,11 +53,11 @@ implements ChildModWithConfig
     public static KeyBinding walkKeyBinding;
     public static KeyBinding walkDirectionKeyBinding;
     
-    public static SimpleNetworkWrapper network;
+    //FIXME for 1.14 public static SimpleNetworkWrapper network;
     
     private KeyPressCounter keyCounterWalkDir = new KeyPressCounter();
 
-    @EventHandler
+    @SubscribeEvent
 	@SuppressWarnings("static-access")
     public void preInit(FMLPreInitializationEvent event) {    
     	MinecraftForge.EVENT_BUS.register(this);
@@ -66,8 +68,8 @@ implements ChildModWithConfig
 				"Add key bindings to walk fixed amount, for alternative inputs.");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
         
-        network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);
+        //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+        //FIXME network.registerMessage(MovePlayerMessage.Handler.class, MovePlayerMessage.class, 0, Side.SERVER);
 
     }
     
@@ -83,7 +85,7 @@ implements ChildModWithConfig
         mWalkDistance = EyeGaze.moveIncrement;
     }
     
-    @EventHandler
+    @SubscribeEvent
     public void init(FMLInitializationEvent event)
     {
     	
@@ -91,10 +93,10 @@ implements ChildModWithConfig
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
     	// Register key bindings
-    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", Keyboard.KEY_O, CommonStrings.EYEGAZE_ADVANCED);
+    	walkDirectionKeyBinding = new KeyBinding("Configure walking direction", GLFW.GLFW_KEY_O, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(walkDirectionKeyBinding);
         
-    	walkKeyBinding = new KeyBinding("Step forward", Keyboard.KEY_P, CommonStrings.EYEGAZE_ADVANCED);
+    	walkKeyBinding = new KeyBinding("Step forward", GLFW.GLFW_KEY_P, CommonStrings.EYEGAZE_ADVANCED);
         ClientRegistry.registerKeyBinding(walkKeyBinding);
         
     }
@@ -133,8 +135,8 @@ implements ChildModWithConfig
 
 					if (player.isRiding()) {
 						// Ask server to move entity being ridden
-						WalkIncrements.network.sendToServer(
-							new MovePlayerMessage((float)mWalkDistance, theta));
+						//FIXME WalkIncrements.network.sendToServer(
+							//new MovePlayerMessage((float)mWalkDistance, theta));
 					}
 					else {
 						float strafe = - (float)(p.getX() * mWalkDistance);

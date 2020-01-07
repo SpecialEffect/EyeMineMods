@@ -14,7 +14,7 @@ import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
@@ -58,7 +58,7 @@ public class AddItemToHotbar implements IMessage {
                 @Override
                 public void run() {
                     PlayerEntity player = ctx.getServerHandler().playerEntity;
-                    InventoryPlayer inventory = player.inventory;
+                    PlayerInventory inventory = player.inventory;
                     
                     if (message.slotId < 0) {
                     	message.slotId = inventory.getBestHotbarSlot();

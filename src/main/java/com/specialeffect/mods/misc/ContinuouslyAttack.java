@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
@@ -25,7 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -36,7 +38,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.SubscribeEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -50,14 +52,14 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig {
 	public static final String MODID = "specialeffect.continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
-	public static SimpleNetworkWrapper network;
+	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 	private boolean mAutoSelectSword = true;
 	private static int mIconIndex;
 	private static KeyBinding mAttackKB;
 	
 	private boolean mWaitingForSword = false;
 	
-	@EventHandler
+	@SubscribeEvent
 	@SuppressWarnings("static-access")
 	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
@@ -66,20 +68,20 @@ implements ChildModWithConfig {
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
-		network.registerMessage(AttackEntityMessage.Handler.class, AttackEntityMessage.class, 1, Side.SERVER);
+		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
+		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
+		//FIXME network.registerMessage(AttackEntityMessage.Handler.class, AttackEntityMessage.class, 1, Side.SERVER);
 
 	}
 
-	@EventHandler
+	@SubscribeEvent
 	public void init(FMLInitializationEvent event) {
 		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
-		mAttackKB = new KeyBinding("Start/stop attacking", Keyboard.KEY_R, CommonStrings.EYEGAZE_COMMON);
+		mAttackKB = new KeyBinding("Start/stop attacking", GLFW.GLFW_KEY_R, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
 		// Register an icon for the overlay
@@ -122,7 +124,7 @@ implements ChildModWithConfig {
 				if (null != entity) {
 					// Attack locally and on server
 					player.attackTargetEntityWithCurrentItem(entity);
-					ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
+					//FIXME ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
 				}
 			
 				// When attacking programmatically, the player doesn't swing unless
@@ -151,7 +153,7 @@ implements ChildModWithConfig {
 	}
 	
 	//returns true if successful
-	private boolean chooseWeapon(InventoryPlayer inventory) {
+	private boolean chooseWeapon(PlayerInventory inventory) {
 		
 		// In creative mode, we can either select a sword from the hotbar 
 		// or just rustle up a new one
@@ -174,6 +176,6 @@ implements ChildModWithConfig {
 	
 	private void requestCreateSword() {
 		// Ask server to put new item in hotbar
-		ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
+		//FIXME ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
 	}
 }
