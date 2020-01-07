@@ -31,6 +31,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -103,10 +104,8 @@ public class GatherDrops extends BaseClassWithCallbacks
 	}
 
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
-		if(mGatherKB.isPressed()) {
+	public void onKeyInput(KeyInputEvent event) {      
+    	if(mGatherKB.isPressed()) {
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override

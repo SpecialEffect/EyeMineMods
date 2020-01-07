@@ -23,6 +23,8 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -79,8 +81,7 @@ public class UseItem extends BaseClassWithCallbacks {
 	}
 	
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+	public void onKeyInput(KeyInputEvent event) {
         
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
 				

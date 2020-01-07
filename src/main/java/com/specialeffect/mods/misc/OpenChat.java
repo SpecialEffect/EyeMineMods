@@ -21,6 +21,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -58,7 +59,6 @@ public class OpenChat extends BaseClassWithCallbacks {
 
 	private static KeyBinding mOpenChatKB;
 
-
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
@@ -67,9 +67,7 @@ public class OpenChat extends BaseClassWithCallbacks {
 	}
 
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
+    public void onKeyInput(KeyInputEvent event) {
 		final Input chatKeyCode = Minecraft.getInstance().gameSettings.keyBindChat.getKey();
 		if (mOpenChatKB.isPressed()) {
 			KeyBinding.onTick(chatKeyCode);

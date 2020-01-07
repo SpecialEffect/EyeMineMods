@@ -61,9 +61,7 @@ public class PickBlock extends BaseClassWithCallbacks {
     }
 	
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
+    public void onKeyInput(KeyInputEvent event) {
 		if (mPickBlockKB.isPressed()) {
 	        LOGGER.info("HELLO Key pressed");
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();

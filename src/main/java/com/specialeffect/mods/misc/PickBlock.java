@@ -19,6 +19,7 @@ import com.specialeffect.utils.CommonStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -51,9 +52,7 @@ public class PickBlock extends BaseClassWithCallbacks {
     }
 	
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
+    public void onKeyInput(KeyInputEvent event) {   
 		if (mPickBlockKB.isPressed()) {
 	        LOGGER.info("HELLO Key pressed");
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();

@@ -22,6 +22,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -72,8 +73,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	private static KeyBinding mSwapKB;
 
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+	public void onKeyInput(KeyInputEvent event) {	
         
 		if (mSwapKB.isPressed()) {
 			Input attackInput = Minecraft.getInstance().gameSettings.keyBindAttack.getKey();
