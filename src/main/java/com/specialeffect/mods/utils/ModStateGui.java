@@ -18,9 +18,8 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(ModStateGui.MODID)
 public class ModStateGui extends BaseClassWithCallbacks {
@@ -30,10 +29,12 @@ public class ModStateGui extends BaseClassWithCallbacks {
 
 	private StateOverlay mStateOverlay;
 
+	public ModStateGui() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
 	
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	private void setup(final FMLCommonSetupEvent event) {
+		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -43,11 +44,8 @@ public class ModStateGui extends BaseClassWithCallbacks {
 		// This needs to be initialised in preinit because other mods will 
 		// try to register with it in postinit.
 		mStateOverlay = new StateOverlay(Minecraft.getInstance());
-	}
-	
-	@SubscribeEvent
-	public void postInit(FMLPostInitializationEvent event)
-	{
+		
+		// post init
 		MinecraftForge.EVENT_BUS.register(mStateOverlay);
 	}
 
