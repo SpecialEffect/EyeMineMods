@@ -46,7 +46,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     
-	public static final String MODID = "specialeffect.eyegaze";	
+	public static final String MODID = "eyegaze";	
 	public static final String VERSION = ModUtils.VERSION;	
 	public static final String NAME = "Eye Gaze";
 

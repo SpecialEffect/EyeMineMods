@@ -45,7 +45,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 
 public class Dismount extends BaseClassWithCallbacks {
 
-	public static final String MODID = "specialeffect.dismount";
+	public static final String MODID = "dismount";
 	public static final String NAME = "Dismount";
 
 	private static KeyBinding mDismountKB;

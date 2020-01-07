@@ -27,52 +27,43 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(AutoJump.MODID)
 public class AutoJump 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
-    public static final String MODID = "specialeffect.autojump";
+    public static final String MODID = "autojump";
     public static final String NAME = "AutoJump";
 
     public static KeyBinding autoJumpKeyBinding;    
-    public static Configuration mConfig;
+    //FIXME public static Configuration mConfig;
 
     private boolean mDoingAutoJump = true;
 	private int mIconIndex;
 
-    @SubscribeEvent
-	@SuppressWarnings("static-access")
-    public void preInit(FMLPreInitializationEvent event) {    
+	public AutoJump() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//preinit
+		
     	MinecraftForge.EVENT_BUS.register(this);
         
         ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically step over blocks.");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-    }
-    
-    public void syncConfig() {
-    	mDoingAutoJump = EyeGaze.defaultDoAutoJump;
-    	// Turn off vanilla autojump since it doesn't play nicely with 
-    	// our gaze-based walking methods.
-    	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
-		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
-	}
-
-	@SubscribeEvent
-    public void init(FMLInitializationEvent event)
-    {
-    	
+    	//init 
     	// Register key bindings
         autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", GLFW.GLFW_KEY_J, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
@@ -84,6 +75,16 @@ implements ChildModWithConfig
         // This has to happen after texture is registered, since it will trigger a syncConfig call.
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     }
+    
+    public void syncConfig() {
+    	mDoingAutoJump = EyeGaze.defaultDoAutoJump;
+    	// Turn off vanilla autojump since it doesn't play nicely with 
+    	// our gaze-based walking methods.
+    	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
+		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+	}
+
+	
 	
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
@@ -109,7 +110,8 @@ implements ChildModWithConfig
     }
     
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
+    public void onClientTickEvent(final ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
         
         if(autoJumpKeyBinding.isPressed()) {
         	mDoingAutoJump = !mDoingAutoJump;

@@ -22,31 +22,30 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(DebugAverageFps.MODID)
 public class DebugAverageFps
 {
 
-	public static final String MODID = "specialeffect.debugfps";
+	public static final String MODID = "debugfps";
 	public static final String NAME = "DebugAverageFps";
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {    
+	public DebugAverageFps() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		//preinit
 		MinecraftForge.EVENT_BUS.register(this);    	
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Log the average FPS, for debugging");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event)
-	{
+    	//	init
+	
 		mPrevFps = new LinkedBlockingQueue<Integer>();
 	}
 

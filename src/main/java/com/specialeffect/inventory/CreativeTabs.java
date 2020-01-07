@@ -36,7 +36,7 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig 
 {
 
-	public static final String MODID = "specialeffect.creativetabs";
+	public static final String MODID = "creativetabs";
 	public static final String NAME = "CreativeTabs";
 
 	/**

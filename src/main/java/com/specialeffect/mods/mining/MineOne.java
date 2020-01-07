@@ -48,7 +48,7 @@ public class MineOne
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig
 {
-	public static final String MODID = "specialeffect.autodestroy";
+	public static final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 	public static Configuration mConfig;

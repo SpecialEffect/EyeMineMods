@@ -37,7 +37,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(UseItem.MODID)
 public class UseItem extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.useitem";
+	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";
 
 	public UseItem() {

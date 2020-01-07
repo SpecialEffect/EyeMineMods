@@ -41,7 +41,7 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 public class Sneak extends BaseClassWithCallbacks {
 
-	public static final String MODID = "specialeffect.sneaktoggle";
+	public static final String MODID = "sneaktoggle";
 	public static final String NAME = "SneakToggle";
 
 	private static KeyBinding mSneakKB;

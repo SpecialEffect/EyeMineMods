@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class AutoOpenDoors 
 implements ChildModWithConfig
 {
-	public static final String MODID = "specialeffect.autoopendoors";
+	public static final String MODID = "autoopendoors";
 	public static final String NAME = "AutoOpenDoors";
     public static Configuration mConfig;
 

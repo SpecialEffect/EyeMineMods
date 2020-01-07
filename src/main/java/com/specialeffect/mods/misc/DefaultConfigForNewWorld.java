@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(DefaultConfigForNewWorld.MODID)
 public class DefaultConfigForNewWorld {
-	public static final String MODID = "specialeffect.defaultconfigworld";
+	public static final String MODID = "defaultconfigworld";
 	public static final String NAME = "DefaultConfigWorld";
 
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;

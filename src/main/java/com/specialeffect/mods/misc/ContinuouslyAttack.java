@@ -50,7 +50,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class ContinuouslyAttack 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig {
-	public static final String MODID = "specialeffect.continuouslyattack";
+	public static final String MODID = "continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 	private boolean mAutoSelectSword = true;

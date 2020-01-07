@@ -50,7 +50,7 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig 
 {
 
-	public static final String MODID = "specialeffect.autofly";
+	public static final String MODID = "autofly";
 	public static final String NAME = "AutoFly";
 
 	private static KeyBinding mFlyManualKB;

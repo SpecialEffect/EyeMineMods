@@ -47,7 +47,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 public class GatherDrops extends BaseClassWithCallbacks
 {
 
-	public static final String MODID = "specialeffect.gatherdrops";
+	public static final String MODID = "gatherdrops";
 	public static final String NAME = "GatherDrops";
 
 	//FIXME public static Configuration mConfig;

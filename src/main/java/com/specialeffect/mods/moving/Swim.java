@@ -40,7 +40,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class Swim extends BaseClassWithCallbacks {
 
-	public static final String MODID = "specialeffect.swimtoggle";
+	public static final String MODID = "swimtoggle";
 	public static final String NAME = "SwimToggle";
 
 	private static KeyBinding mSwimKB;

@@ -42,7 +42,7 @@ public class ContinuouslyMine
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig 
 {
-	public static final String MODID = "specialeffect.continuouslydestroy";
+	public static final String MODID = "continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";
 	private static int mIconIndex;
 	private static KeyBinding mDestroyKB;

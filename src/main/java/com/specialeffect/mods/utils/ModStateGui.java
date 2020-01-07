@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 @Mod(ModStateGui.MODID)
 public class ModStateGui extends BaseClassWithCallbacks {
 
-	public static final String MODID = "specialeffect.modstategui";
+	public static final String MODID = "modstategui";
 	public static final String NAME = "modstategui";
 
 	private StateOverlay mStateOverlay;

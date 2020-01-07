@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(MouseHandler.MODID)
 public class MouseHandler extends BaseClassWithCallbacks implements ChildModWithConfig {
-	public static final String MODID = "specialeffect.mousehandler";
+	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 
 	public static Configuration mConfig;

@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 @Mod(OpenChat.MODID)
 public class OpenChat extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.openchat";
+	public static final String MODID = "openchat";
 	public static final String NAME = "OpenChat";
 
 	@SubscribeEvent

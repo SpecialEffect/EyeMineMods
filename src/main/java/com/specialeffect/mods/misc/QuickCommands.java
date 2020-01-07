@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(QuickCommands.MODID)
 public class QuickCommands extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.quickcommands";
+	public static final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
 

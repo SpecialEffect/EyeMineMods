@@ -33,7 +33,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(EasyLadderClimb.MODID)
 public class EasyLadderClimb {
-	public static final String MODID = "specialeffect.easyladderclimb";
+	public static final String MODID = "easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";
 
 	public EasyLadderClimb() {

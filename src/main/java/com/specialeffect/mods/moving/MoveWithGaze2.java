@@ -44,7 +44,7 @@ public class MoveWithGaze2
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig
 {
-	public static final String MODID = "specialeffect.movewithgaze2";
+	public static final String MODID = "movewithgaze2";
     public static final String NAME = "MoveWithGaze2";
 
     private static KeyBinding mToggleAutoWalkKB;

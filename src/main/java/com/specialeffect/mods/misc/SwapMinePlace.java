@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(SwapMinePlace.MODID)
 public class SwapMinePlace extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.swapmineplace";
+	public static final String MODID = "swapmineplace";
 	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
