@@ -21,6 +21,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -75,11 +76,12 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
         if (event.phase != TickEvent.Phase.END) return;
         
 		if (mSwapKB.isPressed()) {
-			KeyBinding kbAttack = Minecraft.getInstance().gameSettings.keyBindAttack;
-			KeyBinding kbPlace = Minecraft.getInstance().gameSettings.keyBindUseItem;
+			Input attackInput = Minecraft.getInstance().gameSettings.keyBindAttack.getKey();
+			Input useInput = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
+			
 			// FIXME: test this!
-			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, kbPlace.getKey());
-			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, kbAttack.getKey());
+			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, useInput);
+			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, attackInput);
 
 			this.queueChatMessage("Swapping mine and place keys");			
 		}
