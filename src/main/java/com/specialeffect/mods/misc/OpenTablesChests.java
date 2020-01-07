@@ -29,7 +29,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -153,7 +153,7 @@ implements ChildModWithConfig
 					
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.sendMessage(new TextComponentString(
+						player.sendMessage(new StringTextComponent(
 								"No chests found in range"));
 					}
 					else {
@@ -175,7 +175,7 @@ implements ChildModWithConfig
 
 					// Ask server to open 
 					if (null == closestBlockPos) {
-						player.sendMessage(new TextComponentString(
+						player.sendMessage(new StringTextComponent(
 								"No crafting tables found in range"));
 					}
 					else {

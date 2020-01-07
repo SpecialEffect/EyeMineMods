@@ -25,7 +25,7 @@ import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -129,7 +129,7 @@ public class Sneak extends BaseClassWithCallbacks {
 				public void onLiving(LivingUpdateEvent event) {
 					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 
-			        player.sendMessage(new TextComponentString(
+			        player.sendMessage(new StringTextComponent(
 			        		 "Sneaking: " + (mIsSneaking ? "ON" : "OFF")));
 				}		
 			}));

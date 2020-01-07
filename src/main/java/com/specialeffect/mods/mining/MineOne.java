@@ -32,7 +32,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -44,6 +46,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -67,9 +71,13 @@ implements ChildModWithConfig
 	private boolean mAutoSelectTool = false;
 	private boolean mWaitingForPickaxe = false;
 	
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	public Sneak() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
+	private void setup(final FMLCommonSetupEvent event) {
+		
+		// preinit
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -82,10 +90,8 @@ implements ChildModWithConfig
 		// Set up config
 		mConfig = new Configuration(event.getSuggestedConfigurationFile());
 		this.syncConfig();
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
+		
+		//init
 		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
@@ -126,7 +132,8 @@ implements ChildModWithConfig
 	    			// Swords can't destroy blocks: warn user
 	    			if (player.getHeldItemMainhand().getItem() instanceof ItemSword) {
 	    				String message = "Can't destroy blocks with a sword, please select another item";
-				        player.sendMessage(new TextComponentString(message));
+				        player.sendMessage(new StringTextComponent(message));
+				        
 	    				this.stopDestroying();
 	    				return;
 	    			}

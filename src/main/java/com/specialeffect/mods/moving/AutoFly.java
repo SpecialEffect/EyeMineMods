@@ -29,7 +29,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -198,7 +198,7 @@ implements ChildModWithConfig
 					//FIXME AutoFly.network.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 				}
 				else {
-					player.sendMessage(new TextComponentString(
+					player.sendMessage(new StringTextComponent(
 							"Player unable to fly"));
 				}
 				updateIcons();
