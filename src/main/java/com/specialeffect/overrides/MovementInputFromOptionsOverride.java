@@ -4,75 +4,37 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.client.GameSettings;
 import net.minecraft.util.MovementInputFromOptions;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-// Copied from net.minecraft.util.MovementInputFromOptions, changes to sneak only
-public class MovementInputFromOptionsOverride extends MovementInputFromOptions
-{
-    private final GameSettings gameSettings;
-    private AtomicBoolean mSneakOverride =  new AtomicBoolean(false);
-    
-    public MovementInputFromOptionsOverride(GameSettings gameSettingsIn)
-    {
-    	super(gameSettingsIn);
-        this.gameSettings = gameSettingsIn;
-    }
-    
-    public void setSneakOverride(boolean b) {
-    	mSneakOverride.set(b);
-    }
+//Copied from net.minecraft.util.MovementInputFromOptions, changes to sneak only
+@OnlyIn(Dist.CLIENT)
+public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
+   
+   private final GameSettings gameSettings; //shadows parent private var
+   private AtomicBoolean mSneakOverride =  new AtomicBoolean(false);
+      
+   public MovementInputFromOptionsOverride(GameSettings gameSettingsIn) {
+	   super(gameSettingsIn);
+	   gameSettings = gameSettingsIn;	   
+   }
+         
+   public void setSneakOverride(boolean b) {
+   	 mSneakOverride.set(b);
+   }
 
-    public void updatePlayerMoveState()
-    {
-        this.moveStrafe = 0.0F;
-        this.moveForward = 0.0F;
-
-        if (this.gameSettings.keyBindForward.isKeyDown())
-        {
-            ++this.moveForward;
-            this.forwardKeyDown = true;
-        }
-        else
-        {
-            this.forwardKeyDown = false;
-        }
-
-        if (this.gameSettings.keyBindBack.isKeyDown())
-        {
-            --this.moveForward;
-            this.backKeyDown = true;
-        }
-        else
-        {
-            this.backKeyDown = false;
-        }
-
-        if (this.gameSettings.keyBindLeft.isKeyDown())
-        {
-            ++this.moveStrafe;
-            this.leftKeyDown = true;
-        }
-        else
-        {
-            this.leftKeyDown = false;
-        }
-
-        if (this.gameSettings.keyBindRight.isKeyDown())
-        {
-            --this.moveStrafe;
-            this.rightKeyDown = true;
-        }
-        else
-        {
-            this.rightKeyDown = false;
-        }
-
-        this.jump = this.gameSettings.keyBindJump.isKeyDown();
-        this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || mSneakOverride.get();
-
-        if (this.sneak)
-        {
-            this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
-            this.moveForward = (float)((double)this.moveForward * 0.3D);
-        }
-    }
+   public void tick(boolean slow, boolean noDampening) {
+      this.forwardKeyDown = this.gameSettings.keyBindForward.isKeyDown();
+      this.backKeyDown = this.gameSettings.keyBindBack.isKeyDown();
+      this.leftKeyDown = this.gameSettings.keyBindLeft.isKeyDown();
+      this.rightKeyDown = this.gameSettings.keyBindRight.isKeyDown();
+      this.moveForward = this.forwardKeyDown == this.backKeyDown ? 0.0F : (float)(this.forwardKeyDown ? 1 : -1);
+      this.moveStrafe = this.leftKeyDown == this.rightKeyDown ? 0.0F : (float)(this.leftKeyDown ? 1 : -1);
+      this.jump = this.gameSettings.keyBindJump.isKeyDown();
+      this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || this.mSneakOverride.get();
+      if (!noDampening && (this.sneak || slow)) {
+         this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
+         this.moveForward = (float)((double)this.moveForward * 0.3D);
+      }
+   }
 }

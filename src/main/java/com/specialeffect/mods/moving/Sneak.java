@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.gui.StateOverlay;
+//FIXME import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.CommonStrings;
@@ -48,7 +48,7 @@ public class Sneak extends BaseClassWithCallbacks {
 	private static boolean mIsSneaking = false;
 	
 	private static int mIconIndex;
-	  
+	
 	private Minecraft mMinecraft;
 	
 	private MovementInputFromOptionsOverride mMovementOverride;
@@ -72,7 +72,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		ClientRegistry.registerKeyBinding(mSneakKB);
 		
 		// Register an icon for the overlay
-		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
+		//FIXME mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
 		
 	}
 	
@@ -98,7 +98,7 @@ public class Sneak extends BaseClassWithCallbacks {
 			this.processQueuedCallbacks(event);
 			
 			// Make sure icon up to date
-    		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
+			//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 		}
 	}
 	
