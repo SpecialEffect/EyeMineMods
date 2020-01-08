@@ -18,7 +18,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
-import com.specialeffect.messages.PickBlockMessage;
+import com.specialeffect.messages.GatherBlockMessage;
 //import com.specialeffect.messages.PickBlockMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
@@ -80,8 +80,8 @@ public class GatherDrops extends BaseClassWithCallbacks
                 , PROTOCOL_VERSION::equals);
         int id = 0;
         
-        channel.registerMessage(id++, PickBlockMessage.class, PickBlockMessage::encode, 
-        		PickBlockMessage::decode, PickBlockMessage.Handler::handle);        
+        channel.registerMessage(id++, GatherBlockMessage.class, GatherBlockMessage::encode, 
+        		GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);        
 
 		// Set up config
 		/* FIXME mConfig = new Configuration(event.getSuggestedConfigurationFile());
@@ -143,7 +143,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 			System.out.println("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (int i = 0; i < items.size(); i++) {
-                channel.sendToServer(new PickBlockMessage(items.get(i).getEntityId()));
+                channel.sendToServer(new GatherBlockMessage(items.get(i).getEntityId()));
 			}
 		}
 	}

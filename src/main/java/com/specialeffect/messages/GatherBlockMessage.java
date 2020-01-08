@@ -26,25 +26,25 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class PickBlockMessage {
+public class GatherBlockMessage {
     private int entityId = 0;
 
-    public PickBlockMessage() { }
+    public GatherBlockMessage() { }
     
-    public PickBlockMessage(int id) {
+    public GatherBlockMessage(int id) {
         this.entityId = id;
     }
 
-    public static PickBlockMessage decode(PacketBuffer buf) {
-    	return new PickBlockMessage(buf.readInt());
+    public static GatherBlockMessage decode(PacketBuffer buf) {
+    	return new GatherBlockMessage(buf.readInt());
     }
     
-    public static void encode(PickBlockMessage pkt, PacketBuffer buf) {
+    public static void encode(GatherBlockMessage pkt, PacketBuffer buf) {
         buf.writeInt(pkt.entityId);
     }
 
     public static class Handler {
-		public static void handle(final PickBlockMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+		public static void handle(final GatherBlockMessage pkt, Supplier<NetworkEvent.Context> ctx) {
 			PlayerEntity player = ctx.get().getSender();
 	        if (player == null) {
 	            return;
