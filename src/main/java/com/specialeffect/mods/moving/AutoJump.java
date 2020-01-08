@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.gui.StateOverlay;
+//FIXME import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
@@ -69,7 +69,7 @@ implements ChildModWithConfig
         ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
         
         // Register an icon for the overlay
-        mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
+        //FIXME mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
         
         // Subscribe to parent's config changes
         // This has to happen after texture is registered, since it will trigger a syncConfig call.
@@ -81,7 +81,7 @@ implements ChildModWithConfig
     	// Turn off vanilla autojump since it doesn't play nicely with 
     	// our gaze-based walking methods.
     	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
-		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+		//FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
 	
@@ -115,7 +115,7 @@ implements ChildModWithConfig
         
         if(autoJumpKeyBinding.isPressed()) {
         	mDoingAutoJump = !mDoingAutoJump;
-    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+    		//FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 
 	        this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
         	{				
