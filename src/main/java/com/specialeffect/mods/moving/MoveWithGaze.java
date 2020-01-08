@@ -20,11 +20,11 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.gui.StateOverlay;
+//import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.mods.misc.ContinuouslyAttack;
-import com.specialeffect.mods.mousehandling.MouseHandler;
+//import com.specialeffect.mods.misc.ContinuouslyAttack;
+//import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -32,7 +32,7 @@ import com.specialeffect.utils.ModUtils;
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.block.LadderBlock;
-import net.minecraft.block.LiquidBlock;
+//import net.minecraft.block.LiquidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -46,15 +46,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -70,7 +67,7 @@ implements ChildModWithConfig
     private static KeyBinding mIncreaseWalkSpeedKB;
     private static KeyBinding mDecreaseWalkSpeedKB;
      
-    public static Configuration mConfig;
+    //FIXME public static Configuration mConfig;
     private static int mQueueLength = 50;
 
     private static boolean mMoveWhenMouseStationary = false;
@@ -82,23 +79,14 @@ implements ChildModWithConfig
 	
 	private void setup(final FMLCommonSetupEvent event) {
 		
+		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);  
     	
     	ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-    }    
-	
-	public void syncConfig() {
-        mQueueLength = EyeGaze.filterLength;
-        mMoveWhenMouseStationary = EyeGaze.moveWhenMouseStationary;
-        mCustomSpeedFactor = EyeGaze.customSpeedFactor;
-	}
-	
-    @SubscribeEvent
-    public void init(FMLInitializationEvent event)
-    {   	
+    	// init
 
     	// Subscribe to parent's config changes
     	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
@@ -114,8 +102,14 @@ implements ChildModWithConfig
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
-		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
-    }
+		//FIXME mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
+    }       
+	
+	public void syncConfig() {
+        mQueueLength = EyeGaze.filterLength;
+        mMoveWhenMouseStationary = EyeGaze.moveWhenMouseStationary;
+        mCustomSpeedFactor = EyeGaze.customSpeedFactor;
+	}	
     
     private static int mIconIndex;
     
@@ -136,9 +130,11 @@ implements ChildModWithConfig
        		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
+       		
+       		// FIXME: mousehandler logic
             if (mDoingAutoWalk && 
-            		null == Minecraft.getInstance().currentScreen && // no gui visible
-            		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
+            		null == Minecraft.getInstance().currentScreen) {
+            	//PUT ME BACK IN &&	(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
 
             	double forward = (double)mCustomSpeedFactor; 
             	
@@ -158,14 +154,14 @@ implements ChildModWithConfig
 
             	// Slow down if you're facing an animal/mob while attacking
 				// (without this it's easy to run past)
-				if (ContinuouslyAttack.mIsAttacking) {
+				// FIXME: put back in
+				/*if (ContinuouslyAttack.mIsAttacking) {
 	            	forward *= slowdownFactorEntity(player);
-				}
+				}*/
 
 				// Adjust according to FPS (to get some consistency across
 				// installations)
-				forward *= fpsFactor();
-				
+				forward *= fpsFactor();				
 
             	// since the user-configurable range of speeds should allow 
             	// faster than MC's maximum walking speed, we request half 
@@ -177,7 +173,8 @@ implements ChildModWithConfig
 				// If riding, we need to move the ridden entity, not the player
 				// This is a little tricky for some rideable things, and isn't 
 				// guaranteed to work perfectly
-				if (player.isRiding()) {
+				//FIXME: put back in 
+				/*if (player.isPassenger()) {
 
 					Entity riddenEntity = player.getRidingEntity();
 
@@ -282,6 +279,17 @@ implements ChildModWithConfig
 							player.moveEntityWithHeading(0.0f, halfForward);
 						}
 					}
+				}*/
+				for (int i = 0; i < 2; i++) {		
+					Vec3d forwardVec = player.getForward();
+					float scale = halfForward*0.4f;
+					forwardVec = forwardVec.mul(scale, scale, scale);
+					Vec3d forwardRelativeVec = new Vec3d(0.0, 0.0, 1.0);
+					//player.moveRelative(halfForward*0.2f, forwardRelativeVec); // this gives walking bobbing, but not autojump.
+					//player.moveEntityWithHeading(0.0f, halfForward);
+					player.move(MoverType.SELF, forwardVec); // no walk bobbing, or autojump (tried PLAYER and SELF)
+					//player.travel(forwardRelativeVec);// acts like moveRelative, but does more stuff. no autojump though
+					
 				}
 			}
 
@@ -348,16 +356,16 @@ implements ChildModWithConfig
 		return world.getBlockState(pos).getMaterial().blocksMovement();
     }
     
-    private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) {
+    /*private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) {
     	Vec3d lookVec = player.getLookVec();
     	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
 		if (null != movPos) { 
 			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
 		}
     	return false;
-    }
+    }*/
     
-    private double slowdownFactorEntity(PlayerEntity player) {    	
+    /* FIXME private double slowdownFactorEntity(PlayerEntity player) {    	
 		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		Entity hitEntity = mov.entityHit;
 		if (hitEntity != null) {
@@ -367,9 +375,9 @@ implements ChildModWithConfig
 			}
 		}
 		return 1.0f;
-    }
+    }*/
     
-    @SuppressWarnings("unused")
+    /* FIXME? @SuppressWarnings("unused")
 	private double slowdownFactorWall(PlayerEntity player) {
     	Vec3d lookVec = player.getLookVec();
     	Vec3d posVec = player.getPositionVector();
@@ -416,7 +424,7 @@ implements ChildModWithConfig
 				return 1.0;
 			}
 		}
-    }
+    }*/
 
 	private boolean isLadder(BlockPos pos) {
 		World world = Minecraft.getInstance().world;
@@ -437,7 +445,7 @@ implements ChildModWithConfig
     	while (iter.hasNext()) {
             vectorSum = vectorSum.add(iter.next());
     	}
-    	double vectorLength = vectorSum.lengthVector();            	
+    	double vectorLength = vectorSum.length();            	
     	double normalCongruency = vectorLength/scalarLength;
     	
     	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
@@ -452,17 +460,17 @@ implements ChildModWithConfig
     public static void stop() {
     	if (mDoingAutoWalk) {
     		mDoingAutoWalk = false;
-    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+    		//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
     	}
     }
 
-    @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
-        
+	@SubscribeEvent
+	public void onKeyInput(KeyInputEvent event) {
+   
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
-        	MouseHandler.setWalking(mDoingAutoWalk);
-        	StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+        	//FIXME: MouseHandler.setWalking(mDoingAutoWalk);
+        	// FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
         if(mDecreaseWalkSpeedKB.isPressed()) {
