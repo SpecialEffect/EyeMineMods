@@ -74,7 +74,7 @@ public class GatherDrops extends BaseClassWithCallbacks
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","opentableschests")
+                new ResourceLocation("specialeffect","gatherdrops")
                 ,() -> PROTOCOL_VERSION
                 , PROTOCOL_VERSION::equals
                 , PROTOCOL_VERSION::equals);
