@@ -60,7 +60,7 @@ public class EasyLadderClimb {
 
 			if (event.getEntityLiving().isOnLadder()) {
 				System.out.println("LADDER");		
-				BlockRayTraceResult rayTraceBlock = (BlockRayTraceResult)Minecraft.getInstance().objectMouseOver;		
+				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
 		
 				if (rayTraceBlock != null) {
 					// FIXME: test for 1.14

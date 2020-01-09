@@ -27,6 +27,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -101,25 +102,21 @@ public class Dismount extends BaseClassWithCallbacks {
 						//FIXME Dismount.network.sendToServer(
 								//new DismountPlayerMessage());						
 					}
-					else {
-						RayTraceResult mov = Minecraft.getInstance().objectMouseOver;						
+					else {						
+						EntityRayTraceResult entity = ModUtils.getMouseOverEntity();									
+						if (entity != null) {
+							// FIXME: see if there's a better way to do this now
+							//
+							// Riding entity programmatically seems to not do everything that 
+							// a "Use" action would do, so we:
+							// - drop current item to ensure empty hand
+							// - "use" entity you're pointing at
+							// - pick up dropped item again
+							player.dropItem(true);
+							Input useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
+							KeyBinding.onTick(useItemKeyCode);
+							GatherDrops.gatherBlocks(player);							
 						
-						if (mov != null) {
-							// FIXME: test for 1.14
-							if (mov.getType() == Type.ENTITY) {
-						
-								// FIXME: see if there's a better way to do this now
-								//
-								// Riding entity programmatically seems to not do everything that 
-								// a "Use" action would do, so we:
-								// - drop current item to ensure empty hand
-								// - "use" entity you're pointing at
-								// - pick up dropped item again
-								player.dropItem(true);
-								Input useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
-								KeyBinding.onTick(useItemKeyCode);
-								GatherDrops.gatherBlocks(player);							
-							}
 						}
 					}
 				}
