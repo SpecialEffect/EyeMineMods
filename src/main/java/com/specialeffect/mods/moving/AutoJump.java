@@ -90,18 +90,7 @@ implements ChildModWithConfig
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-    		
-    		// We can't rely solely on the vanilla autojump implementation,
-    		// since it doesn't play nicely with our gaze movement methods.
-    		// We'll keep it in sync though so that keyboard-play is consistent
-    		// with our autojump state (if you're moving with the keyboard you
-    		// get visually-nicer autojump behaviour).
-    		if (mDoingAutoJump) {
-    			player.stepHeight = 1.0f;
-    		}
-    		else {
-    			player.stepHeight = 0.6f;
-    		}
+    		    		
 	    	Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
 
     		// Process any events which were queued by key events

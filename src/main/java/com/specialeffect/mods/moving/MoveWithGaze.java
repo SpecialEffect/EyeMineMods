@@ -23,6 +23,7 @@ import com.specialeffect.callbacks.IOnLiving;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 //import com.specialeffect.mods.misc.ContinuouslyAttack;
 //import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -66,7 +67,10 @@ implements ChildModWithConfig
     private static KeyBinding mToggleAutoWalkKB;
     private static KeyBinding mIncreaseWalkSpeedKB;
     private static KeyBinding mDecreaseWalkSpeedKB;
-     
+	
+    private MovementInputFromOptionsOverride mMovementOverride;
+	private Minecraft mMinecraft;
+
     //FIXME public static Configuration mConfig;
     private static int mQueueLength = 50;
 
@@ -79,6 +83,8 @@ implements ChildModWithConfig
 	
 	private void setup(final FMLCommonSetupEvent event) {
 		
+	    mMinecraft = Minecraft.getInstance();
+
 		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);  
     	
@@ -116,7 +122,22 @@ implements ChildModWithConfig
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
+    	    		
     		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
+    	
+    		//TODO: who should own the override ? separate mod?? main eyegaze mod??
+    		// currently two mods are looking to see if it needs setting up
+    		if ((mMinecraft.player != null)) {
+    			if (null == mMovementOverride) {
+    				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);				
+    			}			
+
+    			if (!(mMinecraft.player.movementInput instanceof MovementInputFromOptionsOverride))
+    			{
+    				mMinecraft.player.movementInput = mMovementOverride;	
+    			}
+    		}
+    		
     		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
@@ -280,18 +301,16 @@ implements ChildModWithConfig
 						}
 					}
 				}*/
-				for (int i = 0; i < 2; i++) {		
-					Vec3d forwardVec = player.getForward();
-					float scale = halfForward*0.4f;
-					forwardVec = forwardVec.mul(scale, scale, scale);
-					Vec3d forwardRelativeVec = new Vec3d(0.0, 0.0, 1.0);
-					//player.moveRelative(halfForward*0.2f, forwardRelativeVec); // this gives walking bobbing, but not autojump.
-					//player.moveEntityWithHeading(0.0f, halfForward);
-					player.move(MoverType.SELF, forwardVec); // no walk bobbing, or autojump (tried PLAYER and SELF)
-					//player.travel(forwardRelativeVec);// acts like moveRelative, but does more stuff. no autojump though
-					
+
+				// This probably won't work for some ridden entities, e.g. boats. See above.
+				if (mMovementOverride != null) 
+				{
+					mMovementOverride.setWalkOverride(mDoingAutoWalk, 4.0f*halfForward);
 				}
 			}
+            else {
+            	mMovementOverride.setWalkOverride(false, 0.0f);
+            }
 
 			this.processQueuedCallbacks(event);
 			
