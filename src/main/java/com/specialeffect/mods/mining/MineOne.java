@@ -151,8 +151,8 @@ implements ChildModWithConfig
 	// Return the position of the block that the mouse is pointing at.
 	// May be null, if pointing at something other than a block.
 	private BlockPos getMouseOverBlockPos() {
-		BlockPos pos = null;		
-		BlockRayTraceResult rayTraceBlock = (BlockRayTraceResult)Minecraft.getInstance().objectMouseOver;
+		BlockPos pos = null;			
+		BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
 		if (rayTraceBlock != null) {			
 			pos = rayTraceBlock.getPos();			
 		}
