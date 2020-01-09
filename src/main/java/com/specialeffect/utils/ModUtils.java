@@ -20,6 +20,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -173,4 +176,27 @@ public class ModUtils {
 			player.sendMessage(new StringTextComponent(msg));
 		}
 	}
+	
+	public static EntityRayTraceResult getMouseOverEntity() {	
+		// Returns the entity the mouse is over, or null
+		RayTraceResult result = Minecraft.getInstance().objectMouseOver;	
+		if (result != null && result instanceof EntityRayTraceResult) {
+			return (EntityRayTraceResult)result;
+		}
+		else {
+			return null;
+		}
+	}
+	
+	public static BlockRayTraceResult getMouseOverBlock() {	
+		// Returns the block the mouse is over, or null
+		RayTraceResult result = Minecraft.getInstance().objectMouseOver;	
+		if (result != null && result instanceof BlockRayTraceResult) {
+			return (BlockRayTraceResult)result;
+		}
+		else {
+			return null;
+		}
+	}
+	
 }

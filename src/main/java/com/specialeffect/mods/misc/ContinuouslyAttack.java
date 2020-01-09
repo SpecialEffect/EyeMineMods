@@ -13,10 +13,11 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.gui.StateOverlay;
+//FIXME import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.AddItemToHotbar;
 //import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
@@ -31,6 +32,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -83,18 +85,18 @@ implements ChildModWithConfig {
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
 		// Register an icon for the overlay
-		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
+		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 	}
 	
 	@Override
 	public void syncConfig() {
-		mAutoSelectSword = EyeGaze.mAutoSelectSword;	
+		mAutoSelectSword = EyeMineConfig.mAutoSelectSword.get();	
 	}
 	
 	
 	public static void stop() {
 		mIsAttacking = false;
-		StateOverlay.setStateRightIcon(mIconIndex, false);
+		//FIXME StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
 	@SubscribeEvent
@@ -116,10 +118,11 @@ implements ChildModWithConfig {
 	    			}
 	    		}
 				
-				// Get entity being looked at
-				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-				Entity entity = mov.entityHit;
-				if (null != entity) {
+				// Get entity being looked at				
+				EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
+				if (null != entityResult) {
+					Entity entity = entityResult.getEntity();
+					
 					// Attack locally and on server
 					player.attackTargetEntityWithCurrentItem(entity);
 					//FIXME ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
@@ -144,7 +147,7 @@ implements ChildModWithConfig {
         
         if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
-			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
+			//FIXME StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
