@@ -13,7 +13,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod.EventBusSubscriber(bus = Bus.MOD)
-public class Configuration {
+public class EyeMineConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
 	
@@ -96,8 +96,7 @@ public class Configuration {
     	// TODO: how to manage tooltips on own UI?
     	// previously had short comment, and tooltips
     	// in text file there's no limit to comment lenght, but if we make a GUI we'll need
-    	// to split up again
-    	
+    	// to split up again    
 		
     	customSpeedFactor = COMMON_BUILDER.comment("Walking speed for walk-with-gaze")
       		.defineInRange("customSpeedFactor", 0.8f, 0.25f, 2.0f);                
@@ -170,7 +169,10 @@ public class Configuration {
     public static void onReload(final ModConfig.ConfigReloading configEvent) {
     	// the configspec values are updated for us, but we may want to hook into 
     	// here to notify other mods?
-    	System.out.println("ModConfig onReload");    	
+    	System.out.println("ModConfig onReload");    
+    	
+    	//FIXME: this architecture is a bit circular, think about responsibilities
+    	EyeGaze.refresh();
     }
     
 

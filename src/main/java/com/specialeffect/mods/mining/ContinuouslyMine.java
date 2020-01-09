@@ -17,6 +17,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -74,7 +75,7 @@ implements ChildModWithConfig
 	}
 	
 	public void syncConfig() {
-		mAutoSelectTool = EyeGaze.mAutoSelectTool;
+		mAutoSelectTool = EyeMineConfig.mAutoSelectTool.get();
 	}
 	
 	public static void stop() {

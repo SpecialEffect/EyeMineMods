@@ -62,7 +62,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
 	public static final String VERSION = ModUtils.VERSION;	
 	public static final String NAME = "Eye Gaze";
 
-	public static Configuration mConfig;	
+	public static EyeMineConfig mConfig;	
 	
 	// Category names for clustering config options in different UIs
 	public static final String CATEGORY_BASIC = "Basic options";
@@ -77,71 +77,35 @@ public class EyeGaze extends BaseClassWithCallbacks {
         MinecraftForge.EVENT_BUS.register(this);
         
         // Config setup
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Configuration.CLIENT_CONFIG);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Configuration.COMMON_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
 
-        Configuration.loadConfig(Configuration.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
-        Configuration.loadConfig(Configuration.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
+        EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
+        EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
     }
     
     public static void registerForConfigUpdates(ChildModWithConfig mod) {
-    	//FIXME: ? 
-    	/*
+    	
     	// Make sure it gets any changes thus far
     	mod.syncConfig();
     	
     	// Make sure it gets future changes
     	childrenWithConfig.add(mod);
-    	*/
+    	
     }
-    
-//  TODO: 
-// Reinstate this somewhere, somehow
-//	@SubscribeEvent
-//	@SuppressWarnings("static-access")
-//	public void preInit(FMLPreInitializationEvent event) {
-//		MinecraftForge.EVENT_BUS.register(this);
-//
-//		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-//				"A selection of mods which increase accessibility and support eye gaze input");
-//
-//		// Set up config
-//		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-//		this.syncConfig();
-//	}
 
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		/* FIXME if (eventArgs.getModID().equals(this.MODID)) {
-			syncConfig();
-		}
+    public static void refresh() {		
+		//TODO: should we use IMC for synchronous comms?
 		for (ChildModWithConfig child : childrenWithConfig) {
 			child.syncConfig();
-		}*/
+		}
 	}
 	
 	public static void saveWalkingSpeed(float speed) {
+		//FIXME: put this on EyeMineConfig class? 
+		EyeMineConfig.customSpeedFactor.set((double) speed);
 		
-		Configuration.customSpeedFactor.set((double) speed);
-		
-		//FIXME: notify other apps about changes?? probs for some, but not this one.
-		// but could use old syncConfig methods if required.
-		
-//		Configuration.customSpeedFactor.save();		
-	    //mConfig.get(CATEGORY_BASIC,  "Walking speed", customSpeedFactor).set(customSpeedFactor);
-		/* FIXME
-		if (mConfig.hasChanged()) {
-			mConfig.save();
-			
-			for (ChildModWithConfig child : childrenWithConfig) {
-				child.syncConfig();
-			}
-		}		*/	
+		EyeGaze.refresh();
 	}
 	
-	public static void syncConfig() {
-
-	}
-
 }

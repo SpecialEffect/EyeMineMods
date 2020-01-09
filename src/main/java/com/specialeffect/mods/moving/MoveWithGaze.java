@@ -20,6 +20,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.mods.EyeMineConfig;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -112,9 +113,9 @@ implements ChildModWithConfig
     }       
 	
 	public void syncConfig() {
-        mQueueLength = EyeGaze.filterLength;
-        mMoveWhenMouseStationary = EyeGaze.moveWhenMouseStationary;
-        mCustomSpeedFactor = EyeGaze.customSpeedFactor;
+        mQueueLength = EyeMineConfig.filterLength.get();
+        mMoveWhenMouseStationary = EyeMineConfig.moveWhenMouseStationary.get();
+        mCustomSpeedFactor = EyeMineConfig.customSpeedFactor.get().floatValue();
 	}	
     
     private static int mIconIndex;
@@ -494,13 +495,13 @@ implements ChildModWithConfig
         }
         if(mDecreaseWalkSpeedKB.isPressed()) {
         	float newSpeed =  
-        			Math.max(0.1f, 0.9f*EyeGaze.customSpeedFactor);
+        			(float) Math.max(0.1f, 0.9f*EyeMineConfig.customSpeedFactor.get());
         	EyeGaze.saveWalkingSpeed(newSpeed);
         	displayCurrentSpeed();
         }
         if(mIncreaseWalkSpeedKB.isPressed()) {
         	float newSpeed =  
-        			Math.min(2.0f, EyeGaze.customSpeedFactor*1.1f);
+        			(float) Math.min(2.0f, EyeMineConfig.customSpeedFactor.get()*1.1f);
         	EyeGaze.saveWalkingSpeed(newSpeed);
     		displayCurrentSpeed();
         }
@@ -508,7 +509,7 @@ implements ChildModWithConfig
     
     private void displayCurrentSpeed() {
     	DecimalFormat myFormatter = new DecimalFormat("#0.00");
-		String speedString = myFormatter.format(EyeGaze.customSpeedFactor);
+		String speedString = myFormatter.format(EyeMineConfig.customSpeedFactor.get());
     	this.queueChatMessage("Walking speed: " + speedString);     
     }
 }
