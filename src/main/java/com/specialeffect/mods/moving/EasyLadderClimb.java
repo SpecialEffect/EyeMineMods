@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -58,31 +59,30 @@ public class EasyLadderClimb {
 			World world = Minecraft.getInstance().world;
 
 			if (event.getEntityLiving().isOnLadder()) {
-				System.out.println("LADDER");
-				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-				if (mov != null) {
+				System.out.println("LADDER");		
+				BlockRayTraceResult rayTraceBlock = (BlockRayTraceResult)Minecraft.getInstance().objectMouseOver;		
+		
+				if (rayTraceBlock != null) {
 					// FIXME: test for 1.14
-					if (mov.getType() == Type.BLOCK) {
-					
-						BlockPos blockPos = new BlockPos(mov.getHitVec()); 					
-						Block block = world.getBlockState(blockPos).getBlock();
-						if (block instanceof LadderBlock) {
-							
-							LadderBlock ladder = (LadderBlock)block;
-							
-							
-							BlockState state = world.getBlockState(blockPos);						
-							Direction facing = (Direction) state.get(LadderBlock.FACING);
-							Vec3d playerPos = player.getPositionVector();
-							
-							// Rotate player to face ladder.
-							player.setPositionAndRotation(playerPos.x,
-									playerPos.y, playerPos.z,
-									getYawFromEnumFacing(facing), player.rotationPitch);
-							System.out.println("facing ladder");
-						}
-					
+					BlockPos blockPos = rayTraceBlock.getPos();	
+					Block block = world.getBlockState(blockPos).getBlock();
+					if (block instanceof LadderBlock) {
+						
+						LadderBlock ladder = (LadderBlock)block;
+						
+						
+						BlockState state = world.getBlockState(blockPos);						
+						Direction facing = (Direction) state.get(LadderBlock.FACING);
+						Vec3d playerPos = player.getPositionVector();
+						
+						// Rotate player to face ladder.
+						player.setPositionAndRotation(playerPos.x,
+								playerPos.y, playerPos.z,
+								getYawFromEnumFacing(facing), player.rotationPitch);
+						System.out.println("facing ladder");
 					}
+				
+				
 				}
 			}
 		}
