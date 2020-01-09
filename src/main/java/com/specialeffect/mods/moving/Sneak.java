@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -94,44 +95,41 @@ public class Sneak extends BaseClassWithCallbacks {
 	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
-			
-			// Make sure icon up to date
-			//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
-		}
+//		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+//			this.processQueuedCallbacks(event);
+//			
+//			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+//			player.setSneaking(mIsSneaking);
+//			// Make sure icon up to date
+//			//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
+//		}
 	}
 	
-	public static void stop() {
-		mIsSneaking = false;
+	// FIXME: replace with IMC??
+	public void stop() {		
+		updateSneak(false);
+	}	
+	
+	private void updateSneak(boolean bSneak) {
+		mIsSneaking = bSneak;
+
+		// TODO: is there any reason we don't want to just hold down the key here? 
+		// this also helps with mod tooltips
+		
+		// FIXME: remove movement override stuff if not using for Sneak  
+
+		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindSneak;			
+		KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), bSneak);			
+		ModUtils.sendPlayerMessage("Sneaking: " + (bSneak ? "ON" : "OFF"));
+		
+		// Make sure icon up to date?
+//		//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 	}
 
-
-    @SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-    	if (event.phase != TickEvent.Phase.END) return;
-    	 
-		if(mSneakKB.isPressed()) {
-			mIsSneaking = !mIsSneaking;
-			if (mMovementOverride != null) 
-			{
-				mMovementOverride.setSneakOverride(mIsSneaking);
-			}
-			else{
-				System.out.println("null handler");
-				mIsSneaking = false;
-			}
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-
-			        player.sendMessage(new StringTextComponent(
-			        		 "Sneaking: " + (mIsSneaking ? "ON" : "OFF")));
-				}		
-			}));
+	@SubscribeEvent
+	public void onKeyInput(KeyInputEvent event) {
+		if(mSneakKB.isPressed()) {			
+			updateSneak(!mIsSneaking);
 		}
 	}
 

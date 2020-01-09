@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModUtils {
@@ -164,5 +165,12 @@ public class ModUtils {
 		int slotId = 12;
 		inventory.setInventorySlotContents(slotId, item);
 		inventory.pickItem(slotId);
+	}
+	
+	public static void sendPlayerMessage(String msg) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {			
+			player.sendMessage(new StringTextComponent(msg));
+		}
 	}
 }
