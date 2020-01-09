@@ -21,18 +21,24 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.block.AirBlock;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,7 +57,7 @@ implements ChildModWithConfig
 	public static final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
-	public static Configuration mConfig;
+	
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;
@@ -63,7 +69,7 @@ implements ChildModWithConfig
 	private boolean mAutoSelectTool = false;
 	private boolean mWaitingForPickaxe = false;
 	
-	public Sneak() {
+	public MineOne() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
@@ -78,12 +84,6 @@ implements ChildModWithConfig
 
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
-
-		// Set up config
-		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();
-		
-		//init
 		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
@@ -134,15 +134,24 @@ implements ChildModWithConfig
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
+				Block block = world.getBlockState(mBlockToDestroy).getBlock();
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof AirBlock);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
-				if (pos != null) {
-					movedAway = mBlockToDestroy.distanceSq(pos.getX(), pos.getY(), pos.getZ()) > 0;
+				if (pos != null) {														
+					movedAway = mBlockToDestroy.distanceSq((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), false) > 0.5;					
 				}
 				
 				if (mov == null || blockDestroyed || movedAway) {
-					this.stopDestroying();
+					if (movedAway) {
+						this.stopDestroying();
+					}
+					if (blockDestroyed) {
+						this.stopDestroying();
+					}
+					if (mov == null) {
+						this.stopDestroying();
+					}
 				}
 			}
 		}
@@ -167,17 +176,16 @@ implements ChildModWithConfig
 	// Return the position of the block that the mouse is pointing at.
 	// May be null, if pointing at something other than a block.
 	private BlockPos getMouseOverBlockPos() {
-		BlockPos pos = null;
-		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-		if (mov != null) {
-			pos = mov.getBlockPos(); // may still be null if there's an entity there
+		BlockPos pos = null;		
+		BlockRayTraceResult rayTraceBlock = (BlockRayTraceResult)Minecraft.getInstance().objectMouseOver;
+		if (rayTraceBlock != null) {			
+			pos = rayTraceBlock.getPos();			
 		}
 		return pos;
 	}
-
 	
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {          	
 		if(mDestroyKB.isPressed()) {
 			// turn off continuous mining
 			ContinuouslyMine.stop();
@@ -199,13 +207,13 @@ implements ChildModWithConfig
 		
 		// In creative mode, we can either select a pickaxe from the hotbar 
 		// or just rustle up a new one		
-		if (inventory.getCurrentItem().getItem() instanceof ItemPickaxe)
+		if (inventory.getCurrentItem().getItem() instanceof PickaxeItem)
 		{
 			return true;
 		}
 		else
 		{
-			int pickaxeId = ModUtils.findItemInHotbar(inventory, ItemPickaxe.class);
+			int pickaxeId = ModUtils.findItemInHotbar(inventory, PickaxeItem.class);
 			if (pickaxeId > -1) {
 				inventory.currentItem = pickaxeId;
 				return true;
