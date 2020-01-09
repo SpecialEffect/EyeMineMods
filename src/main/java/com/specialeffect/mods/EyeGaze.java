@@ -45,67 +45,68 @@ import net.minecraftforge.fml.config.ModConfig;
 
 @Mod(EyeGaze.MODID)
 public class EyeGaze extends BaseClassWithCallbacks {
-	/* In v1.11.2, this mod was a wrapper that contained user-exposed
-	 * config, and acted as the 'parent' mod to all other mods
-	 * This allowed us to expose config UI in one place, and not clutter 
-	 * up the Mods List (while simultaneously letting us have small self-
-	 * contained mods for different features). 
-	 * In v1.14, the parent->child relationship doesn't exist any more, 
-	 * so this is a bit of a ghost town. We might consider updating 
-	 * it as our own uber-mod, with other mods registered to it.
+	/*
+	 * In v1.11.2, this mod was a wrapper that contained user-exposed config, and
+	 * acted as the 'parent' mod to all other mods This allowed us to expose config
+	 * UI in one place, and not clutter up the Mods List (while simultaneously
+	 * letting us have small self- contained mods for different features). In v1.14,
+	 * the parent->child relationship doesn't exist any more, so this is a bit of a
+	 * ghost town. We might consider updating it as our own uber-mod, with other
+	 * mods registered to it.
 	 * 
-	 *  FIXME: figure out what to do with it architecturally :-)
+	 * FIXME: figure out what to do with it architecturally :-)
 	 */
 
-    
-	public static final String MODID = "eyegaze";	
-	public static final String VERSION = ModUtils.VERSION;	
+	public static final String MODID = "eyegaze";
+	public static final String VERSION = ModUtils.VERSION;
 	public static final String NAME = "Eye Gaze";
 
-	public static EyeMineConfig mConfig;	
-	
+	public static EyeMineConfig mConfig;
+
 	// Category names for clustering config options in different UIs
 	public static final String CATEGORY_BASIC = "Basic options";
 	public static final String CATEGORY_ADVANCED = "Advanced options";
 	public static final String CATEGORY_EXPERT = "Expert options";
-    
-    private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
-    
-    public EyeGaze() {
-    	
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-        
-        // Config setup
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
 
-        EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
-        EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
-    }
-    
-    public static void registerForConfigUpdates(ChildModWithConfig mod) {
-    	
-    	// Make sure it gets any changes thus far
-    	mod.syncConfig();
-    	
-    	// Make sure it gets future changes
-    	childrenWithConfig.add(mod);
-    	
-    }
+	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
 
-    public static void refresh() {		
-		//TODO: should we use IMC for synchronous comms?
+	public EyeGaze() {
+
+		// Register ourselves for server and other game events we are interested in
+		MinecraftForge.EVENT_BUS.register(this);
+
+		// Config setup
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
+
+		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
+				FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
+		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
+				FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
+	}
+
+	public static void registerForConfigUpdates(ChildModWithConfig mod) {
+
+		// Make sure it gets any changes thus far
+		mod.syncConfig();
+
+		// Make sure it gets future changes
+		childrenWithConfig.add(mod);
+
+	}
+
+	public static void refresh() {
+		// TODO: should we use IMC for synchronous comms?
 		for (ChildModWithConfig child : childrenWithConfig) {
 			child.syncConfig();
 		}
 	}
-	
+
 	public static void saveWalkingSpeed(float speed) {
-		//FIXME: put this on EyeMineConfig class? 
+		// FIXME: put this on EyeMineConfig class?
 		EyeMineConfig.customSpeedFactor.set((double) speed);
-		
+
 		EyeGaze.refresh();
 	}
-	
+
 }
