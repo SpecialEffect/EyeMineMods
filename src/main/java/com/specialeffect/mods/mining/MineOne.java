@@ -13,6 +13,8 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.messages.GatherBlockMessage;
 //import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -27,8 +29,10 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -47,6 +51,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 @Mod(MineOne.MODID)
@@ -55,18 +60,12 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig
 {
 	public static final String MODID = "autodestroy";
-	public static final String NAME = "AutoDestroy";
-	//FIXME for 1.14 public static SimpleNetworkWrapper network;
-	
+	public static final String NAME = "AutoDestroy";    
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;
 	private static KeyBinding mDestroyKB;
 	
-	// Mine one doesn't now respect the user config for auto-selecting pickaxe, since
-	// it's typically used when building and you don't want to have to keep switching
-	// back to your building material. 
-	private boolean mAutoSelectTool = false;
 	private boolean mWaitingForPickaxe = false;
 	
 	public MineOne() {
@@ -82,9 +81,6 @@ implements ChildModWithConfig
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
-		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
@@ -107,29 +103,16 @@ implements ChildModWithConfig
 				// Select the best tool from the inventory
 				World world = Minecraft.getInstance().world;
 	    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-	    		if (player.isCreative() && 
-						mAutoSelectTool) {
-	    			boolean havePickaxe = choosePickaxe(player.inventory);
-	    			if (havePickaxe) {
-	    				mWaitingForPickaxe = false;
-	    			}
-	    			else if(!mWaitingForPickaxe) 
-	    			{
-	    				requestCreatePickaxe();
-		    			mWaitingForPickaxe = true;		    		
-	    			}
-	    		}
-	    		else {			
-	    			
-	    			// Swords can't destroy blocks: warn user
-	    			if (player.getHeldItemMainhand().getItem() instanceof SwordItem) {
-	    				String message = "Can't destroy blocks with a sword, please select another item";
-				        player.sendMessage(new StringTextComponent(message));
-				        
-	    				this.stopDestroying();
-	    				return;
-	    			}
-	    		}
+	    		
+    			// Swords can't destroy blocks: warn user
+    			if (player.getHeldItemMainhand().getItem() instanceof SwordItem) {
+    				String message = "Can't destroy blocks with a sword, please select another item";
+			        player.sendMessage(new StringTextComponent(message));
+			        
+    				this.stopDestroying();
+    				return;
+    			}
+    		
 				
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
@@ -142,16 +125,8 @@ implements ChildModWithConfig
 					movedAway = mBlockToDestroy.distanceSq((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), false) > 0.5;					
 				}
 				
-				if (mov == null || blockDestroyed || movedAway) {
-					if (movedAway) {
-						this.stopDestroying();
-					}
-					if (blockDestroyed) {
-						this.stopDestroying();
-					}
-					if (mov == null) {
-						this.stopDestroying();
-					}
+				if (mov == null || blockDestroyed || movedAway) {					
+					this.stopDestroying();
 				}
 			}
 		}
@@ -202,30 +177,4 @@ implements ChildModWithConfig
 		}
 	}
 	
-	// returns true if successful
-	static boolean choosePickaxe(PlayerInventory inventory) {
-		
-		// In creative mode, we can either select a pickaxe from the hotbar 
-		// or just rustle up a new one		
-		if (inventory.getCurrentItem().getItem() instanceof PickaxeItem)
-		{
-			return true;
-		}
-		else
-		{
-			int pickaxeId = ModUtils.findItemInHotbar(inventory, PickaxeItem.class);
-			if (pickaxeId > -1) {
-				inventory.currentItem = pickaxeId;
-				return true;
-			}
-			else {
-				return false;
-			}
-		}		
-	}
-	
-	static void requestCreatePickaxe() {
-		// Ask server to put new item in hotbar
-		//FIXME MineOne.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
-	}	
 }

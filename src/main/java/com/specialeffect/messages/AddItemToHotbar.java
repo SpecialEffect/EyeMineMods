@@ -10,19 +10,15 @@
 
 package com.specialeffect.messages;
 
-import javax.xml.ws.handler.MessageContext;
+import java.util.function.Supplier;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class AddItemToHotbar implements IMessage {
+public class AddItemToHotbar {
     
     private ItemStack item;
     private int slotId = -1;
@@ -38,36 +34,33 @@ public class AddItemToHotbar implements IMessage {
         this.item = item;
     }
     
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        item = ByteBufUtils.readItemStack(buf);
-        slotId = ByteBufUtils.readVarInt(buf, 5);
+	public static AddItemToHotbar decode(PacketBuffer buf) {    	
+        ItemStack item = buf.readItemStack();
+        int slotId = buf.readInt();
+        return new AddItemToHotbar(item, slotId);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeItemStack(buf, item);
-        ByteBufUtils.writeVarInt(buf, slotId, 5);
+    public static void encode(AddItemToHotbar pkt, PacketBuffer buf) {
+    	buf.writeItemStack(pkt.item);
+    	buf.writeInt(pkt.slotId);       
     }
-
-    public static class Handler implements IMessageHandler<AddItemToHotbar, IMessage> {        
-    	@Override
-        public IMessage onMessage(final AddItemToHotbar message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-                    PlayerInventory inventory = player.inventory;
-                    
-                    if (message.slotId < 0) {
-                    	message.slotId = inventory.getBestHotbarSlot();
-                    }
-            		inventory.setInventorySlotContents(message.slotId, message.item);
-            		inventory.currentItem = message.slotId;
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+    
+    public static class Handler {
+		public static void handle(final AddItemToHotbar pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+	        
+            PlayerInventory inventory = player.inventory;
+            
+            if (pkt.slotId < 0) {
+            	pkt.slotId = inventory.getBestHotbarSlot();
+            }
+    		inventory.setInventorySlotContents(pkt.slotId, pkt.item);
+    		inventory.currentItem = pkt.slotId;
+	            
+			ctx.get().setPacketHandled(true);
+		}
+	}   
 }
