@@ -6,11 +6,13 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Bus.MOD)
 public class Configuration {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
@@ -147,21 +149,6 @@ public class Configuration {
     	     	
     }
     
-    private static void setupFirstBlockConfig() {
-        COMMON_BUILDER.comment("FirstBlock settings").push(SUBCATEGORY_FIRSTBLOCK);
-
-        FIRSTBLOCK_MAXPOWER = COMMON_BUILDER.comment("Maximum power for the FirstBlock generator")
-                .defineInRange("maxPower", 100000, 0, Integer.MAX_VALUE);
-        FIRSTBLOCK_GENERATE = COMMON_BUILDER.comment("Power generation per diamond")
-                .defineInRange("generate", 1000, 0, Integer.MAX_VALUE);
-        FIRSTBLOCK_SEND = COMMON_BUILDER.comment("Power generation to send per tick")
-                .defineInRange("send", 100, 0, Integer.MAX_VALUE);
-        FIRSTBLOCK_TICKS = COMMON_BUILDER.comment("Ticks per diamond")
-                .defineInRange("ticks", 20, 0, Integer.MAX_VALUE);
-
-        COMMON_BUILDER.pop(); // pop the loaded category
-    }
-
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
 
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
@@ -175,12 +162,16 @@ public class Configuration {
     }
 
     @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {
-
+    public static void onLoad(final ModConfig.Loading configEvent) {    	
+    	System.out.println("ModConfig onLoad");
     }
 
     @SubscribeEvent
     public static void onReload(final ModConfig.ConfigReloading configEvent) {
+    	// the configspec values are updated for us, but we may want to hook into 
+    	// here to notify other mods?
+    	System.out.println("ModConfig onReload");    	
     }
+    
 
 }

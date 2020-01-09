@@ -495,13 +495,13 @@ implements ChildModWithConfig
         if(mDecreaseWalkSpeedKB.isPressed()) {
         	float newSpeed =  
         			Math.max(0.1f, 0.9f*EyeGaze.customSpeedFactor);
-        	EyeGaze.setWalkingSpeed(newSpeed);
+        	EyeGaze.saveWalkingSpeed(newSpeed);
         	displayCurrentSpeed();
         }
         if(mIncreaseWalkSpeedKB.isPressed()) {
         	float newSpeed =  
         			Math.min(2.0f, EyeGaze.customSpeedFactor*1.1f);
-        	EyeGaze.setWalkingSpeed(newSpeed);
+        	EyeGaze.saveWalkingSpeed(newSpeed);
     		displayCurrentSpeed();
         }
     }
