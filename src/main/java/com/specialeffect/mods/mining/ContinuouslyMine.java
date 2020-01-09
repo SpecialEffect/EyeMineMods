@@ -13,11 +13,11 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.gui.StateOverlay;
+//import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.mods.misc.ContinuouslyAttack;
-import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.mods.EyeMineConfig;
+//import com.specialeffect.mods.misc.ContinuouslyAttack;
+//import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -28,6 +28,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Hand;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -71,7 +72,7 @@ implements ChildModWithConfig
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 		
 		// Register an icon for the overlay
-		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
+		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
 	}
 	
 	public void syncConfig() {
@@ -85,7 +86,7 @@ implements ChildModWithConfig
 		
 		KeyBinding.setKeyBindState(attackBinding.getKey(), mIsAttacking);
 		
-		StateOverlay.setStateRightIcon(mIconIndex, false);
+		//FIXME StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
 	@SubscribeEvent
@@ -100,7 +101,7 @@ implements ChildModWithConfig
 			if (mIsAttacking) {
 				// always select tool - first time we might need to ask server to
 				// create a new one				
-				if (player.isCreative() && 
+				/* //FIXME SOON if (player.isCreative() && 
 						mAutoSelectTool) {
 	    			boolean havePickaxe = MineOne.choosePickaxe(player.inventory);
 	    			if (havePickaxe) {
@@ -111,11 +112,12 @@ implements ChildModWithConfig
 	    				MineOne.requestCreatePickaxe();
 		    			mWaitingForPickaxe = true;		    		
 	    			}
-	    		}
+	    		}*/
 				
 				// Set mouse in correct state - shouldn't attack unless there's an
 				// accompanying mouse movement.	
-				if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
+				//FIXME SOON if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
+				if (true) {
 					KeyBinding.setKeyBindState(attackBinding.getKey(), true);
 				}
 				else {
@@ -131,7 +133,7 @@ implements ChildModWithConfig
 			
 			// Remember mouse status so we can have one tick of grace
 			// (necessary if minecraft running faster than eye tracker).
-			mMouseEventLastTick = MouseHandler.hasPendingEvent();
+			mMouseEventLastTick = true;////FIXME SOON MouseHandler.hasPendingEvent();
 			
 			this.processQueuedCallbacks(event);
 		}
@@ -140,14 +142,14 @@ implements ChildModWithConfig
 	private static boolean mIsAttacking = false;
 	private boolean mMouseEventLastTick = false;
 	
+
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+	public void onKeyInput(KeyInputEvent event) {     
         
         if(mDestroyKB.isPressed()) {
 			
 			mIsAttacking = !mIsAttacking;
-			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
+			//FIXME StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
 			final KeyBinding attackBinding = 
 					Minecraft.getInstance().gameSettings.keyBindAttack;
@@ -160,7 +162,7 @@ implements ChildModWithConfig
 			}
 			
 			// Don't allow mining *and* attacking at same time
-			ContinuouslyAttack.stop();
+			//FIXME SOON ContinuouslyAttack.stop();
 		}
 	}
 }
