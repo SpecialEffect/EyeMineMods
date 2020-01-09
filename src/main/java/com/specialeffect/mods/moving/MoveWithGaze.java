@@ -21,6 +21,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.misc.ContinuouslyAttack;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -45,6 +46,7 @@ import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -175,11 +177,10 @@ implements ChildModWithConfig
 				}
 
             	// Slow down if you're facing an animal/mob while attacking
-				// (without this it's easy to run past)
-				// FIXME: put back in
-				/*if (ContinuouslyAttack.mIsAttacking) {
+				// (without this it's easy to run past)				
+				if (ContinuouslyAttack.mIsAttacking) { 
 	            	forward *= slowdownFactorEntity(player);
-				}*/
+				}
 
 				// Adjust according to FPS (to get some consistency across
 				// installations)
@@ -385,17 +386,18 @@ implements ChildModWithConfig
     	return false;
     }*/
     
-    /* FIXME private double slowdownFactorEntity(PlayerEntity player) {    	
+    private double slowdownFactorEntity(PlayerEntity player) {    	
 		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-		Entity hitEntity = mov.entityHit;
-		if (hitEntity != null) {
+        EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
+		if (entityResult != null) {
+            Entity hitEntity = entityResult.getEntity();
 			LivingEntity liveEntity = (LivingEntity)hitEntity;
 			if (liveEntity != null) {
 				return 0.2f;
 			}
 		}
 		return 1.0f;
-    }*/
+    }
     
     /* FIXME? @SuppressWarnings("unused")
 	private double slowdownFactorWall(PlayerEntity player) {

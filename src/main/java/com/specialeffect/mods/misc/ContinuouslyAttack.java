@@ -13,6 +13,8 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.messages.AttackEntityMessage;
 //FIXME import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.AddItemToHotbar;
 //import com.specialeffect.messages.AttackEntityMessage;
@@ -30,8 +32,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,6 +48,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(ContinuouslyAttack.MODID)
 public class ContinuouslyAttack 
@@ -51,7 +56,10 @@ extends BaseClassWithCallbacks
 implements ChildModWithConfig {
 	public static final String MODID = "continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
-	//FIXME for 1.14 public static SimpleNetworkWrapper network;
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
+
+    public static SimpleChannel channel;
+    
 	private boolean mAutoSelectSword = true;
 	private static int mIconIndex;
 	private static KeyBinding mAttackKB;
@@ -70,10 +78,20 @@ implements ChildModWithConfig {
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 0, Side.SERVER);
-		//FIXME network.registerMessage(AttackEntityMessage.Handler.class, AttackEntityMessage.class, 1, Side.SERVER);
+		// setup channel for comms
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","continuouslyattack")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0;
+        
+        channel.registerMessage(id++, AttackEntityMessage.class, AttackEntityMessage::encode, 
+        		AttackEntityMessage::decode, AttackEntityMessage.Handler::handle);        
 
+        channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, 
+        		AddItemToHotbar::decode, AddItemToHotbar.Handler::handle);        
+        
 
 		// init
 		
@@ -127,7 +145,7 @@ implements ChildModWithConfig {
 					// Attack locally and on server
 					if (player.getCooledAttackStrength(0) > 0.95) {
 						player.attackTargetEntityWithCurrentItem(entity);
-						//FIXME: ContinuouslyAttack.network.sendToServer(new AttackEntityMessage(entity));
+						channel.sendToServer(new AttackEntityMessage(entity));
 					}
 					else {
 						recharging = true;
@@ -184,6 +202,6 @@ implements ChildModWithConfig {
 	
 	private void requestCreateSword() {
 		// Ask server to put new item in hotbar
-		//FIXME ContinuouslyAttack.network.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
+		channel.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
 	}
 }

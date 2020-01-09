@@ -10,18 +10,15 @@
 
 package com.specialeffect.messages;
 
-import javax.xml.ws.handler.MessageContext;
+import java.util.function.Supplier;
 
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class AttackEntityMessage implements IMessage {
+public class AttackEntityMessage {
     
     private int entityId = -1;
 
@@ -29,37 +26,34 @@ public class AttackEntityMessage implements IMessage {
 
     public AttackEntityMessage(Entity entity) {
     	this.entityId = entity.getEntityId();
-    }
+    }    
     
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        entityId = ByteBufUtils.readVarInt(buf, 5);
+    public AttackEntityMessage(int entityId) {
+    	this.entityId = entityId;
+    }    
+
+	public static AttackEntityMessage decode(PacketBuffer buf) {    	
+		int entityId = buf.readInt();
+        return new AttackEntityMessage(entityId);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeVarInt(buf, entityId, 5);
+    public static void encode(AttackEntityMessage pkt, PacketBuffer buf) {
+    	buf.writeInt(pkt.entityId);       
     }
 
-    public static class Handler implements IMessageHandler<AttackEntityMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final AttackEntityMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-                    if (null != player)
-                    {
-	                    Entity targetEntity = player.world.
-	                            getEntityByID(message.entityId);
-	                    if (null != targetEntity) {
-	                    	player.attackTargetEntityWithCurrentItem(targetEntity);
-	                    }
-                    }
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+    public static class Handler {
+		public static void handle(final AttackEntityMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+	        
+	        Entity targetEntity = player.world.
+                    getEntityByID(pkt.entityId);
+	        
+            if (null != targetEntity) {
+            	player.attackTargetEntityWithCurrentItem(targetEntity);
+            }
+		}
+	}       
 }
