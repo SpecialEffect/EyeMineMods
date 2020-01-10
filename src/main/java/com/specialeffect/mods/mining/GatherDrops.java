@@ -17,14 +17,12 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.messages.GatherBlockMessage;
 //import com.specialeffect.messages.PickBlockMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.item.ItemEntity;
@@ -36,8 +34,6 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -65,6 +61,7 @@ public class GatherDrops extends BaseClassWithCallbacks
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);    	

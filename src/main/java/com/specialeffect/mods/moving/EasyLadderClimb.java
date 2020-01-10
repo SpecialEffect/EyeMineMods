@@ -21,9 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -42,7 +40,8 @@ public class EasyLadderClimb {
 	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);	    
 	}
 		
-    private void setup(final FMLCommonSetupEvent event) {
+    @SuppressWarnings("static-access")
+	private void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 

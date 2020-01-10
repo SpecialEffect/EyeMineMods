@@ -47,6 +47,7 @@ public class ActivateBlockAtPosition {
     }
 
     public static class Handler {
+		@SuppressWarnings("deprecation")
 		public static void handle(final ActivateBlockAtPosition pkt, Supplier<NetworkEvent.Context> ctx) {
 			PlayerEntity player = ctx.get().getSender();
 	        if (player == null) {
@@ -57,10 +58,11 @@ public class ActivateBlockAtPosition {
 			BlockState state = world.getBlockState(pkt.blockPos);
 			Block block = state.getBlock();			
 						
-			// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks
-			// this is a good reason not to use state.onBlockActivated instead.
+			// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks 
 			BlockRayTraceResult hit = null;  			
-			block.onBlockActivated(state, world, pkt.blockPos, player, Hand.MAIN_HAND, hit);
+			
+			// NOTE: should use state.onBlockActivated, but this requires non-null hit, so we suppress warning
+			block.onBlockActivated(state, world, pkt.blockPos, player, Hand.MAIN_HAND, hit);  
 			
 			ctx.get().setPacketHandled(true);
 		}

@@ -10,24 +10,14 @@
 
 package com.specialeffect.gui;
 
-import java.awt.Point;
-
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.config.GuiUtils;
 
 //
 // StateOverlay implements a simple status bar at the top of the screen which 

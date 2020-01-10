@@ -10,10 +10,6 @@
 
 package com.specialeffect.gui;
 
-import java.awt.Point;
-
-import org.lwjgl.opengl.GL11;
-
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -22,11 +18,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-//
-//
 public class IconOverlay
 {
 	private ResourceLocation mResource;

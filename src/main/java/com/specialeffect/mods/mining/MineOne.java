@@ -13,33 +13,18 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.messages.AddItemToHotbar;
-import com.specialeffect.messages.GatherBlockMessage;
-//import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.SwordItem;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -50,14 +35,11 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 @Mod(MineOne.MODID)
 public class MineOne 
 extends BaseClassWithCallbacks 
-implements ChildModWithConfig
 {
 	public static final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";    
@@ -66,33 +48,25 @@ implements ChildModWithConfig
 	private BlockPos mBlockToDestroy;
 	private static KeyBinding mDestroyKB;
 	
-	private boolean mWaitingForPickaxe = false;
-	
 	public MineOne() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 		
-		// preinit
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		// Register for config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
-		
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine one block", GLFW.GLFW_KEY_N, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 				
 	}
 		
-	public void syncConfig() {		
-	}
-	
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
@@ -117,7 +91,6 @@ implements ChildModWithConfig
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-				Block block = world.getBlockState(mBlockToDestroy).getBlock();
 				boolean blockDestroyed = (world.getBlockState(mBlockToDestroy).getBlock() instanceof AirBlock);
 				boolean movedAway =  false;		
 				BlockPos pos = this.getMouseOverBlockPos();
