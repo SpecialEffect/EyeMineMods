@@ -66,7 +66,7 @@ public class Dismount extends BaseClassWithCallbacks {
 
     	// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","mineone")
+                new ResourceLocation("specialeffect","dismount")
                 ,() -> PROTOCOL_VERSION
                 , PROTOCOL_VERSION::equals
                 , PROTOCOL_VERSION::equals);
