@@ -52,7 +52,6 @@ public class GatherDrops extends BaseClassWithCallbacks
 	public static final String NAME = "GatherDrops";
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-	//FIXME public static Configuration mConfig;
 	private static KeyBinding mGatherKB;
 
     public static SimpleChannel channel;
@@ -63,7 +62,6 @@ public class GatherDrops extends BaseClassWithCallbacks
 	
 	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
-		//pre-init
 		MinecraftForge.EVENT_BUS.register(this);    	
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
@@ -80,28 +78,9 @@ public class GatherDrops extends BaseClassWithCallbacks
         channel.registerMessage(id++, GatherBlockMessage.class, GatherBlockMessage::encode, 
         		GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);        
 
-		// Set up config
-		/* FIXME mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();*/
-
-		// init
 		// Register key bindings	
 		mGatherKB = new KeyBinding("Gather dropped items", GLFW.GLFW_KEY_X, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
-	}
-
-	@SubscribeEvent
-	@SuppressWarnings("static-access")
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-		if(eventArgs.getModID().equals(this.MODID)) {
-			syncConfig();
-		}
-	}
-
-	public static void syncConfig() {
-		/* FIXME if (mConfig.hasChanged()) {
-			mConfig.save();
-		}*/
 	}
 
 	@SubscribeEvent

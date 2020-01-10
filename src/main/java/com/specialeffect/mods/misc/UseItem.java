@@ -12,52 +12,38 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
 
 @Mod(UseItem.MODID)
 public class UseItem {
 	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	public UseItem() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to use item without mouse");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
-
-		// FMLInitializationEvent
-		
 
 		// Register key bindings
 		mUseItemOnceKB = new KeyBinding("Use item", GLFW.GLFW_KEY_KP_0, CommonStrings.EYEGAZE_COMMON);

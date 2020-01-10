@@ -37,7 +37,9 @@ public class EasyLadderClimb {
 
 	public EasyLadderClimb() {
 	    // Register methods on event bus
-	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);	    
+	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);	  
+	    
+	    //FIXME: re-visit this mod logic, test a bunch, does it solve any problems?
 	}
 		
     @SuppressWarnings("static-access")
