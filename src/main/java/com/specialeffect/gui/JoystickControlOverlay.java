@@ -40,39 +40,8 @@ public class JoystickControlOverlay {
 
 		// We need this to invoke the render engine.
 		this.mc = mc;
-//		
-//		we are here, minecraft is not finding this file, although it seems to match conventions from tutorial
-//		suggest a google is in order - do we need to explicitly add resources to the build>?
-//				no, they are in the bin folder okay..
-  		mResource = new ResourceLocation("specialeffect", "icons/fly-auto.png");
-	}
-
-	private void rescale() {
-		// FIXME
-		/*
-		 * // Scale icon sizes to fit screen Point size =
-		 * ModUtils.getScaledDisplaySize(mc); mDisplayWidth = size.x; mDisplayHeight =
-		 * size.y;
-		 */
-		
-
-//		public static Point getScaledDisplaySize(Minecraft mc) {
-//			Point p = new Point(0, 0);
-//			ScaledResolution res = new ScaledResolution(mc);
-//			p.setLocation(res.getScaledWidth(), res.getScaledHeight());
-	//
-//			return p;
-		
-		Screen currScreen = Minecraft.getInstance().currentScreen;
-		if (currScreen != null) {
-			mDisplayWidth = currScreen.width/2;
-			mDisplayHeight = currScreen.height/2;
-		}
-		
-	}
-
-	private int mDisplayWidth;
-	private int mDisplayHeight;
+  		mResource = new ResourceLocation("specialeffect", "icons/overlay.png");
+	}	
 
 	ResourceLocation mResource;
 
@@ -85,47 +54,13 @@ public class JoystickControlOverlay {
 	public void render(RenderGameOverlayEvent.Post event) {
 		if (mVisible) {			
 
-			this.rescale();
-			
-			
 			int w = event.getWindow().getScaledWidth();
             int h = event.getWindow().getScaledHeight();
+            float alpha = 0.5f;
             
-            // hack for testing
-            w = w/2;
-            h = h/2;
+			this.mc.getTextureManager().bindTexture(mResource);			
+			ModUtils.drawTexQuad(0, 0, w, h, alpha);
 
-			//GL11.glDisable(GL11.GL_LIGHTING);
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.25F);
-			
-			//this.mc.getTextureManager().bindTexture(mResource);
-			
-//			int w = mDisplayWidth;
-//			int h = mDisplayHeight;
-									
-			//GuiUtils.drawContinuousTexturedBox(0,0,0,0,w,h,w,h,0,10);
-			
-			
-
-	        
-	        GlStateManager.enableBlend();
-	        GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-
-	        GuiUtils.drawTexturedModalRect(0, 0, 0, 0, w, h, 10);
-			
-			
-			// TODO: alpha?
-//
-//			GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
-//			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD);
-//
-//			GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-//			// FIXME: add alpha as user param?
-//
-//			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mDisplayHeight);
-
-			// reset GL attributes!
-			//GL11.glPopAttrib();
 		}
 	}
 

@@ -15,6 +15,8 @@ import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -125,19 +127,37 @@ public class ModUtils {
 //
 //	}
 
-	public static void drawTexQuad(double x, double y, double width, double height) {
+	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, alpha);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();		
 
+		int z = 10;
 		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(x, y + height, 0).tex(0.0, 1.0).endVertex();
-		bufferbuilder.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
-		bufferbuilder.pos(x + width, y, 0).tex(1.0, 0.0).endVertex();
-		bufferbuilder.pos(x, y, 0).tex(0.0, 0.0).endVertex();
+		bufferbuilder.pos(x, y + height, z).tex(0.0, 1.0).endVertex();
+		bufferbuilder.pos(x + width, y + height, z).tex(1.0, 1.0).endVertex();
+		bufferbuilder.pos(x + width, y, z).tex(1.0, 0.0).endVertex();
+		bufferbuilder.pos(x, y, z).tex(0.0, 0.0).endVertex();
 
 		tessellator.draw();
 		
+//		
+//		final float uScale = 1f / 0x100;
+//        final float vScale = 1f / 0x100;
+//
+//        Tessellator tessellator = Tessellator.getInstance();
+//        BufferBuilder wr = tessellator.getBuffer();
+//        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+//        wr.pos(x        , y + height, zLevel).tex( u          * uScale, ((v + height) * vScale)).endVertex();
+//        wr.pos(x + width, y + height, zLevel).tex((u + width) * uScale, ((v + height) * vScale)).endVertex();
+//        wr.pos(x + width, y         , zLevel).tex((u + width) * uScale, ( v           * vScale)).endVertex();
+//        wr.pos(x        , y         , zLevel).tex( u          * uScale, ( v           * vScale)).endVertex();
+//        tessellator.draw();
+//        
+        
 		
 //		//---
 //		 Tessellator tessellator = Tessellator.getInstance();
