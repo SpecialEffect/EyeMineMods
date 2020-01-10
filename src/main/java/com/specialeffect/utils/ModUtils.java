@@ -126,7 +126,8 @@ public class ModUtils {
 //		return p;
 //
 //	}
-
+	
+	
 	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, alpha);
         GlStateManager.enableBlend();
@@ -143,49 +144,6 @@ public class ModUtils {
 		bufferbuilder.pos(x, y, z).tex(0.0, 0.0).endVertex();
 
 		tessellator.draw();
-		
-//		
-//		final float uScale = 1f / 0x100;
-//        final float vScale = 1f / 0x100;
-//
-//        Tessellator tessellator = Tessellator.getInstance();
-//        BufferBuilder wr = tessellator.getBuffer();
-//        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-//        wr.pos(x        , y + height, zLevel).tex( u          * uScale, ((v + height) * vScale)).endVertex();
-//        wr.pos(x + width, y + height, zLevel).tex((u + width) * uScale, ((v + height) * vScale)).endVertex();
-//        wr.pos(x + width, y         , zLevel).tex((u + width) * uScale, ( v           * vScale)).endVertex();
-//        wr.pos(x        , y         , zLevel).tex( u          * uScale, ( v           * vScale)).endVertex();
-//        tessellator.draw();
-//        
-        
-		
-//		//---
-//		 Tessellator tessellator = Tessellator.getInstance();
-//	      BufferBuilder bufferbuilder = tessellator.getBuffer();
-//	      float f = this.mc.player.getBrightness();
-//	      GlStateManager.color4f(f, f, f, 0.1F);
-//	      GlStateManager.enableBlend();
-//	      GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//	      GlStateManager.pushMatrix();
-//	      float f1 = 4.0F;
-//	      float f2 = -1.0F;
-//	      float f3 = 1.0F;
-//	      float f4 = -1.0F;
-//	      float f5 = 1.0F;
-//	      float f6 = -0.5F;
-//	      float f7 = -this.mc.player.rotationYaw / 64.0F;
-//	      float f8 = this.mc.player.rotationPitch / 64.0F;
-//	      bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-//	      bufferbuilder.pos(-1.0D, -1.0D, -0.5D).tex((double)(4.0F + f7), (double)(4.0F + f8)).endVertex();
-//	      bufferbuilder.pos(1.0D, -1.0D, -0.5D).tex((double)(0.0F + f7), (double)(4.0F + f8)).endVertex();
-//	      bufferbuilder.pos(1.0D, 1.0D, -0.5D).tex((double)(0.0F + f7), (double)(0.0F + f8)).endVertex();
-//	      bufferbuilder.pos(-1.0D, 1.0D, -0.5D).tex((double)(4.0F + f7), (double)(0.0F + f8)).endVertex();
-//	      tessellator.draw();
-//
-//	      GlStateManager.popMatrix();
-//	      GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-//	      GlStateManager.disableBlend();
-
 	}
 
 	// Find an item in the hotbar which matches the given class

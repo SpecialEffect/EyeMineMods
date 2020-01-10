@@ -16,7 +16,9 @@ import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourcePackInfo.Priority;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -30,23 +32,25 @@ public class ModStateGui extends BaseClassWithCallbacks {
 	private StateOverlay mStateOverlay;
 
 	public ModStateGui() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+		// highest priority so this is set up before any mods try to register against it
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::setup);
+        
+        mStateOverlay = new StateOverlay(Minecraft.getInstance());
 	}
 	
 	private void setup(final FMLCommonSetupEvent event) {
-		//pre-init
+		System.out.println("ModStateGui::setup begins");
+		
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Overlay icons to show state of mods.");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		// This needs to be initialised in preinit because other mods will 
-		// try to register with it in postinit.
-		mStateOverlay = new StateOverlay(Minecraft.getInstance());
 		
-		// post init
+		
 		MinecraftForge.EVENT_BUS.register(mStateOverlay);
+		System.out.println("ModStateGui::setup ends");
 	}
 
 }

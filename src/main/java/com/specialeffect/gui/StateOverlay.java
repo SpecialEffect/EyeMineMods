@@ -16,20 +16,21 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 //
 // StateOverlay implements a simple status bar at the top of the screen which 
 // shows the current states such as attacking, walking, etc.
 //
-public class StateOverlay extends Gui
+public class StateOverlay 
 {
 	private Minecraft mc;
 
@@ -45,24 +46,23 @@ public class StateOverlay extends Gui
 		mFlagsLeft = new ArrayList<Boolean>();
 		mFlagsRight = new ArrayList<Boolean>();
 		
+		MinecraftForge.EVENT_BUS.register(this);
+
 	}
 	
 	private void rescale() {
-		// Scale icon sizes to fit screen
-		Point size = ModUtils.getScaledDisplaySize(mc);
-		mDisplayWidth = size.x;
-		mcurrentScreen.height = size.y;
+		// Scale icon sizes to fit screen		
 
 		int maxSizeByWidth = mDisplayWidth/(mIconsPerRow+mIconPadding);
-		int maxSizeByHeight = 2*mcurrentScreen.height/(mIconsPerRow+mIconPadding);
+		int maxSizeByHeight = 2*mDisplayHeight/(mIconsPerRow+mIconPadding);
 		mIconSize = Math.min(maxSizeByWidth, maxSizeByHeight);
-		//mIconSize = 18*2;
+
 	}
 
 	private static int mIconSize = 30;
 	private static int mIconPadding = 5;
 	private int mDisplayWidth;
-	private int mcurrentScreen.height;
+	private int mDisplayHeight;
 	private static final int mIconsPerRow = 10;
 
 	// Lists of icons to draw on each half of screen
@@ -95,42 +95,47 @@ public class StateOverlay extends Gui
 	private void drawScaledTextureWithGlow(ResourceLocation res,
 			int x, int y, 
 			int width, int height)
-	{
-		GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
+	{	
+		
+		GlStateManager.pushTextureAttributes();
 
-		this.mc.renderEngine.bindTexture(res);
+		Minecraft.getInstance().getTextureManager().bindTexture(res);	
 		
 		// First draw enlarged and blurred, for glow.
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 
+		GlStateManager.texParameter(GL11.GL_TEXTURE_2D, 
 				GL11.GL_TEXTURE_MIN_FILTER, 
 				GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, 
+		GlStateManager.texParameter(GL11.GL_TEXTURE_2D, 
 				GL11.GL_TEXTURE_MAG_FILTER, 
 				GL11.GL_LINEAR);
 
-		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD );
-
+		GlStateManager.texEnv(GL11.GL_TEXTURE_ENV, 
+				GL11.GL_TEXTURE_ENV_MODE, 
+				GL11.GL_ADD );
+		
 		// We draw the texture larger, in white, at progressive levels of alpha 
 		// for blur effect (the alpha gets added on each layer)
 		int blurSteps = 4; // how many levels of progressive blur
-		double totalBlur = width/12; // in pixels		
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f/blurSteps);
+		double totalBlur = width/12; // in pixels				
 
 		for (int i=0; i < blurSteps; i++) {
 			double blurAmount = totalBlur/blurSteps*(i+1);
 			ModUtils.drawTexQuad(x - blurAmount, 
 								y - blurAmount, 
 								width + 2*blurAmount, 
-								height + 2*blurAmount);
+								height + 2*blurAmount,  
+								1.0f/blurSteps);
 				}
 
-		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
-		GL11.glColor3f(1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(res);
-		ModUtils.drawTexQuad(x, y, width, height);
+		GlStateManager.texEnv(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
+
+		// TODO: it would be nice if we could modulate the alpha of these overlays, but that doesn't
+		// work naively with the GL_REPLACE strategy we're using here. Will have to brush up my
+		// OpenGL knowledge to get alpha-icon with drop-shadow
+		Minecraft.getInstance().getTextureManager().bindTexture(res);	
+		ModUtils.drawTexQuad(x, y, width, height, 1.0f);		
 		
-		// reset GL attributes!
-		GL11.glPopAttrib();
+		GlStateManager.popAttributes();
 
 	}
 	
@@ -154,12 +159,12 @@ public class StateOverlay extends Gui
 		if (Minecraft.getInstance().gameSettings.showDebugInfo) {
 			return;
 		}
+			
+		GlStateManager.disableLighting();
 		
+		mDisplayWidth = event.getWindow().getScaledWidth();
+		mDisplayHeight = event.getWindow().getScaledHeight();
 		this.rescale();
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		GL11.glDisable(GL11.GL_LIGHTING); 
-	
 
 		// LEFT icons
 		int xPos = mIconPadding;

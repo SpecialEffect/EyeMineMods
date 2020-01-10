@@ -17,7 +17,7 @@ import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
-//FIXME import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.AddItemToHotbar;
 //import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -112,7 +112,7 @@ implements ChildModWithConfig {
 		ClientRegistry.registerKeyBinding(mAttackKB);
 		
 		// Register an icon for the overlay
-		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
+		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 		
 		// FIXME: these are hacked in for testing
 		overlay = new JoystickControlOverlay(Minecraft.getInstance());
@@ -132,7 +132,7 @@ implements ChildModWithConfig {
 	
 	public static void stop() {
 		mIsAttacking = false;
-		//FIXME StateOverlay.setStateRightIcon(mIconIndex, false);
+		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
 	@SubscribeEvent
@@ -188,7 +188,7 @@ implements ChildModWithConfig {
         
         if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
-			//FIXME StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
+			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
