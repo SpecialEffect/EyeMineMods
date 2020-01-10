@@ -10,22 +10,23 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import com.specialeffect.utils.OpenableBlock;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class UseDoorAtPositionMessage implements IMessage {
+public class UseDoorAtPositionMessage {
     
     private BlockPos blockPos;
     private boolean toBeOpened;
@@ -37,42 +38,32 @@ public class UseDoorAtPositionMessage implements IMessage {
         this.toBeOpened= toOpen;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-    	toBeOpened = ByteBufUtils.readVarInt(buf, 1) > 0;
-        int x = ByteBufUtils.readVarInt(buf, 5); 
-        int y = ByteBufUtils.readVarInt(buf, 5); 
-        int z = ByteBufUtils.readVarInt(buf, 5); 
-        blockPos = new BlockPos(x, y, z);
+    public static UseDoorAtPositionMessage decode(PacketBuffer buf) {
+    	BlockPos blockPos = buf.readBlockPos();
+    	boolean toOpen = buf.readBoolean();
+    	return new UseDoorAtPositionMessage(blockPos, toOpen);
+    }
+    
+    public static void encode(UseDoorAtPositionMessage pkt, PacketBuffer buf) {
+        buf.writeBlockPos(pkt.blockPos);
+        buf.writeBoolean(pkt.toBeOpened);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-    	ByteBufUtils.writeVarInt(buf, toBeOpened ? 1 : 0, 1);
-        ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
-    }
+    public static class Handler {
+		public static void handle(final UseDoorAtPositionMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
 
-    public static class Handler implements IMessageHandler<UseDoorAtPositionMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final UseDoorAtPositionMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-                    World world = player.getEntityWorld();
-					Block block = world.getBlockState(message.blockPos).getBlock();
-					if (message.toBeOpened) {
-						OpenableBlock.open(world, block, message.blockPos);
-					}
-					else {
-						OpenableBlock.close(world, block, message.blockPos);
-					}
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+	        World world = player.getEntityWorld();
+			Block block = world.getBlockState(pkt.blockPos).getBlock();
+			if (pkt.toBeOpened) {
+				OpenableBlock.open(world, block, pkt.blockPos);
+			}
+			else {
+				OpenableBlock.close(world, block, pkt.blockPos);
+			}
+		}
+	}             
 }

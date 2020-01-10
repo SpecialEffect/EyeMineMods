@@ -13,8 +13,10 @@ package com.specialeffect.mods.misc;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-//import com.specialeffect.messages.UseDoorAtPositionMessage;
+import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.utils.OpenableBlock;
@@ -22,6 +24,7 @@ import com.specialeffect.utils.OpenableBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -29,12 +32,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(AutoOpenDoors.MODID)
 public class AutoOpenDoors 
@@ -42,31 +43,33 @@ implements ChildModWithConfig
 {
 	public static final String MODID = "autoopendoors";
 	public static final String NAME = "AutoOpenDoors";
-    public static Configuration mConfig;
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-    //FIXME for 1.14 public static SimpleNetworkWrapper network;
+    public static SimpleChannel channel;
 
-	@SubscribeEvent
+    public AutoOpenDoors() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    }
+
 	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	private void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
-		
+
+		// preinit
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically open doors/gates and close them behind you.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-        //FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        //FIXME network.registerMessage(UseDoorAtPositionMessage.Handler.class, 
-        						UseDoorAtPositionMessage.class, 0, Side.SERVER);
-
-        // Set up config
-    	mConfig = new Configuration(event.getSuggestedConfigurationFile());
-    	this.syncConfig();
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
-
+		// setup channel for comms
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","autoopendoors")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0; 
+        channel.registerMessage(id++, UseDoorAtPositionMessage.class, UseDoorAtPositionMessage::encode, 
+        		UseDoorAtPositionMessage::decode, UseDoorAtPositionMessage.Handler::handle);                   	       
+		
 		// Register for config changes from parent
 		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
@@ -74,7 +77,7 @@ implements ChildModWithConfig
 	}
 	
 	public void syncConfig() {
-        mDoorRadius = EyeGaze.mRadiusDoors;
+        mDoorRadius = EyeMineConfig.mRadiusDoors.get();
 	}
 	
 	// A list of the position of any doors we've opened that haven't yet been closed
@@ -117,8 +120,8 @@ implements ChildModWithConfig
 											mOpenedDoors.add(blockPos);
 
 											// Ask server to open door too
-											//FIXME AutoOpenDoors.network.sendToServer(
-													//new UseDoorAtPositionMessage(blockPos, true));
+											channel.sendToServer(
+													new UseDoorAtPositionMessage(blockPos, true));
 										}
 									}
 								}

@@ -11,14 +11,11 @@
 package com.specialeffect.utils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.TrapDoorBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.TrapDoorBlock;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -30,13 +27,12 @@ public class OpenableBlock {
 	    	return false;
 	    }
 
-	    IBlockState state = world.getBlockState(blockPos);
-	    PropertyBool openProp = getOpenProp(block);
-	    boolean isOpen = (Boolean) state.getProperties().get(openProp);
-
+	    BlockState state = world.getBlockState(blockPos);
+	    BooleanProperty openProp = getOpenProp(block);
+	    boolean isOpen = state.get(openProp);
+        
 	    if (!isOpen) {
-	    	world.setBlockState(blockPos, 
-	    			world.getBlockState(blockPos).withProperty(openProp, 
+	    	world.setBlockState(blockPos, state.with(openProp, 
 	    					Boolean.valueOf(true))); 
 	    	return true;
 	    }
@@ -44,7 +40,7 @@ public class OpenableBlock {
 		return false;
 	}
 
-	private static PropertyBool getOpenProp(Block block) {
+	private static BooleanProperty getOpenProp(Block block) {
 	    if (block instanceof DoorBlock) {
 	    	return DoorBlock.OPEN;
 	    }
@@ -64,13 +60,12 @@ public class OpenableBlock {
 	    	return false;
 	    }
 
-	    IBlockState state = world.getBlockState(blockPos);
-	    PropertyBool openProp = getOpenProp(block);
-	    boolean isOpen = (Boolean) state.getProperties().get(openProp);
+	    BlockState state = world.getBlockState(blockPos);
+	    BooleanProperty openProp = getOpenProp(block);
+	    boolean isOpen = state.get(openProp);
 
 	    if (isOpen) {
-	    	world.setBlockState(blockPos, 
-	    			world.getBlockState(blockPos).withProperty(openProp, 
+	    	world.setBlockState(blockPos, state.with(openProp, 
 	    					Boolean.valueOf(false))); 
 	    	return true;
 	    }
