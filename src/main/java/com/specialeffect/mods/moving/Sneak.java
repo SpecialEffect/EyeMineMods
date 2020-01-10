@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-//FIXME import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.CommonStrings;
@@ -73,7 +73,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		ClientRegistry.registerKeyBinding(mSneakKB);
 		
 		// Register an icon for the overlay
-		//FIXME mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
 		
 	}
 	
@@ -101,7 +101,7 @@ public class Sneak extends BaseClassWithCallbacks {
 //			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 //			player.setSneaking(mIsSneaking);
 //			// Make sure icon up to date
-//			//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
+//			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 //		}
 	}
 	
@@ -123,7 +123,7 @@ public class Sneak extends BaseClassWithCallbacks {
 		ModUtils.sendPlayerMessage("Sneaking: " + (bSneak ? "ON" : "OFF"));
 		
 		// Make sure icon up to date?
-//		//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
+		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 	}
 
 	@SubscribeEvent

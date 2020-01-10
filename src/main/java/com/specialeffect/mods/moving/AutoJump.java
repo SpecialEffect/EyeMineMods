@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-//FIXME import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -66,8 +66,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 		ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
 
 		// Register an icon for the overlay
-		// FIXME mIconIndex =
-		// StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
 
 		// Subscribe to parent's config changes
 		// This has to happen after texture is registered, since it will trigger a
@@ -80,7 +79,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 		// Turn off vanilla autojump since it doesn't play nicely with
 		// our gaze-based walking methods.
 		Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
-		// FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
 	@SubscribeEvent
@@ -88,7 +87,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
 			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-			Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
+//			Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
 
 			// Process any events which were queued by key events
 			this.processQueuedCallbacks(event);
@@ -102,7 +101,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 
 		if (autoJumpKeyBinding.isPressed()) {
 			mDoingAutoJump = !mDoingAutoJump;
-			// FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
+			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override

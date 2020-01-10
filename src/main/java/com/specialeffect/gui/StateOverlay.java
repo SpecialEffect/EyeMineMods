@@ -74,7 +74,7 @@ public class StateOverlay
 	// Add texture to list of icons, return position. 
 	// You need to hang onto the position to later turn the
 	// icon on/off.
-	public static int registerTextureLeft(String filepath) {
+	public synchronized static int registerTextureLeft(String filepath) {
 		ResourceLocation res = new ResourceLocation(filepath);
 		mResourcesLeft.add(res);
 		mFlagsLeft.add(false);
@@ -84,7 +84,7 @@ public class StateOverlay
 	// Add texture to list of icons, return position. 
 	// You need to hang onto the position to later turn the
 	// icon on/off.
-	public static int registerTextureRight(String filepath) {
+	public synchronized static int registerTextureRight(String filepath) {
 		ResourceLocation res = new ResourceLocation(filepath);
 		mResourcesRight.add(res);
 		mFlagsRight.add(false);

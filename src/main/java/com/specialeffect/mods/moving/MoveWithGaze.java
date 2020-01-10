@@ -20,6 +20,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 //import com.specialeffect.gui.StateOverlay;
@@ -111,7 +112,7 @@ implements ChildModWithConfig
         mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
         
 		// Register an icon for the overlay
-		//FIXME mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
+		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
     }       
 	
 	public void syncConfig() {
@@ -482,7 +483,7 @@ implements ChildModWithConfig
     public static void stop() {
     	if (mDoingAutoWalk) {
     		mDoingAutoWalk = false;
-    		//FIXME StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
     	}
     }
 
@@ -492,7 +493,7 @@ implements ChildModWithConfig
         if(mToggleAutoWalkKB.isPressed()) {
         	mDoingAutoWalk = !mDoingAutoWalk;
         	//FIXME: MouseHandler.setWalking(mDoingAutoWalk);
-        	// FIXME: StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+        	StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
         	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
         }
         if(mDecreaseWalkSpeedKB.isPressed()) {

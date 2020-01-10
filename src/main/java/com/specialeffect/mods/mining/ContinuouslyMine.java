@@ -13,17 +13,14 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
-//import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
-//import com.specialeffect.mods.misc.ContinuouslyAttack;
-//import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,11 +30,8 @@ import net.minecraft.item.Items;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Hand;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -95,7 +89,7 @@ implements ChildModWithConfig
 		ClientRegistry.registerKeyBinding(mDestroyKB);
 		
 		// Register an icon for the overlay
-		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
+		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/mine.png");
 	}
 	
 	public void syncConfig() {
@@ -109,7 +103,7 @@ implements ChildModWithConfig
 		
 		KeyBinding.setKeyBindState(attackBinding.getKey(), mIsAttacking);
 		
-		//FIXME StateOverlay.setStateRightIcon(mIconIndex, false);
+		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
 	@SubscribeEvent
@@ -172,7 +166,7 @@ implements ChildModWithConfig
         if(mDestroyKB.isPressed()) {
 			
 			mIsAttacking = !mIsAttacking;
-			//FIXME StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
+			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
 			final KeyBinding attackBinding = 
 					Minecraft.getInstance().gameSettings.keyBindAttack;
