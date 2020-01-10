@@ -10,7 +10,6 @@
 
 package com.specialeffect.gui;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +31,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 //
 public class StateOverlay 
 {
-	private Minecraft mc;
-
 	public StateOverlay(Minecraft mc)
 	{
 		super();
-
-		// We need this to invoke the render engine.
-		this.mc = mc;
 
 		mResourcesLeft = new ArrayList<ResourceLocation>();
 		mResourcesRight = new ArrayList<ResourceLocation>();

@@ -22,14 +22,12 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -52,15 +50,14 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
-		// preinit
 
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Automatically step over blocks.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		// init
 		// Register key bindings
 		autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", GLFW.GLFW_KEY_J, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(autoJumpKeyBinding);
@@ -83,22 +80,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 	}
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-
-//			Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
-
-			// Process any events which were queued by key events
-			this.processQueuedCallbacks(event);
-		}
-	}
-
-	@SubscribeEvent
-	public void onClientTickEvent(final ClientTickEvent event) {
-		if (event.phase != TickEvent.Phase.END)
-			return;
-
+	public void onKeyInput(KeyInputEvent event) {
 		if (autoJumpKeyBinding.isPressed()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			

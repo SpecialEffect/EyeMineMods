@@ -16,7 +16,6 @@ import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourcePackInfo.Priority;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +37,7 @@ public class ModStateGui extends BaseClassWithCallbacks {
         mStateOverlay = new StateOverlay(Minecraft.getInstance());
 	}
 	
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 		System.out.println("ModStateGui::setup begins");
 		
