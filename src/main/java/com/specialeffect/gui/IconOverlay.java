@@ -17,39 +17,35 @@ import org.lwjgl.opengl.GL11;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 //
 //
-public class IconOverlay extends Gui
+public class IconOverlay
 {
-	private Minecraft mc;
 	private ResourceLocation mResource;
 	
-	private boolean mVisible = false;
+	// Current state
+	private boolean mVisible = false;	
 	
-	private int mcurrentScreen.height;
-	private int mDisplayWidth;
-	private float mAlpha = 1.0f;
-	
-	// These are all relative to screen	
+	// Position/appearance (see setters)
+	// Position/size are relative to screen	
 	private float mCentreX = 0.5f;
 	private float mCentreY = 0.5f;
 	private float mHeight = 1.0f;
 	private float mAspectRatio = 1.0f;
+	private float mAlpha = 1.0f;
 	
 	public IconOverlay(Minecraft mc, String resourcePath)
 	{
-		super();
-
-		// We need this to invoke the render engine.
-		this.mc = mc;
-
 		mResource = new ResourceLocation(resourcePath);		
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	public void setPosition(float centreX, float centreY, float height, float aspectRatio) {
@@ -67,46 +63,28 @@ public class IconOverlay extends Gui
 		mAlpha = alpha;
 	}
 	
-	private void rescale() {
-		// Scale icon sizes to fit screen
-		Point size = ModUtils.getScaledDisplaySize(mc);
-		
-		mDisplayWidth = size.x;
-		mcurrentScreen.height = size.y;
-	}
-
-
 	// A helper function to draw a texture scaled to fit.
-	private void drawTexture()
+	private void drawTexture(int screenHeight, int screenWidth)
 	{
 		// calculate position
-		int height = (int)(mcurrentScreen.height*mHeight);
+		int height = (int)(screenWidth*mHeight);
 		int width = (int)(height*mAspectRatio);
-		int centreX = (int)(mCentreX*mDisplayWidth);
-		int centreY = (int)(mCentreY*mcurrentScreen.height);
+		int centreX = (int)(mCentreX*screenWidth);
+		int centreY = (int)(mCentreY*screenHeight);
 		
-		GL11.glDisable(GL11.GL_LIGHTING); 
-		GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
-
-		this.mc.renderEngine.bindTexture(mResource);
-		
-		GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD );
-
-		GL11.glColor4f(1.0f, 1.0f, 1.0f, mAlpha);
-
+		// render the texture 
+		// TODO:white? black? drop shadow? 
+		Minecraft.getInstance().getTextureManager().bindTexture(mResource);					
 		ModUtils.drawTexQuad(centreX - width/2, centreY - height/2, 
-							 width, height);
+							 width, height, mAlpha);
 		
-		// reset GL attributes!
-		GL11.glPopAttrib();
 
 	}
 	
 	// This event is called by GuiIngameForge during each frame by
 	// GuiIngameForge.pre() and GuiIngameForce.post().
 	@SubscribeEvent
-	public void onRenderExperienceBar(RenderGameOverlayEvent event)
-	{
+	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 
 		// We draw after the ExperienceBar has drawn.  The event raised by GuiIngameForge.pre()
 		// will return true from isCancelable.  If you call event.setCanceled(true) in
@@ -123,9 +101,10 @@ public class IconOverlay extends Gui
 			return;
 		}
 		
-		if (mVisible) {	
-			this.rescale();
-			this.drawTexture();
+		if (mVisible) {		
+			int w = event.getWindow().getScaledWidth();
+			int h = event.getWindow().getScaledHeight();
+			this.drawTexture(w, h);
 		}
 	}
 
