@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 //FIXME import com.specialeffect.gui.StateOverlay;
@@ -38,9 +39,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -73,6 +78,7 @@ implements ChildModWithConfig {
 	private void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
+		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");
@@ -104,6 +110,9 @@ implements ChildModWithConfig {
 		
 		// Register an icon for the overlay
 		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
+		
+		overlay = new JoystickControlOverlay(Minecraft.getInstance());
+		overlay.setVisible(true);
 	}
 	
 	@Override
@@ -164,10 +173,9 @@ implements ChildModWithConfig {
 	}
 	
 	public static boolean mIsAttacking = false;
-	
+
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
+	public void onKeyInput(KeyInputEvent event) {     
         
         if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
@@ -178,6 +186,51 @@ implements ChildModWithConfig {
 		}
 	}
 	
+	private JoystickControlOverlay overlay;
+	
+	//FIXME: move elsewhere
+	@SubscribeEvent
+	//public void onRenderGameOverlayEvent(final RenderGameOverlayEvent event) {
+    public void onRenderTick(RenderTickEvent event) {
+		// TODO: work out when to show this!
+        if (event.phase == TickEvent.Phase.END) {
+        	//&& Minecraft.getInstance().currentScreen != null && Minecraft.getInstance().gameRenderer.getShaderGroup() != null) {
+        
+        	//overlay.render();
+       
+        }
+	}	
+//	
+//	@SubscribeEvent
+//	public void overlay(RenderGameOverlayEvent.Post event) {
+//        if (event.isCancelable() && event.isCanceled()) {
+//            return;
+//        }
+//
+//        Minecraft mc = Minecraft.getInstance();
+//        mc.fontRenderer.drawString("THIS IS A TEST STRING", 10, 10, 0xffffff);﻿
+//    }
+	
+	//FIXME: move elsewhere
+	@SubscribeEvent
+	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
+		if (event.isCancelable() && event.isCanceled()) {
+            return;
+        }
+		//System.out.println(event.getType());
+		
+		//TODO: check event type? HOTBAR CROSSHAIRS BOSSHEALTH EXPERIENCE TEXT POTION_ICONS SUBTITLES CHAT ALL VIGNETTE HELMET PORTAL
+		if (event.getType() == ElementType.HOTBAR) {
+			// TODO: work out when to show this!
+			//
+			overlay.render(event);
+			
+
+			Minecraft mc = Minecraft.getInstance();
+			mc.fontRenderer.drawString("Some HUD text", 10, 10, 0xffffff);
+		}
+	}	
+		
 	//returns true if successful
 	private boolean chooseWeapon(PlayerInventory inventory) {
 		

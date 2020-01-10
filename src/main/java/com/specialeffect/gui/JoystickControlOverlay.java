@@ -14,88 +14,119 @@ import java.awt.Point;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 //
 // StateOverlay implements a simple status bar at the top of the screen which 
 // shows the current states such as attacking, walking, etc.
 //
-public class JoystickControlOverlay extends Gui
-{
+public class JoystickControlOverlay {
 	private Minecraft mc;
 
-	public JoystickControlOverlay(Minecraft mc)
-	{
+	public JoystickControlOverlay(Minecraft mc) {
 		super();
 
 		// We need this to invoke the render engine.
 		this.mc = mc;
-		
-		mResource = new ResourceLocation("specialeffect:icons/overlay.png");
-
+//		
+//		we are here, minecraft is not finding this file, although it seems to match conventions from tutorial
+//		suggest a google is in order - do we need to explicitly add resources to the build>?
+//				no, they are in the bin folder okay..
+  		mResource = new ResourceLocation("specialeffect", "icons/fly-auto.png");
 	}
-	
+
 	private void rescale() {
-		// Scale icon sizes to fit screen		
-		Point size = ModUtils.getScaledDisplaySize(mc);
-		mDisplayWidth = size.x;
-		mcurrentScreen.height = size.y;
+		// FIXME
+		/*
+		 * // Scale icon sizes to fit screen Point size =
+		 * ModUtils.getScaledDisplaySize(mc); mDisplayWidth = size.x; mDisplayHeight =
+		 * size.y;
+		 */
+		
+
+//		public static Point getScaledDisplaySize(Minecraft mc) {
+//			Point p = new Point(0, 0);
+//			ScaledResolution res = new ScaledResolution(mc);
+//			p.setLocation(res.getScaledWidth(), res.getScaledHeight());
+	//
+//			return p;
+		
+		Screen currScreen = Minecraft.getInstance().currentScreen;
+		if (currScreen != null) {
+			mDisplayWidth = currScreen.width/2;
+			mDisplayHeight = currScreen.height/2;
+		}
+		
 	}
 
 	private int mDisplayWidth;
-	private int mcurrentScreen.height;
+	private int mDisplayHeight;
 
-	// Lists of icons to draw on each half of screen
 	ResourceLocation mResource;
 
 	private boolean mVisible = false;
-	
+
 	public void setVisible(boolean bVisible) {
 		mVisible = bVisible;
 	}
 
-	// This event is called by GuiIngameForge during each frame by
-	// GuiIngameForge.pre() and GuiIngameForce.post().
-	@SubscribeEvent
-	public void onRenderExperienceBar(RenderGameOverlayEvent event)
-	{
+	public void render(RenderGameOverlayEvent.Post event) {
+		if (mVisible) {			
 
-		// We draw after the ExperienceBar has drawn.  The event raised by GuiIngameForge.pre()
-		// will return true from isCancelable.  If you call event.setCanceled(true) in
-		// that case, the portion of rendering which this event represents will be canceled.
-		// We want to draw *after* the experience bar is drawn, so we make sure isCancelable() returns
-		// false and that the eventType represents the ExperienceBar event.
-		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
-		{      
-			return;
-		}
-		
-		if (mVisible) {
-		
 			this.rescale();
+			
+			
+			int w = event.getWindow().getScaledWidth();
+            int h = event.getWindow().getScaledHeight();
+            
+            // hack for testing
+            w = w/2;
+            h = h/2;
 
-			GL11.glDisable(GL11.GL_LIGHTING); 
+			//GL11.glDisable(GL11.GL_LIGHTING);
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.25F);
+			
+			//this.mc.getTextureManager().bindTexture(mResource);
+			
+//			int w = mDisplayWidth;
+//			int h = mDisplayHeight;
+									
+			//GuiUtils.drawContinuousTexturedBox(0,0,0,0,w,h,w,h,0,10);
+			
+			
 
-			this.mc.renderEngine.bindTexture(mResource);		
+	        
+	        GlStateManager.enableBlend();
+	        GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-			GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
-			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD );
-
-			GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-
-			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mcurrentScreen.height);
+	        GuiUtils.drawTexturedModalRect(0, 0, 0, 0, w, h, 10);
+			
+			
+			// TODO: alpha?
+//
+//			GL11.glPushAttrib(GL11.GL_TEXTURE_BIT);
+//			GL11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_ADD);
+//
+//			GL11.glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+//			// FIXME: add alpha as user param?
+//
+//			ModUtils.drawTexQuad(0, 0, mDisplayWidth, mDisplayHeight);
 
 			// reset GL attributes!
-			GL11.glPopAttrib();
+			//GL11.glPopAttrib();
 		}
-
 	}
 
 }

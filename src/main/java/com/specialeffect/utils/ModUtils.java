@@ -13,7 +13,13 @@ package com.specialeffect.utils;
 import java.awt.Point;
 import java.util.UUID;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -118,21 +124,49 @@ public class ModUtils {
 //		return p;
 //
 //	}
+
+	public static void drawTexQuad(double x, double y, double width, double height) {
+
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();		
+
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x, y + height, 0).tex(0.0, 1.0).endVertex();
+		bufferbuilder.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
+		bufferbuilder.pos(x + width, y, 0).tex(1.0, 0.0).endVertex();
+		bufferbuilder.pos(x, y, 0).tex(0.0, 0.0).endVertex();
+
+		tessellator.draw();
+		
+		
+//		//---
+//		 Tessellator tessellator = Tessellator.getInstance();
+//	      BufferBuilder bufferbuilder = tessellator.getBuffer();
+//	      float f = this.mc.player.getBrightness();
+//	      GlStateManager.color4f(f, f, f, 0.1F);
+//	      GlStateManager.enableBlend();
+//	      GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//	      GlStateManager.pushMatrix();
+//	      float f1 = 4.0F;
+//	      float f2 = -1.0F;
+//	      float f3 = 1.0F;
+//	      float f4 = -1.0F;
+//	      float f5 = 1.0F;
+//	      float f6 = -0.5F;
+//	      float f7 = -this.mc.player.rotationYaw / 64.0F;
+//	      float f8 = this.mc.player.rotationPitch / 64.0F;
+//	      bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+//	      bufferbuilder.pos(-1.0D, -1.0D, -0.5D).tex((double)(4.0F + f7), (double)(4.0F + f8)).endVertex();
+//	      bufferbuilder.pos(1.0D, -1.0D, -0.5D).tex((double)(0.0F + f7), (double)(4.0F + f8)).endVertex();
+//	      bufferbuilder.pos(1.0D, 1.0D, -0.5D).tex((double)(0.0F + f7), (double)(0.0F + f8)).endVertex();
+//	      bufferbuilder.pos(-1.0D, 1.0D, -0.5D).tex((double)(4.0F + f7), (double)(0.0F + f8)).endVertex();
+//	      tessellator.draw();
 //
-//	public static void drawTexQuad(double x, double y, double width, double height) {
-//
-//		Tessellator tessellator = Tessellator.getInstance();
-//		VertexBuffer buffer = tessellator.getBuffer();
-//
-//		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-//		buffer.pos(x, y + height, 0).tex(0.0, 1.0).endVertex();
-//		buffer.pos(x + width, y + height, 0).tex(1.0, 1.0).endVertex();
-//		buffer.pos(x + width, y, 0).tex(1.0, 0.0).endVertex();
-//		buffer.pos(x, y, 0).tex(0.0, 0.0).endVertex();
-//
-//		tessellator.draw();
-//
-//	}
+//	      GlStateManager.popMatrix();
+//	      GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//	      GlStateManager.disableBlend();
+
+	}
 
 	// Find an item in the hotbar which matches the given class
 	// (this includes all subclasses)
