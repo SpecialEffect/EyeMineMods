@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
@@ -71,6 +72,8 @@ implements ChildModWithConfig {
 	
 	private boolean mWaitingForSword = false;
 	
+	private IconOverlay iconTemp; 
+	
 	public ContinuouslyAttack() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
@@ -111,8 +114,14 @@ implements ChildModWithConfig {
 		// Register an icon for the overlay
 		//FIXME mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 		
+		// FIXME: these are hacked in for testing
 		overlay = new JoystickControlOverlay(Minecraft.getInstance());
 		overlay.setVisible(true);
+		
+		iconTemp = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/attack.png");
+		iconTemp.setAlpha(0.5f);
+		iconTemp.setPosition(0.5f,  0.5f,  0.1f, 1.0f);
+		iconTemp.setVisible(true);
 	}
 	
 	@Override
@@ -217,15 +226,9 @@ implements ChildModWithConfig {
 		if (event.isCancelable() && event.isCanceled()) {
             return;
         }
-		//System.out.println(event.getType());
 		
 		//TODO: check event type? HOTBAR CROSSHAIRS BOSSHEALTH EXPERIENCE TEXT POTION_ICONS SUBTITLES CHAT ALL VIGNETTE HELMET PORTAL
 		if (event.getType() == ElementType.HOTBAR) {
-			// TODO: work out when to show this!
-			//
-			overlay.render(event);
-			
-
 			Minecraft mc = Minecraft.getInstance();
 			mc.fontRenderer.drawString("Some HUD text", 10, 10, 0xffffff);
 		}

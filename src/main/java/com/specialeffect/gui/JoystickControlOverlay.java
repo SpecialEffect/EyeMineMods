@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
@@ -33,14 +34,10 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 // shows the current states such as attacking, walking, etc.
 //
 public class JoystickControlOverlay {
-	private Minecraft mc;
 
 	public JoystickControlOverlay(Minecraft mc) {
-		super();
-
-		// We need this to invoke the render engine.
-		this.mc = mc;
   		mResource = new ResourceLocation("specialeffect", "icons/overlay.png");
+		MinecraftForge.EVENT_BUS.register(this);
 	}	
 
 	ResourceLocation mResource;
@@ -50,18 +47,29 @@ public class JoystickControlOverlay {
 	public void setVisible(boolean bVisible) {
 		mVisible = bVisible;
 	}
+	
+	// This event is called by GuiIngameForge during each frame by
+	// GuiIngameForge.pre() and GuiIngameForce.post().
+	@SubscribeEvent
+	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 
-	public void render(RenderGameOverlayEvent.Post event) {
-		if (mVisible) {			
-
+		// We draw after the ExperienceBar has drawn.  The event raised by GuiIngameForge.pre()
+		// will return true from isCancelable.  If you call event.setCanceled(true) in
+		// that case, the portion of rendering which this event represents will be canceled.
+		// We want to draw *after* the experience bar is drawn, so we make sure isCancelable() returns
+		// false and that the eventType represents the ExperienceBar event.
+		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
+		{      
+			return;
+		}
+		
+		if (mVisible) {		
 			int w = event.getWindow().getScaledWidth();
-            int h = event.getWindow().getScaledHeight();
-            float alpha = 0.5f;
-            
-			this.mc.getTextureManager().bindTexture(mResource);			
+			int h = event.getWindow().getScaledHeight();
+			float alpha = 0.5f;
+			
+			Minecraft.getInstance().getTextureManager().bindTexture(mResource);			
 			ModUtils.drawTexQuad(0, 0, w, h, alpha);
-
 		}
 	}
-
 }
