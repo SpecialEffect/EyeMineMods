@@ -10,48 +10,41 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class DismountPlayerMessage implements IMessage {
+public class DismountPlayerMessage {
     
     public DismountPlayerMessage() { }
-
-    public static class Handler implements IMessageHandler<DismountPlayerMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final DismountPlayerMessage message,final MessageContext ctx) {
-
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    PlayerEntity player = ctx.getServerHandler().playerEntity;
-
-					if (player.isRiding()) {
-						Entity riddenEntity = player.getRidingEntity();
-						if (null != riddenEntity) {
-							player.dismountRidingEntity();
-							player.motionY += 0.5D;
-						}
-					}
-                }
-            });
-            return null; // no response in this case
-        }
+    
+	public static DismountPlayerMessage decode(PacketBuffer buf) {    	
+        return new DismountPlayerMessage();
     }
 
-	@Override
-	public void fromBytes(ByteBuf buf) {
-	}
+    public static void encode(DismountPlayerMessage pkt, PacketBuffer buf) {
+    }    
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-	}
+    public static class Handler {
+		public static void handle(final DismountPlayerMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+
+	        if (player.isPassenger()) {
+				Entity riddenEntity = player.getRidingEntity();
+				if (null != riddenEntity) {
+					player.dismountEntity(riddenEntity);					
+					//FIXME is this required? player.motionY += 0.5D;
+				}
+			}
+		}
+	}       
 }

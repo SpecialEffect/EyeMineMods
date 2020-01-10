@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
-//import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.messages.DismountPlayerMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.CommonStrings;
@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -34,6 +35,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 @Mod(Dismount.MODID)
@@ -42,10 +45,11 @@ public class Dismount extends BaseClassWithCallbacks {
 
 	public static final String MODID = "dismount";
 	public static final String NAME = "Dismount";
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mDismountKB;
 	
-    //FIXME for 1.14 public static SimpleNetworkWrapper network;
+    public static SimpleChannel channel;
 
 	public Dismount() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -60,11 +64,15 @@ public class Dismount extends BaseClassWithCallbacks {
 				"Add custom key binding to mount/dismount animals");
     	ModUtils.setAsParent(event, EyeGaze.MODID);
 
-		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        //FIXME network.registerMessage(DismountPlayerMessage.Handler.class, 
-        						//DismountPlayerMessage.class, 0, Side.SERVER);
-
-        // init
+    	// setup channel for comms
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","mineone")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0;        
+        channel.registerMessage(id++, DismountPlayerMessage.class, DismountPlayerMessage::encode, 
+        		DismountPlayerMessage::decode, DismountPlayerMessage.Handler::handle);                   	       
 		
 		// Register key bindings
 		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_C, CommonStrings.EYEGAZE_EXTRA);
@@ -93,8 +101,8 @@ public class Dismount extends BaseClassWithCallbacks {
 						// FIXME??	player.motionY += 0.5D;
 						
 						// Dismount player on server
-						//FIXME Dismount.network.sendToServer(
-								//new DismountPlayerMessage());						
+				        channel.sendToServer(new DismountPlayerMessage());
+
 					}
 					else {						
 						EntityRayTraceResult entity = ModUtils.getMouseOverEntity();									
