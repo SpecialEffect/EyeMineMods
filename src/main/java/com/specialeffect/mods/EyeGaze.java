@@ -69,7 +69,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
 				FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
 	}
 
-	public static void registerForConfigUpdates(ChildModWithConfig mod) {
+	public synchronized static void registerForConfigUpdates(ChildModWithConfig mod) {
 
 		// Make sure it gets any changes thus far
 		mod.syncConfig();
