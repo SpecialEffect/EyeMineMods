@@ -13,13 +13,9 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.gui.IconOverlay;
-import com.specialeffect.gui.JoystickControlOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
-//import com.specialeffect.messages.AddItemToHotbar;
-//import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mining.ContinuouslyMine;
@@ -27,8 +23,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,14 +33,8 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -71,8 +59,6 @@ implements ChildModWithConfig {
 	private static KeyBinding mAttackKB;
 	
 	private boolean mWaitingForSword = false;
-	
-	private IconOverlay iconTemp; 
 	
 	public ContinuouslyAttack() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -114,14 +100,6 @@ implements ChildModWithConfig {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 		
-		// FIXME: these are hacked in for testing
-		overlay = new JoystickControlOverlay(Minecraft.getInstance());
-		overlay.setVisible(true);
-		
-		iconTemp = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/attack.png");
-		iconTemp.setAlpha(0.5f);
-		iconTemp.setPosition(0.5f,  0.5f,  0.1f, 1.0f);
-		iconTemp.setVisible(true);
 	}
 	
 	@Override
@@ -195,34 +173,7 @@ implements ChildModWithConfig {
 		}
 	}
 	
-	private JoystickControlOverlay overlay;
-	
-	//FIXME: move elsewhere
-	@SubscribeEvent
-	//public void onRenderGameOverlayEvent(final RenderGameOverlayEvent event) {
-    public void onRenderTick(RenderTickEvent event) {
-		// TODO: work out when to show this!
-        if (event.phase == TickEvent.Phase.END) {
-        	//&& Minecraft.getInstance().currentScreen != null && Minecraft.getInstance().gameRenderer.getShaderGroup() != null) {
-        
-        	//overlay.render();
-       
-        }
-	}	
-//	
-//	@SubscribeEvent
-//	public void overlay(RenderGameOverlayEvent.Post event) {
-//        if (event.isCancelable() && event.isCanceled()) {
-//            return;
-//        }
-//
-//        Minecraft mc = Minecraft.getInstance();
-//        mc.fontRenderer.drawString("THIS IS A TEST STRING", 10, 10, 0xffffff);﻿
-//    }
-	
-	//FIXME: move elsewhere
-	@SubscribeEvent
-	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
+	/*public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 		if (event.isCancelable() && event.isCanceled()) {
             return;
         }
@@ -232,7 +183,7 @@ implements ChildModWithConfig {
 			Minecraft mc = Minecraft.getInstance();
 			mc.fontRenderer.drawString("Some HUD text", 10, 10, 0xffffff);
 		}
-	}	
+	}*/	
 		
 	//returns true if successful
 	private boolean chooseWeapon(PlayerInventory inventory) {
