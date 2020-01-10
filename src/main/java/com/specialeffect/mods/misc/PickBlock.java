@@ -14,8 +14,6 @@ package com.specialeffect.mods.misc;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.utils.CommonStrings;
 
-//import 
-//import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings.Input;
@@ -24,10 +22,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -37,7 +31,6 @@ import org.lwjgl.glfw.GLFW;
 public class PickBlock extends BaseClassWithCallbacks {
 	public static final String MODID = "pickblock";
 	public static final String NAME = "PickBlock";
-    private static final Logger LOGGER = LogManager.getLogger();
 
 	public static KeyBinding mPickBlockKB;
 
@@ -54,9 +47,7 @@ public class PickBlock extends BaseClassWithCallbacks {
 	@SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {   
 		if (mPickBlockKB.isPressed()) {
-	        LOGGER.info("HELLO Key pressed");
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
-			System.out.println("pickblock onKeykey is pressed");
 			KeyBinding.onTick(pickBlockKey);
 		}
     }
