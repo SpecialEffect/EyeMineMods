@@ -32,18 +32,14 @@ public class ActivateBlockAtPosition {
         this.blockPos = pos;
     }
            
-	public static ActivateBlockAtPosition decode(PacketBuffer buf) {
-    	int x = buf.readInt(); 
-        int y = buf.readInt(); 
-        int z = buf.readInt(); 
-        return new ActivateBlockAtPosition(new BlockPos(x, y, z));
+	public static ActivateBlockAtPosition decode(PacketBuffer buf) {    	
+        BlockPos blockPos = buf.readBlockPos();
+        return new ActivateBlockAtPosition(blockPos);
     }
 
     public static void encode(ActivateBlockAtPosition pkt, PacketBuffer buf) {
     	BlockPos blockPos = pkt.blockPos;
-    	buf.writeInt(blockPos.getX());
-    	buf.writeInt(blockPos.getY());
-    	buf.writeInt(blockPos.getZ());       
+    	buf.writeBlockPos(blockPos);       
     }
 
     public static class Handler {

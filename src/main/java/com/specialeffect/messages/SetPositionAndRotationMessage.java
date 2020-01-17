@@ -10,18 +10,20 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class SetPositionAndRotationMessage implements IMessage {
+public class SetPositionAndRotationMessage {
     
 	private String playerName;
 	private double x;
@@ -30,8 +32,6 @@ public class SetPositionAndRotationMessage implements IMessage {
 	private float yaw;
 	private float pitch;
 	
-    public SetPositionAndRotationMessage() { }
-
     public SetPositionAndRotationMessage(String playerName, 
     									 double x, double y, double z,
     									 float yaw, float pitch) {
@@ -43,45 +43,42 @@ public class SetPositionAndRotationMessage implements IMessage {
     	this.pitch = pitch;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-    	playerName = ByteBufUtils.readUTF8String(buf);
-    	x = buf.readDouble();
-    	y = buf.readDouble();
-    	z = buf.readDouble();
-    	yaw = buf.readFloat();
-    	pitch = buf.readFloat();
+    
+    public static SetPositionAndRotationMessage decode(PacketBuffer buf) {
+    	String playerName = buf.readString();
+    	double x = buf.readDouble();
+    	double y = buf.readDouble();
+    	double z = buf.readDouble();
+    	float yaw = buf.readFloat();
+    	float pitch = buf.readFloat();
+    	return new SetPositionAndRotationMessage(playerName, x, y, z, yaw, pitch);
+    }
+    
+    public static void encode(SetPositionAndRotationMessage pkt, PacketBuffer buf) {
+    	buf.writeString(pkt.playerName);
+        buf.writeDouble(pkt.x);
+        buf.writeDouble(pkt.y);
+        buf.writeDouble(pkt.z);
+        buf.writeFloat(pkt.yaw);
+        buf.writeFloat(pkt.pitch);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-    	ByteBufUtils.writeUTF8String(buf, playerName);
-    	buf.writeDouble(x);
-    	buf.writeDouble(y);
-    	buf.writeDouble(z);
-    	buf.writeFloat(yaw);
-    	buf.writeFloat(pitch);
-    }
-
-    public static class Handler implements IMessageHandler<SetPositionAndRotationMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final SetPositionAndRotationMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-            	World world = ctx.getServerHandler().playerEntity.world;
-            	
-                @Override
-                public void run() {
-                    PlayerEntity player = world.getPlayerEntityByName(message.playerName);
-                    if (null != player) {
-                    	player.setPositionAndRotation(message.x, message.y, message.z,
-												  	  message.yaw, message.pitch);
-                        player.setPositionAndUpdate(message.x, message.y, message.z);
-
-                    }
-                }
-            });
-            return null; // no response in this case
-        }
-    }
+    public static class Handler {
+		public static void handle(final SetPositionAndRotationMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+	        System.out.println("SetPositionAndRotationMessage start");
+	        
+	        //FIXME: test this, not currrently using playername, is redundant?
+        	player.setPositionAndRotation(pkt.x, pkt.y, pkt.z,
+        			pkt.yaw, pkt.pitch);
+            player.setPositionAndUpdate(pkt.x, pkt.y, pkt.z);
+            
+            System.out.println("SetPositionAndRotationMessage end");
+            
+		}
+	}
+        
 }

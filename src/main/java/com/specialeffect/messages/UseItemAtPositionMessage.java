@@ -10,24 +10,32 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 import javax.xml.ws.handler.MessageContext;
 
+import com.specialeffect.utils.ModUtils;
+
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class UseItemAtPositionMessage implements IMessage {
+public class UseItemAtPositionMessage {
     
     private BlockPos blockPos;
     private String playerName;
@@ -35,55 +43,66 @@ public class UseItemAtPositionMessage implements IMessage {
     public UseItemAtPositionMessage() { }
 
     public UseItemAtPositionMessage(PlayerEntity player, BlockPos pos) {
-    	this.playerName = player.getName();
+    	this.playerName = player.getName().getString();
         this.blockPos = pos;
     }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-    	playerName = ByteBufUtils.readUTF8String(buf);
-        int x = ByteBufUtils.readVarInt(buf, 5); 
-        int y = ByteBufUtils.readVarInt(buf, 5); 
-        int z = ByteBufUtils.readVarInt(buf, 5); 
-        blockPos = new BlockPos(x, y, z);
+    
+    public UseItemAtPositionMessage(String playerName, BlockPos pos) {
+    	this.playerName = playerName;
+        this.blockPos = pos;
+    }
+    
+    public static UseItemAtPositionMessage decode(PacketBuffer buf) {
+    	BlockPos blockPos = buf.readBlockPos();
+    	String playerName = buf.readString();
+        return new UseItemAtPositionMessage(playerName, blockPos);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, playerName);
-        ByteBufUtils.writeVarInt(buf, blockPos.getX(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getY(), 5);
-        ByteBufUtils.writeVarInt(buf, blockPos.getZ(), 5);       
+    public static void encode(UseItemAtPositionMessage pkt, PacketBuffer buf) {
+    	BlockPos blockPos = pkt.blockPos;
+    	buf.writeBlockPos(blockPos);       
+    	buf.writeString(pkt.playerName);
     }
 
-    public static class Handler implements IMessageHandler<UseItemAtPositionMessage, IMessage> {        
-    	@Override
-        public IMessage onMessage(final UseItemAtPositionMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getInstance() on the client
-            mainThread.addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    World world = ctx.getServerHandler().playerEntity.world;
-                    PlayerEntity player = world.getPlayerEntityByName(message.playerName);
-					ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);					
-					if (null != item)
-					{
-						int oldCount = item.getCount();
-	                    EnumActionResult result = 
-	                    item.onItemUse(player, world, 
-					                    	   message.blockPos, EnumHand.MAIN_HAND, 
-					                    	   Direction.UP, 
-					                    	   0.0f, 0.0f, 0.0f);
-	                    if (result != EnumActionResult.SUCCESS)
-	                    {
-	                    	player.sendMessage(new TextComponentString(
-	                    			"Cannot place " + item.getDisplayName() + " here"));
-	                    }
-	                    item.setCount(oldCount); //some items are decremented; others aren't
-                	}
+    public static class Handler {
+		@SuppressWarnings("deprecation")
+		public static void handle(final UseItemAtPositionMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			System.out.println("UseItemAtPositionMessage start");
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       
+
+            World world = player.getEntityWorld();                        
+            
+			ItemStack item = player.getHeldItem(Hand.MAIN_HAND);					
+			if (null != item)
+			{
+				int oldCount = item.getCount();
+								
+				Vec3d hitVec = new Vec3d((double)pkt.blockPos.getX(),
+						(double)pkt.blockPos.getY(),
+						(double)pkt.blockPos.getZ());
+				
+				Direction faceIn = Direction.UP;
+				
+				BlockRayTraceResult result = new BlockRayTraceResult(hitVec, faceIn, pkt.blockPos, false);
+				ItemUseContext context = new ItemUseContext(player, Hand.MAIN_HAND, result);
+				ActionResultType actionResult = item.onItemUse(context);
+				
+                if (actionResult != ActionResultType.SUCCESS)
+                {
+                	player.sendMessage(new StringTextComponent(
+                			"Cannot place " + item.getDisplayName().getString() + " here"));
                 }
-            });
-            return null; // no response in this case
-        }
-    }
+//                //FIXME: look into reported bug here
+                item.setCount(oldCount); //some items are decremented; others aren't
+        	}
+			
+			System.out.println("UseItemAtPositionMessage end");
+			
+			
+			ctx.get().setPacketHandled(true);
+		}
+	}
 }
