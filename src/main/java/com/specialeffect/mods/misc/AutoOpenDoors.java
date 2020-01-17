@@ -120,8 +120,7 @@ implements ChildModWithConfig
 											mOpenedDoors.add(blockPos);
 
 											// Ask server to open door too
-											channel.sendToServer(
-													new UseDoorAtPositionMessage(blockPos, true));
+											channel.sendToServer(new UseDoorAtPositionMessage(blockPos, true));
 										}
 									}
 								}
@@ -141,8 +140,7 @@ implements ChildModWithConfig
 							OpenableBlock.close(world, block, pos);
 
 							// Ask server to close door too
-							//FIXME AutoOpenDoors.network.sendToServer(
-									//new UseDoorAtPositionMessage(pos, false));
+							channel.sendToServer(new UseDoorAtPositionMessage(pos, false));
 
 							// Remove from list
 							iterator.remove();
