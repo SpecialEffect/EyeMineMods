@@ -9,14 +9,13 @@ import os
 import sys
 import getopt
 
-if len(sys.argv) < 3:
-    print("usage: ./update_version.py <forge-source-dir> --[major/minor/revision]")
-    print("e.g:   ./update_version.py ../forge-1.8.8-11.15.0.1608-1.8.8-mdk --revision")
+if len(sys.argv) < 2:
+    print("usage: ./update_version.py --[major/minor/revision]")
+    print("e.g:   ./update_version.py --revision")
     sys.exit(1)
 
 origPath = os.getcwd();
-forge_dir = sys.argv[1]
-version_level = sys.argv[2];
+version_level = sys.argv[1];
 valid_version_levels = ['--major', '--minor', '--revision']
 if version_level not in valid_version_levels:
     print('Version level "{}" not recognised, must be one of:'.format(version_level))
@@ -87,16 +86,17 @@ def updateVersionGradle(filename, new_version):
 #    safeExit()
     
 # Make sure the mod reports the new version.
-version_file = "java/com/specialeffect/utils/ModUtils.java"
+version_file = "src/main/java/com/specialeffect/utils/ModUtils.java"
 new_version = updateModVersion(version_file, version_level);
 print(new_version)
 
 # Make sure gradle knows about the version
-gradle_file = '{}/build.gradle'.format(forge_dir)
+gradle_file = 'build.gradle'
 updateVersionGradle(gradle_file, new_version)
 
 # Commit changes
 safeProcess("git add {}".format(version_file))
+safeProcess("git add {}".format(gradle_file))
 safeProcess('git commit -m "Update version number to ' + new_version + '"')
     
 
