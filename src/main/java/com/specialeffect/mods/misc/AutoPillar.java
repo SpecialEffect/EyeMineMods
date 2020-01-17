@@ -10,6 +10,8 @@
 
 package com.specialeffect.mods.misc;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
@@ -26,23 +28,19 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(AutoPillar.MODID)
 public class AutoPillar extends BaseClassWithCallbacks {
@@ -50,13 +48,16 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	public static final String NAME = "AutoPillar";
 
 	public static KeyBinding autoPlaceKeyBinding;
-	public static KeyBinding openChatKB;
 
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	@SubscribeEvent
+	public AutoPillar() {
+	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+		
 	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	private void setup(final FMLCommonSetupEvent event) {
+			
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to create pillar, or 'nerd-pole'.");
@@ -67,11 +68,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		//FIXME network.registerMessage(AddItemToHotbar.Handler.class, AddItemToHotbar.class, 1, Side.SERVER);
 		//FIXME network.registerMessage(SetPositionAndRotationMessage.Handler.class, SetPositionAndRotationMessage.class, 2, Side.SERVER);
 		//FIXME network.registerMessage(JumpMessage.Handler.class, JumpMessage.class, 3, Side.SERVER);
-	}
-
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
-
+	
 		// Register key bindings
 		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_L, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
@@ -94,7 +91,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on your own)
@@ -154,12 +151,12 @@ public class AutoPillar extends BaseClassWithCallbacks {
 					public void onLiving(LivingUpdateEvent event) {
 						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
-						//FIXME AutoPillar.network.sendToServer(
+						/*FIXME AutoPillar.network.sendToServer(
 								new SetPositionAndRotationMessage(
 										player.getName(), 
 										player.posX, player.posY, player.posZ,
 										player.rotationYaw,
-										pillarPitch - deltaPitch * j));
+										pillarPitch - deltaPitch * j));*/
 					}
 				}, 1 + 2*j));
 			}
@@ -171,7 +168,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 		// In creative mode, we can either select a block from the hotbar 
 		// or just rustle up a new one
 
-		int blockId = ModUtils.findItemInHotbar(inventory, ItemBlock.class);
+		int blockId = ModUtils.findItemInHotbar(inventory, BlockItem.class);
 		if (blockId > -1) {
 			inventory.currentItem = blockId;
 		}
