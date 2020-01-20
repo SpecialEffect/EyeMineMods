@@ -17,6 +17,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -134,8 +135,7 @@ implements ChildModWithConfig
 				
 				// Set mouse in correct state - shouldn't attack unless there's an
 				// accompanying mouse movement.	
-				//FIXME SOON if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
-				if (true) {
+				if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {				
 					KeyBinding.setKeyBindState(attackBinding.getKey(), true);
 				}
 				else {

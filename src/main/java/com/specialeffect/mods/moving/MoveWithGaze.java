@@ -23,6 +23,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
+import com.specialeffect.mods.mousehandling.MouseHandler;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -158,8 +159,8 @@ implements ChildModWithConfig
        		
        		// FIXME: mousehandler logic
             if (mDoingAutoWalk && 
-            		null == Minecraft.getInstance().currentScreen) {
-            	//PUT ME BACK IN &&	(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
+            	null == Minecraft.getInstance().currentScreen &&	
+                (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent())) {
 
             	double forward = (double)mCustomSpeedFactor; 
             	
