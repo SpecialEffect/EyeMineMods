@@ -14,14 +14,13 @@ import java.nio.IntBuffer;
 import java.text.DecimalFormat;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.moving.MoveWithGaze;
-import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -32,24 +31,22 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.SubscribeEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MouseHandler.MODID)
 public class MouseHandler extends BaseClassWithCallbacks implements ChildModWithConfig {
 	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 
-	public static Configuration mConfig;
+	//public static Configuration mConfig;
 
 	public enum InteractionState {
 	    EYETRACKER_NORMAL, EYETRACKER_WALK, EYETRACKER_LEGACY, 
@@ -65,14 +62,17 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private static KeyBinding mSensitivityDownKB;
 	private static KeyBinding mToggleMouseViewControlKB;
 	
-	private Cursor mEmptyCursor;
+	//FIXME private Cursor mEmptyCursor;
 	private static IconOverlay mIconEye;
 	
 	private static int mTicksSinceMouseEvent = 1000;
 
-	@SubscribeEvent
+	public MouseHandler() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+	}
+	
 	@SuppressWarnings("static-access")
-	public void preInit(FMLPreInitializationEvent event) {
+	private void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, MouseHandler.MODID, MouseHandler.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
@@ -83,29 +83,55 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
 		mIconEye.setAlpha(0.2f);
 		mIconEye.setVisible(false);								
+
+		// Subscribe to config changes from parent
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);		
+
+		// Register key bindings
+		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", GLFW.GLFW_KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
+		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
+
+		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity down", GLFW.GLFW_KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
+		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
+
+		// Used to turn 'look with gaze' on and off when using mouse emulation
+		// instead of an
+		// eyetracker
+		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", GLFW.GLFW_KEY_Y, CommonStrings.EYEGAZE_EXTRA);
+		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
+
+		// Set up an empty cursor to use when doing own mouse handling
+		/* FIXME int w = Cursor.getMinCursorSize(); // See https://www.glfw.org/docs/latest/input_guide.html#cursor_objects
+		IntBuffer buf = BufferUtils.createIntBuffer(4 * w * w);
+		BufferUtils.zeroBuffer(buf);
+		try {
+			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
+		} catch (LWJGLException e) {
+			System.out.println("LWJGLException creating cursor");
+		}*/
 		
-		// Set up config
-		mConfig = new Configuration(event.getSuggestedConfigurationFile());
-		this.syncConfig();			
-	
-	}
-	
-	@SubscribeEvent
-	public void postInit(FMLPostInitializationEvent event)
-	{
+		// post-init
 		MinecraftForge.EVENT_BUS.register(mIconEye);
 		
 		// Set up mouse helper to handle view control
-		ownMouseHelper = new MouseHelperOwn();
+		ownMouseHelper = new MouseHelperOwn(Minecraft.getInstance());
 		Minecraft.getInstance().mouseHelper = (MouseHelper)ownMouseHelper;
+		
+		// Re-bind GLFW callbacks to new helper		
+		long window = Minecraft.getInstance().mainWindow.getHandle();
+		ownMouseHelper.registerCallbacks(window);
+		
+		// Turn off raw mouse input: this wreaks havoc with gaze-provided cursor movements! 
+		GLFW.glfwSetInputMode(window, GLFW.GLFW_RAW_MOUSE_MOTION, GLFW.GLFW_FALSE);
 
 		// Rejig the state after mouse helper has been created
-		setupInitialState();
-
+		setupInitialState(); // FIXME: we don't have postInit any more... 
 	}
+
 	
 	public static void setWalking(boolean doWalk) {
-		if (mInputSource == InputSource.EyeTracker) {
+		
+		if (mInputSource == InputSource.EyeTracker) {		
 			if (doWalk) updateState(InteractionState.EYETRACKER_WALK);
 			else updateState(InteractionState.EYETRACKER_NORMAL);
 		}
@@ -146,6 +172,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		updateIconForState(state);
 		updateMouseForState(state);
 
+		//FIXME
+		/*
 		if (state == InteractionState.MOUSE_WALK || state == InteractionState.EYETRACKER_WALK) {
 			MoveWithGaze2.stop();
 		}
@@ -155,11 +183,11 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		else {
 			MoveWithGaze.stop();
 			MoveWithGaze2.stop();
-		}
+		}*/
 	}
 
 	public void setupInitialState() {
-		if (EyeGaze.usingMouseEmulation) {
+		if (EyeMineConfig.usingMouseEmulation.get()) {
 			mInputSource = InputSource.Mouse;
 			MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 			
 		}
@@ -172,9 +200,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void syncConfig() {
 		System.out.println("syncConfig MouseHandler");
 		System.out.println("usingMouseEmulation: " + 
-				EyeGaze.usingMouseEmulation);
+				EyeMineConfig.usingMouseEmulation.get());
 		
-		if (EyeGaze.usingMouseEmulation) {
+		if (EyeMineConfig.usingMouseEmulation.get()) {
 			if (mInputSource != InputSource.Mouse) {
 				System.out.println("using mouse");
 				mInputSource = InputSource.Mouse;
@@ -195,35 +223,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		}
 	}
 
-	@SubscribeEvent
-	public void init(FMLInitializationEvent event) {
-
-		// Subscribe to config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
-
-		// Register key bindings
-		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", GLFW.GLFW_KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);
-		ClientRegistry.registerKeyBinding(mSensitivityUpKB);
-
-		mSensitivityDownKB = new KeyBinding("Turn mouse sensitivity down", GLFW.GLFW_KEY_LEFT, CommonStrings.EYEGAZE_SETTINGS);
-		ClientRegistry.registerKeyBinding(mSensitivityDownKB);
-
-		// Used to turn 'look with gaze' on and off when using mouse emulation
-		// instead of an
-		// eyetracker
-		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", GLFW.GLFW_KEY_Y, CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
-
-		// Set up an empty cursor to use when doing own mouse handling
-		int w = Cursor.getMinCursorSize();
-		IntBuffer buf = BufferUtils.createIntBuffer(4 * w * w);
-		BufferUtils.zeroBuffer(buf);
-		try {
-			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
-		} catch (LWJGLException e) {
-			System.out.println("LWJGLException creating cursor");
-		}
-	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
 														// *after* other mods
@@ -244,13 +243,16 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // important we get this
 														// *before* other mods
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {
+		//FIXME: test that we do get this event soonest - are all mods on same thread?
+		
+		//FIXME also: shall we rejig user-reported sensitivity so it doesn't go negative?
 		if (mSensitivityUpKB.isPressed()) {
 			increaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
 		} else if (mSensitivityDownKB.isPressed()) {
 			decreaseSens();
-			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
+			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
@@ -270,7 +272,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	private float getSensitivityIncrement(float reference) {
 		// Get a roughly-proportional increment
 		// bearing in mind offset means we don't just take a linear scale
-		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;
+		float sens = (float) Minecraft.getInstance().gameSettings.mouseSensitivity ;
 		float inc = 0.05f;		
 		if (sens < 0.2f) {
 			inc = 0.01f;
@@ -282,29 +284,34 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 	
 	private void decreaseSens() {
-		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;
+		float sens = (float) Minecraft.getInstance().gameSettings.mouseSensitivity ;
 		sens -= getSensitivityIncrement(sens);
 		sens = Math.max(sens, MIN_SENS+0.05f);
 		Minecraft.getInstance().gameSettings.mouseSensitivity = sens;
 	}
 
 	private void increaseSens() {
-		float sens = Minecraft.getInstance().gameSettings.mouseSensitivity ;		
+		float sens = (float) Minecraft.getInstance().gameSettings.mouseSensitivity ;		
 		sens += getSensitivityIncrement(sens);
 		sens = Math.min(sens, 1.0f);
 		Minecraft.getInstance().gameSettings.mouseSensitivity = sens;
 	}		
 
-	public void setMouseNotGrabbed() {		
-		ownMouseHelper.ungrabMouseCursor();
+	public void setMouseNotGrabbed() {				
+		ownMouseHelper.ungrabMouse();
 		try {
 			System.out.println("setting empty cursor");
-			Mouse.setNativeCursor(mEmptyCursor);
-		} catch (LWJGLException e) {
+			//FIXME Mouse.setNativeCursor(mEmptyCursor);
+		} catch (Exception e) {
+			System.out.print("exception setting cursor");
+		}
+		
+		/*FIXME
+		catch (LWJGLException e) {		
 			System.out.print("LWJGLException setting native cursor");
 		} catch (NullPointerException e) {
 			System.out.print("Cursor is null, so can't set");
-		}
+		}*/
 	}
 
 	public static boolean hasPendingEvent() {
@@ -315,10 +322,10 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	public void onGuiOpen(GuiOpenEvent event) {
 		// For any  open event, make sure cursor not overridden
 		if (null != event.getGui()) {
-			try {
+			/* FIXME try {				
 				Mouse.setNativeCursor(null);
 			} catch (LWJGLException e) {
-			}
+			}*/
 		}
 		else {
 			// For any close event, make sure we're in the right 'grabbed' state.
@@ -333,8 +340,8 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	// to "mouse does not move"
 	private static float MIN_SENS = -1F / 3F;
 
-	String toPercent(float input) {
+	String toPercent(double d) {
 		DecimalFormat myFormatter = new DecimalFormat("#0.0");
-		return myFormatter.format(input * 100) + "%";
+		return myFormatter.format(d * 100) + "%";
 	}
 }
