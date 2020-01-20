@@ -10,15 +10,22 @@
 
 package com.specialeffect.messages;
 
+import java.util.function.Supplier;
+
 import javax.xml.ws.handler.MessageContext;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class ChangeFlyingStateMessage implements IMessage {
+public class ChangeFlyingStateMessage {
     
     private boolean shouldBeFlying;
     private int flyHeight;
@@ -30,34 +37,40 @@ public class ChangeFlyingStateMessage implements IMessage {
         this.shouldBeFlying = shouldBeFlying;
         this.flyHeight = flyHeight;
     }
+    
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-    	shouldBeFlying = ByteBufUtils.readVarShort(buf) > 0;
-    	flyHeight = ByteBufUtils.readVarShort(buf);
+    public static ChangeFlyingStateMessage decode(PacketBuffer buf) {
+    	boolean shouldBeFlying = buf.readBoolean();
+    	int flyHeight = buf.readInt();
+    	return new ChangeFlyingStateMessage(shouldBeFlying, flyHeight);
+    }
+    
+    public static void encode(ChangeFlyingStateMessage pkt, PacketBuffer buf) {
+        buf.writeBoolean(pkt.shouldBeFlying);
+        buf.writeInt(pkt.flyHeight);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeVarShort(buf, shouldBeFlying ? 1 : 0);
-        ByteBufUtils.writeVarShort(buf, flyHeight);
-    }
+    public static class Handler {
+		public static void handle(final ChangeFlyingStateMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+			PlayerEntity player = ctx.get().getSender();
+	        if (player == null) {
+	            return;
+	        }       	        
 
-    public static class Handler implements IMessageHandler<ChangeFlyingStateMessage, IMessage> {        
-    	@Override
-    	public IMessage onMessage(final ChangeFlyingStateMessage message,final MessageContext ctx) {
-    		PlayerEntity player = ctx.getServerHandler().playerEntity;                    
-
-    		if (player.capabilities.allowFlying) {
-    			if (message.shouldBeFlying) {
-    				player.capabilities.isFlying = true;
-    				player.motionY += message.flyHeight;
+    		if (player.abilities.allowFlying) {
+    			if (pkt.shouldBeFlying) {
+    				player.abilities.isFlying = true;    				
+    				Vec3d motion = player.getMotion();
+    				Vec3d addMotion = new Vec3d(0, pkt.flyHeight, 0);    				
+    				player.setMotion(motion.add(addMotion));
+					player.move(MoverType.SELF, new Vec3d(0, pkt.flyHeight, 0));
     			}
     			else {
-    				player.capabilities.isFlying = false;
+    				player.abilities.isFlying = false;
     			}
     		}
-            return null; // no response in this case
-        }
-    }
+			
+			ctx.get().setPacketHandled(true);
+		}
+	}    
 }
