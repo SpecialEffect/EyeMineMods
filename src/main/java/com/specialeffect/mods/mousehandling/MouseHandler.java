@@ -123,6 +123,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		
 		// Turn off raw mouse input: this wreaks havoc with gaze-provided cursor movements! 
 		GLFW.glfwSetInputMode(window, GLFW.GLFW_RAW_MOUSE_MOTION, GLFW.GLFW_FALSE);
+		
 
 		// Rejig the state after mouse helper has been created
 		setupInitialState(); // FIXME: we don't have postInit any more... 
@@ -254,6 +255,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			decreaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
 		} else if (mToggleMouseViewControlKB.isPressed()) {
+			this.setMouseNotGrabbed();
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
 				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");
