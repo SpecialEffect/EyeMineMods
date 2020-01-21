@@ -255,7 +255,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 			decreaseSens();
 			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
 		} else if (mToggleMouseViewControlKB.isPressed()) {
-			this.setMouseNotGrabbed();
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
 				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");

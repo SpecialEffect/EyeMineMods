@@ -12,7 +12,6 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.MouseSmoother;
 import net.minecraft.client.util.NativeUtil;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -220,6 +219,7 @@ extends MouseHelper
      * @see GLFWCursorPosCallbackI
      */
     private void cursorPosCallback(long handle, double xpos, double ypos) {
+    	
        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
 //    	  System.out.println("cursorPosCallback "+xpos + ", "+ypos);
 
@@ -271,54 +271,67 @@ extends MouseHelper
              this.mouseY = ypos;
           }
           else {
-        	  // No GUI, we are in-game
-        	  // TODO: shouldn't be setting this every time! besides, it's too late by here :)
-        	  GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_HIDDEN);
-        	  
-        	  
-        	  // Convert to centred coords
-        	  double w_half = (double)this.minecraft.mainWindow.getWidth()/2;
-				double h_half = (double)this.minecraft.mainWindow.getHeight()/2;
-				
-				// Centre: (0,0)
-				xpos = xpos - w_half;
-				ypos = ypos - h_half;       
-				
-				  // If mouse is near edge of screen edges, clip effect
-				if (Math.abs(xpos) > w_half * (1 - clipBorderHorizontal)) {
-					xpos = (Math.signum(xpos) * (w_half * (1 - clipBorderHorizontal)));
-				}
-				if (Math.abs(ypos) > h_half * (1 - clipBorderVertical)) {
-					ypos = (Math.signum(ypos) * (h_half * (1 - clipBorderVertical)));
-				}
-	      		
+    
 	          this.minecraft.getProfiler().startSection("mouse");
-	          
-	          if (this.minecraft.isGameFocused()) {
+	          if (this.isMouseGrabbed() && this.minecraft.isGameFocused()) {
 	             this.xVelocity += xpos - this.mouseX;
-	             this.yVelocity += ypos - this.mouseY;	             	          
+	             this.yVelocity += ypos - this.mouseY;
+	             this.processMousePosition(xpos, ypos);
 	          }
-	          
-	          this.mouseX = xpos;
-	          this.mouseY = ypos;
 	
 	          this.updatePlayerLook();
+	          	          
+	          // Reset to centre
+	          GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), 0, 0);
 	          this.mouseX = 0;
 	          this.mouseY = 0;
-	          this.minecraft.getProfiler().endSection();
 	          
-    	      // Remember there was a valid event, even if we're not moving
-  			  mHasPendingEvent = true;
+	          this.minecraft.getProfiler().endSection();
           }
        }
     }
-  
+    
+    private void processMousePosition(double x, double y) {
+		
+		double x_abs = Math.abs(x);
+		double y_abs = Math.abs(y);
+		double w_half = this.minecraft.mainWindow.getWidth() / 2;
+		double h_half = this.minecraft.mainWindow.getHeight() / 2;
+
+		double deltaX = 0;
+		double deltaY = 0;
+		
+		// If mouse is outside minecraft window, throw it away
+		if (x_abs > w_half * (1 - deadBorder) ||
+				y_abs > h_half * (1 - deadBorder)) {
+			// do nothing
+			this.xVelocity = 0;
+			this.yVelocity = 0;
+		}		
+		else {
+			// If mouse is around edges, clip effect
+			if (x_abs > w_half * (1 - clipBorderHorizontal)) {
+				x = (int) (Math.signum(x) * (w_half * (1 - clipBorderHorizontal)));
+			}
+			if (y_abs > h_half * (1 - clipBorderVertical)) {
+				y = (int) (Math.signum(y) * (h_half * (1 - clipBorderVertical)));
+			}
+			deltaX = x;
+			deltaY = y;
+
+			this.xVelocity = deltaX;
+			this.yVelocity = deltaY;
+			
+			// Remember there was a valid event, even if we're not moving
+			mHasPendingEvent = true;
+		}
+	}	
 
     public void updatePlayerLook() {
        double d0 = NativeUtil.func_216394_b();
        double d1 = d0 - this.lastLookTime;
        this.lastLookTime = d0;
-       if (this.minecraft.isGameFocused()) {
+       if (this.isMouseGrabbed() && this.minecraft.isGameFocused()) {
           double d4 = this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;
           double d5 = d4 * d4 * d4 * 8.0D;
           double d2;
@@ -397,8 +410,7 @@ extends MouseHelper
      * currently displayed
      */
     public void grabMouse() {
-    	//don't do this
-       /*if (this.minecraft.isGameFocused()) {
+       if (this.minecraft.isGameFocused()) {
           if (!this.mouseGrabbed) {
              if (!Minecraft.IS_RUNNING_ON_MAC) {
                 KeyBinding.updateKeyBindState();
@@ -412,7 +424,7 @@ extends MouseHelper
              //FIXME: not visible this.minecraft.leftClickCounter = 10000;             
              this.ignoreFirstMove = true;
           }
-       }*/
+       }
     }
 
     /**
