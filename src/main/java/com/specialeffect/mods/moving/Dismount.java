@@ -75,7 +75,7 @@ public class Dismount extends BaseClassWithCallbacks {
         		DismountPlayerMessage::decode, DismountPlayerMessage.Handler::handle);                   	       
 		
 		// Register key bindings
-		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_C, CommonStrings.EYEGAZE_EXTRA);
+		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_F15, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);
 	}
 

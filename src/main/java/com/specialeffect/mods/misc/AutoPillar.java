@@ -92,7 +92,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
         		JumpMessage::decode, JumpMessage.Handler::handle);                   	   
         
 		// Register key bindings
-		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_L, CommonStrings.EYEGAZE_EXTRA);
+		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_0, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
 	}

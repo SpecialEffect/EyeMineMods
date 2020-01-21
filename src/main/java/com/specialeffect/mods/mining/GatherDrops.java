@@ -79,7 +79,7 @@ public class GatherDrops extends BaseClassWithCallbacks
         		GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);        
 
 		// Register key bindings	
-		mGatherKB = new KeyBinding("Gather dropped items", GLFW.GLFW_KEY_X, CommonStrings.EYEGAZE_EXTRA);
+		mGatherKB = new KeyBinding("Gather dropped items", GLFW.GLFW_KEY_KP_MULTIPLY, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mGatherKB);
 	}
 
