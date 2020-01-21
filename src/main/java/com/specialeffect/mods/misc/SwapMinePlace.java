@@ -76,6 +76,8 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	public void onKeyInput(KeyInputEvent event) {	
         
 		if (mSwapKB.isPressed()) {
+			
+			/* FIXME: re-instate when fixed
 			Input attackInput = Minecraft.getInstance().gameSettings.keyBindAttack.getKey();
 			Input useInput = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
 			
@@ -83,7 +85,11 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, useInput);
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, attackInput);
 
-			this.queueChatMessage("Swapping mine and place keys");			
+			this.queueChatMessage("Swapping mine and place keys");
+			
+			
+			this.queueChatMessage("Swap mine/place not implemented yet!");
+			*/
 		}
 	}
 }
