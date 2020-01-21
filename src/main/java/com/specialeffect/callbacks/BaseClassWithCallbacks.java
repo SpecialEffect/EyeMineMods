@@ -29,6 +29,8 @@ public class BaseClassWithCallbacks {
 	}
 
 	protected void processQueuedCallbacks(LivingUpdateEvent event) {
+		//FIXME: do we rely on these being called on the player as opposed to 
+		// other living entities?? smells a bit
 		synchronized (mOnLivingQueue) {
 			Iterator<OnLivingCallback> it = mOnLivingQueue.iterator();
 			while (it.hasNext()) {
