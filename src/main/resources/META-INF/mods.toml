@@ -10,8 +10,66 @@ loaderVersion="[25,)" #mandatory (24 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods" #optional
 
-
 # A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]]
+modId="eyegaze"
+version="${file.jarVersion}"
+displayName="eyegaze"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.eyegaze]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.eyegaze]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="gatherdrops"
+version="${file.jarVersion}"
+displayName="gatherdrops"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.gatherdrops]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.gatherdrops]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="openchat"
+version="${file.jarVersion}"
+displayName="openchat"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.openchat]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.openchat]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
 
 [[mods]]
 modId="pickblock"
@@ -20,7 +78,6 @@ displayName="pickblock"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.pickblock]]
     modId="forge"
     mandatory=true
@@ -33,7 +90,6 @@ authors="Kirsty McNaught"
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
 
 [[mods]]
 modId="quickcommands"
@@ -42,20 +98,18 @@ displayName="quickcommands"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.quickcommands]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.quickcommands]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
 
 [[mods]]
 modId="swapmineplace"
@@ -64,20 +118,18 @@ displayName="swapmineplace"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.swapmineplace]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.swapmineplace]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
 
 [[mods]]
 modId="useitem"
@@ -86,86 +138,18 @@ displayName="useitem"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.useitem]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.useitem]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
-
-[[mods]]
-modId="mousehandler"
-version="${file.jarVersion}"
-displayName="mousehandler"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.mousehandler]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="autofly"
-version="${file.jarVersion}"
-displayName="autofly"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.autofly]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="autojump"
-version="${file.jarVersion}"
-displayName="autojump"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.autojump]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
 
 [[mods]]
 modId="dismount"
@@ -174,20 +158,18 @@ displayName="dismount"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.dismount]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.dismount]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
 
 [[mods]]
 modId="easyladderclimb"
@@ -203,145 +185,12 @@ authors="Kirsty McNaught"
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.easyladderclimb]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
-
-
-[[mods]]
-modId="movewithgaze"
-version="${file.jarVersion}"
-displayName="movewithgaze"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.movewithgaze]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="movewithgaze2"
-version="${file.jarVersion}"
-displayName="movewithgaze2"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.movewithgaze2]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="sneaktoggle"
-version="${file.jarVersion}"
-displayName="sneaktoggle"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.sneaktoggle]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="swimtoggle"
-version="${file.jarVersion}"
-displayName="swimtoggle"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.swimtoggle]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="viewincrements"
-version="${file.jarVersion}"
-displayName="viewincrements"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.viewincrements]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
-
-[[mods]]
-modId="walkincrements"
-version="${file.jarVersion}"
-displayName="walkincrements"
-displayURL="https://www.specialeffect.org.uk/eyemine"
-authors="Kirsty McNaught"
-
-
-[[dependencies.walkincrements]]
-    modId="forge"
-    mandatory=true
-    versionRange="[25,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.pickblock]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.14.4]"
-    ordering="NONE"
-    side="BOTH"
-
 
 [[mods]]
 modId="debugfps"
@@ -350,20 +199,158 @@ displayName="debugfps"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.debugfps]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.debugfps]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
     ordering="NONE"
     side="BOTH"
 
+[[mods]]
+modId="opentableschests"
+version="${file.jarVersion}"
+displayName="opentableschests"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.opentableschests]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.opentableschests]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="movewithgaze"
+version="${file.jarVersion}"
+displayName="movewithgaze"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.movewithgaze]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.movewithgaze]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="autojump"
+version="${file.jarVersion}"
+displayName="autojump"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.autojump]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.autojump]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="continuouslydestroy"
+version="${file.jarVersion}"
+displayName="continuouslydestroy"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.continuouslydestroy]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.continuouslydestroy]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="sneaktoggle"
+version="${file.jarVersion}"
+displayName="continuouslydestroy"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.sneaktoggle]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.sneaktoggle]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="autodestroy"
+version="${file.jarVersion}"
+displayName="autodestroy"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.autodestroy]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.autodestroy]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+[[mods]]
+modId="continuouslyattack"
+version="${file.jarVersion}"
+displayName="continuouslyattack"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.continuouslyattack]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.continuouslyattack]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
 
 [[mods]]
 modId="modstategui"
@@ -372,14 +359,54 @@ displayName="modstategui"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 
-
 [[dependencies.modstategui]]
     modId="forge"
     mandatory=true
     versionRange="[25,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.pickblock]]
+[[dependencies.modstategui]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+    
+[[mods]]
+modId="autoopendoors"
+version="${file.jarVersion}"
+displayName="autoopendoors"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.autoopendoors]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.autoopendoors]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+    
+
+[[mods]]
+modId="autopillar"
+version="${file.jarVersion}"
+displayName="autopillar"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.autopillar]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.autopillar]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.14.4]"
@@ -387,3 +414,43 @@ authors="Kirsty McNaught"
     side="BOTH"
 
 
+[[mods]]
+modId="autofly"
+version="${file.jarVersion}"
+displayName="autofly"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.autofly]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.autofly]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
+
+
+[[mods]]
+modId="mousehandler"
+version="${file.jarVersion}"
+displayName="mousehandler"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+
+[[dependencies.mousehandler]]
+    modId="forge"
+    mandatory=true
+    versionRange="[25,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.mousehandler]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"
