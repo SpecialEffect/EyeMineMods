@@ -221,7 +221,7 @@ extends MouseHelper
      */
     private void cursorPosCallback(long handle, double xpos, double ypos) {
        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
-    	  System.out.println("cursorPosCallback "+xpos + ", "+ypos);
+//    	  System.out.println("cursorPosCallback "+xpos + ", "+ypos);
 
           if (this.ignoreFirstMove) {
              this.mouseX = xpos;
@@ -231,26 +231,26 @@ extends MouseHelper
           }
           
           long cursorMode = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR);
-          System.out.println("***");
+//          System.out.println("***");
           if (cursorMode == GLFW.GLFW_CURSOR_DISABLED) {
-        	  System.out.println("cursor disabled");
+//        	  System.out.println("cursor disabled");
         	  long raw = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_RAW_MOUSE_MOTION);
         	  if (raw == GLFW.GLFW_TRUE) {
-        		  System.out.println("using raw motion");
+//        		  System.out.println("using raw motion");
         	  }
           }
           else if (cursorMode == GLFW.GLFW_CURSOR_NORMAL) {
-        	  System.out.println("normal cursor");
+//        	  System.out.println("normal cursor");
           }
           
           if (GLFW.GLFW_TRUE == GLFW.glfwGetWindowAttrib(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_HOVERED))
           {
-        	  System.out.println("hovered");
+//        	  System.out.println("hovered");
           }
 
          
           IGuiEventListener iguieventlistener = this.minecraft.currentScreen;
-          System.out.println(this.minecraft.currentScreen);
+//          System.out.println(this.minecraft.currentScreen);
           if (iguieventlistener != null && this.minecraft.loadingGui == null) {
         	 GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
              double d0 = xpos * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
