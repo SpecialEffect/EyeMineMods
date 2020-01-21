@@ -96,7 +96,9 @@ public class UseItemAtPositionMessage {
                 			"Cannot place " + item.getDisplayName().getString() + " here"));
                 }
 //                //FIXME: look into reported bug here
-                item.setCount(oldCount); //some items are decremented; others aren't
+                if (player.isCreative()) {
+                	item.setCount(oldCount); //some items are decremented; others aren't
+                }
         	}
 			
 			System.out.println("UseItemAtPositionMessage end");
