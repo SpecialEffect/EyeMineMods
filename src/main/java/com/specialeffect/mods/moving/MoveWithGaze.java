@@ -15,12 +15,15 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.vecmath.Vector2d;
+
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
@@ -36,6 +39,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.LadderBlock;
 //import net.minecraft.block.LiquidBlock;
 import net.minecraft.block.material.Material;
@@ -46,10 +50,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -60,76 +67,95 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod(MoveWithGaze.MODID)
-public class MoveWithGaze 
-extends BaseClassWithCallbacks
-implements ChildModWithConfig 
-{
+public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWithConfig {
 	public static final String MODID = "movewithgaze";
-    public static final String NAME = "MoveWithGaze";
+	public static final String NAME = "MoveWithGaze";
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-    private static KeyBinding mToggleAutoWalkKB;
-    private static KeyBinding mIncreaseWalkSpeedKB;
-    private static KeyBinding mDecreaseWalkSpeedKB;
-	
-    private MovementInputFromOptionsOverride mMovementOverride;
+	private static KeyBinding mToggleAutoWalkKB;
+	private static KeyBinding mIncreaseWalkSpeedKB;
+	private static KeyBinding mDecreaseWalkSpeedKB;
+
+	private MovementInputFromOptionsOverride mMovementOverride;
 	private Minecraft mMinecraft;
 
-    //FIXME public static Configuration mConfig;
-    private static int mQueueLength = 50;
+	// FIXME public static Configuration mConfig;
+	private static int mQueueLength = 50;
 
-    private static boolean mMoveWhenMouseStationary = false;
-    public static float mCustomSpeedFactor = 0.8f;
+	private static boolean mMoveWhenMouseStationary = false;
+	public static float mCustomSpeedFactor = 0.8f;
 
-    public MoveWithGaze() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+    public static SimpleChannel channel;
+    
+    private int jumpTicks = 0;
+    
+	public MoveWithGaze() {
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
-	
+
 	private void setup(final FMLCommonSetupEvent event) {
-		
-	    mMinecraft = Minecraft.getInstance();
 
-		//pre-init
-		MinecraftForge.EVENT_BUS.register(this);  
-    	
-    	ModUtils.setupModInfo(event, this.MODID, this.NAME,
+		mMinecraft = Minecraft.getInstance();
+
+		// pre-init
+		MinecraftForge.EVENT_BUS.register(this);
+
+		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
+		ModUtils.setAsParent(event, EyeGaze.MODID);
 
-    	// init
+		// init
 
-    	// Subscribe to parent's config changes
-    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
-    	
-    	// Register key bindings	
-    	mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", GLFW.GLFW_KEY_H, CommonStrings.EYEGAZE_COMMON);
-        ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
-        mIncreaseWalkSpeedKB = new KeyBinding("Turn walk speed up", GLFW.GLFW_KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
-        ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
-        mDecreaseWalkSpeedKB = new KeyBinding("Turn walk speed down", GLFW.GLFW_KEY_DOWN, CommonStrings.EYEGAZE_SETTINGS);
-        ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
+		// Subscribe to parent's config changes
+		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
+		
+		// setup channel for comms
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","movewithgaze")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0; 
         
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
-        
+        channel.registerMessage(id++, JumpMessage.class, JumpMessage::encode, 
+        		JumpMessage::decode, JumpMessage.Handler::handle);                   	   
+		        
+		// Register key bindings
+		mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", GLFW.GLFW_KEY_H, CommonStrings.EYEGAZE_COMMON);
+		ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
+		mIncreaseWalkSpeedKB = new KeyBinding("Turn walk speed up", GLFW.GLFW_KEY_UP, CommonStrings.EYEGAZE_SETTINGS);
+		ClientRegistry.registerKeyBinding(mIncreaseWalkSpeedKB);
+		mDecreaseWalkSpeedKB = new KeyBinding("Turn walk speed down", GLFW.GLFW_KEY_DOWN,
+				CommonStrings.EYEGAZE_SETTINGS);
+		ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
+
+		mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
+
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
-    }       
-	
+	}
+
 	public void syncConfig() {
-        mQueueLength = EyeMineConfig.filterLength.get();
-        mMoveWhenMouseStationary = EyeMineConfig.moveWhenMouseStationary.get();
-        mCustomSpeedFactor = EyeMineConfig.customSpeedFactor.get().floatValue();
-	}	
-    
-    private static int mIconIndex;
-    
-    @SubscribeEvent
+		mQueueLength = EyeMineConfig.filterLength.get();
+		mMoveWhenMouseStationary = EyeMineConfig.moveWhenMouseStationary.get();
+		mCustomSpeedFactor = EyeMineConfig.customSpeedFactor.get().floatValue();
+	}
+
+	private static int mIconIndex;
+
+	@SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
     	    		
     		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
-    	
+    		if (jumpTicks > 0)
+			{
+				jumpTicks--;
+			}
     		//TODO: who should own the override ? separate mod?? main eyegaze mod??
     		// currently two mods are looking to see if it needs setting up
     		if ((mMinecraft.player != null)) {
@@ -194,6 +220,62 @@ implements ChildModWithConfig
             	// moveEntityWithHeading( ..., forward=1.0), we don't travel
             	// any further.
 				float halfForward = (float)(forward/2.0);
+				
+				//FIXME: this relates to swimming
+				if (player.isInWater()) {// && Swim.isSwimmingOn()) {
+					// if the player is swimming, and is more than one block under, don't move forward yet
+					
+					// if the player is swimming and there's a block in front, or in-front-one-down,
+					// then jump before moving
+			    	World world = Minecraft.getInstance().world;
+
+					BlockPos playerPos = player.getPosition();
+					Vec3d posVec = player.getPositionVector();
+					Vec3d forwardVec = player.getForward();
+					
+					
+					BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
+							playerPos.getY()+1, playerPos.getZ());
+
+					Vector2d forward2d = new Vector2d(forwardVec.x, forwardVec.z);
+					forward2d.normalize();
+					
+					BlockPos blockInFrontPos = new BlockPos(
+							posVec.x + forward2d.x,
+							posVec.y , //y is UP
+							posVec.z + forward2d.y);
+					BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
+								
+					Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
+			    	
+					Material materialAbove = world.getBlockState(blockAbovePos).getMaterial();
+					Material materialHere = world.getBlockState(playerPos).getMaterial();
+			    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
+			    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
+			    			    	
+			    	// only move if not in deep water
+			    	
+			    	// TODO: replace with LiquidBlockMatcher ?
+//			    	if (blockAbove != null && !(blockAbove instanceof FlowingFluidBlock)) {
+			    		
+			    		// if there's an obstruction in front, move up slightly first
+			    		if ((materialInFront != null  && materialInFront.isSolid()) &&
+			    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
+			    		{
+			    			if (jumpTicks == 0) {
+							channel.sendToServer(new JumpMessage(player.getName().toString()));
+							player.jump();	
+							
+							// only jump every N ticks...
+							jumpTicks = 20;
+			    			
+			    			}
+			    		}
+				}
+				
+						
+					//}
+				
 				
 				// If riding, we need to move the ridden entity, not the player
 				// This is a little tricky for some rideable things, and isn't 
@@ -320,202 +402,177 @@ implements ChildModWithConfig
 			
     	}
     }
-    
-    private double slowdownFactorPitch(PlayerEntity player) {
-    	float f = player.rotationPitch;    	
-    	if (f < -75 || f > 75) {
-    		return 0.15f;
-    	}
-    	else if (f < -60 || f > 60) {
-    		return 0.3f;
-    	}
-    	else if (f < -30 || f > 40) {
-    		return 0.5f;
-    	}
-    	else {
-    		return 1.0f;
-    	}
+
+	private double slowdownFactorPitch(PlayerEntity player) {
+		float f = player.rotationPitch;
+		if (f < -75 || f > 75) {
+			return 0.15f;
+		} else if (f < -60 || f > 60) {
+			return 0.3f;
+		} else if (f < -30 || f > 40) {
+			return 0.5f;
+		} else {
+			return 1.0f;
+		}
 	}
 
 	private double fpsFactor() {
 		int currFps = Minecraft.getDebugFPS();
 		int standardFps = 30; // what we tune on
-		return Math.min(1.0, (double)standardFps/(double)currFps);
+		return Math.min(1.0, (double) standardFps / (double) currFps);
 	}
 
 	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3d lookVec) {
-    	double thresh = 0.8;
-    	switch(sideHit) {
+		double thresh = 0.8;
+		switch (sideHit) {
 		case NORTH:
-			if (lookVec.z > thresh){
+			if (lookVec.z > thresh) {
 				return true;
 			}
 			break;
 		case EAST:
-			if (lookVec.x < -thresh){
+			if (lookVec.x < -thresh) {
 				return true;
 			}
 			break;
 		case SOUTH:
-			if (lookVec.z < -thresh){
+			if (lookVec.z < -thresh) {
 				return true;
 			}
 			break;
 		case WEST:
-			if (lookVec.x > thresh){
+			if (lookVec.x > thresh) {
 				return true;
 			}
 			break;
 		default:
 			break;
-    	}
-    	return false;
-    }
-    
-    // Check if there's a block at the given position which
-    // blocks movement.
-    private boolean doesBlockMovement(BlockPos pos) {
-    	World world = Minecraft.getInstance().world;
-		return world.getBlockState(pos).getMaterial().blocksMovement();
-    }
-    
-    /*private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) {
-    	Vec3d lookVec = player.getLookVec();
-    	RayTraceResult movPos = player.rayTrace(1.0, 1.0f);
-		if (null != movPos) { 
-			return isDirectlyFacingSideHit(movPos.sideHit, lookVec);
 		}
-    	return false;
-    }*/
-    
-    private double slowdownFactorEntity(PlayerEntity player) {    	
+		return false;
+	}
+
+	// Check if there's a block at the given position which
+	// blocks movement.
+	private boolean doesBlockMovement(BlockPos pos) {
+		World world = Minecraft.getInstance().world;
+		return world.getBlockState(pos).getMaterial().blocksMovement();
+	}
+
+	/*
+	 * private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) { Vec3d
+	 * lookVec = player.getLookVec(); RayTraceResult movPos = player.rayTrace(1.0,
+	 * 1.0f); if (null != movPos) { return isDirectlyFacingSideHit(movPos.sideHit,
+	 * lookVec); } return false; }
+	 */
+
+	private double slowdownFactorEntity(PlayerEntity player) {
 		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
-        EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
+		EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
 		if (entityResult != null) {
-            Entity hitEntity = entityResult.getEntity();
-			LivingEntity liveEntity = (LivingEntity)hitEntity;
+			Entity hitEntity = entityResult.getEntity();
+			LivingEntity liveEntity = (LivingEntity) hitEntity;
 			if (liveEntity != null) {
 				return 0.2f;
 			}
 		}
 		return 1.0f;
-    }
-    
-    /* FIXME? @SuppressWarnings("unused")
-	private double slowdownFactorWall(PlayerEntity player) {
-    	Vec3d lookVec = player.getLookVec();
-    	Vec3d posVec = player.getPositionVector();
-		
-		// Check block in front of player, and the one above it.
-		// Also same two blocks in front.
-		BlockPos posInFront = new BlockPos(posVec.x + lookVec.x,
-				posVec.y, posVec.z + lookVec.z);
-		
-		//isPlayerDirectlyFacingBlock(player, posInFront);
-		
-		BlockPos posInFrontAbove = new BlockPos(posVec.x + lookVec.x,
-				posVec.y+1, posVec.z + lookVec.z);
-		
-		BlockPos posInFrontTwo = new BlockPos(posVec.x + 2*lookVec.x,
-				posVec.y, posVec.z + lookVec.z);
-		
-		BlockPos posInFrontTwoAbove = new BlockPos(posVec.x + 2*lookVec.x,
-				posVec.y+1, posVec.z + lookVec.z);
+	}
 
-		if (doesBlockMovement(posInFront) &&
-				doesBlockMovement(posInFrontAbove)) {
-			// If there's a ladder, keep going!
-			if (isLadder(posInFront)) {
-				return 1.0f;
-			}
-			// If you're *facing* the wall, then don't keep walking.
-			if (isPlayerDirectlyFacingBlock(player)) {
-				return 0.0f;
-			}
-			else {
-				// If looking obliquely, slow down a little
-				return 0.55f;
-			}
-		}
-		else {
-			// If 1 block away from wall, start slowing
-			if (doesBlockMovement(posInFrontTwo) &&
-					doesBlockMovement(posInFrontTwoAbove)) {
-				return 0.5;
-			}
-			else {
-				//default
-				return 1.0;
-			}
-		}
-    }*/
+	/*
+	 * FIXME? @SuppressWarnings("unused") private double
+	 * slowdownFactorWall(PlayerEntity player) { Vec3d lookVec =
+	 * player.getLookVec(); Vec3d posVec = player.getPositionVector();
+	 * 
+	 * // Check block in front of player, and the one above it. // Also same two
+	 * blocks in front. BlockPos posInFront = new BlockPos(posVec.x + lookVec.x,
+	 * posVec.y, posVec.z + lookVec.z);
+	 * 
+	 * //isPlayerDirectlyFacingBlock(player, posInFront);
+	 * 
+	 * BlockPos posInFrontAbove = new BlockPos(posVec.x + lookVec.x, posVec.y+1,
+	 * posVec.z + lookVec.z);
+	 * 
+	 * BlockPos posInFrontTwo = new BlockPos(posVec.x + 2*lookVec.x, posVec.y,
+	 * posVec.z + lookVec.z);
+	 * 
+	 * BlockPos posInFrontTwoAbove = new BlockPos(posVec.x + 2*lookVec.x,
+	 * posVec.y+1, posVec.z + lookVec.z);
+	 * 
+	 * if (doesBlockMovement(posInFront) && doesBlockMovement(posInFrontAbove)) { //
+	 * If there's a ladder, keep going! if (isLadder(posInFront)) { return 1.0f; }
+	 * // If you're *facing* the wall, then don't keep walking. if
+	 * (isPlayerDirectlyFacingBlock(player)) { return 0.0f; } else { // If looking
+	 * obliquely, slow down a little return 0.55f; } } else { // If 1 block away
+	 * from wall, start slowing if (doesBlockMovement(posInFrontTwo) &&
+	 * doesBlockMovement(posInFrontTwoAbove)) { return 0.5; } else { //default
+	 * return 1.0; } } }
+	 */
 
 	private boolean isLadder(BlockPos pos) {
 		World world = Minecraft.getInstance().world;
-		Block block = world.getBlockState(pos).getBlock();		
-		return ( block != null && block instanceof LadderBlock);
+		Block block = world.getBlockState(pos).getBlock();
+		return (block != null && block instanceof LadderBlock);
 	}
 
 	private double slowdownFactorViewDirs() {
-    	// Scale forward-distance by the normal congruency of the last X view-dirs.
-    	// We use normal congruency over several ticks to:
-    	// - smooth out noise, and
-    	// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after movement).
-    	double scalarLength = mPrevLookDirs.size();
-    	Vec3d vectorSum = new Vec3d(0, 0, 0);
-    	
-    	// TODO: Sums could be done incrementally rather than looping over everything each time.
-    	Iterator<Vec3d> iter = mPrevLookDirs.iterator();
-    	while (iter.hasNext()) {
-            vectorSum = vectorSum.add(iter.next());
-    	}
-    	double vectorLength = vectorSum.length();            	
-    	double normalCongruency = vectorLength/scalarLength;
-    	
-    	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)
-    	double thresh = 0.9; // below this, no movement
-    	double slowdownFactor = Math.max(0, (normalCongruency - thresh)/(1.0-thresh));
-    	return slowdownFactor;
+		// Scale forward-distance by the normal congruency of the last X view-dirs.
+		// We use normal congruency over several ticks to:
+		// - smooth out noise, and
+		// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after
+		// movement).
+		double scalarLength = mPrevLookDirs.size();
+		Vec3d vectorSum = new Vec3d(0, 0, 0);
+
+		// TODO: Sums could be done incrementally rather than looping over everything
+		// each time.
+		Iterator<Vec3d> iter = mPrevLookDirs.iterator();
+		while (iter.hasNext()) {
+			vectorSum = vectorSum.add(iter.next());
+		}
+		double vectorLength = vectorSum.length();
+		double normalCongruency = vectorLength / scalarLength;
+
+		// If in auto-walk mode, walk forward an amount scaled by the view change (less
+		// if looking around)
+		double thresh = 0.9; // below this, no movement
+		double slowdownFactor = Math.max(0, (normalCongruency - thresh) / (1.0 - thresh));
+		return slowdownFactor;
 	}
 
 	private static boolean mDoingAutoWalk = false;
-    private Queue<Vec3d> mPrevLookDirs;
-    
-    public static void stop() {
-    	if (mDoingAutoWalk) {
-    		mDoingAutoWalk = false;
-    		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
-    	}
-    }
+	private Queue<Vec3d> mPrevLookDirs;
+
+	public static void stop() {
+		if (mDoingAutoWalk) {
+			mDoingAutoWalk = false;
+			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+		}
+	}
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-   
-        if(mToggleAutoWalkKB.isPressed()) {
-        	mDoingAutoWalk = !mDoingAutoWalk;
-        	//FIXME: MouseHandler.setWalking(mDoingAutoWalk);
-        	StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
-        	this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
-        }
-        if(mDecreaseWalkSpeedKB.isPressed()) {
-        	float newSpeed =  
-        			(float) Math.max(0.1f, 0.9f*EyeMineConfig.customSpeedFactor.get());
-        	EyeGaze.saveWalkingSpeed(newSpeed);
-        	displayCurrentSpeed();
-        }
-        if(mIncreaseWalkSpeedKB.isPressed()) {
-        	float newSpeed =  
-        			(float) Math.min(2.0f, EyeMineConfig.customSpeedFactor.get()*1.1f);
-        	EyeGaze.saveWalkingSpeed(newSpeed);
-    		displayCurrentSpeed();
-        }
-    }
-    
-    private void displayCurrentSpeed() {
-    	DecimalFormat myFormatter = new DecimalFormat("#0.00");
+
+		if (mToggleAutoWalkKB.isPressed()) {
+			mDoingAutoWalk = !mDoingAutoWalk;
+			// FIXME: MouseHandler.setWalking(mDoingAutoWalk);
+			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+			this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
+		}
+		if (mDecreaseWalkSpeedKB.isPressed()) {
+			float newSpeed = (float) Math.max(0.1f, 0.9f * EyeMineConfig.customSpeedFactor.get());
+			EyeGaze.saveWalkingSpeed(newSpeed);
+			displayCurrentSpeed();
+		}
+		if (mIncreaseWalkSpeedKB.isPressed()) {
+			float newSpeed = (float) Math.min(2.0f, EyeMineConfig.customSpeedFactor.get() * 1.1f);
+			EyeGaze.saveWalkingSpeed(newSpeed);
+			displayCurrentSpeed();
+		}
+	}
+
+	private void displayCurrentSpeed() {
+		DecimalFormat myFormatter = new DecimalFormat("#0.00");
 		String speedString = myFormatter.format(EyeMineConfig.customSpeedFactor.get());
-    	this.queueChatMessage("Walking speed: " + speedString);     
-    }
+		this.queueChatMessage("Walking speed: " + speedString);
+	}
 }
-
-
