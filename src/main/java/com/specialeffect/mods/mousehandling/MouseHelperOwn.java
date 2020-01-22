@@ -83,7 +83,7 @@ extends MouseHelper
      *  
      * @see GLFWMouseButtonCallbackI
      */
-    private void mouseButtonCallback(long handle, int button, int action, int mods) {
+    private void mouseButtonCallbackOwn(long handle, int button, int action, int mods) {
        if (handle == this.minecraft.mainWindow.getHandle()) {
           boolean flag = action == 1;
           if (Minecraft.IS_RUNNING_ON_MAC && button == 0) {
@@ -166,7 +166,7 @@ extends MouseHelper
      *  
      * @see GLFWScrollCallbackI
      */
-    private void scrollCallback(long handle, double xoffset, double yoffset) {
+    private void scrollCallbackOwn(long handle, double xoffset, double yoffset) {
        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
           double d0 = (this.minecraft.gameSettings.discreteMouseScroll ? Math.signum(yoffset) : yoffset) * this.minecraft.gameSettings.mouseWheelSensitivity;
           if (this.minecraft.loadingGui == null) {
@@ -206,7 +206,7 @@ extends MouseHelper
     }
 
     public void registerCallbacks(long handle) {
-       InputMappings.func_216503_a(handle, this::cursorPosCallback, this::mouseButtonCallback, this::scrollCallback);
+       InputMappings.func_216503_a(handle, this::cursorPosCallbackOwn, this::mouseButtonCallbackOwn, this::scrollCallbackOwn);
     }
 
     /**
@@ -218,7 +218,7 @@ extends MouseHelper
      *  
      * @see GLFWCursorPosCallbackI
      */
-    private void cursorPosCallback(long handle, double xpos, double ypos) {
+    private void cursorPosCallbackOwn(long handle, double xpos, double ypos) {
     	
        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
 //    	  System.out.println("cursorPosCallback "+xpos + ", "+ypos);
