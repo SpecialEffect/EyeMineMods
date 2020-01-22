@@ -28,7 +28,7 @@ import org.lwjgl.glfw.GLFW;
 
 
 @Mod(PickBlock.MODID)
-public class PickBlock extends BaseClassWithCallbacks {
+public class PickBlock  {
 	public static final String MODID = "pickblock";
 	public static final String NAME = "PickBlock";
 

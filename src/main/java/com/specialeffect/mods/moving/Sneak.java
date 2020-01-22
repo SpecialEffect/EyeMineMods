@@ -34,7 +34,7 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 @Mod(Sneak.MODID)
 
-public class Sneak extends BaseClassWithCallbacks {
+public class Sneak  {
 
 	public static final String MODID = "sneaktoggle";
 	public static final String NAME = "SneakToggle";

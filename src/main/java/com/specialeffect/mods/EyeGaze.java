@@ -28,7 +28,7 @@ import net.minecraftforge.fml.config.ModConfig;
 // be changed by the user in one place.
 
 @Mod(EyeGaze.MODID)
-public class EyeGaze extends BaseClassWithCallbacks {
+public class EyeGaze {
 	/*
 	 * In v1.11.2, this mod was a wrapper that contained user-exposed config, and
 	 * acted as the 'parent' mod to all other mods This allowed us to expose config
