@@ -89,6 +89,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWith
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 
 		mMinecraft = Minecraft.getInstance();

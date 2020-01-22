@@ -38,6 +38,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
+	@SuppressWarnings("static-access")
 	private void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);

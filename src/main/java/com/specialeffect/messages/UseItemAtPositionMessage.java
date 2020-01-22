@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class UseItemAtPositionMessage {
@@ -56,7 +55,6 @@ public class UseItemAtPositionMessage {
     }
 
     public static class Handler {
-		@SuppressWarnings("deprecation")
 		public static void handle(final UseItemAtPositionMessage pkt, Supplier<NetworkEvent.Context> ctx) {
 			System.out.println("UseItemAtPositionMessage start");
 			PlayerEntity player = ctx.get().getSender();
@@ -64,8 +62,6 @@ public class UseItemAtPositionMessage {
 	            return;
 	        }       
 
-            World world = player.getEntityWorld();                        
-            
 			ItemStack item = player.getHeldItem(Hand.MAIN_HAND);					
 			if (null != item)
 			{
