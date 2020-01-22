@@ -13,11 +13,8 @@ package com.specialeffect.mods.moving;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
-import com.specialeffect.messages.DismountPlayerMessage;
 //import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
@@ -25,7 +22,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.MoverType;

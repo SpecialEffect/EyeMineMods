@@ -20,7 +20,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.block.Block;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.CraftingTableBlock;
@@ -42,10 +41,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 
 @Mod(OpenTablesChests.MODID)

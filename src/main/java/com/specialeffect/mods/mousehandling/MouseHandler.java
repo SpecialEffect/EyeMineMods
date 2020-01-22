@@ -10,23 +10,18 @@
 
 package com.specialeffect.mods.mousehandling;
 
-import java.nio.IntBuffer;
 import java.text.DecimalFormat;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
-import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.java.games.input.Keyboard;
-import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;

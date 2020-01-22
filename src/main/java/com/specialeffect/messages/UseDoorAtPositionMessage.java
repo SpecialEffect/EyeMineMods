@@ -12,18 +12,13 @@ package com.specialeffect.messages;
 
 import java.util.function.Supplier;
 
-import javax.xml.ws.handler.MessageContext;
-
 import com.specialeffect.utils.OpenableBlock;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class UseDoorAtPositionMessage {

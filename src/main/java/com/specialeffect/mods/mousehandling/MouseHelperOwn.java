@@ -2,7 +2,6 @@ package com.specialeffect.mods.mousehandling;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.gui.IGuiEventListener;

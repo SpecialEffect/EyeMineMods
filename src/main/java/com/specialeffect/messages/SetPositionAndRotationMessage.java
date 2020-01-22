@@ -12,15 +12,9 @@ package com.specialeffect.messages;
 
 import java.util.function.Supplier;
 
-import javax.xml.ws.handler.MessageContext;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class SetPositionAndRotationMessage {

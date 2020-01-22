@@ -13,7 +13,6 @@ package com.specialeffect.mods.misc;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.specialeffect.messages.DismountPlayerMessage;
 import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
