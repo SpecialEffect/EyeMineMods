@@ -12,6 +12,7 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,7 +32,7 @@ public class InventoryConfig {
     public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
-    public static ForgeConfigSpec.IntValue  key0, key1, key2, key3, key4,
+    public static ConfigValue<Integer> key0, key1, key2, key3, key4,
 										    key5, key6, key7, key8, key9, 
 										    keyNext, keyPrev, keySearch,
 										    keyScrollUp, keyScrollDown,
@@ -53,32 +54,35 @@ public class InventoryConfig {
 
 
     private static void setupConfigKeys() {
+    	    
+    	key0 = COMMON_BUILDER.comment("How high to fly in manual mode")
+				.defineInRange("flyHeightManual", 2, 1, 20);
     	
-    	key0 = (IntValue) COMMON_BUILDER.comment("key0").define("key0", GLFW.GLFW_KEY_KP_0);
-    	key1 = (IntValue) COMMON_BUILDER.comment("key0").define("key1", GLFW.GLFW_KEY_KP_1);
-    	key2 = (IntValue) COMMON_BUILDER.comment("key0").define("key2", GLFW.GLFW_KEY_KP_2);
-    	key3 = (IntValue) COMMON_BUILDER.comment("key0").define("key3", GLFW.GLFW_KEY_KP_3);
-    	key4 = (IntValue) COMMON_BUILDER.comment("key0").define("key4", GLFW.GLFW_KEY_KP_4);
-    	key5 = (IntValue) COMMON_BUILDER.comment("key0").define("key5", GLFW.GLFW_KEY_KP_5);
-    	key6 = (IntValue) COMMON_BUILDER.comment("key0").define("key6", GLFW.GLFW_KEY_KP_6);
-    	key7 = (IntValue) COMMON_BUILDER.comment("key0").define("key7", GLFW.GLFW_KEY_KP_7);
-    	key8 = (IntValue) COMMON_BUILDER.comment("key0").define("key8", GLFW.GLFW_KEY_KP_8);
-    	key9 = (IntValue) COMMON_BUILDER.comment("key0").define("key9", GLFW.GLFW_KEY_KP_9);
+    	key0 = COMMON_BUILDER.comment("key0").define("key0", GLFW.GLFW_KEY_KP_0);
+    	key1 = COMMON_BUILDER.comment("key1").define("key1", GLFW.GLFW_KEY_KP_1);
+    	key2 = COMMON_BUILDER.comment("key2").define("key2", GLFW.GLFW_KEY_KP_2);
+    	key3 = COMMON_BUILDER.comment("key3").define("key3", GLFW.GLFW_KEY_KP_3);
+    	key4 = COMMON_BUILDER.comment("key4").define("key4", GLFW.GLFW_KEY_KP_4);
+    	key5 = COMMON_BUILDER.comment("key5").define("key5", GLFW.GLFW_KEY_KP_5);
+    	key6 = COMMON_BUILDER.comment("key6").define("key6", GLFW.GLFW_KEY_KP_6);
+    	key7 = COMMON_BUILDER.comment("key7").define("key7", GLFW.GLFW_KEY_KP_7);
+    	key8 = COMMON_BUILDER.comment("key8").define("key8", GLFW.GLFW_KEY_KP_8);
+    	key9 = COMMON_BUILDER.comment("key9").define("key9", GLFW.GLFW_KEY_KP_9);
     			
     }
     
     private static void setupNavKeys() {    			
 
-    	keyPrev = (IntValue) COMMON_BUILDER.comment("key0").define("keyPrev", GLFW.GLFW_KEY_LEFT);
-    	keyNext = (IntValue) COMMON_BUILDER.comment("key0").define("keyNext", GLFW.GLFW_KEY_RIGHT);
-    	keyNextItemRow = (IntValue) COMMON_BUILDER.comment("key0").define("keyNextItemRow", GLFW.GLFW_KEY_F6);
-    	keyNextItemCol = (IntValue) COMMON_BUILDER.comment("key0").define("keyNextItemCol", GLFW.GLFW_KEY_F7);
+    	keyPrev = COMMON_BUILDER.comment("keyPrev").define("keyPrev", GLFW.GLFW_KEY_LEFT);
+    	keyNext = COMMON_BUILDER.comment("keyNext").define("keyNext", GLFW.GLFW_KEY_RIGHT);
+    	keyNextItemRow = COMMON_BUILDER.comment("keyNextItemRow").define("keyNextItemRow", GLFW.GLFW_KEY_F6);
+    	keyNextItemCol = COMMON_BUILDER.comment("keyNextItemCol").define("keyNextItemCol", GLFW.GLFW_KEY_F7);
     	
-    	keyScrollUp = (IntValue) COMMON_BUILDER.comment("key0").define("keyScrollUp", GLFW.GLFW_KEY_F8);
-    	keyScrollDown = (IntValue) COMMON_BUILDER.comment("key0").define("keyScrollDown", GLFW.GLFW_KEY_F9);
+    	keyScrollUp = COMMON_BUILDER.comment("keyScrollUp").define("keyScrollUp", GLFW.GLFW_KEY_F8);
+    	keyScrollDown = COMMON_BUILDER.comment("keyScrollDown").define("keyScrollDown", GLFW.GLFW_KEY_F9);
     	
-    	keySearch = (IntValue) COMMON_BUILDER.comment("key0").define("keySearch", GLFW.GLFW_KEY_DOWN);
-    	keyDrop = (IntValue) COMMON_BUILDER.comment("key0").define("keyDrop", GLFW.GLFW_KEY_HOME);
+    	keySearch = COMMON_BUILDER.comment("keySearch").define("keySearch", GLFW.GLFW_KEY_DOWN);
+    	keyDrop = COMMON_BUILDER.comment("keyDrop").define("keyDrop", GLFW.GLFW_KEY_HOME);
     	
     }
         

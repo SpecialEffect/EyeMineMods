@@ -48,24 +48,26 @@ public class CreativeTabs
 	 */
 	//@Instance(value = MODID)
 //	public static CreativeTabs instance;
+	
+	public static EyeMineConfig mConfig;
 
 	//public static final Minecraft client = FMLClientHandler.instance().getClient();
 
 	public CreativeTabs() {
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-//
-//		// Config setup
-//		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
-//		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
-//
-//		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
-//				FMLPaths.CONFIGDIR.get().resolve("inventory-client.toml"));
-//		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
-//				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
-//		
+
+		// Config setup
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
+
+		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
+				FMLPaths.CONFIGDIR.get().resolve("inventory-client.toml"));
+		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
+				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
+		
 //		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-//		
+		
 //		MinecraftForge.EVENT_BUS.addListener(CreativeTabs::onTick);
 		 
 		}

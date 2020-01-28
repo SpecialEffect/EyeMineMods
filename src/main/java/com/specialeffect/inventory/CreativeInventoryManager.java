@@ -11,6 +11,8 @@ import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -93,13 +95,14 @@ public class CreativeInventoryManager {
 		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-//		Point size = ModUtils.getScaledDisplaySize(mc);		
-//		this.xScale = (float) (mc.currentScreen.width)/(float)size.getX();
-//		this.yScale = (float) (mc.currentScreen.height)/(float)size.getY();		
 		
-		//FIXME: test!
-		this.xScale = mc.mainWindow.getScaledWidth();
-		this.yScale = mc.mainWindow.getScaledHeight();
+		Point p = new Point(0, 0);
+
+		
+//		Point size = ModUtils.getScaledDisplaySize(mc);		
+		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
+		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();		
+		
 		
 	}
 
@@ -111,7 +114,7 @@ public class CreativeInventoryManager {
 		// Handle key press
 		// First 5 tabs on top (not inc search which has it's own key already)
 		if (key == InventoryConfig.key0.get()) {
-			this.switchToTab(0);
+			this.switchToTab(0);			
 		} else if (key == InventoryConfig.key1.get()) {
 			this.switchToTab(1);
 		} else if (key == InventoryConfig.key2.get()) {
@@ -172,7 +175,12 @@ public class CreativeInventoryManager {
 		// minecraft seems to ignore multiple notch requests.
 		// If you want to support more, you'll have to dig deeper into
 		// minecraft.
-		robot.mouseWheel(amount);	
+		//FIXME no robot available... robot.mouseWheel(amount);	
+		
+		// Could directly hook into mouse helper callbacks?
+		//Minecraft.getInstance().mouseHelper.mouseClick
+		//KeyBinding.onTick(InputMappings.Type.MOUSE.getOrMakeInput(KeyEvent));
+
 	}
 	
 	private void hoverItem() {		
@@ -181,7 +189,7 @@ public class CreativeInventoryManager {
 		
 //		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
 	//			(int)(yPos*this.yScale));
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
 		//FIXME: need scaling??
 	}
 	
@@ -191,7 +199,7 @@ public class CreativeInventoryManager {
 		int yPos = topRowYPos;
 		
 		//FIXME: need scaling??
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
 //		Mouse.setCursorPosition((int)(xPos*this.xScale),
 //												(int)(yPos*this.yScale));
 
@@ -263,7 +271,7 @@ public class CreativeInventoryManager {
 		
 		// Select the tab via a mouse action
 		if (xPos > -1) {
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);			
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);			
 			//FIXME scaled??
 			
 //			org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
@@ -279,7 +287,11 @@ public class CreativeInventoryManager {
 			// stops working. It seems to work fine just to send a mouseRelease event, but
 			// a better solution would be good...
 			//robot.mousePress(KeyEvent.BUTTON1_MASK);
-			robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+//			robot.mouseRelease(KeyEvent.BUTTON1_MASK);
+			
+			//FIXME: test with eye-gaze mouse emulation
+			KeyBinding.onTick(InputMappings.Type.MOUSE.getOrMakeInput(KeyEvent.BUTTON1_MASK));
+			
 			
 			// we want to trigger 'tabChanged' if user has explicitly selected
 			// the same tab again (otherwise this gets missed)
