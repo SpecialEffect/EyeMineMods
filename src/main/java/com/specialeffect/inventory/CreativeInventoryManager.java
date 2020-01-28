@@ -5,8 +5,11 @@ import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.utils.ModUtils;
 
+import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
 
 /**
@@ -90,68 +93,71 @@ public class CreativeInventoryManager {
 		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-		Point size = ModUtils.getScaledDisplaySize(mc);
-		this.xScale = (float) (mc.currentScreen.width)/(float)size.getX();
-		this.yScale = (float) (mc.currentScreen.height)/(float)size.getY();			
+//		Point size = ModUtils.getScaledDisplaySize(mc);		
+//		this.xScale = (float) (mc.currentScreen.width)/(float)size.getX();
+//		this.yScale = (float) (mc.currentScreen.height)/(float)size.getY();		
+		
+		//FIXME: test!
+		this.xScale = mc.mainWindow.getScaledWidth();
+		this.yScale = mc.mainWindow.getScaledHeight();
 		
 	}
 
-	public void acceptKey() {
+	public void acceptKey(int key) {
 
 		// Poll keyboard
-		Config.pollKeyPresses();
+//		InventoryConfig.acceptKeyPress(key);
 
 		// Handle key press
 		// First 5 tabs on top (not inc search which has it's own key already)
-		if (Config.isKey0Pressed()) {
+		if (key == InventoryConfig.key0.get()) {
 			this.switchToTab(0);
-		} else if (Config.isKey1Pressed()) {
+		} else if (key == InventoryConfig.key1.get()) {
 			this.switchToTab(1);
-		} else if (Config.isKey2Pressed()) {
+		} else if (key == InventoryConfig.key2.get()) {
 			this.switchToTab(2);
-		} else if (Config.isKey3Pressed()) {
+		} else if (key == InventoryConfig.key3.get()) {
 			this.switchToTab(3);
-		} else if (Config.isKey4Pressed()) {
+		} else if (key == InventoryConfig.key4.get()) {
 			this.switchToTab(4);			
-		} else if (Config.isKeySearchPressed()) {
+		} else if (key == InventoryConfig.keySearch.get()) {
 			this.switchToTab(5);
 		}
 		// 5 tabs on bottom (not inc survival since it's unlikely you need it)
 		// Note indices are offset by one since we skipped search.
-		else if (Config.isKey5Pressed()) {
+		else if (key == InventoryConfig.key5.get()) {
 			this.switchToTab(6);
-		} else if (Config.isKey6Pressed()) {
+		} else if (key == InventoryConfig.key6.get()) {
 			this.switchToTab(7);
-		} else if (Config.isKey7Pressed()) {
+		} else if (key == InventoryConfig.key7.get()) {
 			this.switchToTab(8);
-		} else if (Config.isKey8Pressed()) {
+		} else if (key == InventoryConfig.key8.get()) {
 			this.switchToTab(9);
-		} else if (Config.isKey9Pressed()) {
+		} else if (key == InventoryConfig.key9.get()) {
 			this.switchToTab(10);
-		} else if (Config.isKeyPrevPressed()) {
+		} else if (key == InventoryConfig.keyPrev.get()) {
 			this.switchToTab(validateTabIdx(currTab - 1));
-		} else if (Config.isKeyNextPressed()) {
+		} else if (key == InventoryConfig.keyNext.get()) {
 			this.switchToTab(validateTabIdx(currTab + 1));
-		} else if (Config.isKeyNextRowPressed()) {
+		} else if (key == InventoryConfig.keyNextItemRow.get()) {
 			itemRow++;
 			itemRow %= NUM_ROWS;
 			// first position on a page starts at -1, -1
 			itemCol = Math.max(itemCol, 0); 
 			this.hoverItem();
-		} else if (Config.isKeyNextColPressed()) {
+		} else if (key == InventoryConfig.keyNextItemCol.get()) {
 			itemCol++;
 			itemCol %= NUM_COLS;
 			// first position on a page starts at -1, -1
 			itemRow = Math.max(itemRow, 0);
 			this.hoverItem();
-		} else if (Config.isKeyDropPressed()) {
+		} else if (key == InventoryConfig.keyDrop.get()) {
 			this.switchToTab(-1);
-		} else if (Config.isScrollUpPressed()) {
+		} else if (key == InventoryConfig.keyScrollUp.get()) {
 			this.scrollDown(-2);
-		} else if (Config.isScrollDownPressed()) {
+		} else if (key == InventoryConfig.keyScrollDown.get()) {
 			this.scrollDown(+2);
 		}
-		
 		
 	}
 	
@@ -173,17 +179,21 @@ public class CreativeInventoryManager {
 		int yPos = topItemYPos - itemRow*itemWidth;
 		int xPos = leftItemXPos + itemCol*itemWidth;
 		
-		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
-				(int)(yPos*this.yScale));
+//		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
+	//			(int)(yPos*this.yScale));
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);
+		//FIXME: need scaling??
 	}
 	
 	private void moveMouseIntoWindow() {
 		// move mouse to location in window before e.g. mouse event
 		int xPos = leftColXPos - tabWidth;
 		int yPos = topRowYPos;
-	
-		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
-												(int)(yPos*this.yScale));
+		
+		//FIXME: need scaling??
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);
+//		Mouse.setCursorPosition((int)(xPos*this.xScale),
+//												(int)(yPos*this.yScale));
 
 	}
 	
@@ -253,8 +263,11 @@ public class CreativeInventoryManager {
 		
 		// Select the tab via a mouse action
 		if (xPos > -1) {
-			org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
-													(int)(yPos*this.yScale));
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos, yPos);			
+			//FIXME scaled??
+			
+//			org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
+//													(int)(yPos*this.yScale));
 			// NB: We use lwjgl to move the mouse because it uses coordinates
 			// relative to minecraft window. We use a java robot to click because
 			// I don't know how else to.

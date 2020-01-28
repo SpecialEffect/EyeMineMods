@@ -11,6 +11,25 @@ loaderVersion="[25,)" #mandatory (24 is current forge version)
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods" #optional
 
 [[mods]]
+modId="creativetabs"
+version="${file.jarVersion}"
+displayName="creativetabs"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+[[dependencies.creativetabs]]
+	modId="forge"
+	mandatory=true
+	versionRange="[25,)"
+	ordering="NONE"
+	side="BOTH"
+[[dependencies.creativetabs]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.14.4]"
+	ordering="NONE"
+	side="BOTH"
+
+[[mods]]
 modId="eyegaze"
 version="${file.jarVersion}"
 displayName="eyegaze"
@@ -384,6 +403,25 @@ authors="Kirsty McNaught"
 	ordering="NONE"
 	side="BOTH"
 [[dependencies.sneaktoggle]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.14.4]"
+	ordering="NONE"
+	side="BOTH"
+
+[[mods]]
+modId="swimtoggle"
+version="${file.jarVersion}"
+displayName="swimtoggle"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+[[dependencies.swimtoggle]]
+	modId="forge"
+	mandatory=true
+	versionRange="[25,)"
+	ordering="NONE"
+	side="BOTH"
+[[dependencies.swimtoggle]]
 	modId="minecraft"
 	mandatory=true
 	versionRange="[1.14.4]"

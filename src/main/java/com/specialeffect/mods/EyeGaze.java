@@ -48,10 +48,6 @@ public class EyeGaze {
 	public static EyeMineConfig mConfig;
 
 	// Category names for clustering config options in different UIs
-	public static final String CATEGORY_BASIC = "Basic options";
-	public static final String CATEGORY_ADVANCED = "Advanced options";
-	public static final String CATEGORY_EXPERT = "Expert options";
-
 	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
 
 	public EyeGaze() {
@@ -64,9 +60,9 @@ public class EyeGaze {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
 
 		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
-				FMLPaths.CONFIGDIR.get().resolve("mytutorial-client.toml"));
+				FMLPaths.CONFIGDIR.get().resolve("eyegaze-client.toml"));
 		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
-				FMLPaths.CONFIGDIR.get().resolve("mytutorial-common.toml"));
+				FMLPaths.CONFIGDIR.get().resolve("eyegaze-common.toml"));
 	}
 
 	public synchronized static void registerForConfigUpdates(ChildModWithConfig mod) {

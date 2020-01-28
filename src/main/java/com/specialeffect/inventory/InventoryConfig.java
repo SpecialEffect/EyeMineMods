@@ -1,12 +1,16 @@
 package com.specialeffect.inventory;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 
+import net.java.games.input.Keyboard;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -101,5 +105,7 @@ public class InventoryConfig {
     	System.out.println("InventoryConfig onReload");        	
     }
     
-
+    //     * Standard Return Key if there is a problem reading the config.
+    private static final int retDefKey = -1;
+    
 }
