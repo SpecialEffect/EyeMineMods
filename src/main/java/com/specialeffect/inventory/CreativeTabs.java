@@ -10,6 +10,8 @@
 
 package com.specialeffect.inventory;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
@@ -87,20 +89,21 @@ public class CreativeTabs
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 
-        
-    	int key = event.getKey();
-        System.out.println(key);
-        Screen currentScreen = Minecraft.getInstance().currentScreen;
-		if (currentScreen != null) {
-			if (currentScreen instanceof CreativeScreen) {
-				CreativeScreen gui = (CreativeScreen)currentScreen;
-				CreativeInventoryManager con = CreativeInventoryManager.getInstance(
-						gui.getGuiLeft(), gui.getGuiTop(), 
-						gui.getXSize(), gui.getYSize(),
-						gui.getSelectedTabIndex());            	
-				con.acceptKey(key);		
+        if (event.getAction() == GLFW.GLFW_RELEASE) {
+	    	int key = event.getKey();
+	        System.out.println(key);
+	        Screen currentScreen = Minecraft.getInstance().currentScreen;
+			if (currentScreen != null) {
+				if (currentScreen instanceof CreativeScreen) {
+					CreativeScreen gui = (CreativeScreen)currentScreen;
+					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
+							gui.getGuiLeft(), gui.getGuiTop(), 
+							gui.getXSize(), gui.getYSize(),
+							gui.getSelectedTabIndex());            	
+					con.acceptKey(key);					
+				}
 			}
-		}
+        }
 		
     }
      
