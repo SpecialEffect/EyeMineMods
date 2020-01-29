@@ -76,6 +76,37 @@ extends MouseHelper
     private double lastLookTime = Double.MIN_VALUE;
     private boolean mouseGrabbed;
 
+    
+    /** public entry points for automated cursor actions **/
+   
+    public void moveCursor(double xpos, double ypos) {
+    	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	this.cursorPosCallbackOwn(handle, xpos, ypos);
+    }
+    
+    public void leftMouseClickAtPosition(double xpos, double ypos) {
+    	this.moveCursor(xpos, ypos);
+    	this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, 0);
+    	this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, 0);
+    }
+    
+    public void leftShiftMouseClickAtPosition(double xpos, double ypos) {
+    	this.moveCursor(xpos, ypos);
+    	this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, GLFW.GLFW_MOD_SHIFT);
+    	this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, GLFW.GLFW_MOD_SHIFT);
+    }  
+    
+    
+    /* Move cursor to location and perform mouse action
+     * button: any constant GLFW.GLFW_MOUSE_BUTTON_X 
+     * action: GLFW.GLFW_PRESS or GLFW.GLFW_RELEASE
+     * mods: GLFW.GLFW_MOD_[SHIFT/CONTROL/ALT/SUPER]
+     */     
+    public void mouseButton(int button, int action, int mods) {    	
+    	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	this.mouseButtonCallbackOwn(handle, button, action, mods);
+    }       
+    
 
     /**
      * Will be called when a mouse button is pressed or released.
