@@ -159,6 +159,8 @@ public class CreativeInventoryManager {
 			this.switchToTab(-1);
 		} else if (key == InventoryConfig.keyScrollUp.get()) {
 			this.scrollDown(-2);
+			// FIXME: decide how far to scroll, this seems to be nice
+			// (almost an entire screen, but 1 row repeated to ground you)
 		} else if (key == InventoryConfig.keyScrollDown.get()) {
 			this.scrollDown(+2);
 		}
@@ -168,30 +170,16 @@ public class CreativeInventoryManager {
 	private int itemRow = -1;
 	private int itemCol = -1;
 	
-	private void scrollDown(int amount) {
-		// Make sure mouse is over window before scrolling
-		this.moveMouseIntoWindow();
-		
-		// Warning: requesting more than 1 notch probably won't work,
-		// minecraft seems to ignore multiple notch requests.
-		// If you want to support more, you'll have to dig deeper into
-		// minecraft.
-		//FIXME no robot available... robot.mouseWheel(amount);	
-		
-		// Could directly hook into mouse helper callbacks?
-		//Minecraft.getInstance().mouseHelper.mouseClick
-		//KeyBinding.onTick(InputMappings.Type.MOUSE.getOrMakeInput(KeyEvent));
-
+	private void scrollDown(int amount) {		
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
+		helper.scroll(amount);				
 	}
 	
 	private void hoverItem() {		
 		int yPos = topItemYPos - itemRow*itemWidth;
 		int xPos = leftItemXPos + itemCol*itemWidth;
 		
-//		org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
-	//			(int)(yPos*this.yScale));
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
-		//FIXME: need scaling??
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
 	}
 	
 	private void moveMouseIntoWindow() {
@@ -200,9 +188,8 @@ public class CreativeInventoryManager {
 		int yPos = topRowYPos;
 		
 		//FIXME: need scaling??
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
-//		Mouse.setCursorPosition((int)(xPos*this.xScale),
-//												(int)(yPos*this.yScale));
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
+		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);		
 
 	}
 	
