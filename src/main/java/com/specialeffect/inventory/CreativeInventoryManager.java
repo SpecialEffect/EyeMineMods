@@ -70,8 +70,8 @@ public class CreativeInventoryManager {
 		int inventoryWidth = width;
 		this.tabWidth = (int) (inventoryWidth/6.9);
 		this.itemWidth = (int) (inventoryWidth/10.8);
-		this.bottomRowYPos = top - tabWidth/2;
-		this.topRowYPos = top + height + tabWidth/2;
+		this.bottomRowYPos = top + height + tabWidth/2;
+		this.topRowYPos = top - tabWidth/2;
 		this.topItemYPos = (int) (top + itemWidth*1.5);
 
 		this.leftColXPos = left + tabWidth/2;
