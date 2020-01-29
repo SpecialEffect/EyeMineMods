@@ -89,7 +89,7 @@ public class CreativeInventoryManager {
 		this.itemWidth = (int) (inventoryWidth/10.8);
 		this.bottomRowYPos = top - tabWidth/2;
 		this.topRowYPos = top + height + tabWidth/2;
-		this.topItemYPos = (int) (top + height - itemWidth*1.5);
+		this.topItemYPos = (int) (top + itemWidth*1.5);
 
 		this.leftColXPos = left + tabWidth/2;
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
@@ -176,7 +176,7 @@ public class CreativeInventoryManager {
 	}
 	
 	private void hoverItem() {		
-		int yPos = topItemYPos - itemRow*itemWidth;
+		int yPos = topItemYPos + itemRow*itemWidth;
 		int xPos = leftItemXPos + itemCol*itemWidth;
 		
 		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
