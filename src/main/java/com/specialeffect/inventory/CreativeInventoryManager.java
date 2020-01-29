@@ -1,19 +1,9 @@
 package com.specialeffect.inventory;
 
-import java.awt.AWTException;
-import java.awt.Point;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
-import com.specialeffect.utils.ModUtils;
-
-import net.java.games.input.Mouse;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -22,8 +12,6 @@ public class CreativeInventoryManager {
 
 	private static CreativeInventoryManager instance = null;
 
-    private Robot robot;
-    
     private final int NUM_TABS = 12;
 	private final int NUM_COLS = 9;
 	private final int NUM_ROWS = 5;
@@ -34,11 +22,6 @@ public class CreativeInventoryManager {
 	 * @param container The container from a crafting GUI
 	 */
 	private CreativeInventoryManager() {
-		try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -156,8 +139,7 @@ public class CreativeInventoryManager {
 			// (almost an entire screen, but 1 row repeated to ground you)
 		} else if (key == InventoryConfig.keyScrollDown.get()) {
 			this.scrollDown(+2);
-		}
-		
+		}		
 	}
 	
 	private int itemRow = -1;
