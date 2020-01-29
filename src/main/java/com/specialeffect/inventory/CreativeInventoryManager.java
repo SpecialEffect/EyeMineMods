@@ -96,15 +96,8 @@ public class CreativeInventoryManager {
 		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-		
-		Point p = new Point(0, 0);
-
-		
-//		Point size = ModUtils.getScaledDisplaySize(mc);		
 		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
-		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();		
-		
-		
+		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
 	}
 
 	public void acceptKey(int key) {
