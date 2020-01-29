@@ -182,17 +182,6 @@ public class CreativeInventoryManager {
 		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
 	}
 	
-	private void moveMouseIntoWindow() {
-		// move mouse to location in window before e.g. mouse event
-		int xPos = leftColXPos - tabWidth;
-		int yPos = topRowYPos;
-		
-		//FIXME: need scaling??
-		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
-		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);		
-
-	}
-	
 	private void switchToTab(int iTab) {
 		
 		// Set up (x, y) for specified tab 
