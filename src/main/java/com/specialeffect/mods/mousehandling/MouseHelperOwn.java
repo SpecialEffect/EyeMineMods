@@ -96,6 +96,14 @@ extends MouseHelper
     	this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, GLFW.GLFW_MOD_SHIFT);
     }  
     
+    public void scroll(double amount) {
+    	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	this.scrollCallbackOwn(handle, 0, amount);
+    }
+    
+    
+    /** **/
+    
     
     /* Move cursor to location and perform mouse action
      * button: any constant GLFW.GLFW_MOUSE_BUTTON_X 
