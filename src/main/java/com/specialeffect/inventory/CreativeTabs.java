@@ -84,44 +84,6 @@ public class CreativeTabs
 //
 //	}
 
-	/*
-	 * This is where we handle key inputs within the creative inventory
-	 */
-//	@SubscribeEvent
-//	public static void onTick(ClientTickEvent tick) {
-//
-//		Screen currentScreen = Minecraft.getInstance().currentScreen;
-//		if (currentScreen != null) {
-//			System.out.println(currentScreen.getClass().getName());
-//			/*if (currentScreen instanceof GuiContainerCreative) {
-//				GuiContainerCreative gui = (GuiContainerCreative)currentScreen;	
-//				CreativeInventoryManager con = CreativeInventoryManager.getInstance(
-//						gui.getGuiLeft(), gui.getGuiTop(), 
-//						gui.getXSize(), gui.getYSize(),
-//						gui.getSelectedTabIndex());            	
-//				con.acceptKey();
-//			}*/
-//		}
-//	}
-//	
-
-    @SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
-        Screen currentScreen = Minecraft.getInstance().currentScreen;
-//		if (currentScreen != null) {
-//			if (currentScreen instanceof CreativeScreen) {
-//				CreativeScreen gui = (CreativeScreen)currentScreen;
-//				CreativeInventoryManager con = CreativeInventoryManager.getInstance(
-//						gui.getGuiLeft(), gui.getGuiTop(), 
-//						gui.getXSize(), gui.getYSize(),
-//						gui.getSelectedTabIndex());            	
-//					
-//			}
-//		}
-    }
-    
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 

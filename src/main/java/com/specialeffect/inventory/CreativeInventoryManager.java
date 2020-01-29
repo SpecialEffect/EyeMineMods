@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.specialeffect.mods.mousehandling.MouseHelperOwn;
 import com.specialeffect.utils.ModUtils;
 
 import net.java.games.input.Mouse;
@@ -270,28 +271,11 @@ public class CreativeInventoryManager {
 		}
 		
 		// Select the tab via a mouse action
-		if (xPos > -1) {
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);			
-			//FIXME scaled??
-			
-//			org.lwjgl.input.Mouse.setCursorPosition((int)(xPos*this.xScale),
-//													(int)(yPos*this.yScale));
-			// NB: We use lwjgl to move the mouse because it uses coordinates
-			// relative to minecraft window. We use a java robot to click because
-			// I don't know how else to.
-			
-			// IMPORTANT NB: If you do a separate press and release, while using eye gaze
-			// mouse emulation, it's quite common for the mouse press to persist long 
-			// enough that the mouse gets pressed *where the user is looking* in addition
-			// to the inventory location. This causes minecraft to lose focus and eye mine
-			// stops working. It seems to work fine just to send a mouseRelease event, but
-			// a better solution would be good...
-			//robot.mousePress(KeyEvent.BUTTON1_MASK);
-//			robot.mouseRelease(KeyEvent.BUTTON1_MASK);
-			
-			//FIXME: test with eye-gaze mouse emulation
-			KeyBinding.onTick(InputMappings.Type.MOUSE.getOrMakeInput(KeyEvent.BUTTON1_MASK));
-			
+		if (xPos > -1) {			
+			//FIXME: test with eye-gaze mouse emulation, no stray cursor movements interfere
+			// Do we need synchronisation in the mouse helper??
+			MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
+			helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);
 			
 			// we want to trigger 'tabChanged' if user has explicitly selected
 			// the same tab again (otherwise this gets missed)
