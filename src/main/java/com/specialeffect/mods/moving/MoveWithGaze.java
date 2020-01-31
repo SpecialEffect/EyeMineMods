@@ -151,13 +151,10 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWith
 			}
     		//TODO: who should own the override ? separate mod?? main eyegaze mod??
     		// currently two mods are looking to see if it needs setting up
-    		if ((mMinecraft.player != null)) {
-    			if (null == mMovementOverride) {
-    				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);				
-    			}			
-
+    		if ((mMinecraft.player != null)) {    			
     			if (!(mMinecraft.player.movementInput instanceof MovementInputFromOptionsOverride))
     			{
+    				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);	
     				mMinecraft.player.movementInput = mMovementOverride;	
     			}
     		}
