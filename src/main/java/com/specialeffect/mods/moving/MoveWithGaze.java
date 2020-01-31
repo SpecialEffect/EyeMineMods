@@ -202,13 +202,19 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWith
 
 				// Adjust according to FPS (to get some consistency across
 				// installations)
-				forward *= fpsFactor();				
+				forward *= fpsFactor();		
+				
+				if (EyeMineConfig.mTurnOffSlowdown.get()) {
+					//ignore all the slowdown, go back to default
+	            	forward = (double)mCustomSpeedFactor; 
+				}
 
             	// since the user-configurable range of speeds should allow 
             	// faster than MC's maximum walking speed, we request half 
             	// the overall distance twice. If we request any more than
             	// moveEntityWithHeading( ..., forward=1.0), we don't travel
             	// any further.
+				//FIXME: we don't do this any more! 
 				float halfForward = (float)(forward/2.0);
 				
 				//FIXME: this relates to swimming

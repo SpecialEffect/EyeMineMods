@@ -47,6 +47,7 @@ public class EyeMineConfig {
  	// Walking options -> walk with gaze
  	public static ForgeConfigSpec.IntValue filterLength;
  	public static ForgeConfigSpec.BooleanValue moveWhenMouseStationary;
+ 	public static ForgeConfigSpec.BooleanValue mTurnOffSlowdown; 	
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
 	
 	// OptiKey adjustments
@@ -132,6 +133,9 @@ public class EyeMineConfig {
   		
         moveWhenMouseStationary = COMMON_BUILDER.comment("Continue walking forward when the mouse is stationary? Recommended to be turned off for eye gaze control, on for joysticks.")
         		.define("moveWhenMouseStationary", false);
+        
+        mTurnOffSlowdown = COMMON_BUILDER.comment("Turn off walking slowdown functionality")
+        	.define("turnOffSlowdown", false);
         
     }
     
