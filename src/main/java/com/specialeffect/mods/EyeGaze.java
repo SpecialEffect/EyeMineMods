@@ -41,9 +41,9 @@ public class EyeGaze {
 	 * FIXME: figure out what to do with it architecturally :-)
 	 */
 
-	public static final String MODID = "eyegaze";
+	public static final String MODID = "eyemine";
 	public static final String VERSION = ModUtils.VERSION;
-	public static final String NAME = "Eye Gaze";
+	public static final String NAME = "Eye Mine";
 
 	public static EyeMineConfig mConfig;
 

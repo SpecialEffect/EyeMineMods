@@ -11,18 +11,18 @@ loaderVersion="[25,)" #mandatory (24 is current forge version)
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods" #optional
 
 [[mods]]
-modId="eyegaze"
+modId="eyemine"
 version="${file.jarVersion}"
-displayName="eyegaze"
+displayName="EyeMine"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
-[[dependencies.eyegaze]]
+[[dependencies.eyemine]]
 	modId="forge"
 	mandatory=true
 	versionRange="[25,)"
 	ordering="NONE"
 	side="BOTH"
-[[dependencies.eyegaze]]
+[[dependencies.eyemine]]
 	modId="minecraft"
 	mandatory=true
 	versionRange="[1.14.4]"
