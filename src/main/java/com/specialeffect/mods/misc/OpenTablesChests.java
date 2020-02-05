@@ -43,7 +43,6 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
-@Mod(OpenTablesChests.MODID)
 public class OpenTablesChests 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig

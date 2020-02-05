@@ -38,7 +38,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 
-@Mod(CreativeTabs.MODID)
 public class CreativeTabs  
 {
 

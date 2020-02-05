@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(ModStateGui.MODID)
 public class ModStateGui  {
 
 	public static final String MODID = "modstategui";

@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(UseItem.MODID)
 public class UseItem {
 	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";

@@ -47,7 +47,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(AutoPillar.MODID)
 public class AutoPillar extends BaseClassWithCallbacks {
 	public static final String MODID = "autopillar";
 	public static final String NAME = "AutoPillar";

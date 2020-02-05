@@ -43,7 +43,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(GatherDrops.MODID)
 public class GatherDrops extends BaseClassWithCallbacks
 {
 

@@ -44,7 +44,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(ContinuouslyAttack.MODID)
 public class ContinuouslyAttack 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig {

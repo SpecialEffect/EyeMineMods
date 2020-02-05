@@ -37,7 +37,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
-@Mod(MineOne.MODID)
 public class MineOne 
 extends BaseClassWithCallbacks 
 {

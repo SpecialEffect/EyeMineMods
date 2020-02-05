@@ -42,7 +42,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(AutoFly.MODID)
 public class AutoFly 
 extends BaseClassWithCallbacks
 implements ChildModWithConfig 

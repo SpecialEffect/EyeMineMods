@@ -42,7 +42,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(ContinuouslyMine.MODID)
 public class ContinuouslyMine 
 extends BaseClassWithCallbacks 
 implements ChildModWithConfig 

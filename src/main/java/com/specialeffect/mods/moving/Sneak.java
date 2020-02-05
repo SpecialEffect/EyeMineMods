@@ -32,8 +32,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 
-@Mod(Sneak.MODID)
-
 public class Sneak  {
 
 	public static final String MODID = "sneaktoggle";

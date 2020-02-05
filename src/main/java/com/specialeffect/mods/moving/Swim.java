@@ -36,8 +36,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
-@Mod(Swim.MODID)
-
 public class Swim extends BaseClassWithCallbacks {
 
 	public static final String MODID = "swimtoggle";

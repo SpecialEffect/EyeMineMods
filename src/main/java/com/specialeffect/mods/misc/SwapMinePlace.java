@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(SwapMinePlace.MODID)
 public class SwapMinePlace extends BaseClassWithCallbacks {
 	public static final String MODID = "swapmineplace";
 	public static final String NAME = "SwapMinePlace";

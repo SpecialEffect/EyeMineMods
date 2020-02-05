@@ -36,7 +36,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(AutoOpenDoors.MODID)
 public class AutoOpenDoors 
 implements ChildModWithConfig
 {

@@ -33,7 +33,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(QuickCommands.MODID)
 public class QuickCommands extends BaseClassWithCallbacks {
 	public static final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";

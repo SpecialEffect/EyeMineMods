@@ -62,7 +62,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-@Mod(MoveWithGaze.MODID)
 public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWithConfig {
 	public static final String MODID = "movewithgaze";
 	public static final String NAME = "MoveWithGaze";

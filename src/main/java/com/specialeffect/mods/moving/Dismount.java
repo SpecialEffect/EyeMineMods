@@ -39,7 +39,6 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
-@Mod(Dismount.MODID)
 
 public class Dismount extends BaseClassWithCallbacks {
 
