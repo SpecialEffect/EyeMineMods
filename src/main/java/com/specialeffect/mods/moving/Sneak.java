@@ -51,7 +51,6 @@ public class Sneak implements ChildMod {
 	public Sneak() {
 	}
 	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 	    mMinecraft = Minecraft.getInstance();
 

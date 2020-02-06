@@ -71,10 +71,6 @@ implements ChildMod, ChildModWithConfig
         channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, 
         		AddItemToHotbar::decode, AddItemToHotbar.Handler::handle);        
         
-		//init 
-		// Register for config changes from parent
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
-
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Start/stop mining", GLFW.GLFW_KEY_M, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
@@ -153,7 +149,7 @@ implements ChildMod, ChildModWithConfig
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {     
 		if (ModUtils.hasActiveGui()) { return; }
-		
+
         if(mDestroyKB.isPressed()) {
 			
 			mIsAttacking = !mIsAttacking;

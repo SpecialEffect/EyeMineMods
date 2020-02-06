@@ -88,14 +88,10 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
 	public MoveWithGaze() {
 	}
 
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
 		mMinecraft = Minecraft.getInstance();
 
-		// Subscribe to parent's config changes
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
-		
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","movewithgaze")

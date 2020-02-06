@@ -62,7 +62,6 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, Ch
 	
 	private static int mTicksSinceMouseEvent = 1000;
 
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		
 		// Set up icon rendering		

@@ -74,7 +74,6 @@ public class CreativeTabs
 		 
 		}
 //
-//	@SuppressWarnings("static-access")
 //	public void setup(final FMLCommonSetupEvent event) {
 //
 //		ModUtils.setupModInfo(event, this.MODID, this.NAME,

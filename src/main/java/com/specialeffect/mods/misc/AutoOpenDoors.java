@@ -58,9 +58,6 @@ implements ChildMod, ChildModWithConfig
         channel.registerMessage(id++, UseDoorAtPositionMessage.class, UseDoorAtPositionMessage::encode, 
         		UseDoorAtPositionMessage::decode, UseDoorAtPositionMessage.Handler::handle);                   	       
 		
-		// Register for config changes from parent
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
-		
 		mOpenedDoors = new LinkedList<BlockPos>();
 	}
 	

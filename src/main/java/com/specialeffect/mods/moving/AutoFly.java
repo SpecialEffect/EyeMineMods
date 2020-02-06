@@ -76,9 +76,6 @@ implements ChildMod, ChildModWithConfig
         channel.registerMessage(id++, ChangeFlyingStateMessage.class, ChangeFlyingStateMessage::encode, 
         		ChangeFlyingStateMessage::decode, ChangeFlyingStateMessage.Handler::handle);                   	       
 		
-		// Subscribe to parent's config changes
-    	//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
-    	
 		// Register key bindings
 		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", GLFW.GLFW_KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
 		mFlyAutoKB = new KeyBinding("Start/stop flying (auto)", GLFW.GLFW_KEY_G, CommonStrings.EYEGAZE_COMMON);
