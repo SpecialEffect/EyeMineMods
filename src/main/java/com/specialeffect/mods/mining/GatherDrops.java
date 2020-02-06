@@ -81,6 +81,8 @@ public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {      
+        if (ModUtils.hasActiveGui()) { return; }
+        
     	if(mGatherKB.isPressed()) {
 
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {

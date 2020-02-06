@@ -143,7 +143,9 @@ implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {     
-        
+		if (ModUtils.hasActiveGui()) { return; }
+		
+		System.out.println("keyinput current thread = " + Thread.currentThread());        
         if(mAttackKB.isPressed()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);

@@ -69,7 +69,8 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {		
+		
 		if (mNightVisionKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
@@ -91,6 +92,9 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 				}
 			}));
 		}
+		
+		if (ModUtils.hasActiveGui()) { return; }
+
 		if (mDayNightKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				

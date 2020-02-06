@@ -44,6 +44,9 @@ public class OpenChat implements ChildMod {
 
 	@SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {
+    	if (ModUtils.hasActiveGui()) { return; }    	
+    	
+		System.out.println("keyinput current thread = " + Thread.currentThread());
 		final Input chatKeyCode = Minecraft.getInstance().gameSettings.keyBindChat.getKey();
 		if (mOpenChatKB.isPressed()) {
 			KeyBinding.onTick(chatKeyCode);

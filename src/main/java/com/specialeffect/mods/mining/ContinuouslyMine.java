@@ -152,7 +152,8 @@ implements ChildMod, ChildModWithConfig
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {     
-        
+		if (ModUtils.hasActiveGui()) { return; }
+		
         if(mDestroyKB.isPressed()) {
 			
 			mIsAttacking = !mIsAttacking;

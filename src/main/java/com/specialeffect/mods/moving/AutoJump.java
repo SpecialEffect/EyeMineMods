@@ -68,7 +68,9 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildM
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {	
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		if (autoJumpKeyBinding.isPressed()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			

@@ -58,7 +58,8 @@ public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {	
-        
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		if (mSwapKB.isPressed()) {
 			
 			/* FIXME: re-instate when fixed

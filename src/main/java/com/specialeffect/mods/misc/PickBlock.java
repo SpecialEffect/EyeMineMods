@@ -14,6 +14,7 @@ package com.specialeffect.mods.misc;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
+import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -45,6 +46,8 @@ public class PickBlock implements ChildMod {
 	
 	@SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {   
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		if (mPickBlockKB.isPressed()) {
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
 			KeyBinding.onTick(pickBlockKey);

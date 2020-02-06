@@ -114,6 +114,8 @@ public class Sneak implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
+	    if (ModUtils.hasActiveGui()) { return; }
+	    
 		if(mSneakKB.isPressed()) {			
 			updateSneak(!mIsSneaking);
 		}

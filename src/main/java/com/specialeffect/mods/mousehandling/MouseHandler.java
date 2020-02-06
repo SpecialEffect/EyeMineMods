@@ -229,7 +229,9 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, Ch
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // important we get this
 														// *before* other mods
 	public void onKeyInput(KeyInputEvent event) {
-		//FIXME: test that we do get this event soonest - are all mods on same thread?
+		if (ModUtils.hasActiveGui()) { return; }
+
+		// FIXME: test that we do get this event soonest - are all mods on same thread?
 		
 		//FIXME also: shall we rejig user-reported sensitivity so it doesn't go negative?
 		if (mSensitivityUpKB.isPressed()) {

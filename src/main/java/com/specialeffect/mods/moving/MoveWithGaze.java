@@ -537,6 +537,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
+		if (ModUtils.hasActiveGui()) { return; }
 
 		if (mToggleAutoWalkKB.isPressed()) {
 			mDoingAutoWalk = !mDoingAutoWalk;

@@ -77,7 +77,8 @@ public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-        
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		if(mDismountKB.isPressed()) {
 			// Dismount player locally
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {

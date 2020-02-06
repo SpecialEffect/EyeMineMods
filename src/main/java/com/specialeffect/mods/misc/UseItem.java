@@ -58,7 +58,8 @@ public class UseItem implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
 		PlayerEntity player = Minecraft.getInstance().player;
 		

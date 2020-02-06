@@ -59,6 +59,12 @@ public class ModUtils {
 			return false;
 		}
 	}
+	
+	public static boolean hasActiveGui( ) {
+		// Is there a GUI currently open ?
+		// (i.e. false means in-game without gui)
+		return (null != Minecraft.getInstance().currentScreen);
+	}
 
 	// Get the x, y point corresponding to one of 8 compass points
 	// 0 = N, 1 = NE, 2 = E, etc ...

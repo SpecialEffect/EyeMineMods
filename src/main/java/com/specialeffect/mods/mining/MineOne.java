@@ -122,7 +122,9 @@ extends BaseClassWithCallbacks implements ChildMod
 	}
 	
 	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event) {          	
+	public void onKeyInput(KeyInputEvent event) {   
+		if (ModUtils.hasActiveGui()) { return; }       	
+		
 		if(mDestroyKB.isPressed()) {
 			// turn off continuous mining
 			ContinuouslyMine.stop();

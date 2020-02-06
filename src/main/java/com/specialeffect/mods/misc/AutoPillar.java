@@ -101,6 +101,7 @@ public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
+		if (ModUtils.hasActiveGui()) { return; }
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on your own)

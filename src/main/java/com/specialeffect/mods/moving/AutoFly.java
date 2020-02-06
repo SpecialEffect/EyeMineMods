@@ -205,6 +205,8 @@ implements ChildMod, ChildModWithConfig
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
+		if (ModUtils.hasActiveGui()) { return; }
+		
 		if (mFlyManualKB.isPressed()) {			
 			if (mIsFlyingManual) {
 				this.queueChatMessage("Fly manual: OFF");
