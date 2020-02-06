@@ -12,31 +12,18 @@ package com.specialeffect.inventory;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
-import com.specialeffect.utils.ChildModWithConfig;
-import com.specialeffect.utils.ModUtils;
-
 //fIXME import de.skate702.craftingkeys.config.GuiConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod(CreativeTabs.MODID)
 public class CreativeTabs 

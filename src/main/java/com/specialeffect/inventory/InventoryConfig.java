@@ -1,19 +1,13 @@
 package com.specialeffect.inventory;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Map;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 
-import net.java.games.input.Keyboard;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;

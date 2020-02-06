@@ -15,7 +15,6 @@ import java.util.LinkedList;
 
 import com.specialeffect.messages.UseDoorAtPositionMessage;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
@@ -28,12 +27,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 

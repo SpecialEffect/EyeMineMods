@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModUtils {
 

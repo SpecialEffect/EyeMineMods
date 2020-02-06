@@ -13,8 +13,6 @@ package com.specialeffect.mods;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.inventory.CreativeTabs;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.mods.mining.MineOne;

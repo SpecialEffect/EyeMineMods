@@ -12,10 +12,8 @@ package com.specialeffect.mods.moving;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -23,13 +21,10 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 

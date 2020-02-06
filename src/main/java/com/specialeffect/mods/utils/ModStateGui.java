@@ -10,18 +10,11 @@
 
 package com.specialeffect.mods.utils;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.utils.ModUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class ModStateGui implements ChildMod  {
 

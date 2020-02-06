@@ -17,10 +17,7 @@ import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeGaze;
-import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mining.ContinuouslyMine;
-import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -35,13 +32,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
