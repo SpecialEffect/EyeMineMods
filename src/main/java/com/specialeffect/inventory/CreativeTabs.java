@@ -56,21 +56,9 @@ public class CreativeTabs
 				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
 		
 		// FIXME: did we lose any bus registering when refactoring??
-		MinecraftForge.EVENT_BUS.register(this);
-		//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);			
+		MinecraftForge.EVENT_BUS.register(this);			
 		 
-		}
-//
-//	public void setup(final FMLCommonSetupEvent event) {
-//
-//		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-//				"Add key bindings to access tabs in creative inventory");
-//		ModUtils.setAsParent(event, EyeGaze.MODID);	
-//
-//		
-//		//fIXME NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiConfigHandler());
-//
-//	}
+	}
 
 
     @SubscribeEvent
