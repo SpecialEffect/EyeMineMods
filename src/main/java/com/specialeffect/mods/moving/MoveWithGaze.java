@@ -69,7 +69,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	private static KeyBinding mDecreaseWalkSpeedKB;
 
 	private MovementInputFromOptionsOverride mMovementOverride;
-	private Minecraft mMinecraft;
 
 	// FIXME public static Configuration mConfig;
 	private static int mQueueLength = 50;
@@ -85,8 +84,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	}
 
 	public void setup(final FMLCommonSetupEvent event) {
-
-		mMinecraft = Minecraft.getInstance();
 
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
@@ -125,23 +122,22 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	@SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-    	    		
-    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
+    		PlayerEntity player =  Minecraft.getInstance().player;
     		if (jumpTicks > 0)
 			{
 				jumpTicks--;
 			}
+    		
     		//TODO: who should own the override ? separate mod?? main eyegaze mod??
     		// currently two mods are looking to see if it needs setting up
-    		if ((mMinecraft.player != null)) {    			
-    			if (!(mMinecraft.player.movementInput instanceof MovementInputFromOptionsOverride))
-    			{
-    				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);	
-    				mMinecraft.player.movementInput = mMovementOverride;	
-    			}
-    		}
     		
-    		
+			if (!( Minecraft.getInstance().player.movementInput instanceof MovementInputFromOptionsOverride))
+			{
+				mMovementOverride = new MovementInputFromOptionsOverride( Minecraft.getInstance().gameSettings);	
+				Minecraft.getInstance().player.movementInput = mMovementOverride;	
+			}
+		    		
+    		    		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
        		while (mPrevLookDirs.size() > mQueueLength) {
