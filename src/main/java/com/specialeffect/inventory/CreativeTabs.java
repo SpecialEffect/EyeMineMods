@@ -57,7 +57,7 @@ public class CreativeTabs implements ChildMod
 
 	public CreativeTabs() {
 		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		// Config setup
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG);

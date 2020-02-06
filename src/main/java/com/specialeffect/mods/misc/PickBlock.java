@@ -39,7 +39,7 @@ public class PickBlock implements ChildMod {
 	public PickBlock() {
 	    
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);      
+              
         
         // Register key bindings
 		mPickBlockKB = new KeyBinding("Pick block", GLFW.GLFW_KEY_KP_2, CommonStrings.EYEGAZE_COMMON);

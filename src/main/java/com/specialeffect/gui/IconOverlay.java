@@ -37,7 +37,7 @@ public class IconOverlay
 	public IconOverlay(Minecraft mc, String resourcePath)
 	{
 		mResource = new ResourceLocation(resourcePath);		
-		MinecraftForge.EVENT_BUS.register(this);
+		
 	}
 	
 	public void setPosition(float centreX, float centreY, float height, float aspectRatio) {

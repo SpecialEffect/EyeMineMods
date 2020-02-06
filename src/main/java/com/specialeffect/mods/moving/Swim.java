@@ -50,7 +50,7 @@ public class Swim extends BaseClassWithCallbacks implements ChildMod {
 	
 	public void setup(final FMLCommonSetupEvent event) {
 		// Pre-init
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop swimming (= jumping)");

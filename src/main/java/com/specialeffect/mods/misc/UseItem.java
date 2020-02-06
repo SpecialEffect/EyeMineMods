@@ -40,7 +40,7 @@ public class UseItem implements ChildMod {
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to use item without mouse");
 		ModUtils.setAsParent(event, EyeGaze.MODID);

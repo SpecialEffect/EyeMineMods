@@ -95,7 +95,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod {
 		mMinecraft = Minecraft.getInstance();
 
 		// pre-init
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");

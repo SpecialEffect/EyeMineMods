@@ -68,7 +68,7 @@ implements ChildMod
 
     public void setup(final FMLCommonSetupEvent event)
     {
-		MinecraftForge.EVENT_BUS.register(this);    	
+		    	
 		
 		//ModUtils.setupModInfo(event, this.MODID, this.NAME,
 			//	"Add key bindings to open nearby chests/crafting tables.");

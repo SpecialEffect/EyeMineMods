@@ -58,7 +58,7 @@ public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		// preinit
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add custom key binding to mount/dismount animals");

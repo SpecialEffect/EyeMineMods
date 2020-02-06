@@ -53,7 +53,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildMod {
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Automatically step over blocks.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);

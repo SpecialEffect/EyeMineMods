@@ -52,7 +52,7 @@ implements ChildMod
 
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		// preinit
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,

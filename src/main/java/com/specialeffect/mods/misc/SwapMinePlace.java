@@ -41,7 +41,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to swap mine/place key bindings.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);

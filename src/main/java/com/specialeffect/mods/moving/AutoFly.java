@@ -71,7 +71,7 @@ implements ChildMod
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop flying, and automatically fly over hills.");

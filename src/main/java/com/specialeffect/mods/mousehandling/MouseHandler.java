@@ -68,7 +68,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod {
 	
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, MouseHandler.MODID, MouseHandler.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
 		ModUtils.setAsParent(event, EyeGaze.MODID);

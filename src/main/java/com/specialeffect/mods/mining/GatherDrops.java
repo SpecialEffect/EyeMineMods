@@ -61,7 +61,7 @@ public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
 	
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		MinecraftForge.EVENT_BUS.register(this);    	
+		    	
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to gather nearby dropped items.");

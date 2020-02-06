@@ -91,33 +91,37 @@ public class EyeGaze {
 		// Setup all other mods
 		this.instantiateChildren();
 	}
-	
-	private void instantiateChildren() {
-		// In older versions of forge we had child/parent mods, here we have to set this up manually
-		//children.add((ChildMod) new CreativeTabs()); // will be own mod, because it requires config
-		children.add((ChildMod) new ContinuouslyMine());
-		children.add((ChildMod) new GatherDrops());
-		children.add((ChildMod) new MineOne());
-		children.add((ChildMod) new AutoOpenDoors());
-		children.add((ChildMod) new AutoPillar());
-		children.add((ChildMod) new ContinuouslyAttack());
-		children.add((ChildMod) new OpenChat());
-		children.add((ChildMod) new OpenTablesChests());
-		children.add((ChildMod) new PickBlock());
-		children.add((ChildMod) new QuickCommands());
-		children.add((ChildMod) new SwapMinePlace());
-		children.add((ChildMod) new UseItem());
-		children.add((ChildMod) new MouseHandler());
-		children.add((ChildMod) new AutoFly());
-		children.add((ChildMod) new AutoJump());
-		children.add((ChildMod) new Dismount());
-		children.add((ChildMod) new EasyLadderClimb());
-		children.add((ChildMod) new MoveWithGaze());
-		children.add((ChildMod) new Sneak());
-		children.add((ChildMod) new Swim());
-		children.add((ChildMod) new DebugAverageFps());
-		children.add((ChildMod) new ModStateGui());		
-	}
+
+    private void instantiateChildren() {
+        // In older versions of forge we had child/parent mods, here we have to set this up manually
+        this.setupChildMod((ChildMod) new ContinuouslyMine());
+        this.setupChildMod((ChildMod) new GatherDrops());
+        this.setupChildMod((ChildMod) new MineOne());
+        this.setupChildMod((ChildMod) new AutoOpenDoors());
+        this.setupChildMod((ChildMod) new AutoPillar());
+        this.setupChildMod((ChildMod) new ContinuouslyAttack());
+        this.setupChildMod((ChildMod) new OpenChat());
+        this.setupChildMod((ChildMod) new OpenTablesChests());
+        this.setupChildMod((ChildMod) new PickBlock());
+        this.setupChildMod((ChildMod) new QuickCommands());
+        this.setupChildMod((ChildMod) new SwapMinePlace());
+        this.setupChildMod((ChildMod) new UseItem());
+        this.setupChildMod((ChildMod) new MouseHandler());
+        this.setupChildMod((ChildMod) new AutoFly());
+        this.setupChildMod((ChildMod) new AutoJump());
+        this.setupChildMod((ChildMod) new Dismount());
+        this.setupChildMod((ChildMod) new EasyLadderClimb());
+        this.setupChildMod((ChildMod) new MoveWithGaze());
+        this.setupChildMod((ChildMod) new Sneak());
+        this.setupChildMod((ChildMod) new Swim());
+        this.setupChildMod((ChildMod) new DebugAverageFps());
+        this.setupChildMod((ChildMod) new ModStateGui());     
+    }
+    
+    private void setupChildMod(ChildMod mod) {
+        MinecraftForge.EVENT_BUS.register(mod);
+        children.add(mod);
+    }
 
 	public synchronized static void registerForConfigUpdates(ChildModWithConfig mod) {
 

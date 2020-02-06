@@ -39,7 +39,7 @@ public class DebugAverageFps implements ChildMod
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
-		MinecraftForge.EVENT_BUS.register(this);    	
+		    	
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Log the average FPS, for debugging");

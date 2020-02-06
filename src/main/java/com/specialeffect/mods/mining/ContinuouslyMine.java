@@ -65,7 +65,7 @@ implements ChildMod
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		// preinit
-		MinecraftForge.EVENT_BUS.register(this);
+		
 		
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Add key binding to start/stop continuously attacking.");

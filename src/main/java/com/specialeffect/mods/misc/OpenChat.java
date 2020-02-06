@@ -39,7 +39,7 @@ public class OpenChat implements ChildMod {
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to open chat without polling");
 		ModUtils.setAsParent(event, EyeGaze.MODID);

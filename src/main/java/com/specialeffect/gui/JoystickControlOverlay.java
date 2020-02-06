@@ -27,7 +27,7 @@ public class JoystickControlOverlay {
 
 	public JoystickControlOverlay(Minecraft mc) {
   		mResource = new ResourceLocation("specialeffect", "icons/overlay.png");
-		MinecraftForge.EVENT_BUS.register(this);
+		
 	}	
 
 	ResourceLocation mResource;

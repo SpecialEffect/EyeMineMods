@@ -45,7 +45,7 @@ public class EasyLadderClimb implements ChildMod {
     @SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Automatically turn to face ladders, to simplify climbing with eye control.");

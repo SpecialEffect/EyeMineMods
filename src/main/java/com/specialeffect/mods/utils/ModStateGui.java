@@ -41,7 +41,7 @@ public class ModStateGui implements ChildMod  {
 	public void setup(final FMLCommonSetupEvent event) {
 		System.out.println("ModStateGui::setup begins");
 		
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 				"Overlay icons to show state of mods.");

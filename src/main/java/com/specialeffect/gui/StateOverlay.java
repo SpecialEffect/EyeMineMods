@@ -40,7 +40,7 @@ public class StateOverlay
 		mFlagsLeft = new ArrayList<Boolean>();
 		mFlagsRight = new ArrayList<Boolean>();
 		
-		MinecraftForge.EVENT_BUS.register(this);
+		
 
 	}
 	
