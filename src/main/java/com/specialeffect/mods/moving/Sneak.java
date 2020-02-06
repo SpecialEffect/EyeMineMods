@@ -76,7 +76,7 @@ public class Sneak implements ChildMod {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 //		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-//			this.processQueuedCallbacks(event);
+//			
 //			
 //			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 //			player.setSneaking(mIsSneaking);

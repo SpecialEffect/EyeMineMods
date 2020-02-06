@@ -12,23 +12,17 @@ package com.specialeffect.mods.moving;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.DismountPlayerMessage;
 import com.specialeffect.messages.RideEntityMessage;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,7 +33,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 
-public class Dismount extends BaseClassWithCallbacks implements ChildMod {
+public class Dismount  implements ChildMod {
 
 	public static final String MODID = "dismount";
 	public static final String NAME = "Dismount";
@@ -71,7 +65,7 @@ public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 

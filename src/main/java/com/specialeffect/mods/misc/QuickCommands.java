@@ -12,9 +12,6 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -25,15 +22,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.potion.Potion;
-import net.minecraft.world.GameRules;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
+public class QuickCommands  implements ChildMod {
 	public static final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
@@ -63,7 +58,7 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 

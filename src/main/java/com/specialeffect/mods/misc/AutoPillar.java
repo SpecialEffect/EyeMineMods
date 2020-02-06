@@ -10,11 +10,14 @@
 
 package com.specialeffect.mods.misc;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
+import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
@@ -40,7 +43,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
+public class AutoPillar implements ChildMod {
 	public static final String MODID = "autopillar";
 	public static final String NAME = "AutoPillar";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -48,9 +51,13 @@ public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
 	public static KeyBinding autoPlaceKeyBinding;
 
     public static SimpleChannel channel;
+    
+	private LinkedList<OnLivingCallback> mOnLivingQueue;
    
 	public void setup(final FMLCommonSetupEvent event) {
-			
+
+		mOnLivingQueue = new LinkedList<OnLivingCallback>();
+
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","autopillar")
@@ -87,9 +94,24 @@ public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
 			}
 
 			// Process any events which were queued by key events
-			this.processQueuedCallbacks(event);
+			synchronized (mOnLivingQueue) {
+				Iterator<OnLivingCallback> it = mOnLivingQueue.iterator();
+				while (it.hasNext()) {
+					OnLivingCallback item = it.next();
+					item.onLiving(event);
+					if (item.hasCompleted()) {
+						it.remove();
+					}        		
+				}
+			}
 		}
 	}
+	
+	protected void queueOnLivingCallback(OnLivingCallback onLivingCallback) {
+		synchronized (mOnLivingQueue) {
+			mOnLivingQueue.add(onLivingCallback);
+		}
+	}	
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {

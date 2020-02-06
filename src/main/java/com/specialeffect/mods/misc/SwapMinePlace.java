@@ -12,7 +12,6 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -24,7 +23,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
+public class SwapMinePlace  implements ChildMod {
 	public static final String MODID = "swapmineplace";
 	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
@@ -45,7 +44,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 

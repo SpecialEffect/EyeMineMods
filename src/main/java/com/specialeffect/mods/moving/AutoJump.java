@@ -12,9 +12,6 @@ package com.specialeffect.mods.moving;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
@@ -24,15 +21,12 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildModWithConfig {
+public class AutoJump  implements ChildMod, ChildModWithConfig {
 	public static final String MODID = "autojump";
 	public static final String NAME = "AutoJump";
 

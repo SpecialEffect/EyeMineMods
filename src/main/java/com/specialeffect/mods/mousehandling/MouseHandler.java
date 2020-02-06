@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
@@ -34,7 +33,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, ChildModWithConfig {
+public class MouseHandler  implements ChildMod, ChildModWithConfig {
 	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 
@@ -218,7 +217,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, Ch
 				mTicksSinceMouseEvent++;
 			}
 			
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 

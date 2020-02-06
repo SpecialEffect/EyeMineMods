@@ -12,7 +12,6 @@ package com.specialeffect.mods.mining;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.ChildMod;
@@ -40,7 +39,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyMine 
-extends BaseClassWithCallbacks 
+ 
 implements ChildMod, ChildModWithConfig
 {
 	public static final String MODID = "continuouslydestroy";
@@ -134,7 +133,7 @@ implements ChildMod, ChildModWithConfig
 			// (necessary if minecraft running faster than eye tracker).
 			mMouseEventLastTick = true;////FIXME SOON MouseHandler.hasPendingEvent();
 			
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 	

@@ -14,9 +14,6 @@ import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.GatherBlockMessage;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
@@ -39,7 +36,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
+public class GatherDrops  implements ChildMod
 {
 
 	public static final String MODID = "gatherdrops";
@@ -70,7 +67,7 @@ public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 		}			
 	}
 

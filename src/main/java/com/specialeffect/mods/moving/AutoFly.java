@@ -12,7 +12,6 @@ package com.specialeffect.mods.moving;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.mods.ChildMod;
@@ -39,7 +38,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class AutoFly 
-extends BaseClassWithCallbacks
+
 implements ChildMod, ChildModWithConfig
 {
 
@@ -132,8 +131,6 @@ implements ChildMod, ChildModWithConfig
 				mIsFlyingManual = true;
 				updateIcons();
 			}*/
-
-			this.processQueuedCallbacks(event);
 		}
 	}
 	

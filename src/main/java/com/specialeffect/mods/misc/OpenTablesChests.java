@@ -12,9 +12,6 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -42,7 +39,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 public class OpenTablesChests 
-extends BaseClassWithCallbacks
+
 implements ChildMod, ChildModWithConfig
 {
 
@@ -86,7 +83,7 @@ implements ChildMod, ChildModWithConfig
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 		}			
 	}
 	

@@ -12,7 +12,6 @@ package com.specialeffect.mods.mining;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -35,7 +34,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
 public class MineOne 
-extends BaseClassWithCallbacks implements ChildMod
+ implements ChildMod
 {
 	public static final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";    
@@ -55,7 +54,7 @@ extends BaseClassWithCallbacks implements ChildMod
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			this.processQueuedCallbacks(event);
+			
 
 			if (mDestroying) {
 

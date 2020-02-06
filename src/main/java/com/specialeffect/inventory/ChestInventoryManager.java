@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
 
 /**
  * Manages a Inventory GUI Inventory.

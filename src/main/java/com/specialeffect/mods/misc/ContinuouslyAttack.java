@@ -12,7 +12,6 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
@@ -40,7 +39,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyAttack 
-extends BaseClassWithCallbacks 
+ 
 implements ChildMod {
 	public static final String MODID = "continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
@@ -129,7 +128,7 @@ implements ChildMod {
 				}
 			}
 			
-			this.processQueuedCallbacks(event);
+			
 		}
 	}
 	

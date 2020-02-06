@@ -12,9 +12,6 @@ package com.specialeffect.mods.moving;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
@@ -23,7 +20,6 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -32,7 +28,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
-public class Swim extends BaseClassWithCallbacks implements ChildMod {
+public class Swim implements ChildMod {
 
 	public static final String MODID = "swimtoggle";
 	public static final String NAME = "SwimToggle";
@@ -87,7 +83,7 @@ public class Swim extends BaseClassWithCallbacks implements ChildMod {
 					}
 				}
 			}
-			this.processQueuedCallbacks(event);
+			
 			
 		}
 	}

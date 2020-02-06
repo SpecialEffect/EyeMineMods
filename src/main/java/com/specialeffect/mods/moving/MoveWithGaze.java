@@ -19,7 +19,6 @@ import javax.vecmath.Vector2d;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.mods.EyeMineConfig;
@@ -60,7 +59,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, ChildModWithConfig {
+public class MoveWithGaze  implements ChildMod, ChildModWithConfig {
 	public static final String MODID = "movewithgaze";
 	public static final String NAME = "MoveWithGaze";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -377,7 +376,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
             	mMovementOverride.setWalkOverride(false, 0.0f);
             }
 
-			this.processQueuedCallbacks(event);
+			
 			
     	}
     }
