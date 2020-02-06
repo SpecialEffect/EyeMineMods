@@ -13,6 +13,7 @@ package com.specialeffect.mods;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.mods.mining.MineOne;
@@ -34,10 +35,10 @@ import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.Sneak;
 import com.specialeffect.mods.moving.Swim;
 import com.specialeffect.mods.utils.DebugAverageFps;
-import com.specialeffect.mods.utils.ModStateGui;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -67,7 +68,9 @@ public class EyeGaze {
 	public static final String VERSION = ModUtils.VERSION;
 	public static final String NAME = "Eye Mine";
 
-	public static EyeMineConfig mConfig;
+	public static EyeMineConfig mConfig;	
+	private StateOverlay mStateOverlay;
+
 
 	// Category names for clustering config options in different UIs
 	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
@@ -80,6 +83,10 @@ public class EyeGaze {
  
 		this.setupConfig();
 		
+		// Setup GUI for showing state overlay
+        mStateOverlay = new StateOverlay(Minecraft.getInstance());
+		MinecraftForge.EVENT_BUS.register(mStateOverlay);
+
 		// Setup all other mods
 		this.instantiateChildren();
 	}
@@ -117,7 +124,6 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new Sneak());
         this.setupChildMod((ChildMod) new Swim());
         this.setupChildMod((ChildMod) new DebugAverageFps());
-        this.setupChildMod((ChildMod) new ModStateGui());     
     }
     
     private void setupChildMod(ChildMod mod) {
