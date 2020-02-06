@@ -88,7 +88,16 @@ public class CreativeTabs
 							gui.getSelectedTabIndex());            	
 					con.acceptKey(key);					
 				}
+				else if (currentScreen instanceof ChestScreen)// InventoryScreen
+				{
+					ChestScreen gui = (ChestScreen)currentScreen;
+					ChestInventoryManager con = ChestInventoryManager.getInstance(
+							gui.getGuiLeft(), gui.getGuiTop(), 
+							gui.getXSize(), gui.getYSize());            	
+					con.acceptKey(key);					
+				}
 			}
+			
         }
 		
     }
