@@ -22,6 +22,10 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.potion.Potion;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -67,25 +71,16 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 	public void onKeyInput(KeyInputEvent event) {		
 		
 		if (mNightVisionKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					if (ModUtils.entityIsMe(event.getEntityLiving())) {
-						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-
-						/* FIXME
-						Potion nightVision = MobEffects.NIGHT_VISION;
-						if (player.isPotionActive(nightVision)) {
-							System.out.println("clearing");
-							player.removePotionEffect(nightVision);
-						}
-						else {
-							System.out.println("night vision");
-							player.addPotionEffect(new PotionEffect(nightVision));
-						}*/
-					}
-				}
-			}));
+			// Toggle night vision effect
+			PlayerEntity player = Minecraft.getInstance().player;
+			Effect nightVision = Effects.NIGHT_VISION;
+			
+			if (player.isPotionActive(nightVision)) {
+				player.removePotionEffect(nightVision);
+			}
+			else {
+				player.addPotionEffect(new EffectInstance(nightVision)); 							
+			}		
 		}
 		
 		if (ModUtils.hasActiveGui()) { return; }
