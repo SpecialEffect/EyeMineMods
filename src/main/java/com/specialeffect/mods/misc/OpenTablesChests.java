@@ -128,7 +128,6 @@ implements ChildMod, ChildModWithConfig
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 
-		System.out.println("keyinput current thread = " + Thread.currentThread());
 		if(mOpenChestKB.isPressed()) {
 			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 				@Override
