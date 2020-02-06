@@ -18,33 +18,33 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class DismountPlayerMessage {
+public class RideEntityMessage {
     
-    public DismountPlayerMessage() { }
+    private int entityId;
     
-	public static DismountPlayerMessage decode(PacketBuffer buf) {    	
-        return new DismountPlayerMessage();
+    public RideEntityMessage(int entityId) { 
+    	this.entityId = entityId;
+    }
+    
+	public static RideEntityMessage decode(PacketBuffer buf) {		
+        return new RideEntityMessage(buf.readInt());
     }
 
-    public static void encode(DismountPlayerMessage pkt, PacketBuffer buf) {
+    public static void encode(RideEntityMessage pkt, PacketBuffer buf) {
+    	buf.writeInt(pkt.entityId);
     }    
 
     public static class Handler {
-		public static void handle(final DismountPlayerMessage pkt, Supplier<NetworkEvent.Context> ctx) {
+		public static void handle(final RideEntityMessage pkt, Supplier<NetworkEvent.Context> ctx) {
 			PlayerEntity player = ctx.get().getSender();
 	        if (player == null) {
 	            return;
 	        }       
 
-	        if (player.isPassenger()) {
-				Entity riddenEntity = player.getRidingEntity();
-				riddenEntity.getEntityId();
-				
-				if (null != riddenEntity) {
-					player.stopRiding();
-					player.dismountEntity(riddenEntity);												
-				}
-			}
+	        Entity entity = player.world.getEntityByID(pkt.entityId);
+	        if (entity != null) {
+				player.startRiding(entity);
+	        }
 		}
 	}       
 }
