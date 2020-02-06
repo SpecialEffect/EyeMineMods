@@ -16,6 +16,7 @@ import com.specialeffect.mods.EyeMineConfig;
 //fIXME import de.skate702.craftingkeys.config.GuiConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.ChestScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
