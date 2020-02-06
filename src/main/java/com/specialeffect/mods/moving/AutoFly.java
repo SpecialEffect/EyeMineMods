@@ -212,7 +212,7 @@ extends ChildMod implements ChildModWithConfig
 				this.stopFlying();
 			}
 			else {
-				ModUtils.sendPlayerMessage("Auto-fly: ON");
+				ModUtils.sendPlayerMessage("Fly auto: ON");
 				boolean doFlyUp = !mIsFlyingManual;
 				this.setFlying(doFlyUp, true);
 			}
