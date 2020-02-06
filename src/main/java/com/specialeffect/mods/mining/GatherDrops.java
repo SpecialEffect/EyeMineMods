@@ -36,7 +36,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class GatherDrops  implements ChildMod
+public class GatherDrops  extends ChildMod
 {
 
 	public static final String MODID = "gatherdrops";

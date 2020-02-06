@@ -27,7 +27,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class EasyLadderClimb implements ChildMod {
+public class EasyLadderClimb extends ChildMod {
 	public static final String MODID = "easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";
 

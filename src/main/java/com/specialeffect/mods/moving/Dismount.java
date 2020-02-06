@@ -33,7 +33,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 
-public class Dismount  implements ChildMod {
+public class Dismount  extends ChildMod {
 
 	public static final String MODID = "dismount";
 	public static final String NAME = "Dismount";

@@ -43,7 +43,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class AutoPillar implements ChildMod {
+public class AutoPillar extends ChildMod {
 	public static final String MODID = "autopillar";
 	public static final String NAME = "AutoPillar";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);

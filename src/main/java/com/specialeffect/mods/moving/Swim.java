@@ -28,7 +28,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
-public class Swim implements ChildMod {
+public class Swim extends ChildMod {
 
 	public static final String MODID = "swimtoggle";
 	public static final String NAME = "SwimToggle";

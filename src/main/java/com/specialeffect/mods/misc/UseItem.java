@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class UseItem implements ChildMod {
+public class UseItem extends ChildMod {
 	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";
 

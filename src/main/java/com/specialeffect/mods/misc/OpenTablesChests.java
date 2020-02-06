@@ -40,7 +40,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class OpenTablesChests 
 
-implements ChildMod, ChildModWithConfig
+extends ChildMod implements ChildModWithConfig
 {
 
 	public static final String MODID = "opentableschests";

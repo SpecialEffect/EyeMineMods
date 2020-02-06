@@ -24,7 +24,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class OpenChat implements ChildMod {	
+public class OpenChat extends ChildMod {	
 	public static final String MODID = "openchat";
 	public static final String NAME = "OpenChat";
 

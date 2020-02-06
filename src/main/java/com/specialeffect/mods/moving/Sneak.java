@@ -28,7 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 
-public class Sneak implements ChildMod {
+public class Sneak extends ChildMod {
 
 	public static final String MODID = "sneaktoggle";
 	public static final String NAME = "SneakToggle";

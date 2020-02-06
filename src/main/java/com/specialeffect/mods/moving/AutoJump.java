@@ -26,7 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class AutoJump  implements ChildMod, ChildModWithConfig {
+public class AutoJump  extends ChildMod implements ChildModWithConfig {
 	public static final String MODID = "autojump";
 	public static final String NAME = "AutoJump";
 

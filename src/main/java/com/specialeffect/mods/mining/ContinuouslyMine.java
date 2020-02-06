@@ -40,7 +40,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyMine 
  
-implements ChildMod, ChildModWithConfig
+extends ChildMod implements ChildModWithConfig
 {
 	public static final String MODID = "continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";

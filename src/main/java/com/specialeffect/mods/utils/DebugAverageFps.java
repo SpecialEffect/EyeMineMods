@@ -22,7 +22,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class DebugAverageFps implements ChildMod
+public class DebugAverageFps extends ChildMod
 {
 
 	public static final String MODID = "debugfps";

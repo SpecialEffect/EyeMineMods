@@ -33,7 +33,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class MouseHandler  implements ChildMod, ChildModWithConfig {
+public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 
