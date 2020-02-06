@@ -536,7 +536,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
 			mDoingAutoWalk = !mDoingAutoWalk;
 			// FIXME: MouseHandler.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
-			this.queueChatMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
+			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
 		if (mDecreaseWalkSpeedKB.isPressed()) {
 			float newSpeed = (float) Math.max(0.1f, 0.9f * EyeMineConfig.customSpeedFactor.get());
@@ -553,6 +553,6 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
 	private void displayCurrentSpeed() {
 		DecimalFormat myFormatter = new DecimalFormat("#0.00");
 		String speedString = myFormatter.format(EyeMineConfig.customSpeedFactor.get());
-		this.queueChatMessage("Walking speed: " + speedString);
+		ModUtils.sendPlayerMessage("Walking speed: " + speedString);
 	}
 }

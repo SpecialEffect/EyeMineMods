@@ -232,15 +232,15 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, Ch
 		//FIXME also: shall we rejig user-reported sensitivity so it doesn't go negative?
 		if (mSensitivityUpKB.isPressed()) {
 			increaseSens();
-			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
+			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
 		} else if (mSensitivityDownKB.isPressed()) {
 			decreaseSens();
-			this.queueChatMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
+			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				System.out.println("this key doesn't do anything in eyetracker mode");
-				this.queueChatMessage("Warning: Minecraft expects eye tracker input, not mouse");
-				this.queueChatMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
+				ModUtils.sendPlayerMessage("Warning: Minecraft expects eye tracker input, not mouse");
+				ModUtils.sendPlayerMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
 			} else {
 				if (MouseHandler.mInteractionState == InteractionState.MOUSE_NOTHING) {
 					MouseHandler.updateState(InteractionState.MOUSE_LOOK);

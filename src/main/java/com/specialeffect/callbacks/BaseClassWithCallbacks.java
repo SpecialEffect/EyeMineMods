@@ -49,21 +49,6 @@ public class BaseClassWithCallbacks {
 		synchronized (mOnLivingQueue) {
 			mOnLivingQueue.add(onLivingCallback);
 		}
-	}
-	
-	// Special case to queue a one-time chat
-	protected void queueChatMessage(final String message) {
-		synchronized (mOnLivingQueue) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-			        player.sendMessage(new StringTextComponent(message));
-			        
-				}		
-			}));
-		}
-	}
+	}	
 
 }

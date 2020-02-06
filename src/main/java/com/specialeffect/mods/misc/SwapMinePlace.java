@@ -65,10 +65,10 @@ public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, useInput);
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, attackInput);
 
-			this.queueChatMessage("Swapping mine and place keys");
+			ModUtils.sendPlayerMessage("Swapping mine and place keys");
 			
 			
-			this.queueChatMessage("Swap mine/place not implemented yet!");
+			ModUtils.sendPlayerMessage("Swap mine/place not implemented yet!");
 			*/
 		}
 	}

@@ -201,21 +201,21 @@ implements ChildMod, ChildModWithConfig
 		
 		if (mFlyManualKB.isPressed()) {			
 			if (mIsFlyingManual) {
-				this.queueChatMessage("Fly manual: OFF");
+				ModUtils.sendPlayerMessage("Fly manual: OFF");
 				this.stopFlying();
 			}
 			else {
-				this.queueChatMessage("Fly manual: ON");
+				ModUtils.sendPlayerMessage("Fly manual: ON");
 				boolean doFlyUp = !mIsFlyingAuto;
 				this.setFlying(doFlyUp, false);
 			}			
 		} else if (mFlyAutoKB.isPressed()) {
 			if (mIsFlyingAuto) {
-				this.queueChatMessage("Fly auto: OFF");
+				ModUtils.sendPlayerMessage("Fly auto: OFF");
 				this.stopFlying();
 			}
 			else {
-				this.queueChatMessage("Auto-fly: ON");
+				ModUtils.sendPlayerMessage("Auto-fly: ON");
 				boolean doFlyUp = !mIsFlyingManual;
 				this.setFlying(doFlyUp, true);
 			}
