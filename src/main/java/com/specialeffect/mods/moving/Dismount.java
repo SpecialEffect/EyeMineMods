@@ -51,18 +51,7 @@ public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 	
     public static SimpleChannel channel;
 
-	public Dismount() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		// preinit
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add custom key binding to mount/dismount animals");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
 
     	// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(

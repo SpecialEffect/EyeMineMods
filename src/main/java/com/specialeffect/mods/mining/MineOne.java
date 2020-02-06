@@ -48,18 +48,7 @@ extends BaseClassWithCallbacks implements ChildMod
 	private BlockPos mBlockToDestroy;
 	private static KeyBinding mDestroyKB;
 	
-	public MineOne() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine one block", GLFW.GLFW_KEY_N, CommonStrings.EYEGAZE_COMMON);

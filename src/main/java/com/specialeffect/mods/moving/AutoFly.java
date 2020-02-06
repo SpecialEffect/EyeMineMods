@@ -64,18 +64,7 @@ implements ChildMod, ChildModWithConfig
 	
     public static SimpleChannel channel;
 	
-	public AutoFly() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop flying, and automatically fly over hills.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(

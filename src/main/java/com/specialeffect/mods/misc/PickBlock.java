@@ -38,9 +38,6 @@ public class PickBlock implements ChildMod {
 
 	public PickBlock() {
 	    
-        // Register ourselves for server and other game events we are interested in
-              
-        
         // Register key bindings
 		mPickBlockKB = new KeyBinding("Pick block", GLFW.GLFW_KEY_KP_2, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mPickBlockKB);
@@ -52,5 +49,9 @@ public class PickBlock implements ChildMod {
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
 			KeyBinding.onTick(pickBlockKey);
 		}
-    }	
+    }
+
+	@Override
+	public void setup(FMLCommonSetupEvent event) {
+	}	
 }

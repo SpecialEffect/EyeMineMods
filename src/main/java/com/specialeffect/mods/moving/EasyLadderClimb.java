@@ -35,22 +35,9 @@ public class EasyLadderClimb implements ChildMod {
 	public static final String MODID = "easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";
 
-	public EasyLadderClimb() {
-	    // Register methods on event bus
-	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);	  
-	    
-	    //FIXME: re-visit this mod logic, test a bunch, does it solve any problems?
-	}
+    //FIXME: re-visit this mod logic, test a bunch, does it solve any problems?    
 		
-    @SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Automatically turn to face ladders, to simplify climbing with eye control.");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
-
 	}
 
 	@SubscribeEvent

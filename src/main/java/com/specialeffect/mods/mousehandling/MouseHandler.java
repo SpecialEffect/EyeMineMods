@@ -62,25 +62,14 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, Ch
 	
 	private static int mTicksSinceMouseEvent = 1000;
 
-	public MouseHandler() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		
-
-		ModUtils.setupModInfo(event, MouseHandler.MODID, MouseHandler.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/eye.png");
 		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
 		mIconEye.setAlpha(0.2f);
 		mIconEye.setVisible(false);								
-
-		// Subscribe to config changes from parent
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);		
 
 		// Register key bindings
 		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", GLFW.GLFW_KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);

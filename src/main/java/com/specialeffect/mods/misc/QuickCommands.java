@@ -39,17 +39,7 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 	public static final String NAME = "QuickCommands";
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	public QuickCommands() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		//preinit
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key bindings for some useful commands.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 		
 		// Register for server messages
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);

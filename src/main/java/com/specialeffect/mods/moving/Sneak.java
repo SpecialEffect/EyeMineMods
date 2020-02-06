@@ -49,17 +49,10 @@ public class Sneak implements ChildMod {
 		
 
 	public Sneak() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop sneaking");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
-
 	    mMinecraft = Minecraft.getInstance();
 
 		// Register key bindings
@@ -68,7 +61,6 @@ public class Sneak implements ChildMod {
 		
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/sneak.png");
-		
 	}
 	
 	@SubscribeEvent

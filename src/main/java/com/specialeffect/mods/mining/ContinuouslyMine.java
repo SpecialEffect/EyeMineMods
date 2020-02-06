@@ -58,18 +58,7 @@ implements ChildMod, ChildModWithConfig
 	private boolean mAutoSelectTool = true;
 	private boolean mWaitingForPickaxe = false;
 
-	public ContinuouslyMine() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		// preinit
-		
-		
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(

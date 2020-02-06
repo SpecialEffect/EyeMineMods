@@ -39,7 +39,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod(CreativeTabs.MODID)
-public class CreativeTabs implements ChildMod
+public class CreativeTabs 
 {
 
 	public static final String MODID = "creativetabs";
@@ -68,9 +68,9 @@ public class CreativeTabs implements ChildMod
 		InventoryConfig.loadConfig(InventoryConfig.COMMON_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
 		
-//		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		
-//		MinecraftForge.EVENT_BUS.addListener(CreativeTabs::onTick);
+		// FIXME: did we lose any bus registering when refactoring??
+		MinecraftForge.EVENT_BUS.register(this);
+		//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);			
 		 
 		}
 //

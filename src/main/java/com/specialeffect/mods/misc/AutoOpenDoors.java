@@ -46,19 +46,8 @@ implements ChildMod, ChildModWithConfig
 
     public static SimpleChannel channel;
 
-    public AutoOpenDoors() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-    }
-
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		
-
-		// preinit
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Automatically open doors/gates and close them behind you.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","autoopendoors")

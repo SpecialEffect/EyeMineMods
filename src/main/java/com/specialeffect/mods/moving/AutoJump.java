@@ -46,17 +46,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildM
 	private boolean mDoingAutoJump = true;
 	private int mIconIndex;
 
-	public AutoJump() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Automatically step over blocks.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Register key bindings
 		autoJumpKeyBinding = new KeyBinding("Turn auto-jump on/off", GLFW.GLFW_KEY_J, CommonStrings.EYEGAZE_COMMON);
@@ -65,10 +55,8 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildM
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
 
-		// Subscribe to parent's config changes
-		// This has to happen after texture is registered, since it will trigger a
-		// syncConfig call.
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
+		//FIXME: there was previously an ordering requirement for config syncing and 
+		// texture registering
 	}
 
 	public void syncConfig() {

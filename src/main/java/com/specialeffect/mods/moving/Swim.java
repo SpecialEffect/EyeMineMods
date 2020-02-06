@@ -45,18 +45,9 @@ public class Swim extends BaseClassWithCallbacks implements ChildMod {
 	private static KeyBinding mSwimKB;
 
 	public Swim() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
 	public void setup(final FMLCommonSetupEvent event) {
-		// Pre-init
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop swimming (= jumping)");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
-
-    	// Init
 		// Register key bindings
 		mSwimKB = new KeyBinding("Start/stop swimming", GLFW.GLFW_KEY_V, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwimKB);

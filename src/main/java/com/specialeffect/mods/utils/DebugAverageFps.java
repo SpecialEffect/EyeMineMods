@@ -33,20 +33,9 @@ public class DebugAverageFps implements ChildMod
 	public static final String NAME = "DebugAverageFps";
 
 	public DebugAverageFps() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		//preinit
-		    	
-		
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Log the average FPS, for debugging");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
-
-    	//	init
-	
 		mPrevFps = new LinkedBlockingQueue<Integer>();
 	}
 

@@ -34,22 +34,11 @@ public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
-	public SwapMinePlace() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		//preinit
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to swap mine/place key bindings.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Register for server messages
 		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
 		//FIXME network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 0, Side.SERVER);
-
 	
 		//init
 

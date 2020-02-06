@@ -60,19 +60,9 @@ implements ChildMod {
 	
 	private boolean mWaitingForSword = false;
 	
-	public ContinuouslyAttack() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-		//preinit
 		
-		FMLJavaModLoadingContext.get().getModEventBus().register(this);
-		
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop continuously attacking.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
+		// FIXME: now in eyegaze mod, check working okay // FMLJavaModLoadingContext.get().getModEventBus().register(this);
 
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
@@ -88,12 +78,6 @@ implements ChildMod {
         channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, 
         		AddItemToHotbar::decode, AddItemToHotbar.Handler::handle);        
         
-
-		// init
-		
-		// Register for config changes from parent
-		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
-		
 		// Register key bindings	
 		mAttackKB = new KeyBinding("Start/stop attacking", GLFW.GLFW_KEY_R, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mAttackKB);

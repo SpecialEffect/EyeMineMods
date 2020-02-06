@@ -45,6 +45,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 // This mod is purely a wrapper to cluster all our smaller mods.
 // The parent (this mod) handles configuration so that it can all
@@ -123,6 +124,9 @@ public class EyeGaze {
     
     private void setupChildMod(ChildMod mod) {
         MinecraftForge.EVENT_BUS.register(mod);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(mod::setup);
+		FMLJavaModLoadingContext.get().getModEventBus().register(this); // for @SubscribeEvent annotations ??
+
         children.add(mod);        
     }
 

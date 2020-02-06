@@ -33,17 +33,7 @@ public class UseItem implements ChildMod {
 	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";
 
-	public UseItem() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
-
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to use item without mouse");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
 
 		// Register key bindings
 		mUseItemOnceKB = new KeyBinding("Use item", GLFW.GLFW_KEY_KP_0, CommonStrings.EYEGAZE_COMMON);

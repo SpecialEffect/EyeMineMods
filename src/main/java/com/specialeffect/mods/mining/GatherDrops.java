@@ -55,18 +55,8 @@ public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
 
     public static SimpleChannel channel;
 
-	public GatherDrops() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		    	
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to gather nearby dropped items.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","gatherdrops")
                 ,() -> PROTOCOL_VERSION

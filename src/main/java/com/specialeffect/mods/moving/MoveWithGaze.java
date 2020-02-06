@@ -86,22 +86,12 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod, Ch
     private int jumpTicks = 0;
     
 	public MoveWithGaze() {
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 
 	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 
 		mMinecraft = Minecraft.getInstance();
-
-		// pre-init
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Add key binding to start/stop walking continuously, with direction controlled by mouse/eyetracker");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
-		// init
 
 		// Subscribe to parent's config changes
 		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);

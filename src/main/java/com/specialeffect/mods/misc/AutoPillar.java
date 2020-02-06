@@ -57,18 +57,8 @@ public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
 
     public static SimpleChannel channel;
    
-	public AutoPillar() {
-	    FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-		
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 			
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to create pillar, or 'nerd-pole'.");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","autopillar")

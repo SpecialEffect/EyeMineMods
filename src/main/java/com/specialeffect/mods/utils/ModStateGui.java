@@ -31,26 +31,12 @@ public class ModStateGui implements ChildMod  {
 	private StateOverlay mStateOverlay;
 
 	public ModStateGui() {
-		// highest priority so this is set up before any mods try to register against it
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::setup);
-        
+		//FIXME: this stateoverlay should live in top level eyegaze mod, not its own mod        
         mStateOverlay = new StateOverlay(Minecraft.getInstance());
 	}
-	
-	@SuppressWarnings("static-access")
+
 	public void setup(final FMLCommonSetupEvent event) {
-		System.out.println("ModStateGui::setup begins");
-		
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME,
-				"Overlay icons to show state of mods.");
-    	ModUtils.setAsParent(event, EyeGaze.MODID);
-
-		
-		
 		MinecraftForge.EVENT_BUS.register(mStateOverlay);
-		System.out.println("ModStateGui::setup ends");
 	}
 
 }

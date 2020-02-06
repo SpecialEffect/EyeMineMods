@@ -59,20 +59,10 @@ implements ChildMod, ChildModWithConfig
     
     private static int mRadius = 5;
     
-    public OpenTablesChests() {
-        // Register methods on event bus
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-    }
-    
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public void setup(final FMLCommonSetupEvent event)
     {
-		    	
-		
-		//ModUtils.setupModInfo(event, this.MODID, this.NAME,
-			//	"Add key bindings to open nearby chests/crafting tables.");
-		//ModUtils.setAsParent(event, EyeGaze.MODID);
 		
 		channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation("specialeffect","opentableschests")

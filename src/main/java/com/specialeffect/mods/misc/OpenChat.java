@@ -32,18 +32,8 @@ public class OpenChat implements ChildMod {
 	public static final String MODID = "openchat";
 	public static final String NAME = "OpenChat";
 
-	public OpenChat() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-	}
-	
-	@SuppressWarnings("static-access")
 	public void setup(final FMLCommonSetupEvent event) {
 		
-		
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Add key binding to open chat without polling");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-
 		// Register key bindings
 		mOpenChatKB = new KeyBinding("Open chat", GLFW.GLFW_KEY_END, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mOpenChatKB);
