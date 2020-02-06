@@ -63,14 +63,11 @@ public class SetPositionAndRotationMessage {
 	        if (player == null) {
 	            return;
 	        }       
-	        System.out.println("SetPositionAndRotationMessage start");
 	        
 	        //FIXME: test this, not currrently using playername, is redundant?
         	player.setPositionAndRotation(pkt.x, pkt.y, pkt.z,
         			pkt.yaw, pkt.pitch);
             player.setPositionAndUpdate(pkt.x, pkt.y, pkt.z);
-            
-            System.out.println("SetPositionAndRotationMessage end");
             
 		}
 	}

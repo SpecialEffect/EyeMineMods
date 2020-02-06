@@ -117,7 +117,7 @@ extends ChildMod implements ChildModWithConfig
 	    		}
 	    	}
 		} catch (ClassNotFoundException e) {
-			System.out.println("Could not find class: " + className);
+			LOGGER.debug("Could not find class: " + className);
 		}
 	    return closestBlockPos;
 	}

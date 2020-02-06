@@ -1,6 +1,9 @@
 package com.specialeffect.inventory;
 
 import java.nio.file.Path;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
@@ -18,6 +21,9 @@ public class InventoryConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
 	
+	// Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static final String CATEGORY_GENERAL = "general";
     
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -94,13 +100,13 @@ public class InventoryConfig {
 
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {    	
-    	System.out.println("InventoryConfig onLoad");
+    	LOGGER.debug("InventoryConfig onLoad");
     }
 
     @SubscribeEvent
     public static void onReload(final ModConfig.ConfigReloading configEvent) {
     	// the configspec values are updated for us, but we may want to hook into here too?
-    	System.out.println("InventoryConfig onReload");        	
+    	LOGGER.debug("InventoryConfig onReload");        	
     }
     
     //     * Standard Return Key if there is a problem reading the config.

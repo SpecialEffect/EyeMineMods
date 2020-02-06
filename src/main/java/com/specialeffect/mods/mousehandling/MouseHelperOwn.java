@@ -1,5 +1,7 @@
 package com.specialeffect.mods.mousehandling;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
@@ -22,6 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class MouseHelperOwn
 extends MouseHelper
 {
+	// Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
 	public MouseHelperOwn(Minecraft minecraftIn) {
 		super(minecraftIn);
@@ -251,21 +255,21 @@ extends MouseHelper
 	private void debugLogging() {
 
         long cursorMode = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR);
-        System.out.println("***");
+        LOGGER.debug("***");
         if (cursorMode == GLFW.GLFW_CURSOR_DISABLED) {
-      	  System.out.println("cursor disabled");
+      	  LOGGER.debug("cursor disabled");
       	  long raw = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_RAW_MOUSE_MOTION);
       	  if (raw == GLFW.GLFW_TRUE) {
-      		  System.out.println("using raw motion");
+      		  LOGGER.debug("using raw motion");
       	  }
         }
         else if (cursorMode == GLFW.GLFW_CURSOR_NORMAL) {
-      	  System.out.println("normal cursor");
+      	  LOGGER.debug("normal cursor");
         }
         
         if (GLFW.GLFW_TRUE == GLFW.glfwGetWindowAttrib(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_HOVERED))
         {
-      	  System.out.println("hovered");
+      	  LOGGER.debug("hovered");
         }
     }
 

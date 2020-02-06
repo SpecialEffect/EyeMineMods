@@ -1,5 +1,7 @@
 package com.specialeffect.inventory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
@@ -9,6 +11,9 @@ import net.minecraft.client.Minecraft;
  * Manages a Inventory GUI Inventory.
  */
 public class ChestInventoryManager {
+	
+	// Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
 	private static ChestInventoryManager instance = null;
 
@@ -229,7 +234,7 @@ public class ChestInventoryManager {
 			yPos = bottomRowYPos;
 			break;
 		default:
-			System.out.println("Unknown tab requested");
+			LOGGER.debug("Unknown tab requested");
 			break;
 		}
 		

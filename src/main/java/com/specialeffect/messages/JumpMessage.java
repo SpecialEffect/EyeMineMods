@@ -42,7 +42,6 @@ public class JumpMessage {
 	            return;
 	        }       
 	        
-	        System.out.println("jumping player " + player.getName());
 			player.jump();
 			ctx.get().setPacketHandled(true);
 		}

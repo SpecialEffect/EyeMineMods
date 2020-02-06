@@ -10,6 +10,8 @@
 
 package com.specialeffect.inventory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.EyeMineConfig;
@@ -29,6 +31,8 @@ import net.minecraftforge.fml.loading.FMLPaths;
 @Mod(CreativeTabs.MODID)
 public class CreativeTabs 
 {
+	// Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final String MODID = "creativetabs";
 	public static final String NAME = "CreativeTabs";
@@ -66,7 +70,7 @@ public class CreativeTabs
     public void onKeyInput(KeyInputEvent event) { 
         if (event.getAction() == GLFW.GLFW_RELEASE) {
 	    	int key = event.getKey();
-	        System.out.println(key);
+	        LOGGER.debug(key);
 	        Screen currentScreen = Minecraft.getInstance().currentScreen;
 			if (currentScreen != null) {
 				if (currentScreen instanceof CreativeScreen) {

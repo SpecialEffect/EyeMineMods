@@ -2,6 +2,9 @@ package com.specialeffect.mods;
 
 import java.nio.file.Path;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 
@@ -13,6 +16,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod.EventBusSubscriber(bus = Bus.MOD)
 public class EyeMineConfig {
+	// Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
+    
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
 	
@@ -165,14 +171,14 @@ public class EyeMineConfig {
 
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {    	
-    	System.out.println("ModConfig onLoad");
+    	LOGGER.debug("ModConfig onLoad");
     }
 
     @SubscribeEvent
     public static void onReload(final ModConfig.ConfigReloading configEvent) {
     	// the configspec values are updated for us, but we may want to hook into 
     	// here to notify other mods?
-    	System.out.println("ModConfig onReload");    
+    	LOGGER.debug("ModConfig onReload");    
     	
     	//FIXME: this architecture is a bit circular, think about responsibilities
     	EyeGaze.refresh();

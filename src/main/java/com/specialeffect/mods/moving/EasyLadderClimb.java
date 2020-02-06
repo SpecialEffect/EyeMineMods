@@ -43,7 +43,7 @@ public class EasyLadderClimb extends ChildMod {
 			World world = Minecraft.getInstance().world;
 
 			if (event.getEntityLiving().isOnLadder()) {
-				System.out.println("LADDER");		
+				LOGGER.debug("LADDER");		
 				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
 		
 				if (rayTraceBlock != null) {
@@ -63,7 +63,7 @@ public class EasyLadderClimb extends ChildMod {
 						player.setPositionAndRotation(playerPos.x,
 								playerPos.y, playerPos.z,
 								getYawFromEnumFacing(facing), player.rotationPitch);
-						System.out.println("facing ladder");
+						LOGGER.debug("facing ladder");
 					}
 				
 				

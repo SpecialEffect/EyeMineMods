@@ -93,7 +93,7 @@ public class GatherDrops  extends ChildMod
 		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)world.getEntitiesWithinAABB(ItemEntity.class,aaBb);
 
 		if(items != null && !items.isEmpty()) {
-			System.out.println("gathering " + items.size() + " nearby items");
+			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (int i = 0; i < items.size(); i++) {
                 channel.sendToServer(new GatherBlockMessage(items.get(i).getEntityId()));

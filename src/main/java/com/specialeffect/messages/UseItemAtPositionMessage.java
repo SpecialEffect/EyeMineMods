@@ -56,7 +56,6 @@ public class UseItemAtPositionMessage {
 
     public static class Handler {
 		public static void handle(final UseItemAtPositionMessage pkt, Supplier<NetworkEvent.Context> ctx) {
-			System.out.println("UseItemAtPositionMessage start");
 			PlayerEntity player = ctx.get().getSender();
 	        if (player == null) {
 	            return;
@@ -87,9 +86,6 @@ public class UseItemAtPositionMessage {
                 	item.setCount(oldCount); //some items are decremented; others aren't
                 }
         	}
-			
-			System.out.println("UseItemAtPositionMessage end");
-			
 			
 			ctx.get().setPacketHandled(true);
 		}

@@ -86,7 +86,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		try {
 			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
 		} catch (LWJGLException e) {
-			System.out.println("LWJGLException creating cursor");
+			LOGGER.debug("LWJGLException creating cursor");
 		}*/
 		
 		// post-init
@@ -178,27 +178,27 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	}
 		
 	public void syncConfig() {
-		System.out.println("syncConfig MouseHandler");
-		System.out.println("usingMouseEmulation: " + 
+		LOGGER.debug("syncConfig MouseHandler");
+		LOGGER.debug("usingMouseEmulation: " + 
 				EyeMineConfig.usingMouseEmulation.get());
 		
 		if (EyeMineConfig.usingMouseEmulation.get()) {
 			if (mInputSource != InputSource.Mouse) {
-				System.out.println("using mouse");
+				LOGGER.debug("using mouse");
 				mInputSource = InputSource.Mouse;
 				MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 
 			}
 			else {
-				System.out.println("nothing to change");
+				LOGGER.debug("nothing to change");
 			}
 		} else {
 			if (mInputSource != InputSource.EyeTracker) {
-				System.out.println("using eyetracker");
+				LOGGER.debug("using eyetracker");
 				mInputSource = InputSource.EyeTracker;
 				MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL); 
 			} 
 			else {
-				System.out.println("nothing to change");
+				LOGGER.debug("nothing to change");
 			}
 		}
 	}
@@ -237,7 +237,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
 		} else if (mToggleMouseViewControlKB.isPressed()) {
 			if (mInputSource == InputSource.EyeTracker) {
-				System.out.println("this key doesn't do anything in eyetracker mode");
+				LOGGER.debug("this key doesn't do anything in eyetracker mode");
 				ModUtils.sendPlayerMessage("Warning: Minecraft expects eye tracker input, not mouse");
 				ModUtils.sendPlayerMessage("Perhaps you need to switch on 'Mouse emulation' mode in Mod Config -> EyeGaze -> Basic options ?");
 			} else {
@@ -282,7 +282,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	public void setMouseNotGrabbed() {				
 		ownMouseHelper.ungrabMouse();
 		try {
-			System.out.println("setting empty cursor");
+			LOGGER.debug("setting empty cursor");
 			//FIXME Mouse.setNativeCursor(mEmptyCursor);
 		} catch (Exception e) {
 			System.out.print("exception setting cursor");

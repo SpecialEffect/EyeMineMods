@@ -48,7 +48,7 @@ public class DebugAverageFps extends ChildMod
 			}
 			
 			if (mTickCount == mLoggingPeriod) {
-				System.out.println("FPS: "+ this.computeAverage());
+				LOGGER.debug("FPS: "+ this.computeAverage());
 				mTickCount = 0;
 			}
 		}			

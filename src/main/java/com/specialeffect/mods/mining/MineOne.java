@@ -127,7 +127,7 @@ public class MineOne
 			// mine the block you're facing
 			mBlockToDestroy = this.getMouseOverBlockPos();
 			if (mBlockToDestroy == null) {
-				System.out.println("Nothing to attack");
+				LOGGER.debug("Nothing to attack");
 				return;
 			}
 			else {
