@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class AutoJump extends BaseClassWithCallbacks implements ChildMod {
+public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildModWithConfig {
 	public static final String MODID = "autojump";
 	public static final String NAME = "AutoJump";
 

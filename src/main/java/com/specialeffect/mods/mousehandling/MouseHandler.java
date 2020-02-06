@@ -37,7 +37,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class MouseHandler extends BaseClassWithCallbacks implements ChildMod {
+public class MouseHandler extends BaseClassWithCallbacks implements ChildMod, ChildModWithConfig {
 	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 

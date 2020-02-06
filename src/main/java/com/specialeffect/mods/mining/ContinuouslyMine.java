@@ -45,7 +45,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyMine 
 extends BaseClassWithCallbacks 
-implements ChildMod
+implements ChildMod, ChildModWithConfig
 {
 	public static final String MODID = "continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";

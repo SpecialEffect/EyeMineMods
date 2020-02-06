@@ -106,11 +106,4 @@ public class CreativeTabs implements ChildMod
         }
 		
     }
-     
-//
-//	@Override
-//	public void syncConfig() {
-//		//Config.syncConfig();		
-//	}
-
 }

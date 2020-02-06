@@ -78,8 +78,14 @@ public class EyeGaze {
 
 		// Register ourselves for server and other game events we are interested in
 		MinecraftForge.EVENT_BUS.register(this);
-
-		// Config setup
+ 
+		this.setupConfig();
+		
+		// Setup all other mods
+		this.instantiateChildren();
+	}
+	
+	private void setupConfig() {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
 
@@ -87,9 +93,6 @@ public class EyeGaze {
 				FMLPaths.CONFIGDIR.get().resolve("eyegaze-client.toml"));
 		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("eyegaze-common.toml"));
-		
-		// Setup all other mods
-		this.instantiateChildren();
 	}
 
     private void instantiateChildren() {
@@ -120,23 +123,15 @@ public class EyeGaze {
     
     private void setupChildMod(ChildMod mod) {
         MinecraftForge.EVENT_BUS.register(mod);
-        children.add(mod);
+        children.add(mod);        
     }
 
-	public synchronized static void registerForConfigUpdates(ChildModWithConfig mod) {
-
-		// Make sure it gets any changes thus far
-		mod.syncConfig();
-
-		// Make sure it gets future changes
-		childrenWithConfig.add(mod);
-
-	}
-
 	public static void refresh() {
-		// TODO: should we use IMC for synchronous comms?
-		for (ChildModWithConfig child : childrenWithConfig) {
-			child.syncConfig();
+		for (ChildMod child : children) {
+			if (child instanceof ChildModWithConfig) {
+				ChildModWithConfig mod = (ChildModWithConfig)child;
+				mod.syncConfig();
+			}
 		}
 	}
 

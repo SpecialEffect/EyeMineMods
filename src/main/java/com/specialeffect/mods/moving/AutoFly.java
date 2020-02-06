@@ -45,7 +45,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class AutoFly 
 extends BaseClassWithCallbacks
-implements ChildMod 
+implements ChildMod, ChildModWithConfig
 {
 
 	public static final String MODID = "autofly";
