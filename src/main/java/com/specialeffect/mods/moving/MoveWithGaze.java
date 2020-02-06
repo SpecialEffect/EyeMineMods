@@ -45,6 +45,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -130,14 +131,17 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
     		
     		//TODO: who should own the override ? separate mod?? main eyegaze mod??
     		// currently two mods are looking to see if it needs setting up
-    		
-			if (!( Minecraft.getInstance().player.movementInput instanceof MovementInputFromOptionsOverride))
-			{
+    		    		
+    		// The movement-override instance can change, e.g. when player goes to another dimension. 
+    		// Make sure we've always got a handle on the 'active' instance
+    		if (Minecraft.getInstance().player.movementInput instanceof MovementInputFromOptionsOverride) {
+    			mMovementOverride = (MovementInputFromOptionsOverride) Minecraft.getInstance().player.movementInput;
+    		}
+    		else {    			
 				mMovementOverride = new MovementInputFromOptionsOverride( Minecraft.getInstance().gameSettings);	
 				Minecraft.getInstance().player.movementInput = mMovementOverride;	
 			}
-		    		
-    		    		
+					    	    		    		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
        		while (mPrevLookDirs.size() > mQueueLength) {
