@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mining.ContinuouslyMine;
@@ -46,7 +47,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyAttack 
 extends BaseClassWithCallbacks 
-implements ChildModWithConfig {
+implements ChildMod {
 	public static final String MODID = "continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -64,7 +65,7 @@ implements ChildModWithConfig {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
@@ -91,7 +92,7 @@ implements ChildModWithConfig {
 		// init
 		
 		// Register for config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		// Register key bindings	
 		mAttackKB = new KeyBinding("Start/stop attacking", GLFW.GLFW_KEY_R, CommonStrings.EYEGAZE_COMMON);
@@ -100,11 +101,6 @@ implements ChildModWithConfig {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureRight("specialeffect:icons/attack.png");
 		
-	}
-	
-	@Override
-	public void syncConfig() {
-		mAutoSelectSword = EyeMineConfig.mAutoSelectSword.get();	
 	}
 	
 	

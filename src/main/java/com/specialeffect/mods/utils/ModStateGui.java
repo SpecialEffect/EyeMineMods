@@ -12,6 +12,7 @@ package com.specialeffect.mods.utils;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
@@ -22,7 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class ModStateGui  {
+public class ModStateGui implements ChildMod  {
 
 	public static final String MODID = "modstategui";
 	public static final String NAME = "modstategui";
@@ -37,7 +38,7 @@ public class ModStateGui  {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		System.out.println("ModStateGui::setup begins");
 		
 		MinecraftForge.EVENT_BUS.register(this);

@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
@@ -25,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class DebugAverageFps
+public class DebugAverageFps implements ChildMod
 {
 
 	public static final String MODID = "debugfps";
@@ -36,7 +37,7 @@ public class DebugAverageFps
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);    	
 		

@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class SwapMinePlace extends BaseClassWithCallbacks {
+public class SwapMinePlace extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "swapmineplace";
 	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
@@ -38,7 +39,7 @@ public class SwapMinePlace extends BaseClassWithCallbacks {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 

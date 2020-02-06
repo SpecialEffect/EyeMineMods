@@ -10,6 +10,7 @@
 
 package com.specialeffect.mods.moving;
 
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.ModUtils;
 
@@ -30,7 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class EasyLadderClimb {
+public class EasyLadderClimb implements ChildMod {
 	public static final String MODID = "easyladderclimb";
 	public static final String NAME = "EasyLadderClimb";
 
@@ -42,7 +43,7 @@ public class EasyLadderClimb {
 	}
 		
     @SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 

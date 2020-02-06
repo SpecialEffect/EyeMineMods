@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.ChangeFlyingStateMessage;
+import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.messages.ChangeFlyingStateMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
@@ -44,7 +45,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class AutoFly 
 extends BaseClassWithCallbacks
-implements ChildModWithConfig 
+implements ChildMod 
 {
 
 	public static final String MODID = "autofly";
@@ -68,7 +69,7 @@ implements ChildModWithConfig
 	}
 
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -87,7 +88,7 @@ implements ChildModWithConfig
         		ChangeFlyingStateMessage::decode, ChangeFlyingStateMessage.Handler::handle);                   	       
 		
 		// Subscribe to parent's config changes
-    	EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
+    	//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
     	
 		// Register key bindings
 		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", GLFW.GLFW_KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);

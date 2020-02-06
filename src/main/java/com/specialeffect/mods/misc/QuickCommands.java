@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
+import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
@@ -33,7 +34,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class QuickCommands extends BaseClassWithCallbacks {
+public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";
     //FIXME for 1.14 public static SimpleNetworkWrapper network;
@@ -43,7 +44,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		//preinit
 		MinecraftForge.EVENT_BUS.register(this);
 

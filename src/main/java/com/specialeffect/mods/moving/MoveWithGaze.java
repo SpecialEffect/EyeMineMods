@@ -25,6 +25,7 @@ import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -62,7 +63,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWithConfig {
+public class MoveWithGaze extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "movewithgaze";
 	public static final String NAME = "MoveWithGaze";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -89,7 +90,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWith
 	}
 
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 
 		mMinecraft = Minecraft.getInstance();
 
@@ -103,7 +104,7 @@ public class MoveWithGaze extends BaseClassWithCallbacks implements ChildModWith
 		// init
 
 		// Subscribe to parent's config changes
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
 		
 		// setup channel for comms
 		channel = NetworkRegistry.newSimpleChannel(

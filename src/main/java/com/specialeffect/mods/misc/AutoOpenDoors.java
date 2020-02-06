@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import com.specialeffect.messages.UseDoorAtPositionMessage;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -37,7 +38,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class AutoOpenDoors 
-implements ChildModWithConfig
+implements ChildMod
 {
 	public static final String MODID = "autoopendoors";
 	public static final String NAME = "AutoOpenDoors";
@@ -50,7 +51,7 @@ implements ChildModWithConfig
     }
 
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// preinit
@@ -69,7 +70,7 @@ implements ChildModWithConfig
         		UseDoorAtPositionMessage::decode, UseDoorAtPositionMessage.Handler::handle);                   	       
 		
 		// Register for config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 		
 		mOpenedDoors = new LinkedList<BlockPos>();
 	}

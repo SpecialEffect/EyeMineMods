@@ -19,6 +19,7 @@ import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
+import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.messages.AddItemToHotbar;
 //import com.specialeffect.messages.JumpMessage;
 //import com.specialeffect.messages.SetPositionAndRotationMessage;
@@ -47,7 +48,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class AutoPillar extends BaseClassWithCallbacks {
+public class AutoPillar extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "autopillar";
 	public static final String NAME = "AutoPillar";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
@@ -61,7 +62,7 @@ public class AutoPillar extends BaseClassWithCallbacks {
 	}
 		
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 			
 		MinecraftForge.EVENT_BUS.register(this);
 

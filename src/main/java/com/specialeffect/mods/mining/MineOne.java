@@ -13,6 +13,7 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -38,7 +39,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
 public class MineOne 
-extends BaseClassWithCallbacks 
+extends BaseClassWithCallbacks implements ChildMod
 {
 	public static final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";    
@@ -52,7 +53,7 @@ extends BaseClassWithCallbacks
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		
 		MinecraftForge.EVENT_BUS.register(this);
 

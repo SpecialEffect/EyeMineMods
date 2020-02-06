@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.ActivateBlockAtPosition;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -45,7 +46,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class OpenTablesChests 
 extends BaseClassWithCallbacks
-implements ChildModWithConfig
+implements ChildMod
 {
 
 	public static final String MODID = "opentableschests";
@@ -65,7 +66,7 @@ implements ChildModWithConfig
     
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-    private void setup(final FMLCommonSetupEvent event)
+    public void setup(final FMLCommonSetupEvent event)
     {
 		MinecraftForge.EVENT_BUS.register(this);    	
 		

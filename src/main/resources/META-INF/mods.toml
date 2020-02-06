@@ -28,3 +28,22 @@ authors="Kirsty McNaught"
 	versionRange="[1.14.4]"
 	ordering="NONE"
 	side="BOTH"
+
+[[mods]]
+modId="creativetabs"
+version="${file.jarVersion}"
+displayName="EyeInventory"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+[[dependencies.creativetabs]]
+	modId="forge"
+	mandatory=true
+	versionRange="[25,)"
+	ordering="NONE"
+	side="BOTH"
+[[dependencies.creativetabs]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.14.4]"
+	ordering="NONE"
+	side="BOTH"

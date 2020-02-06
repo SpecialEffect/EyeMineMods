@@ -13,6 +13,7 @@ package com.specialeffect.inventory;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -37,8 +38,8 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-
-public class CreativeTabs  
+@Mod(CreativeTabs.MODID)
+public class CreativeTabs implements ChildMod
 {
 
 	public static final String MODID = "creativetabs";
@@ -59,12 +60,12 @@ public class CreativeTabs
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// Config setup
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EyeMineConfig.COMMON_CONFIG);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG);
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, InventoryConfig.COMMON_CONFIG);
 
-		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
+		InventoryConfig.loadConfig(InventoryConfig.CLIENT_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("inventory-client.toml"));
-		EyeMineConfig.loadConfig(EyeMineConfig.COMMON_CONFIG,
+		InventoryConfig.loadConfig(InventoryConfig.COMMON_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
 		
 //		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -74,7 +75,7 @@ public class CreativeTabs
 		}
 //
 //	@SuppressWarnings("static-access")
-//	private void setup(final FMLCommonSetupEvent event) {
+//	public void setup(final FMLCommonSetupEvent event) {
 //
 //		ModUtils.setupModInfo(event, this.MODID, this.NAME,
 //				"Add key bindings to access tabs in creative inventory");

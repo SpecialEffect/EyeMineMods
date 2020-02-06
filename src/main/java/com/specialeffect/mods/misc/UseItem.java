@@ -12,6 +12,7 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -28,7 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class UseItem {
+public class UseItem implements ChildMod {
 	public static final String MODID = "useitem";
 	public static final String NAME = "UseItem";
 
@@ -37,7 +38,7 @@ public class UseItem {
 	}
 
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 

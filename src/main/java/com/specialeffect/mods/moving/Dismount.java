@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.DismountPlayerMessage;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.utils.CommonStrings;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 
 
-public class Dismount extends BaseClassWithCallbacks {
+public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 
 	public static final String MODID = "dismount";
 	public static final String NAME = "Dismount";
@@ -55,7 +56,7 @@ public class Dismount extends BaseClassWithCallbacks {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		// preinit
 		MinecraftForge.EVENT_BUS.register(this);
 

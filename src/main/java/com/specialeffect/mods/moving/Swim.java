@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -36,7 +37,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
-public class Swim extends BaseClassWithCallbacks {
+public class Swim extends BaseClassWithCallbacks implements ChildMod {
 
 	public static final String MODID = "swimtoggle";
 	public static final String NAME = "SwimToggle";
@@ -47,7 +48,7 @@ public class Swim extends BaseClassWithCallbacks {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	}
 	
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		// Pre-init
 		MinecraftForge.EVENT_BUS.register(this);
 

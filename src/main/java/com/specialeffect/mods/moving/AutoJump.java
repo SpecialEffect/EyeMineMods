@@ -16,6 +16,7 @@ import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -35,7 +36,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConfig {
+public class AutoJump extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "autojump";
 	public static final String NAME = "AutoJump";
 
@@ -50,7 +51,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 	}
 
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -67,7 +68,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildModWithConf
 		// Subscribe to parent's config changes
 		// This has to happen after texture is registered, since it will trigger a
 		// syncConfig call.
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);
 	}
 
 	public void syncConfig() {

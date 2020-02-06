@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.IconOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.utils.ChildModWithConfig;
@@ -36,7 +37,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class MouseHandler extends BaseClassWithCallbacks implements ChildModWithConfig {
+public class MouseHandler extends BaseClassWithCallbacks implements ChildMod {
 	public static final String MODID = "mousehandler";
 	public static final String NAME = "MouseHandler";
 
@@ -66,7 +67,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, MouseHandler.MODID, MouseHandler.NAME, "Mouse utilities for auto-walk, mouse emulation, etc.");
@@ -79,7 +80,7 @@ public class MouseHandler extends BaseClassWithCallbacks implements ChildModWith
 		mIconEye.setVisible(false);								
 
 		// Subscribe to config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);		
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig) this);		
 
 		// Register key bindings
 		mSensitivityUpKB = new KeyBinding("Turn mouse sensitivity up", GLFW.GLFW_KEY_RIGHT, CommonStrings.EYEGAZE_SETTINGS);

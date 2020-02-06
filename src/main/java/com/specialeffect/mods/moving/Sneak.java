@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.CommonStrings;
@@ -32,7 +33,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 
-public class Sneak  {
+public class Sneak implements ChildMod {
 
 	public static final String MODID = "sneaktoggle";
 	public static final String NAME = "SneakToggle";
@@ -52,7 +53,7 @@ public class Sneak  {
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		ModUtils.setupModInfo(event, this.MODID, this.NAME,

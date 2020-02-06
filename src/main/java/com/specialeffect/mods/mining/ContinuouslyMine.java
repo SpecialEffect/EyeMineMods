@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mousehandling.MouseHandler;
@@ -44,7 +45,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class ContinuouslyMine 
 extends BaseClassWithCallbacks 
-implements ChildModWithConfig 
+implements ChildMod
 {
 	public static final String MODID = "continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";
@@ -62,7 +63,7 @@ implements ChildModWithConfig
 	}
 	
 	@SuppressWarnings("static-access")
-	private void setup(final FMLCommonSetupEvent event) {
+	public void setup(final FMLCommonSetupEvent event) {
 		// preinit
 		MinecraftForge.EVENT_BUS.register(this);
 		
@@ -83,7 +84,7 @@ implements ChildModWithConfig
         
 		//init 
 		// Register for config changes from parent
-		EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
+		//EyeGaze.registerForConfigUpdates((ChildModWithConfig)this);
 
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Start/stop mining", GLFW.GLFW_KEY_M, CommonStrings.EYEGAZE_COMMON);
