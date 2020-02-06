@@ -79,14 +79,8 @@ public class GatherDrops extends BaseClassWithCallbacks implements ChildMod
         if (ModUtils.hasActiveGui()) { return; }
         
     	if(mGatherKB.isPressed()) {
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-					GatherDrops.gatherBlocks(player);
-				}
-			}));
+    		PlayerEntity player = Minecraft.getInstance().player;
+			gatherBlocks(player);
 		}
 	}
 	

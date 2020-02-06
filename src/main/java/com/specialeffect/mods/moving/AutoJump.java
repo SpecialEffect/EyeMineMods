@@ -70,14 +70,7 @@ public class AutoJump extends BaseClassWithCallbacks implements ChildMod, ChildM
 		if (autoJumpKeyBinding.isPressed()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			
-
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-					player.sendMessage(new StringTextComponent("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF")));
-				}
-			}));
+			ModUtils.sendPlayerMessage("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF"));
 		}
 	}
 }

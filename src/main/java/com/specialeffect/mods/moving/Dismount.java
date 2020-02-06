@@ -77,38 +77,32 @@ public class Dismount extends BaseClassWithCallbacks implements ChildMod {
 		
 		if(mDismountKB.isPressed()) {
 			// Dismount player locally
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player.isPassenger()) {
+				player.detach();						
+				// FIXME??	player.motionY += 0.5D;
+				
+				// Dismount player on server
+		        channel.sendToServer(new DismountPlayerMessage());
 
-					if (player.isPassenger()) {
-						player.detach();						
-						// FIXME??	player.motionY += 0.5D;
-						
-						// Dismount player on server
-				        channel.sendToServer(new DismountPlayerMessage());
-
-					}
-					else {						
-						EntityRayTraceResult entity = ModUtils.getMouseOverEntity();									
-						if (entity != null) {
-							// FIXME: see if there's a better way to do this now
-							//
-							// Riding entity programmatically seems to not do everything that 
-							// a "Use" action would do, so we:
-							// - drop current item to ensure empty hand
-							// - "use" entity you're pointing at
-							// - pick up dropped item again
-							player.dropItem(true);
-							Input useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
-							KeyBinding.onTick(useItemKeyCode);
-							GatherDrops.gatherBlocks(player);							
-						
-						}
-					}
+			}
+			else {						
+				EntityRayTraceResult entity = ModUtils.getMouseOverEntity();									
+				if (entity != null) {
+					// FIXME: see if there's a better way to do this now
+					//
+					// Riding entity programmatically seems to not do everything that 
+					// a "Use" action would do, so we:
+					// - drop current item to ensure empty hand
+					// - "use" entity you're pointing at
+					// - pick up dropped item again
+					player.dropItem(true);
+					Input useItemKeyCode = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
+					KeyBinding.onTick(useItemKeyCode);
+					GatherDrops.gatherBlocks(player);							
+				
 				}
-			}));	
+			}			
 		}
 	}
 

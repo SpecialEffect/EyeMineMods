@@ -129,46 +129,36 @@ implements ChildMod, ChildModWithConfig
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 
 		if(mOpenChestKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-					World world = Minecraft.getInstance().world;
+			PlayerEntity player = Minecraft.getInstance().player;
+			World world = Minecraft.getInstance().world;
 
-					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
-							ChestBlock.class.getName(), player, world, mRadius);
-					
-					// Ask server to open 
-					if (null == closestBlockPos) {
-						player.sendMessage(new StringTextComponent(
-								"No chests found in range"));
-					}
-					else {
-		                channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
-					}
-				}
-			}));
+			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
+					ChestBlock.class.getName(), player, world, mRadius);
+			
+			// Ask server to open 
+			if (null == closestBlockPos) {
+				player.sendMessage(new StringTextComponent(
+						"No chests found in range"));
+			}
+			else {
+                channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
+			}
 		}
 		else if(mOpenCraftingTableKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-					World world = Minecraft.getInstance().world;
+			PlayerEntity player = Minecraft.getInstance().player;
+			World world = Minecraft.getInstance().world;
 
-					BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
-							CraftingTableBlock.class.getName(), player, world, mRadius);
+			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType(
+					CraftingTableBlock.class.getName(), player, world, mRadius);
 
-					// Ask server to open 
-					if (null == closestBlockPos) {
-						player.sendMessage(new StringTextComponent(
-								"No crafting tables found in range"));
-					}
-					else {
-						channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
-					}
-				}
-			}));
+			// Ask server to open 
+			if (null == closestBlockPos) {
+				player.sendMessage(new StringTextComponent(
+						"No crafting tables found in range"));
+			}
+			else {
+				channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
+			}
 		}
 	}
 

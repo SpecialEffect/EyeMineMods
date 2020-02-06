@@ -86,19 +86,19 @@ public class QuickCommands extends BaseClassWithCallbacks implements ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }
 
 		if (mDayNightKB.isPressed()) {
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					String gameRule = "doDaylightCycle";
-					GameRules rules = Minecraft.getInstance().world.getGameRules();	
-					// FIXME boolean newBool = !rules.getBoolean(gameRule);
-					
-					// Ask server to change gamerule
-					// FIXME String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
-					//FIXME QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
-				}
-			}));			
+//			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
+//				
+//				@Override
+//				public void onLiving(LivingUpdateEvent event) {
+//					String gameRule = "doDaylightCycle";
+//					GameRules rules = Minecraft.getInstance().world.getGameRules();	
+//					// FIXME boolean newBool = !rules.getBoolean(gameRule);
+//					
+//					// Ask server to change gamerule
+//					// FIXME String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
+//					//FIXME QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
+//				}
+//			}));			
 		}
 	}
 }

@@ -109,15 +109,8 @@ public class Swim extends BaseClassWithCallbacks implements ChildMod {
 			if (!mSwimmingTurnedOn) {
 				KeyBinding.setKeyBindState(swimBinding.getKey(), false);
 			}
-			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving()
-        	{				
-				@Override
-				public void onLiving(LivingUpdateEvent event) {
-					PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-			        player.sendMessage(new StringTextComponent(
-			        		 "Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF")));
-				}		
-			}));
+			
+			ModUtils.sendPlayerMessage("Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF"));				
 		}
 	}
 
