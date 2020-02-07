@@ -74,7 +74,6 @@ public class CreativeTabs
 	        Screen currentScreen = Minecraft.getInstance().currentScreen;
 			if (currentScreen != null) {				
 				if (currentScreen instanceof CreativeScreen) {
-					System.out.println("wibble "+key);
 					CreativeScreen gui = (CreativeScreen)currentScreen;
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
