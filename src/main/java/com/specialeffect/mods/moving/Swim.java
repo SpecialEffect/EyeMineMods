@@ -50,6 +50,12 @@ public class Swim extends ChildMod {
 
 	}
 	
+	public static void stopActivelySwimming() {
+		final KeyBinding swimBinding = 
+				Minecraft.getInstance().gameSettings.keyBindJump;
+		KeyBinding.setKeyBindState(swimBinding.getKey(), false);	
+	}
+	
 	public static boolean isSwimmingOn() {
 		return mSwimmingTurnedOn;
 	}
@@ -60,7 +66,7 @@ public class Swim extends ChildMod {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 			
 			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 

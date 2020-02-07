@@ -51,6 +51,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
@@ -121,19 +122,24 @@ public class EyeGaze {
     public void onClientTick(ClientTickEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
     	if (null != player) {
+            if (event.phase == TickEvent.Phase.START) {
 
-    		// The movement input class can be re-created when respawning or moving to a 
-    		// different dimension, so we need to make sure it's checked always.
-    		if (!(player.movementInput instanceof MovementInputFromOptionsOverride))
-			{
-    			player.movementInput = ownMovementOverride;	
-			}
-    		else {
-    			// This shouldn't ever happen, but during beta testing I'd like to validate this assumption :)
-    			if (player.movementInput != ownMovementOverride) {
-    				LOGGER.error("Movement input class has changed unexpectedly");
+        		// The movement input class can be re-created when respawning or moving to a 
+        		// different dimension, so we need to make sure it's checked always.
+        		if (!(player.movementInput instanceof MovementInputFromOptionsOverride))
+    			{
+        			player.movementInput = ownMovementOverride;	
     			}
-    		}
+        		else {
+        			// This shouldn't ever happen, but during beta testing I'd like to validate this assumption :)
+        			if (player.movementInput != ownMovementOverride) {
+        				LOGGER.error("Movement input class has changed unexpectedly");
+        			}
+        		}
+            }
+            else if (event.phase == TickEvent.Phase.END) {
+                // Here we can handle any state conflicts from child mods after they've handled tick START phase
+            }
     	}
 	}
 	

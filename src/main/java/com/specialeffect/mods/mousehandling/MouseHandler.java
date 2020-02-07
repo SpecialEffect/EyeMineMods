@@ -28,6 +28,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -210,7 +211,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 														// *after* other mods
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 
 			if (ownMouseHelper.hasPendingEvent()) {
 				mTicksSinceMouseEvent = 0;

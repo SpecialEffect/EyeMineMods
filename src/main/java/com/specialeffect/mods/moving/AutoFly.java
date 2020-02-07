@@ -30,6 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -93,7 +94,7 @@ extends ChildMod implements ChildModWithConfig
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
     PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {			
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.abilities.allowFlying && player.abilities.isFlying) {
 				BlockPos playerPos = player.getPosition();

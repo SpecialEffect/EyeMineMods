@@ -31,6 +31,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -92,7 +93,7 @@ extends ChildMod implements ChildModWithConfig
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
     PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 			
 			final KeyBinding attackBinding = 
 					Minecraft.getInstance().gameSettings.keyBindAttack;

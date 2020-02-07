@@ -54,6 +54,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -121,8 +122,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
 	@SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
-    	if (null != player) {
+		PlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player && event.phase == TickEvent.Phase.START) {
     		if (jumpTicks > 0)
 			{
 				jumpTicks--;

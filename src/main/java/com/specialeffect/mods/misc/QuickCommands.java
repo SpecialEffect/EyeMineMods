@@ -57,14 +57,6 @@ public class QuickCommands  extends ChildMod {
 	private static KeyBinding mDayNightKB;
 
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {
-			
-		}
-	}
-
-	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {		
 		
 		if (mNightVisionKB.isPressed()) {

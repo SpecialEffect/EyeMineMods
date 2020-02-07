@@ -27,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -70,8 +71,8 @@ extends ChildMod implements ChildModWithConfig
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
-		if (null != player) {
+    	PlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 
 			World world = Minecraft.getInstance().world;
 
