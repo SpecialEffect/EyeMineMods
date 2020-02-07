@@ -72,14 +72,18 @@ public class CreativeTabs
 	    	int key = event.getKey();
 	        LOGGER.debug(key);
 	        Screen currentScreen = Minecraft.getInstance().currentScreen;
-			if (currentScreen != null) {
+			if (currentScreen != null) {				
 				if (currentScreen instanceof CreativeScreen) {
+					System.out.println("wibble "+key);
 					CreativeScreen gui = (CreativeScreen)currentScreen;
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
 							gui.getXSize(), gui.getYSize(),
 							gui.getSelectedTabIndex());            	
-					con.acceptKey(key);					
+					boolean handled = con.acceptKey(key);
+					if (handled && event.isCancelable()) {
+						event.setCanceled(true);
+					}
 				}
 				else if (currentScreen instanceof ChestScreen)// InventoryScreen
 				{

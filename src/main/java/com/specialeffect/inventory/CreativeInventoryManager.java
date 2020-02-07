@@ -88,63 +88,83 @@ public class CreativeInventoryManager {
 		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
 	}
 
-	public void acceptKey(int key) {
+	public boolean acceptKey(int key) {
 
 		// Poll keyboard
 //		InventoryConfig.acceptKeyPress(key);
-
+		boolean handled = false;
+		
 		// Handle key press
 		// First 5 tabs on top (not inc search which has it's own key already)
 		if (key == InventoryConfig.key0.get()) {
-			this.switchToTab(0);			
+			this.switchToTab(0);	
+			handled = true;
 		} else if (key == InventoryConfig.key1.get()) {
 			this.switchToTab(1);
+			handled = true;
 		} else if (key == InventoryConfig.key2.get()) {
 			this.switchToTab(2);
+			handled = true;
 		} else if (key == InventoryConfig.key3.get()) {
 			this.switchToTab(3);
+			handled = true;
 		} else if (key == InventoryConfig.key4.get()) {
-			this.switchToTab(4);			
+			this.switchToTab(4);	
+			handled = true;
 		} else if (key == InventoryConfig.keySearch.get()) {
 			this.switchToTab(5);
+			handled = true;
 		}
 		// 5 tabs on bottom (not inc survival since it's unlikely you need it)
 		// Note indices are offset by one since we skipped search.
 		else if (key == InventoryConfig.key5.get()) {
 			this.switchToTab(6);
+			handled = true;
 		} else if (key == InventoryConfig.key6.get()) {
 			this.switchToTab(7);
+			handled = true;
 		} else if (key == InventoryConfig.key7.get()) {
 			this.switchToTab(8);
+			handled = true;
 		} else if (key == InventoryConfig.key8.get()) {
 			this.switchToTab(9);
+			handled = true;
 		} else if (key == InventoryConfig.key9.get()) {
 			this.switchToTab(10);
+			handled = true;
 		} else if (key == InventoryConfig.keyPrev.get()) {
 			this.switchToTab(validateTabIdx(currTab - 1));
+			handled = true;
 		} else if (key == InventoryConfig.keyNext.get()) {
 			this.switchToTab(validateTabIdx(currTab + 1));
+			handled = true;
 		} else if (key == InventoryConfig.keyNextItemRow.get()) {
 			itemRow++;
 			itemRow %= NUM_ROWS;
 			// first position on a page starts at -1, -1
 			itemCol = Math.max(itemCol, 0); 
 			this.hoverItem();
+			handled = true;
 		} else if (key == InventoryConfig.keyNextItemCol.get()) {
 			itemCol++;
 			itemCol %= NUM_COLS;
 			// first position on a page starts at -1, -1
 			itemRow = Math.max(itemRow, 0);
 			this.hoverItem();
+			handled = true;
 		} else if (key == InventoryConfig.keyDrop.get()) {
 			this.switchToTab(-1);
+			handled = true;
 		} else if (key == InventoryConfig.keyScrollUp.get()) {
 			this.scrollDown(-2);
+			handled = true;
 			// FIXME: decide how far to scroll, this seems to be nice
 			// (almost an entire screen, but 1 row repeated to ground you)
 		} else if (key == InventoryConfig.keyScrollDown.get()) {
 			this.scrollDown(+2);
-		}		
+			handled = true;
+		}
+		return handled;
 	}
 	
 	private int itemRow = -1;
@@ -236,6 +256,8 @@ public class CreativeInventoryManager {
 			// we want to trigger 'tabChanged' if user has explicitly selected
 			// the same tab again (otherwise this gets missed)
 			this.onTabChanged();
+			
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
 		}	
 	}
 		
