@@ -20,6 +20,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -34,6 +35,7 @@ public class Swim extends ChildMod {
 	public static final String NAME = "SwimToggle";
 
 	private static KeyBinding mSwimKB;
+	private static boolean mSwimmingTurnedOn = true;
 
 	public Swim() {
 	}
@@ -79,8 +81,8 @@ public class Swim extends ChildMod {
 					mJumpKeyOverridden = true;
 				}
 				
-				// Switch off when on land or if flying
-				else if ((player.onGround || player.isAirBorne) && // TESTME isAirborne?
+				// Switch off when on land
+				else if ((player.onGround) &&
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {
@@ -93,13 +95,11 @@ public class Swim extends ChildMod {
 			
 		}
 	}
-	
-	private static boolean mSwimmingTurnedOn = true;
 
 	@SubscribeEvent
-    public void onClientTickEvent(final ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END) return;
-        
+	public void onKeyInput(KeyInputEvent event) {   
+		if (ModUtils.hasActiveGui()) { return; }       	
+		
 		if(mSwimKB.isPressed()) {
 			final KeyBinding swimBinding = 
 					Minecraft.getInstance().gameSettings.keyBindJump;

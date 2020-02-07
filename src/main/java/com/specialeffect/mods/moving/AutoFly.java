@@ -143,6 +143,10 @@ extends ChildMod implements ChildModWithConfig
 		StateOverlay.setStateLeftIcon(mIconIndexManual, mIsFlyingManual);
 	}
 	
+	public static boolean isFlying() {
+		return (mIsFlyingAuto || mIsFlyingManual);
+	}
+	
 	// Update state if flying was stopped from elsewhere
 	private void updateAfterStopFlying() {
 		mIsFlyingAuto = false;
@@ -175,7 +179,7 @@ extends ChildMod implements ChildModWithConfig
 		}		
 	
 		// stop sneaking (if we are), which prevents flying
-		//FIXME Sneak.stop();
+		Sneak.stop();
 
 		// start flying
 		player.abilities.isFlying = true;

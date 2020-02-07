@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -59,22 +60,19 @@ public class Sneak extends ChildMod {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-//		if (null != player) {
-//			
-//			
-//			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-//			player.setSneaking(mIsSneaking);
-//			// Make sure icon up to date
-//			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
-//		}
+    	if (null != player && event.phase == TickEvent.Phase.START) {
+			System.out.println("Sneak ClientTick "+event.phase);
+			player.setSneaking(mIsSneaking);
+			// Make sure icon up to date
+			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
+		}
 	}
 	
-	// FIXME: replace with IMC??
-	public void stop() {		
+	public static void stop() {		
 		updateSneak(false);
 	}	
 	
-	private void updateSneak(boolean bSneak) {
+	private static void updateSneak(boolean bSneak) {
 		mIsSneaking = bSneak;
 
 		// TODO: is there any reason we don't want to just hold down the key here? 
