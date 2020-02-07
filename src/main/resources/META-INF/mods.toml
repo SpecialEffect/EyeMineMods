@@ -21,13 +21,13 @@ authors="Kirsty McNaught"
 	mandatory=true
 	versionRange="[25,)"
 	ordering="NONE"
-	side="BOTH"
+	side="CLIENT"
 [[dependencies.eyemine]]
 	modId="minecraft"
 	mandatory=true
 	versionRange="[1.14.4]"
 	ordering="NONE"
-	side="BOTH"
+	side="CLIENT"
 
 [[mods]]
 modId="creativetabs"
@@ -40,10 +40,10 @@ authors="Kirsty McNaught"
 	mandatory=true
 	versionRange="[25,)"
 	ordering="NONE"
-	side="BOTH"
+	side="CLIENT"
 [[dependencies.creativetabs]]
 	modId="minecraft"
 	mandatory=true
 	versionRange="[1.14.4]"
 	ordering="NONE"
-	side="BOTH"
+	side="CLIENT"

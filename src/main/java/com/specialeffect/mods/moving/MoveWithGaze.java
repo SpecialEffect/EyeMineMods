@@ -53,6 +53,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -68,8 +69,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	private static KeyBinding mToggleAutoWalkKB;
 	private static KeyBinding mIncreaseWalkSpeedKB;
 	private static KeyBinding mDecreaseWalkSpeedKB;
-
-	private MovementInputFromOptionsOverride mMovementOverride;
 
 	// FIXME public static Configuration mConfig;
 	private static int mQueueLength = 50;
@@ -121,32 +120,21 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	private static int mIconIndex;
 
 	@SubscribeEvent
-    public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-    		PlayerEntity player =  Minecraft.getInstance().player;
+    public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player) {
     		if (jumpTicks > 0)
 			{
 				jumpTicks--;
 			}
     		
-    		//TODO: who should own the override ? separate mod?? main eyegaze mod??
-    		// currently two mods are looking to see if it needs setting up
-    		    		
-    		// The movement-override instance can change, e.g. when player goes to another dimension. 
-    		// Make sure we've always got a handle on the 'active' instance
-    		if (Minecraft.getInstance().player.movementInput instanceof MovementInputFromOptionsOverride) {
-    			mMovementOverride = (MovementInputFromOptionsOverride) Minecraft.getInstance().player.movementInput;
-    		}
-    		else {    			
-				mMovementOverride = new MovementInputFromOptionsOverride( Minecraft.getInstance().gameSettings);	
-				Minecraft.getInstance().player.movementInput = mMovementOverride;	
-			}
-					    	    		    		
        		// Add current look dir to queue
     		mPrevLookDirs.add(player.getLookVec());
        		while (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
        		}
+       		
+       		MovementInputFromOptionsOverride ownMovementInput = EyeGaze.ownMovementOverride;
        		
        		// Explanation of strategy:
        		// - when turning a corner, we want to slow down to make it a bit more manageable.
@@ -292,7 +280,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 								}
 								this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 									@Override
-									public void onLiving(LivingUpdateEvent event) {
+									public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
 										KeyBinding.setKeyBindState(kbLeft.getKey(), false);
 										KeyBinding.setKeyBindState(kbRight.getKey(), false);
 									}
@@ -367,16 +356,11 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				}*/
 
 				// This probably won't work for some ridden entities, e.g. boats. See above.
-				if (mMovementOverride != null) 
-				{
-					mMovementOverride.setWalkOverride(mDoingAutoWalk, 4.0f*halfForward);
-				}
+				ownMovementInput.setWalkOverride(mDoingAutoWalk, 4.0f*halfForward);			
 			}
             else {
-            	mMovementOverride.setWalkOverride(false, 0.0f);
+            	ownMovementInput.setWalkOverride(false, 0.0f);
             }
-
-			
 			
     	}
     }

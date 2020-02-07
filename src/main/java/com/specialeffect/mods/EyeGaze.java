@@ -13,6 +13,10 @@ package com.specialeffect.mods;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.GatherDrops;
@@ -35,14 +39,25 @@ import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.Sneak;
 import com.specialeffect.mods.moving.Swim;
 import com.specialeffect.mods.utils.DebugAverageFps;
+import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -67,10 +82,13 @@ public class EyeGaze {
 	public static final String MODID = "eyemine";
 	public static final String VERSION = ModUtils.VERSION;
 	public static final String NAME = "Eye Mine";
-
+    
+	public static final Logger LOGGER = LogManager.getLogger();
+    
 	public static EyeMineConfig mConfig;	
-	private StateOverlay mStateOverlay;
-
+	public static MovementInputFromOptionsOverride ownMovementOverride;
+	
+	private StateOverlay mStateOverlay;		
 
 	// Category names for clustering config options in different UIs
 	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
@@ -78,17 +96,45 @@ public class EyeGaze {
 	
 	public EyeGaze() {
 
-		// Register ourselves for server and other game events we are interested in
-		MinecraftForge.EVENT_BUS.register(this);
- 
-		this.setupConfig();
-		
-		// Setup GUI for showing state overlay
-        mStateOverlay = new StateOverlay(Minecraft.getInstance());
-		MinecraftForge.EVENT_BUS.register(mStateOverlay);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			// Register ourselves for server and other game events we are interested in
+			MinecraftForge.EVENT_BUS.register(this);
+	 
+			this.setupConfig();
+			
+			// Setup GUI for showing state overlay
+	        mStateOverlay = new StateOverlay(Minecraft.getInstance());
+			MinecraftForge.EVENT_BUS.register(mStateOverlay);
+	
+			// Setup a class to handle overridden movement controls
+			ownMovementOverride = new MovementInputFromOptionsOverride( Minecraft.getInstance().gameSettings);	
+	
+			// Setup all other mods
+			this.instantiateChildren();			
+	        
+			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+		});
+	}
+	
+	@SubscribeEvent()
+    public void onClientTick(ClientTickEvent event) {
+		ClientPlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player) {
 
-		// Setup all other mods
-		this.instantiateChildren();
+    		// The movement input class can be re-created when respawning or moving to a 
+    		// different dimension, so we need to make sure it's checked always.
+    		if (!(player.movementInput instanceof MovementInputFromOptionsOverride))
+			{
+    			player.movementInput = ownMovementOverride;	
+			}
+    		else {
+    			// This shouldn't ever happen, but during beta testing I'd like to validate this assumption :)
+    			if (player.movementInput != ownMovementOverride) {
+    				LOGGER.error("Movement input class has changed unexpectedly");
+    			}
+    		}
+    	}
 	}
 	
 	private void setupConfig() {

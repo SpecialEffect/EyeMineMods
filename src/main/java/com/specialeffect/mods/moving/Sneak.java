@@ -20,6 +20,7 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,8 +41,6 @@ public class Sneak extends ChildMod {
 	
 	private Minecraft mMinecraft;
 	
-	private MovementInputFromOptionsOverride mMovementOverride;
-		
 
 	public Sneak() {
 	}
@@ -58,24 +57,9 @@ public class Sneak extends ChildMod {
 	}
 	
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent event)
-	{		
-		if ((mMinecraft.player != null)) {
-
-			if (null == mMovementOverride) {
-				mMovementOverride = new MovementInputFromOptionsOverride(mMinecraft.gameSettings);				
-			}			
-
-			if (!(mMinecraft.player.movementInput instanceof MovementInputFromOptionsOverride))
-			{
-				mMinecraft.player.movementInput = mMovementOverride;	
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-//		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+//		if (null != player) {
 //			
 //			
 //			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
