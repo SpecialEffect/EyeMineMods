@@ -56,6 +56,7 @@ public class Swim extends ChildMod {
 		final KeyBinding swimBinding = 
 				Minecraft.getInstance().gameSettings.keyBindJump;
 		KeyBinding.setKeyBindState(swimBinding.getKey(), false);	
+		jumpkeyTimer = jumpkeyCooldown; 
 	}
 	
 	public static boolean isSwimmingOn() {
@@ -64,11 +65,19 @@ public class Swim extends ChildMod {
 	
 	private int mIconIndex;
 	private boolean mJumpKeyOverridden = false;
-
+	
+	private static int jumpkeyTimer = 0;
+	private static int jumpkeyCooldown = 500;
+	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
     	if (null != player && event.phase == TickEvent.Phase.START) {
+			if (jumpkeyTimer > 0) {
+	    		System.out.println(jumpkeyTimer);
+				jumpkeyTimer -= 1;
+			}
+			jumpkeyCooldown = 5;
 			
 			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 
@@ -76,9 +85,11 @@ public class Swim extends ChildMod {
 
 				// Switch on swim key when in water
 				if (player.isInWater() && 						
-						!swimBinding.isKeyDown() ) {
+						!swimBinding.isKeyDown() &&
+						jumpkeyTimer == 0) {
 					KeyBinding.setKeyBindState(swimBinding.getKey(), true);			
 					mJumpKeyOverridden = true;
+					System.out.println("on");
 				}
 				
 				// Switch off when on land
@@ -86,8 +97,11 @@ public class Swim extends ChildMod {
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {
+						System.out.println("off");
 						KeyBinding.setKeyBindState(swimBinding.getKey(), false);
 						mJumpKeyOverridden = false;
+						// don't turn back on until timer finished - otherwise we can trigger 'fly'.
+						jumpkeyTimer = jumpkeyCooldown;
 					}
 				}
 			}
