@@ -13,8 +13,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.api.distmarker.Dist;
 
-@Mod.EventBusSubscriber(bus = Bus.MOD)
+
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class EyeMineConfig {
 	// Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();

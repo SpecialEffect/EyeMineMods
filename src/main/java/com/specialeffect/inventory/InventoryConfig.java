@@ -15,8 +15,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.api.distmarker.Dist;
 
-@Mod.EventBusSubscriber(bus = Bus.MOD)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class InventoryConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
