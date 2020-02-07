@@ -17,9 +17,13 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -69,6 +73,12 @@ public class Swim extends ChildMod {
 	private static int jumpkeyTimer = 0;
 	private static int jumpkeyCooldown = 500;
 	
+	private boolean isPlayerInAir(PlayerEntity player) {
+		World world = Minecraft.getInstance().world;
+		BlockPos playerPos = player.getPosition();
+		return world.getBlockState(playerPos).isAir();			
+	}
+	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
@@ -77,7 +87,7 @@ public class Swim extends ChildMod {
 	    		System.out.println(jumpkeyTimer);
 				jumpkeyTimer -= 1;
 			}
-			jumpkeyCooldown = 5;
+			jumpkeyCooldown = 6;
 			
 			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 
@@ -93,7 +103,7 @@ public class Swim extends ChildMod {
 				}
 				
 				// Switch off when on land
-				else if ((player.onGround) &&
+				else if ((player.onGround || isPlayerInAir(player)) &&
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {

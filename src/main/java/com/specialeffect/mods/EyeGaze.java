@@ -140,10 +140,6 @@ public class EyeGaze {
             else if (event.phase == TickEvent.Phase.END) {
                 // Here we can handle any state conflicts from child mods after they've handled tick START phase
             	
-            	// don't hold down "jump" if you're flying 
-                if (AutoFly.isFlying()) {
-                	Swim.stopActivelySwimming();
-                }
             }
     	}
 	}

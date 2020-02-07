@@ -189,7 +189,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				float halfForward = (float)(forward/2.0);
 				
 				//FIXME: this relates to swimming
-				if (player.isInWater()) {// && Swim.isSwimmingOn()) {
+				if (player.isInWater() && Swim.isSwimmingOn()) {
 					// if the player is swimming, and is more than one block under, don't move forward yet
 					
 					// if the player is swimming and there's a block in front, or in-front-one-down,
@@ -199,8 +199,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 					BlockPos playerPos = player.getPosition();
 					Vec3d posVec = player.getPositionVector();
 					Vec3d forwardVec = player.getForward();
-					
-					
+										
 					BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
 							playerPos.getY()+1, playerPos.getZ());
 
