@@ -60,8 +60,7 @@ public class Sneak extends ChildMod {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-    	if (null != player && event.phase == TickEvent.Phase.START) {
-			System.out.println("Sneak ClientTick "+event.phase);
+    	if (null != player && event.phase == TickEvent.Phase.START) {			
 			player.setSneaking(mIsSneaking);
 			// Make sure icon up to date
 			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
