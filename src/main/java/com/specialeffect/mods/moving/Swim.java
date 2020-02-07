@@ -58,9 +58,9 @@ public class Swim extends ChildMod {
 	private boolean mJumpKeyOverridden = false;
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			
 			if (mSwimmingTurnedOn) {
 				final KeyBinding swimBinding = 

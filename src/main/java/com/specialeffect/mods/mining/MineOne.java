@@ -27,6 +27,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -52,15 +53,12 @@ public class MineOne
 	}
 		
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			
-
+	public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			if (mDestroying) {
-
 				// Select the best tool from the inventory
 				World world = Minecraft.getInstance().world;
-	    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 	    		
     			// Swords can't destroy blocks: warn user
     			if (player.getHeldItemMainhand().getItem() instanceof SwordItem) {

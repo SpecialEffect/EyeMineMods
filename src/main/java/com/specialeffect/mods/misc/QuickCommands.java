@@ -23,6 +23,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -56,8 +57,9 @@ public class QuickCommands  extends ChildMod {
 	private static KeyBinding mDayNightKB;
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+	public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			
 		}
 	}
@@ -84,7 +86,8 @@ public class QuickCommands  extends ChildMod {
 //			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
 //				
 //				@Override
-//				public void onLiving(LivingUpdateEvent event) {
+//				public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
 //					String gameRule = "doDaylightCycle";
 //					GameRules rules = Minecraft.getInstance().world.getGameRules();	
 //					// FIXME boolean newBool = !rules.getBoolean(gameRule);

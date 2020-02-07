@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -37,12 +38,12 @@ public class EasyLadderClimb extends ChildMod {
 	}
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+	public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			World world = Minecraft.getInstance().world;
 
-			if (event.getEntityLiving().isOnLadder()) {
+			if (player.isOnLadder()) {
 				LOGGER.debug("LADDER");		
 				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
 		

@@ -24,9 +24,11 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -206,8 +208,9 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
 														// *after* other mods
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 
 			if (ownMouseHelper.hasPendingEvent()) {
 				mTicksSinceMouseEvent = 0;

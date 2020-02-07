@@ -20,6 +20,7 @@ import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +31,9 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -86,11 +89,13 @@ extends ChildMod {
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
+	
+	
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
+			    		
 			if (mIsAttacking) {
 				if (player.isCreative() && 
 						mAutoSelectSword) {

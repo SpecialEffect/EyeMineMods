@@ -31,6 +31,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -89,13 +90,12 @@ extends ChildMod implements ChildModWithConfig
 	}
 	
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+	public void onClientTick(ClientTickEvent event) {
+    PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			
 			final KeyBinding attackBinding = 
 					Minecraft.getInstance().gameSettings.keyBindAttack;
-			
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 			
 			if (mIsAttacking) {
 				// always select tool - first time we might need to ask server to

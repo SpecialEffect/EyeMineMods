@@ -10,7 +10,10 @@
 
 package com.specialeffect.callbacks;
 
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class SingleShotOnLivingCallback implements OnLivingCallback {
 
@@ -19,8 +22,9 @@ public class SingleShotOnLivingCallback implements OnLivingCallback {
 	}
 	
 	@Override
-	public void onLiving(LivingUpdateEvent event) {
-		mCallback.onLiving(event);
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		mCallback.onClientTick(event);
 		mHasCompleted = true;
 	}
 

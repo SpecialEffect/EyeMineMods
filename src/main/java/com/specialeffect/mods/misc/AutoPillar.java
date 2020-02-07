@@ -27,6 +27,7 @@ import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,6 +37,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -86,9 +88,9 @@ public class AutoPillar extends ChildMod {
 	private float lastPlayerPitch;
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			synchronized (mOnLivingQueue) {
 				this.lastPlayerPitch = player.rotationPitch;
 			}
@@ -98,7 +100,7 @@ public class AutoPillar extends ChildMod {
 				Iterator<OnLivingCallback> it = mOnLivingQueue.iterator();
 				while (it.hasNext()) {
 					OnLivingCallback item = it.next();
-					item.onLiving(event);
+					item.onClientTick(event);
 					if (item.hasCompleted()) {
 						it.remove();
 					}        		
@@ -137,7 +139,8 @@ public class AutoPillar extends ChildMod {
 			
 			this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 				@Override
-				public void onLiving(LivingUpdateEvent event) {
+				public void onClientTick(ClientTickEvent event) {
+					PlayerEntity player = Minecraft.getInstance().player;
 					// It's important to make sure we're approximately - but not
 					// exactly - centred
 					// on a block here, so that the block always ends up under
@@ -145,7 +148,6 @@ public class AutoPillar extends ChildMod {
 					// with integer positions you often find your position
 					// alternating between 2 blocks)
 					// Also look down, purely for effect.
-					PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
 					double jumpHeight = 1.5;
 					double x = Math.floor(player.posX) + 0.4;
@@ -172,9 +174,9 @@ public class AutoPillar extends ChildMod {
 				final int j = i;
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 					@Override
-					public void onLiving(LivingUpdateEvent event) {
-						PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-
+					public void onClientTick(ClientTickEvent event) {
+						PlayerEntity player = Minecraft.getInstance().player;
+						
 						channel.sendToServer(
 								new SetPositionAndRotationMessage(
 										player.getName().toString(), 

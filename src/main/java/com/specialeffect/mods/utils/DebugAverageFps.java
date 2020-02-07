@@ -18,6 +18,8 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -36,8 +38,9 @@ public class DebugAverageFps extends ChildMod
 	}
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+	public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+		if (null != player) {
 			mTickCount++;
 			
 			int currFps = Minecraft.getDebugFPS();

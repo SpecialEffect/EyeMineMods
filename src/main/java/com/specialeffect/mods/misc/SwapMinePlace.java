@@ -16,6 +16,7 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -39,13 +40,6 @@ public class SwapMinePlace  extends ChildMod {
 		// Register key bindings
 		mSwapKB = new KeyBinding("Swap mine/place keys", GLFW.GLFW_KEY_F10, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwapKB);		
-	}
-	
-	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			
-		}
 	}
 
 	private static KeyBinding mSwapKB;
