@@ -34,7 +34,7 @@ extends MouseHelper
 	
 	// special case lets eye-gaze-cursor control minecraft but also escape 
 	// to access EyeMine keyboard
-	boolean ungrabbedMouseMode = false;
+	private boolean ungrabbedMouseMode = false;
 
 	private boolean doVanillaMovements = true;
     private long lastTimestamp = 0;
@@ -469,6 +469,7 @@ extends MouseHelper
      * currently displayed
      */
     public void grabMouse() {
+    	System.out.println("grabMouse");
        if (this.minecraft.isGameFocused()) {
           if (!this.mouseGrabbed) {
              if (!Minecraft.IS_RUNNING_ON_MAC) {
@@ -478,12 +479,26 @@ extends MouseHelper
              this.mouseGrabbed = true;
              this.mouseX = (double)(this.minecraft.mainWindow.getWidth() / 2);
              this.mouseY = (double)(this.minecraft.mainWindow.getHeight() / 2);
-             InputMappings.func_216504_a(this.minecraft.mainWindow.getHandle(), 212995, this.mouseX, this.mouseY);
+             
+             if (!ungrabbedMouseMode) {
+            	 InputMappings.func_216504_a(this.minecraft.mainWindow.getHandle(), 212995, this.mouseX, this.mouseY);
+             }
+             
              this.minecraft.displayGuiScreen((Screen)null);
              //FIXME: not visible this.minecraft.leftClickCounter = 10000;             
              this.ignoreFirstMove = true;
           }
        }
+    }
+    
+    public void setUngrabbedMode(boolean ungrabbed) {
+    	this.ungrabbedMouseMode = ungrabbed;
+    	if (ungrabbed) {
+    		this.ungrabMouse();
+    	}
+    	else {
+    		this.grabMouse();
+    	}
     }
 
     /**
