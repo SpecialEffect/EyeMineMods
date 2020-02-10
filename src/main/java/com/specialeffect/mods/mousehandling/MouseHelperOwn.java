@@ -31,6 +31,10 @@ extends MouseHelper
 		super(minecraftIn);
 		minecraft = minecraftIn;		
 	}
+	
+	// special case lets eye-gaze-cursor control minecraft but also escape 
+	// to access EyeMine keyboard
+	boolean ungrabbedMouseMode = false;
 
 	private boolean doVanillaMovements = true;
     private long lastTimestamp = 0;
@@ -284,65 +288,75 @@ extends MouseHelper
      */
     private void cursorPosCallbackOwn(long handle, double xpos, double ypos) {
     	
-       if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
+        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
 
-          if (this.ignoreFirstMove) {
-             this.mouseX = xpos;
-             this.mouseY = ypos;
-             this.ignoreFirstMove = false;
-             return;
-          }
-         
-          IGuiEventListener iguieventlistener = this.minecraft.currentScreen;
-          if (iguieventlistener != null && this.minecraft.loadingGui == null) {
-        	 GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
-             double d0 = xpos * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-             double d1 = ypos * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
-             Screen.wrapScreenError(() -> {
-                iguieventlistener.mouseMoved(d0, d1);
-             }, "mouseMoved event handler", iguieventlistener.getClass().getCanonicalName());
-             if (this.activeButton != -1 && this.eventTime > 0.0D) {
-                double d2 = (xpos - this.mouseX) * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-                double d3 = (ypos - this.mouseY) * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
-                Screen.wrapScreenError(() -> {
-                if (net.minecraftforge.client.ForgeHooksClient.onGuiMouseDragPre(this.minecraft.currentScreen, d0, d1, this.activeButton, d2, d3)) return;
-                if (iguieventlistener.mouseDragged(d0, d1, this.activeButton, d2, d3)) return;
-                net.minecraftforge.client.ForgeHooksClient.onGuiMouseDragPost(this.minecraft.currentScreen, d0, d1, this.activeButton, d2, d3);
-                }, "mouseDragged event handler", iguieventlistener.getClass().getCanonicalName());
-             }
-             this.mouseX = xpos;
-             this.mouseY = ypos;
-          }
-          else {
-    
-	          this.minecraft.getProfiler().startSection("mouse");
-	          if (this.isMouseGrabbed() && this.minecraft.isGameFocused()) {
-	             this.xVelocity += xpos - this.mouseX;
-	             this.yVelocity += ypos - this.mouseY;
-	             this.processMousePosition(xpos, ypos);
-	          }
-	
-	          this.updatePlayerLook();
-	          	          
-	          // Reset to centre
-	          GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), 0, 0);
-	          this.mouseX = 0;
-	          this.mouseY = 0;
-	          
-	          this.minecraft.getProfiler().endSection();
-          }
-       }
+            if (this.ignoreFirstMove) {
+               this.mouseX = xpos;
+               this.mouseY = ypos;
+               this.ignoreFirstMove = false;
+               return;
+            }
+           
+            IGuiEventListener iguieventlistener = this.minecraft.currentScreen;
+            if (iguieventlistener != null && this.minecraft.loadingGui == null) {
+               GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+               double d0 = xpos * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
+               double d1 = ypos * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+               Screen.wrapScreenError(() -> {
+                  iguieventlistener.mouseMoved(d0, d1);
+               }, "mouseMoved event handler", iguieventlistener.getClass().getCanonicalName());
+               if (this.activeButton != -1 && this.eventTime > 0.0D) {
+                  double d2 = (xpos - this.mouseX) * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
+                  double d3 = (ypos - this.mouseY) * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+                  Screen.wrapScreenError(() -> {
+                  if (net.minecraftforge.client.ForgeHooksClient.onGuiMouseDragPre(this.minecraft.currentScreen, d0, d1, this.activeButton, d2, d3)) return;
+                  if (iguieventlistener.mouseDragged(d0, d1, this.activeButton, d2, d3)) return;
+                  net.minecraftforge.client.ForgeHooksClient.onGuiMouseDragPost(this.minecraft.currentScreen, d0, d1, this.activeButton, d2, d3);
+                  }, "mouseDragged event handler", iguieventlistener.getClass().getCanonicalName());
+               }
+               this.mouseX = xpos;
+               this.mouseY = ypos;
+            }
+            else {
+      
+                this.minecraft.getProfiler().startSection("mouse");
+                if (this.minecraft.isGameFocused()) {
+                   this.processMousePosition(xpos, ypos);
+                }
+      
+                this.updatePlayerLook();
+                              
+                // Reset to centre
+    	        if (!this.ungrabbedMouseMode) {
+
+    	        	GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), 0, 0);
+    	        	this.mouseX = 0;
+    	        	this.mouseY = 0;
+    	        }                
+                this.minecraft.getProfiler().endSection();
+            }
+         }
+        
     }
     
+
     private void processMousePosition(double x, double y) {
+		
+		double w_half = this.minecraft.mainWindow.getWidth() / 2;
+		double h_half = this.minecraft.mainWindow.getHeight() / 2;
+		
+		// adjust coordinates to centralised when ungrabbed
+		if (this.ungrabbedMouseMode) {
+			x -= w_half;
+			y -= h_half;
+		}
 		
 		double x_abs = Math.abs(x);
 		double y_abs = Math.abs(y);
-		double w_half = this.minecraft.mainWindow.getWidth() / 2;
-		double h_half = this.minecraft.mainWindow.getHeight() / 2;
 
 		double deltaX = 0;
 		double deltaY = 0;
+		
 		
 		// If mouse is outside minecraft window, throw it away
 		if (x_abs > w_half * (1 - deadBorder) ||
@@ -374,7 +388,7 @@ extends MouseHelper
        double d0 = NativeUtil.func_216394_b();
        double d1 = d0 - this.lastLookTime;
        this.lastLookTime = d0;
-       if (this.isMouseGrabbed() && this.minecraft.isGameFocused()) {
+       if (this.minecraft.isGameFocused()) {
           double d4 = this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;
           double d5 = d4 * d4 * d4 * 8.0D;
           double d2;
@@ -444,8 +458,10 @@ extends MouseHelper
     /**
      * Returns true if the mouse is grabbed.
      */
-    public boolean isMouseGrabbed() {
-       return this.mouseGrabbed;
+    public boolean isMouseGrabbed() {     
+    	// Somewhere deep in the MC engine, this is being queried to see whether mining should
+    	// occur, so we have to lie a little. 
+        return this.mouseGrabbed || (this.minecraft.isGameFocused() && ungrabbedMouseMode);
     }
 
     /**
