@@ -16,6 +16,7 @@ import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
@@ -33,7 +34,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -54,6 +54,8 @@ extends ChildMod implements ChildModWithConfig
 	private static KeyBinding mDestroyKB;
 	private boolean mAutoSelectTool = true;
 	private boolean mWaitingForPickaxe = false;
+	private int miningTimer = 0;
+	private int miningCooldown = 10; //FIXME: put in user config
 
 	public void setup(final FMLCommonSetupEvent event) {
 
@@ -90,50 +92,73 @@ extends ChildMod implements ChildModWithConfig
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 	
+	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
     PlayerEntity player = Minecraft.getInstance().player;
     	if (null != player && event.phase == TickEvent.Phase.START) {
 			
-			final KeyBinding attackBinding = 
-					Minecraft.getInstance().gameSettings.keyBindAttack;
-			
-			if (mIsAttacking) {
-				// always select tool - first time we might need to ask server to
-				// create a new one				
-				if (player.isCreative() && 
-						mAutoSelectTool) {
-	    			boolean havePickaxe = choosePickaxe(player.inventory);
-	    			if (havePickaxe) {
-	    				mWaitingForPickaxe = false;
-	    			}
-	    			else if(!mWaitingForPickaxe) 
-	    			{
-	    				requestCreatePickaxe();
-		    			mWaitingForPickaxe = true;		    		
-	    			}
+    		final KeyBinding attackBinding = 
+					Minecraft.getInstance().gameSettings.keyBindAttack;	
+    		
+    		if (mIsAttacking) {
+    			if (player.isCreative()) {    		
+					// always select tool - first time we might need to ask server to
+					// create a new one				
+					if (mAutoSelectTool) {
+		    			boolean havePickaxe = choosePickaxe(player.inventory);
+		    			if (havePickaxe) {
+		    				mWaitingForPickaxe = false;
+		    			}
+		    			else if(!mWaitingForPickaxe) 
+		    			{
+		    				requestCreatePickaxe();
+			    			mWaitingForPickaxe = true;		    		
+		    			}
+		    		}
+					
+					// Timer to limit excessive destruction  
+					// TODO: should we use wallclock time instead of ticks?
+					if (miningTimer > 0) {
+						miningTimer -= 1;
+					}
+									
+					// Set mouse in correct state - shouldn't attack unless there's an
+					// accompanying mouse movement.	
+					if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {				
+						if (miningTimer == 0) {
+							System.out.println("attack");
+							KeyBinding.onTick(attackBinding.getKey());
+							if (player.isCreative()) {
+								miningTimer = miningCooldown;
+							}
+						}
+						else {
+							if (player.swingProgress == 0) {
+								System.out.println("swing");
+								player.swingArm(Hand.MAIN_HAND);
+							}
+						}
+					}
+				}
+    		
+	    		else { 	// Survival mode
+	 
+					// Set mouse in correct state - shouldn't attack unless there's an
+					// accompanying mouse movement.	
+					if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {
+						KeyBinding.setKeyBindState(attackBinding.getKey(), true);
+					}			
+					else {
+						KeyBinding.setKeyBindState(attackBinding.getKey(), false);
+					}
 	    		}
-				
-				// Set mouse in correct state - shouldn't attack unless there's an
-				// accompanying mouse movement.	
-				if (MouseHandler.hasPendingEvent() || mMouseEventLastTick) {				
-					KeyBinding.setKeyBindState(attackBinding.getKey(), true);
-				}
-				else {
-					KeyBinding.setKeyBindState(attackBinding.getKey(), false);
-				}
-			}
+    		}
 			
-			// When attacking programmatically, the player doesn't swing unless
-			// an attackable-block is in reach. We fix that here.
-			if (attackBinding.isKeyDown()) {
-				player.swingArm(Hand.MAIN_HAND);				
-			}
 			
 			// Remember mouse status so we can have one tick of grace
 			// (necessary if minecraft running faster than eye tracker).
-			mMouseEventLastTick = true;////FIXME SOON MouseHandler.hasPendingEvent();
-			
+			mMouseEventLastTick = MouseHandler.hasPendingEvent();			
 			
 		}
 	}
@@ -147,22 +172,29 @@ extends ChildMod implements ChildModWithConfig
 		if (ModUtils.hasActiveGui()) { return; }
 
         if(mDestroyKB.isPressed()) {
-			
+			        	
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
-			final KeyBinding attackBinding = 
-					Minecraft.getInstance().gameSettings.keyBindAttack;
-			
-			if (mIsAttacking) {
-				KeyBinding.setKeyBindState(attackBinding.getKey(), true);
-			}
-			else {
-				KeyBinding.setKeyBindState(attackBinding.getKey(), false);
+			PlayerEntity player = Minecraft.getInstance().player;
+			if (player != null) {
+				
+				final KeyBinding attackBinding = 
+						Minecraft.getInstance().gameSettings.keyBindAttack;		
+				
+				if (player.isCreative()) {
+					// In creative mode we handle throttled attacking in onClientTick
+				}
+				else {
+					// In survival, we hold down the attack binding for continuous mining	
+					KeyBinding.setKeyBindState(attackBinding.getKey(), mIsAttacking);					
+				}
 			}
 			
 			// Don't allow mining *and* attacking at same time
-			//FIXME SOON ContinuouslyAttack.stop();
+			if (mIsAttacking) {
+				ContinuouslyAttack.stop();
+			}
 		}
 	}
 	
