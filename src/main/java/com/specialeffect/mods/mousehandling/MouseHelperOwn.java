@@ -49,6 +49,7 @@ extends MouseHelper
 	// If they are off, we'll still process mouse events but just
 	// not apply the view changes.
     public void setDoVanillaMovements(boolean doVanilla) {
+    	System.out.println("vanilla? "+doVanilla);
 		doVanillaMovements = doVanilla;
 	}
     
@@ -324,7 +325,9 @@ extends MouseHelper
                    this.processMousePosition(xpos, ypos);
                 }
       
-                this.updatePlayerLook();
+                if (this.doVanillaMovements) {
+                	this.updatePlayerLook();
+                }
                               
                 // Reset to centre
     	        if (!this.ungrabbedMouseMode) {
@@ -385,6 +388,9 @@ extends MouseHelper
 	}	
 
     public void updatePlayerLook() {
+    	if (!this.doVanillaMovements) {
+    		return;
+    	}
        double d0 = NativeUtil.func_216394_b();
        double d1 = d0 - this.lastLookTime;
        this.lastLookTime = d0;
@@ -484,7 +490,7 @@ extends MouseHelper
             	 InputMappings.func_216504_a(this.minecraft.mainWindow.getHandle(), 212995, this.mouseX, this.mouseY);
              }
              
-             this.minecraft.displayGuiScreen((Screen)null);
+             this.minecraft.displayGuiScreen((Screen)null);             
              //FIXME: not visible this.minecraft.leftClickCounter = 10000;             
              this.ignoreFirstMove = true;
           }

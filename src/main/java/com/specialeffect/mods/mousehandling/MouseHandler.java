@@ -172,11 +172,12 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	public void setupInitialState() {
 		if (EyeMineConfig.usingMouseEmulation.get()) {
 			mInputSource = InputSource.Mouse;
-			MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 			
+			MouseHandler.updateState(InteractionState.MOUSE_NOTHING);
+			ownMouseHelper.setUngrabbedMode(true);
 		}
 		else {
 			mInputSource = InputSource.EyeTracker;
-			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL); 
+			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL);			
 		}
 	}
 		
@@ -186,6 +187,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 				EyeMineConfig.usingMouseEmulation.get());
 		
 		if (EyeMineConfig.usingMouseEmulation.get()) {
+			ownMouseHelper.setUngrabbedMode(true);
+
 			if (mInputSource != InputSource.Mouse) {
 				LOGGER.debug("using mouse");
 				mInputSource = InputSource.Mouse;
@@ -195,6 +198,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 				LOGGER.debug("nothing to change");
 			}
 		} else {
+			ownMouseHelper.setUngrabbedMode(false);
+
 			if (mInputSource != InputSource.EyeTracker) {
 				LOGGER.debug("using eyetracker");
 				mInputSource = InputSource.EyeTracker;
@@ -284,7 +289,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	}		
 
 	public void setMouseNotGrabbed() {				
-		ownMouseHelper.ungrabMouse();
+		ownMouseHelper.setUngrabbedMode(true);
+		
 		try {
 			LOGGER.debug("setting empty cursor");
 			//FIXME Mouse.setNativeCursor(mEmptyCursor);
@@ -317,7 +323,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			// For any close event, make sure we're in the right 'grabbed' state.
 			// (also sets cursor if applicable)
 			if (mInputSource == InputSource.Mouse) {
-				this.setMouseNotGrabbed();
+			// FIXME	this.setMouseNotGrabbed(); // doesn't seem necessary/appropriate now
 			}
 		}
 	}
