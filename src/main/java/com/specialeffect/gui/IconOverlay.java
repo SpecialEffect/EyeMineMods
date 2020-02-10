@@ -95,7 +95,7 @@ public class IconOverlay
 		if (mVisible) {		
 			int w = event.getWindow().getScaledWidth();
 			int h = event.getWindow().getScaledHeight();
-			this.drawTexture(w, h);
+			this.drawTexture(h, w);
 		}
 	}
 
