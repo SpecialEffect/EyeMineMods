@@ -100,6 +100,8 @@ public class EyeGaze {
 	
 	public EyeGaze() {
 
+		// Only load things if on client - this means if mod is loaded on server, 
+		// nothing happens.
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			// Register ourselves for server and other game events we are interested in
 			MinecraftForge.EVENT_BUS.register(this);
