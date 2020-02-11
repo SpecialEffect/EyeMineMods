@@ -35,20 +35,11 @@ public class CreativeTabs
     private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final String MODID = "creativetabs";
-
-	/**
-	 * Current Instance.
-	 */
-	//@Instance(value = MODID)
-//	public static CreativeTabs instance;
 	
 	public static EyeMineConfig mConfig;
 
-	//public static final Minecraft client = FMLClientHandler.instance().getClient();
-
 	public CreativeTabs() {
 		// Register ourselves for server and other game events we are interested in
-		
 
 		// Config setup
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG);
