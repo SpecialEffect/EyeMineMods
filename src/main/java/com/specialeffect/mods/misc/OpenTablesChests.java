@@ -49,22 +49,15 @@ extends ChildMod implements ChildModWithConfig
 	private static KeyBinding mOpenChestKB;
 	private static KeyBinding mOpenCraftingTableKB;	
 	
-    public static SimpleChannel channel;
-    
     private static int mRadius = 5;
     
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public void setup(final FMLCommonSetupEvent event)
     {
 		
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","opentableschests")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0;
+		this.setupChannel(MODID, 1);
         
+        int id = 0;        
         channel.registerMessage(id++, ActivateBlockAtPosition.class, ActivateBlockAtPosition::encode, 
         		ActivateBlockAtPosition::decode, ActivateBlockAtPosition.Handler::handle);
 

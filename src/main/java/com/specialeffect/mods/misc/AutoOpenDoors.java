@@ -39,19 +39,13 @@ public class AutoOpenDoors
 extends ChildMod implements ChildModWithConfig
 {
 	public final String MODID = "autoopendoors";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
-
-    public static SimpleChannel channel;
 
 	public void setup(final FMLCommonSetupEvent event) {
 		
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","autoopendoors")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0; 
+		this.setupChannel(MODID, 1);        
+
+		int id = 0; 
         channel.registerMessage(id++, UseDoorAtPositionMessage.class, UseDoorAtPositionMessage::encode, 
         		UseDoorAtPositionMessage::decode, UseDoorAtPositionMessage.Handler::handle);                   	       
 		

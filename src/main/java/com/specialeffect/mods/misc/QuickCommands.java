@@ -42,20 +42,13 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class QuickCommands extends ChildMod {
 	public final String MODID = "quickcommands";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
-
-    public static SimpleChannel channel;
 
 	public void setup(final FMLCommonSetupEvent event) {
 		
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","quickcommands")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0;
-		        
+		this.setupChannel(MODID, 1);
+
+        int id = 0;		       
         channel.registerMessage(id++, SendCommandMessage.class, SendCommandMessage::encode, 
         		SendCommandMessage::decode, SendCommandMessage.Handler::handle);        
    

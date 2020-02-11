@@ -40,32 +40,29 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class ContinuouslyMine 
- 
-extends ChildMod implements ChildModWithConfig
+public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 {
 	public final String MODID = "continuouslydestroy";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-    public static SimpleChannel channel;
-    
 	private static int mIconIndex;
 	private static KeyBinding mDestroyKB;
 	private boolean mAutoSelectTool = true;
 	private boolean mWaitingForPickaxe = false;
 	private int miningTimer = 0;
 	private int miningCooldown = 10; //FIXME: put in user config
-
+	
+	private static ContinuouslyMine instance;
+	
+	public ContinuouslyMine() {
+		instance = this;
+	}
+	
 	public void setup(final FMLCommonSetupEvent event) {
 
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","mineone")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0;
-        
+		this.setupChannel(MODID, 1);
+		
+		int id = 0;        
         channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, 
         		AddItemToHotbar::decode, AddItemToHotbar.Handler::handle);        
         
@@ -222,6 +219,6 @@ extends ChildMod implements ChildModWithConfig
 	
 	static void requestCreatePickaxe() {
 		// Ask server to put new item in hotbar
-        channel.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
+        instance.channel.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
 	}	
 }

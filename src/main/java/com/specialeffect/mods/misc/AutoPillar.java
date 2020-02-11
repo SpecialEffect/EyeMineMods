@@ -48,39 +48,40 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class AutoPillar extends ChildMod {
 	public final String MODID = "autopillar";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
-
+	
+	public static AutoPillar instance;
+	
 	public static KeyBinding autoPlaceKeyBinding;
 
-    public static SimpleChannel channel;
-    
 	private LinkedList<OnLivingCallback> mOnLivingQueue;
-   
+
+	public AutoPillar() {
+		instance = this;
+	}
+	
 	public void setup(final FMLCommonSetupEvent event) {
 
 		mOnLivingQueue = new LinkedList<OnLivingCallback>();
 
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","autopillar")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0; 
-        channel.registerMessage(id++, UseItemAtPositionMessage.class, UseItemAtPositionMessage::encode, 
-        		UseItemAtPositionMessage::decode, UseItemAtPositionMessage.Handler::handle);                   	   
-        
-        channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, 
-        		AddItemToHotbar::decode, AddItemToHotbar.Handler::handle);
-        
-        channel.registerMessage(id++, SetPositionAndRotationMessage.class, SetPositionAndRotationMessage::encode, 
-        		SetPositionAndRotationMessage::decode, SetPositionAndRotationMessage.Handler::handle);    
-        
-        channel.registerMessage(id++, JumpMessage.class, JumpMessage::encode, 
-        		JumpMessage::decode, JumpMessage.Handler::handle);                   	   
-        
+		this.setupChannel(MODID, 1);
+
+		int id = 0;
+		channel.registerMessage(id++, UseItemAtPositionMessage.class, UseItemAtPositionMessage::encode,
+				UseItemAtPositionMessage::decode, UseItemAtPositionMessage.Handler::handle);
+
+		channel.registerMessage(id++, AddItemToHotbar.class, AddItemToHotbar::encode, AddItemToHotbar::decode,
+				AddItemToHotbar.Handler::handle);
+
+		channel.registerMessage(id++, SetPositionAndRotationMessage.class, SetPositionAndRotationMessage::encode,
+				SetPositionAndRotationMessage::decode, SetPositionAndRotationMessage.Handler::handle);
+
+		channel.registerMessage(id++, JumpMessage.class, JumpMessage::encode, JumpMessage::decode,
+				JumpMessage.Handler::handle);
+
 		// Register key bindings
-		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_0, CommonStrings.EYEGAZE_EXTRA);
+		autoPlaceKeyBinding = new KeyBinding("Jump and place block below", GLFW.GLFW_KEY_0,
+				CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(autoPlaceKeyBinding);
 
 	}
@@ -90,7 +91,7 @@ public class AutoPillar extends ChildMod {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-    	if (null != player && event.phase == TickEvent.Phase.START) {
+		if (null != player && event.phase == TickEvent.Phase.START) {
 			synchronized (mOnLivingQueue) {
 				this.lastPlayerPitch = player.rotationPitch;
 			}
@@ -103,24 +104,27 @@ public class AutoPillar extends ChildMod {
 					item.onClientTick(event);
 					if (item.hasCompleted()) {
 						it.remove();
-					}        		
+					}
 				}
 			}
 		}
 	}
-	
+
 	protected void queueOnLivingCallback(OnLivingCallback onLivingCallback) {
 		synchronized (mOnLivingQueue) {
 			mOnLivingQueue.add(onLivingCallback);
 		}
-	}	
+	}
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-		if (ModUtils.hasActiveGui()) { return; }
+		if (ModUtils.hasActiveGui()) {
+			return;
+		}
 
 		// Auto place is implemented as:
-		// - Make sure you're holding a block (in creative mode; in survival you're on your own)
+		// - Make sure you're holding a block (in creative mode; in survival you're on
+		// your own)
 		// - Next onLiving tick: look at floor, jump, place current item below
 		// - next few ticks, gradually reset view
 		// Technically there is no need to change player's view, but the user
@@ -136,7 +140,7 @@ public class AutoPillar extends ChildMod {
 			final int numTicksReset = 5;
 
 			final float deltaPitch = (pillarPitch - origPitch) / numTicksReset;
-			
+
 			this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 				@Override
 				public void onClientTick(ClientTickEvent event) {
@@ -153,54 +157,46 @@ public class AutoPillar extends ChildMod {
 					double x = Math.floor(player.posX) + 0.4;
 					double y = Math.floor(player.posY);
 					double z = Math.floor(player.posZ) + 0.4;
-					
-					channel.sendToServer(
-							new SetPositionAndRotationMessage(
-									player.getName().toString(),
-									x, y + jumpHeight, z,
-									player.rotationYaw, pillarPitch));
+
+					channel.sendToServer(new SetPositionAndRotationMessage(player.getName().toString(), x,
+							y + jumpHeight, z, player.rotationYaw, pillarPitch));
 
 					// Ask server to use item
 					BlockPos blockPos = new BlockPos(x, y, z);
 					channel.sendToServer(new UseItemAtPositionMessage(player, blockPos));
-					
+
 					// Make sure we get the animation
 					player.swingArm(Hand.MAIN_HAND);
 				}
 			}, 1));
 
 			// gradually move head back up to original pitch
-			for (int i = 1; i < numTicksReset+1; i++) {
+			for (int i = 1; i < numTicksReset + 1; i++) {
 				final int j = i;
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
 					@Override
 					public void onClientTick(ClientTickEvent event) {
 						PlayerEntity player = Minecraft.getInstance().player;
-						
-						channel.sendToServer(
-								new SetPositionAndRotationMessage(
-										player.getName().toString(), 
-										player.posX, player.posY, player.posZ,
-										player.rotationYaw,
-										pillarPitch - deltaPitch * j));
+
+						channel.sendToServer(new SetPositionAndRotationMessage(player.getName().toString(), player.posX,
+								player.posY, player.posZ, player.rotationYaw, pillarPitch - deltaPitch * j));
 					}
-				}, 1 + 2*j));
+				}, 1 + 2 * j));
 			}
 		}
 	}
-	
+
 	static void chooseBlock(PlayerInventory inventory) {
-		
-		// In creative mode, we can either select a block from the hotbar 
+
+		// In creative mode, we can either select a block from the hotbar
 		// or just rustle up a new one
 
 		int blockId = ModUtils.findItemInHotbar(inventory, BlockItem.class);
 		if (blockId > -1) {
 			inventory.currentItem = blockId;
-		}
-		else {
+		} else {
 			// Ask server to put new item in hotbar
-			channel.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
+			instance.channel.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
 		}
 	}
 

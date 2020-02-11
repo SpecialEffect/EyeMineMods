@@ -64,7 +64,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "movewithgaze";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mToggleAutoWalkKB;
 	private static KeyBinding mIncreaseWalkSpeedKB;
@@ -76,8 +75,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	private static boolean mMoveWhenMouseStationary = false;
 	public static float mCustomSpeedFactor = 0.8f;
 
-    public static SimpleChannel channel;
-    
     private int jumpTicks = 0;
     
 	public MoveWithGaze() {
@@ -86,13 +83,9 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public void setup(final FMLCommonSetupEvent event) {
 
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","movewithgaze")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0; 
-        
+		this.setupChannel(MODID, 1);
+
+        int id = 0;         
         channel.registerMessage(id++, JumpMessage.class, JumpMessage::encode, 
         		JumpMessage::decode, JumpMessage.Handler::handle);                   	   
 		        

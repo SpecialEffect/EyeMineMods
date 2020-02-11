@@ -37,20 +37,14 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class Dismount  extends ChildMod {
 
 	public final String MODID = "dismount";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mDismountKB;
 	
-    public static SimpleChannel channel;
-
 	public void setup(final FMLCommonSetupEvent event) {
 
     	// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","dismount")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
+        this.setupChannel(MODID, 1);
+
         int id = 0;        
         channel.registerMessage(id++, DismountPlayerMessage.class, DismountPlayerMessage::encode, 
         		DismountPlayerMessage::decode, DismountPlayerMessage.Handler::handle);                   	       

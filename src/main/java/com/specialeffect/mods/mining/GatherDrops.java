@@ -41,21 +41,20 @@ public class GatherDrops  extends ChildMod
 {
 
 	public final String MODID = "gatherdrops";
-    private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mGatherKB;
 
-    public static SimpleChannel channel;
-
+	private static GatherDrops instance;
+	
+	public GatherDrops() {
+		instance = this;
+	}
+	
 	public void setup(final FMLCommonSetupEvent event) {
 		    	
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","gatherdrops")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0;
-        
+		this.setupChannel(MODID, 1);
+
+		int id = 0;        
         channel.registerMessage(id++, GatherBlockMessage.class, GatherBlockMessage::encode, 
         		GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);        
 
@@ -89,7 +88,7 @@ public class GatherDrops  extends ChildMod
 			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (int i = 0; i < items.size(); i++) {
-                channel.sendToServer(new GatherBlockMessage(items.get(i).getEntityId()));
+                instance.channel.sendToServer(new GatherBlockMessage(items.get(i).getEntityId()));
 			}
 		}
 	}

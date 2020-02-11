@@ -46,10 +46,7 @@ public class ContinuouslyAttack
  
 extends ChildMod {
 	public final String MODID = "continuouslyattack";
-	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
-    public static SimpleChannel channel;
-    
 	private boolean mAutoSelectSword = true;
 	private static int mIconIndex;
 	private static KeyBinding mAttackKB;
@@ -61,13 +58,8 @@ extends ChildMod {
 		// FIXME: now in eyegaze mod, check working okay // FMLJavaModLoadingContext.get().getModEventBus().register(this);
 
 		// setup channel for comms
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect","continuouslyattack")
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-        int id = 0;
-        
+		this.setupChannel(this.MODID, 1);
+		int id = 0;        
         channel.registerMessage(id++, AttackEntityMessage.class, AttackEntityMessage::encode, 
         		AttackEntityMessage::decode, AttackEntityMessage.Handler::handle);        
 
