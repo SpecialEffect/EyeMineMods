@@ -44,7 +44,7 @@ public class ContinuouslyMine
  
 extends ChildMod implements ChildModWithConfig
 {
-	public static final String MODID = "continuouslydestroy";
+	public final String MODID = "continuouslydestroy";
 	public static final String NAME = "ContinuouslyDestroy";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 

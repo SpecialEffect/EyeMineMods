@@ -38,7 +38,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class AutoOpenDoors 
 extends ChildMod implements ChildModWithConfig
 {
-	public static final String MODID = "autoopendoors";
+	public final String MODID = "autoopendoors";
 	public static final String NAME = "AutoOpenDoors";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 

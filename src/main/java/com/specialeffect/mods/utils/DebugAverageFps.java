@@ -28,7 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class DebugAverageFps extends ChildMod
 {
 
-	public static final String MODID = "debugfps";
+	public final String MODID = "debugfps";
 	public static final String NAME = "DebugAverageFps";
 
 	public DebugAverageFps() {

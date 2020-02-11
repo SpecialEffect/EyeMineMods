@@ -45,7 +45,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class ContinuouslyAttack 
  
 extends ChildMod {
-	public static final String MODID = "continuouslyattack";
+	public final String MODID = "continuouslyattack";
 	public static final String NAME = "ContinuouslyAttack";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 

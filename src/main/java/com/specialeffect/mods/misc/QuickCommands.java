@@ -41,7 +41,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class QuickCommands extends ChildMod {
-	public static final String MODID = "quickcommands";
+	public final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 

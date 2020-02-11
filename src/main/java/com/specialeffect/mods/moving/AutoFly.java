@@ -44,7 +44,7 @@ public class AutoFly
 extends ChildMod implements ChildModWithConfig
 {
 
-	public static final String MODID = "autofly";
+	public final String MODID = "autofly";
 	public static final String NAME = "AutoFly";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 

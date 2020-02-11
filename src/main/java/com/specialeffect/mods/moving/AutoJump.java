@@ -27,7 +27,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class AutoJump  extends ChildMod implements ChildModWithConfig {
-	public static final String MODID = "autojump";
+	public final String MODID = "autojump";
 	public static final String NAME = "AutoJump";
 
 	public static KeyBinding autoJumpKeyBinding;

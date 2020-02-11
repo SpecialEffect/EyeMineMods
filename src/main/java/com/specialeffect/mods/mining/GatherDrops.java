@@ -40,7 +40,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class GatherDrops  extends ChildMod
 {
 
-	public static final String MODID = "gatherdrops";
+	public final String MODID = "gatherdrops";
 	public static final String NAME = "GatherDrops";
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 

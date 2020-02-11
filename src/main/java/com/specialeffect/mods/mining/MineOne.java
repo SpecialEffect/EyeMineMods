@@ -38,7 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class MineOne 
  extends ChildMod
 {
-	public static final String MODID = "autodestroy";
+	public final String MODID = "autodestroy";
 	public static final String NAME = "AutoDestroy";    
 
 	private boolean mDestroying = false;
