@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.specialeffect.gui.CustomMainMenu;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.GatherDrops;
@@ -45,8 +46,10 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -116,6 +119,14 @@ public class EyeGaze {
 			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 		});
+	}
+	
+	// Replace / augment some GUIs
+	@SubscribeEvent
+	public void onGuiOpen(GuiOpenEvent event) {
+		if (event.getGui() instanceof MainMenuScreen && !(event.getGui() instanceof CustomMainMenu)) {
+			event.setGui(new CustomMainMenu());
+		}
 	}
 	
 	@SubscribeEvent()
