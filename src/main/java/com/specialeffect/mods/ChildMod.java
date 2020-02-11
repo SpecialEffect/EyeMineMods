@@ -12,7 +12,7 @@ public class ChildMod {
 	
     // Directly reference a log4j logger.	
     @SuppressWarnings("unused")
-	public static final Logger LOGGER = LogManager.getLogger();
+	protected static final Logger LOGGER = LogManager.getLogger();
     protected SimpleChannel channel;
 
 	public void setup(final FMLCommonSetupEvent event) {
