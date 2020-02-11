@@ -85,7 +85,6 @@ public class EyeGaze {
 
 	public static final String MODID = "eyemine";
 	public static final String VERSION = ModUtils.VERSION;
-	public static final String NAME = "Eye Mine";
     
 	public static final Logger LOGGER = LogManager.getLogger();
     

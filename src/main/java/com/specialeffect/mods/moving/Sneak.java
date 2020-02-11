@@ -33,7 +33,6 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 public class Sneak extends ChildMod {
 
 	public final String MODID = "sneaktoggle";
-	public static final String NAME = "SneakToggle";
 
 	private static KeyBinding mSneakKB;
 	private static boolean mIsSneaking = false;

@@ -41,7 +41,6 @@ public class GatherDrops  extends ChildMod
 {
 
 	public final String MODID = "gatherdrops";
-	public static final String NAME = "GatherDrops";
     private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mGatherKB;

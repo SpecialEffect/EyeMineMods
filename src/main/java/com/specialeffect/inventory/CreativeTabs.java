@@ -35,7 +35,6 @@ public class CreativeTabs
     private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final String MODID = "creativetabs";
-	public static final String NAME = "CreativeTabs";
 
 	/**
 	 * Current Instance.

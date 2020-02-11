@@ -37,7 +37,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 public class Dismount  extends ChildMod {
 
 	public final String MODID = "dismount";
-	public static final String NAME = "Dismount";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mDismountKB;

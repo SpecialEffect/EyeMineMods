@@ -29,7 +29,6 @@ public class DebugAverageFps extends ChildMod
 {
 
 	public final String MODID = "debugfps";
-	public static final String NAME = "DebugAverageFps";
 
 	public DebugAverageFps() {
 	}

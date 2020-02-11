@@ -46,7 +46,6 @@ public class ContinuouslyAttack
  
 extends ChildMod {
 	public final String MODID = "continuouslyattack";
-	public static final String NAME = "ContinuouslyAttack";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public static SimpleChannel channel;

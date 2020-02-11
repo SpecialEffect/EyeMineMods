@@ -31,7 +31,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class EasyLadderClimb extends ChildMod {
 	public final String MODID = "easyladderclimb";
-	public static final String NAME = "EasyLadderClimb";
 
     //FIXME: re-visit this mod logic, test a bunch, does it solve any problems?    
 		

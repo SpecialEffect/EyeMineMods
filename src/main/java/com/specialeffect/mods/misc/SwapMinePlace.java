@@ -26,7 +26,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class SwapMinePlace  extends ChildMod {
 	public final String MODID = "swapmineplace";
-	public static final String NAME = "SwapMinePlace";
 	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
 	public void setup(final FMLCommonSetupEvent event) {

@@ -27,7 +27,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class UseItem extends ChildMod {
 	public final String MODID = "useitem";
-	public static final String NAME = "UseItem";
 
 	public void setup(final FMLCommonSetupEvent event) {
 

@@ -45,7 +45,6 @@ public class ContinuouslyMine
 extends ChildMod implements ChildModWithConfig
 {
 	public final String MODID = "continuouslydestroy";
-	public static final String NAME = "ContinuouslyDestroy";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public static SimpleChannel channel;

@@ -28,7 +28,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class AutoJump  extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "autojump";
-	public static final String NAME = "AutoJump";
 
 	public static KeyBinding autoJumpKeyBinding;
 	// FIXME public static Configuration mConfig;

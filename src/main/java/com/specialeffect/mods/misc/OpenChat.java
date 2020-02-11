@@ -26,7 +26,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class OpenChat extends ChildMod {	
 	public final String MODID = "openchat";
-	public static final String NAME = "OpenChat";
 
 	public void setup(final FMLCommonSetupEvent event) {
 		

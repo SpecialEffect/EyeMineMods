@@ -42,7 +42,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class QuickCommands extends ChildMod {
 	public final String MODID = "quickcommands";
-	public static final String NAME = "QuickCommands";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public static SimpleChannel channel;

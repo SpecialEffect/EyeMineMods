@@ -29,7 +29,6 @@ import org.lwjgl.glfw.GLFW;
 
 public class PickBlock extends ChildMod {
 	public final String MODID = "pickblock";
-	public static final String NAME = "PickBlock";
 
 	public static KeyBinding mPickBlockKB;
 

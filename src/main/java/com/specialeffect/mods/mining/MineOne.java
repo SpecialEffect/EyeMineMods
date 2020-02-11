@@ -39,7 +39,6 @@ public class MineOne
  extends ChildMod
 {
 	public final String MODID = "autodestroy";
-	public static final String NAME = "AutoDestroy";    
 
 	private boolean mDestroying = false;
 	private BlockPos mBlockToDestroy;

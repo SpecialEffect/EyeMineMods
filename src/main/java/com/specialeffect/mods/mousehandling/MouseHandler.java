@@ -38,7 +38,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "mousehandler";
-	public static final String NAME = "MouseHandler";
 
 	//public static Configuration mConfig;
 

@@ -45,7 +45,6 @@ extends ChildMod implements ChildModWithConfig
 {
 
 	public final String MODID = "opentableschests";
-	public static final String NAME = "OpenTablesChests";
 
 	private static KeyBinding mOpenChestKB;
 	private static KeyBinding mOpenCraftingTableKB;	

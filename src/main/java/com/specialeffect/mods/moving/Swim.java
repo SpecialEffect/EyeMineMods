@@ -36,7 +36,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class Swim extends ChildMod {
 
 	public final String MODID = "swimtoggle";
-	public static final String NAME = "SwimToggle";
 
 	private static KeyBinding mSwimKB;
 	private static boolean mSwimmingTurnedOn = true;

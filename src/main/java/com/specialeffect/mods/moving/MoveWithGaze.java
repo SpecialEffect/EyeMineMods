@@ -64,7 +64,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "movewithgaze";
-	public static final String NAME = "MoveWithGaze";
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 
 	private static KeyBinding mToggleAutoWalkKB;
