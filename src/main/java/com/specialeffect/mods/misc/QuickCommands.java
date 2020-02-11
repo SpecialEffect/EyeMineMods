@@ -12,6 +12,9 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.specialeffect.messages.AddItemToHotbar;
+import com.specialeffect.messages.AttackEntityMessage;
+import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -19,28 +22,45 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.GameRules.BooleanValue;
+import net.minecraft.world.GameRules.RuleKey;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
-public class QuickCommands  extends ChildMod {
+public class QuickCommands extends ChildMod {
 	public static final String MODID = "quickcommands";
 	public static final String NAME = "QuickCommands";
-    //FIXME for 1.14 public static SimpleNetworkWrapper network;
+	private static final String PROTOCOL_VERSION = Integer.toString(1);
+
+    public static SimpleChannel channel;
 
 	public void setup(final FMLCommonSetupEvent event) {
 		
-		// Register for server messages
-		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-        //FIXME network.registerMessage(SendCommandMessage.Handler.class, 
-        		//				SendCommandMessage.class, 0, Side.SERVER);
-
+		// setup channel for comms
+		channel = NetworkRegistry.newSimpleChannel(
+                new ResourceLocation("specialeffect","quickcommands")
+                ,() -> PROTOCOL_VERSION
+                , PROTOCOL_VERSION::equals
+                , PROTOCOL_VERSION::equals);
+        int id = 0;
+		        
+        channel.registerMessage(id++, SendCommandMessage.class, SendCommandMessage::encode, 
+        		SendCommandMessage::decode, SendCommandMessage.Handler::handle);        
+   
+		        
 
 		// init
 		
@@ -75,20 +95,15 @@ public class QuickCommands  extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }
 
 		if (mDayNightKB.isPressed()) {
-//			this.queueOnLivingCallback(new SingleShotOnLivingCallback(new IOnLiving() {
-//				
-//				@Override
-//				public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
-//					String gameRule = "doDaylightCycle";
-//					GameRules rules = Minecraft.getInstance().world.getGameRules();	
-//					// FIXME boolean newBool = !rules.getBoolean(gameRule);
-//					
-//					// Ask server to change gamerule
-//					// FIXME String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);
-//					//FIXME QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
-//				}
-//			}));			
+			PlayerEntity player = Minecraft.getInstance().player;
+			GameRules rules = Minecraft.getInstance().world.getGameRules();
+			
+			
+			RuleKey<BooleanValue> gameRule = rules.DO_DAYLIGHT_CYCLE;			
+			boolean newBool = !rules.getBoolean(gameRule);
+			
+			String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);			
+			channel.sendToServer(new SendCommandMessage(cmd));
 		}
 	}
 }
