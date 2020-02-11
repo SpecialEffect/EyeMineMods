@@ -25,6 +25,7 @@ import com.specialeffect.mods.mining.MineOne;
 import com.specialeffect.mods.misc.AutoOpenDoors;
 import com.specialeffect.mods.misc.AutoPillar;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
+import com.specialeffect.mods.misc.DefaultConfigForNewWorld;
 import com.specialeffect.mods.misc.OpenChat;
 import com.specialeffect.mods.misc.OpenTablesChests;
 import com.specialeffect.mods.misc.PickBlock;
@@ -187,6 +188,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new Sneak());
         this.setupChildMod((ChildMod) new Swim());
         this.setupChildMod((ChildMod) new DebugAverageFps());
+        this.setupChildMod((ChildMod) new DefaultConfigForNewWorld());
     }
     
     private void setupChildMod(ChildMod mod) {
