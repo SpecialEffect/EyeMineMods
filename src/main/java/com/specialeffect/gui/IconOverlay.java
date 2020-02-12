@@ -32,11 +32,12 @@ public class IconOverlay
 	private float mHeight = 1.0f;
 	private float mAspectRatio = 1.0f;
 	private float mAlpha = 1.0f;
-	
+	private int fadeTime = 20;
+	private int fadeCountdown = 0;
+
 	public IconOverlay(Minecraft mc, String resourcePath)
 	{
-		mResource = new ResourceLocation(resourcePath);		
-		
+		mResource = new ResourceLocation(resourcePath);				
 	}
 	
 	public void setPosition(float centreX, float centreY, float height, float aspectRatio) {
@@ -47,7 +48,11 @@ public class IconOverlay
 	}
 
 	public void setVisible(boolean visible) {
-		mVisible = visible;
+		if (visible != mVisible) {
+			fadeCountdown = fadeTime;
+		}
+		
+		mVisible = visible;		
 	}
 	
 	public void setAlpha(float alpha) {
@@ -55,7 +60,7 @@ public class IconOverlay
 	}
 	
 	// A helper function to draw a texture scaled to fit.
-	private void drawTexture(int screenHeight, int screenWidth)
+	private void drawTexture(int screenHeight, int screenWidth, float fade)
 	{
 		// calculate position
 		int height = (int)(screenWidth*mHeight);
@@ -67,7 +72,7 @@ public class IconOverlay
 		// TODO:white? black? drop shadow? 
 		Minecraft.getInstance().getTextureManager().bindTexture(mResource);					
 		ModUtils.drawTexQuad(centreX - width/2, centreY - height/2, 
-							 width, height, mAlpha);
+							 width, height, mAlpha*fade);
 		
 
 	}
@@ -87,15 +92,25 @@ public class IconOverlay
 			return;
 		}
 		
-		// Don't show if the debug screen is open
-		if (Minecraft.getInstance().gameSettings.showDebugInfo) {
-			return;
-		}
+		if (mVisible || fadeCountdown > 0) {		
+			// Update fading ticks
+			float fade = 1.0f;
+			if (fadeCountdown > 0) {
+				fadeCountdown--;
+				fade = fadeCountdown/(float)fadeTime;
+				if (mVisible) {
+					fade = 1.0f - fade;	
+				}
+			}				
+			
+			// Don't show if the debug screen is open
+			if (Minecraft.getInstance().gameSettings.showDebugInfo) {
+				return;
+			}
 		
-		if (mVisible) {		
 			int w = event.getWindow().getScaledWidth();
 			int h = event.getWindow().getScaledHeight();
-			this.drawTexture(h, w);
+			this.drawTexture(h, w, fade);
 		}
 	}
 
