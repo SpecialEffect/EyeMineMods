@@ -38,6 +38,7 @@ import com.specialeffect.mods.moving.AutoJump;
 import com.specialeffect.mods.moving.Dismount;
 import com.specialeffect.mods.moving.EasyLadderClimb;
 import com.specialeffect.mods.moving.MoveWithGaze;
+import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.mods.moving.Sneak;
 import com.specialeffect.mods.moving.Swim;
 import com.specialeffect.mods.utils.DebugAverageFps;
@@ -191,6 +192,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new Swim());
         this.setupChildMod((ChildMod) new DebugAverageFps());
         this.setupChildMod((ChildMod) new DefaultConfigForNewWorld());
+        this.setupChildMod((ChildMod) new MoveWithGaze2());
     }
     
     private void setupChildMod(ChildMod mod) {

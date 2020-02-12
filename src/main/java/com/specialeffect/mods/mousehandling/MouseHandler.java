@@ -17,6 +17,9 @@ import org.lwjgl.glfw.GLFW;
 import com.specialeffect.gui.IconOverlay;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.mousehandling.MouseHelperOwn.PlayerMovement;
+import com.specialeffect.mods.moving.MoveWithGaze;
+import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -141,11 +144,20 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	}
 	
 	private static void updateMouseForState(InteractionState state) {
-		boolean disabled = (state == InteractionState.MOUSE_NOTHING ||
-							state == InteractionState.MOUSE_LEGACY ||
-							state == InteractionState.EYETRACKER_LEGACY);
-		if (ownMouseHelper != null) {
-			ownMouseHelper.setDoVanillaMovements(!disabled);
+		switch (state) {
+		case EYETRACKER_LEGACY:
+		case MOUSE_LEGACY:
+			ownMouseHelper.setMovementState(PlayerMovement.LEGACY);
+			break;
+		case MOUSE_NOTHING:
+			ownMouseHelper.setMovementState(PlayerMovement.NONE);
+			break;
+		case EYETRACKER_NORMAL:
+		case EYETRACKER_WALK:	
+		case MOUSE_LOOK:
+		case MOUSE_WALK:
+			ownMouseHelper.setMovementState(PlayerMovement.VANILLA);
+			break;		
 		}
 	}
 	
@@ -154,8 +166,6 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		updateIconForState(state);
 		updateMouseForState(state);
 
-		//FIXME
-		/*
 		if (state == InteractionState.MOUSE_WALK || state == InteractionState.EYETRACKER_WALK) {
 			MoveWithGaze2.stop();
 		}
@@ -165,7 +175,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		else {
 			MoveWithGaze.stop();
 			MoveWithGaze2.stop();
-		}*/
+		}
 	}
 
 	public void setupInitialState() {

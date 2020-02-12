@@ -36,23 +36,19 @@ extends MouseHelper
 	// to access EyeMine keyboard
 	private boolean ungrabbedMouseMode = false;
 
-	private boolean doVanillaMovements = true;
-    private long lastTimestamp = 0;
-    
 	// TODO: different left/right vs up/down?
 	private float deadBorder = 0.05f;
 	private float clipBorderHorizontal = 0.3f;
 	private float clipBorderVertical = 0.2f;
 	private boolean mHasPendingEvent = false; 
-    
-	// Turn vanilla mouse-viewpoint movements on/off
-	// If they are off, we'll still process mouse events but just
-	// not apply the view changes.
-    public void setDoVanillaMovements(boolean doVanilla) {
-    	System.out.println("vanilla? "+doVanilla);
-		doVanillaMovements = doVanilla;
+	
+	
+	enum PlayerMovement {
+        NONE, VANILLA, LEGACY 
 	}
-    
+	
+	private PlayerMovement movementState = PlayerMovement.VANILLA; 
+	
     public void setClipBorders(float horz, float vert) {
     	clipBorderHorizontal = horz;
     	clipBorderVertical = vert;
@@ -64,6 +60,11 @@ extends MouseHelper
     
     public synchronized boolean hasPendingEvent() {
     	return mHasPendingEvent;
+    }
+    
+    public void setMovementState(PlayerMovement state)
+    {
+    	this.movementState = state;
     }
     
     private final Minecraft minecraft;
@@ -85,6 +86,8 @@ extends MouseHelper
     private double lastLookTime = Double.MIN_VALUE;
     private boolean mouseGrabbed;
 
+    public double lastXVelocity = 0.0;
+    public double lastYVelocity = 0.0;
     
     /** public entry points for automated cursor actions **/
    
@@ -111,8 +114,7 @@ extends MouseHelper
     }
     
     
-    /** **/
-    
+    /** **/       
     
     /* Move cursor to location and perform mouse action
      * button: any constant GLFW.GLFW_MOUSE_BUTTON_X 
@@ -325,13 +327,10 @@ extends MouseHelper
                    this.processMousePosition(xpos, ypos);
                 }
       
-                if (this.doVanillaMovements) {
-                	this.updatePlayerLook();
-                }
+                this.updatePlayerLook();
                               
                 // Reset to centre
     	        if (!this.ungrabbedMouseMode) {
-
     	        	GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), 0, 0);
     	        	this.mouseX = 0;
     	        	this.mouseY = 0;
@@ -359,14 +358,12 @@ extends MouseHelper
 
 		double deltaX = 0;
 		double deltaY = 0;
-		
-		
+				
 		// If mouse is outside minecraft window, throw it away
 		if (x_abs > w_half * (1 - deadBorder) ||
 				y_abs > h_half * (1 - deadBorder)) {
 			// do nothing
-			this.xVelocity = 0;
-			this.yVelocity = 0;
+			this.resetVelocity();
 		}		
 		else {
 			// If mouse is around edges, clip effect
@@ -386,11 +383,52 @@ extends MouseHelper
 			mHasPendingEvent = true;
 		}
 	}	
-
-    public void updatePlayerLook() {
-    	if (!this.doVanillaMovements) {
-    		return;
-    	}
+    
+    public void updatePlayerLookLegacy() {
+    	// Rotate the player (yaw) according to x position only
+    	double d0 = NativeUtil.func_216394_b();
+        double d1 = d0 - this.lastLookTime;
+        this.lastLookTime = d0;
+        if (this.minecraft.isGameFocused()) {
+           double d4 = 0.1*this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;
+           double d5 = d4 * d4 * d4 * 8.0D;
+           double d2;
+           double d3;
+           if (this.minecraft.gameSettings.smoothCamera) {
+              double d6 = this.xSmoother.smooth(this.xVelocity * d5, d1 * d5);
+              double d7 = this.ySmoother.smooth(this.yVelocity * d5, d1 * d5);
+              d2 = d6;
+              d3 = d7;
+           } else {
+              this.xSmoother.reset();
+              this.ySmoother.reset();
+              d2 = this.xVelocity * d5;
+              d3 = this.yVelocity * d5;
+           }
+           
+           this.resetVelocity();
+           this.minecraft.getTutorial().onMouseMove(d2, d3);
+           if (this.minecraft.currentScreen == null) {
+	           if (this.minecraft.player != null) {
+	              this.minecraft.player.rotateTowards(d2, 0);     
+	           }
+           }
+           
+           // TODO: use the y position to walk forward/back too: or does this happen in WalkWithGaze2 mod?
+           
+        } else {
+           this.resetVelocity();
+        }
+	}
+    
+    private void resetVelocity() {
+    	this.lastXVelocity = this.xVelocity;
+    	this.lastYVelocity = this.yVelocity;
+    	this.xVelocity = 0.0D;
+        this.yVelocity = 0.0D;   	
+    }
+    
+    public void updatePlayerLookVanilla() {
        double d0 = NativeUtil.func_216394_b();
        double d1 = d0 - this.lastLookTime;
        this.lastLookTime = d0;
@@ -411,8 +449,7 @@ extends MouseHelper
              d3 = this.yVelocity * d5;
           }
 
-          this.xVelocity = 0.0D;
-          this.yVelocity = 0.0D;
+          this.resetVelocity();
           int i = 1;
           if (this.minecraft.gameSettings.invertMouse) {
              i = -1;
@@ -424,9 +461,30 @@ extends MouseHelper
           }
 
        } else {
-          this.xVelocity = 0.0D;
-          this.yVelocity = 0.0D;
+    	   this.resetVelocity();
        }
+    }
+
+    public void updatePlayerLook() {
+    	// this gets called from Minecraft itself
+    	
+    	if (this.minecraft.player == null) {
+    		return;
+    	}
+    	
+    	switch (this.movementState) {    					
+		case VANILLA:
+			this.updatePlayerLookVanilla();
+			break;
+		case LEGACY:
+			this.updatePlayerLookLegacy();
+			break;
+		case NONE:
+			// keep track of last time
+			double d0 = NativeUtil.func_216394_b();	        
+	        this.lastLookTime = d0;
+			break;	    		
+    	}
     }
 
     public boolean isLeftDown() {

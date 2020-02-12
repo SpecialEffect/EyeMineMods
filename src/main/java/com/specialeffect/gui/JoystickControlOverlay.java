@@ -18,10 +18,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-//
-// StateOverlay implements a simple status bar at the top of the screen which 
-// shows the current states such as attacking, walking, etc.
-//
 public class JoystickControlOverlay {
 
 	public JoystickControlOverlay(Minecraft mc) {
