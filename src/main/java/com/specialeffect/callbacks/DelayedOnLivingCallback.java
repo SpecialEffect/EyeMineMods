@@ -10,8 +10,6 @@
 
 package com.specialeffect.callbacks;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 public class DelayedOnLivingCallback implements OnLivingCallback {
@@ -24,7 +22,6 @@ public class DelayedOnLivingCallback implements OnLivingCallback {
 	
 	@Override
 	public void onClientTick(ClientTickEvent event) {
-		PlayerEntity player = Minecraft.getInstance().player;
 		if (mWaitTicks == 0) {
 			mCallback.onClientTick(event);
 			mHasCompleted = true;

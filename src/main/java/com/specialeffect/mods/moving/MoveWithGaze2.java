@@ -29,7 +29,6 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -91,7 +90,6 @@ implements ChildModWithConfig
     public void onLiving(LivingUpdateEvent event) {
     	if (ModUtils.entityIsMe(event.getEntityLiving())) {
 
-    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();    		
     		if (mDoingAutoWalk && 
             		null == Minecraft.getInstance().currentScreen && // no gui visible
             		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {

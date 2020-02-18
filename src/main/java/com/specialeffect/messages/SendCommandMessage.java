@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -30,7 +29,6 @@ public class SendCommandMessage {
     public static class Handler {
 		public static void handle(final SendCommandMessage pkt, Supplier<NetworkEvent.Context> ctx) {
 			MinecraftServer server;
-			PlayerEntity player = ctx.get().getSender();
 
         	server = Minecraft.getInstance().world.getServer();
         	if (null == server) { // this is for non-network worlds

@@ -10,8 +10,6 @@
 
 package com.specialeffect.callbacks;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 
 public class RepeatedOnLivingCallback implements OnLivingCallback {
@@ -23,7 +21,6 @@ public class RepeatedOnLivingCallback implements OnLivingCallback {
 
 	@Override
 	public void onClientTick(ClientTickEvent event) {
-		PlayerEntity player = Minecraft.getInstance().player;
 		mCallback.onClientTick(event);
 		mTicksRemaining--;
 	}

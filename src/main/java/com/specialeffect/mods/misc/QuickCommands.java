@@ -78,7 +78,6 @@ public class QuickCommands extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }
 
 		if (mDayNightKB.isPressed()) {
-			PlayerEntity player = Minecraft.getInstance().player;
 			GameRules rules = Minecraft.getInstance().world.getGameRules();
 			
 			
