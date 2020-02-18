@@ -62,6 +62,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 // This mod is purely a wrapper to cluster all our smaller mods.
@@ -104,8 +105,6 @@ public class EyeGaze {
 			// Register ourselves for server and other game events we are interested in
 			MinecraftForge.EVENT_BUS.register(this);
 	 
-			this.setupConfig();
-			
 			// Setup GUI for showing state overlay
 	        mStateOverlay = new StateOverlay(Minecraft.getInstance());
 			MinecraftForge.EVENT_BUS.register(mStateOverlay);
@@ -114,11 +113,20 @@ public class EyeGaze {
 			ownMovementOverride = new MovementInputFromOptionsOverride( Minecraft.getInstance().gameSettings);	
 	
 			// Setup all other mods
-			this.instantiateChildren();			
+			this.instantiateChildren();		
+			
+			// Register this setup method *after* children have registered theirs 
+			// (this way the children will be fully set up before any config gets loaded)
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	        
 			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
 		});
+	}
+	
+
+    public void setup(final FMLCommonSetupEvent event) {
+		this.setupConfig();
 	}
 	
 	// Replace / augment some GUIs
