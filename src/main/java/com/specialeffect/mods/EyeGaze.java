@@ -92,6 +92,7 @@ public class EyeGaze {
 	public static MovementInputFromOptionsOverride ownMovementOverride;
 	
 	private StateOverlay mStateOverlay;		
+	private static boolean setupComplete;		
 
 	// Category names for clustering config options in different UIs
 	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
@@ -105,6 +106,8 @@ public class EyeGaze {
 			// Register ourselves for server and other game events we are interested in
 			MinecraftForge.EVENT_BUS.register(this);
 	 
+			this.setupConfig();
+			
 			// Setup GUI for showing state overlay
 	        mStateOverlay = new StateOverlay(Minecraft.getInstance());
 			MinecraftForge.EVENT_BUS.register(mStateOverlay);
@@ -126,7 +129,8 @@ public class EyeGaze {
 	
 
     public void setup(final FMLCommonSetupEvent event) {
-		this.setupConfig();
+    	this.setupComplete = true;
+    	this.refresh();
 	}
 	
 	// Replace / augment some GUIs
@@ -209,10 +213,12 @@ public class EyeGaze {
     }
 
 	public static void refresh() {
-		for (ChildMod child : children) {
-			if (child instanceof ChildModWithConfig) {
-				ChildModWithConfig mod = (ChildModWithConfig)child;
-				mod.syncConfig();
+		if (setupComplete) { 
+			for (ChildMod child : children) {
+				if (child instanceof ChildModWithConfig) {
+					ChildModWithConfig mod = (ChildModWithConfig)child;
+					mod.syncConfig();
+				}
 			}
 		}
 	}
