@@ -10,6 +10,7 @@
 
 package com.specialeffect.mods.mousehandling;
 
+
 import java.text.DecimalFormat;
 
 import org.lwjgl.glfw.GLFW;
@@ -56,8 +57,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	private static KeyBinding mSensitivityUpKB;
 	private static KeyBinding mSensitivityDownKB;
 	private static KeyBinding mToggleMouseViewControlKB;
-	
-	//FIXME private Cursor mEmptyCursor;
+
 	private static IconOverlay mIconEye;
 	
 	private static int mTicksSinceMouseEvent = 1000;
@@ -83,17 +83,6 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		mToggleMouseViewControlKB = new KeyBinding("Toggle look with gaze (using mouse)", GLFW.GLFW_KEY_Y, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mToggleMouseViewControlKB);
 
-		// Set up an empty cursor to use when doing own mouse handling
-		/* FIXME int w = Cursor.getMinCursorSize(); // See https://www.glfw.org/docs/latest/input_guide.html#cursor_objects
-		IntBuffer buf = BufferUtils.createIntBuffer(4 * w * w);
-		BufferUtils.zeroBuffer(buf);
-		try {
-			mEmptyCursor = new Cursor(w, w, 0, 0, 1, buf, null);
-		} catch (LWJGLException e) {
-			LOGGER.debug("LWJGLException creating cursor");
-		}*/
-		
-		// post-init
 		MinecraftForge.EVENT_BUS.register(mIconEye);
 		
 		// Set up mouse helper to handle view control
@@ -294,24 +283,23 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		sens += getSensitivityIncrement(sens);
 		sens = Math.min(sens, 1.0f);
 		Minecraft.getInstance().gameSettings.mouseSensitivity = sens;
-	}		
+	}
+	
+	private void setEmptyCursor() {
+		GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), 
+								GLFW.GLFW_CURSOR, 
+								GLFW.GLFW_CURSOR_HIDDEN);
+	}
+	
+	private void setNativeCursor() {
+		GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), 
+								GLFW.GLFW_CURSOR, 
+								GLFW.GLFW_CURSOR_NORMAL);
+	}	
 
-	public void setMouseNotGrabbed() {				
+	public void setMouseNotGrabbed() {
 		ownMouseHelper.setUngrabbedMode(true);
-		
-		try {
-			LOGGER.debug("setting empty cursor");
-			//FIXME Mouse.setNativeCursor(mEmptyCursor);
-		} catch (Exception e) {
-			System.out.print("exception setting cursor");
-		}
-		
-		/*FIXME
-		catch (LWJGLException e) {		
-			System.out.print("LWJGLException setting native cursor");
-		} catch (NullPointerException e) {
-			System.out.print("Cursor is null, so can't set");
-		}*/
+		this.setEmptyCursor();
 	}
 
 	public static boolean hasPendingEvent() {
@@ -322,16 +310,12 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	public void onGuiOpen(GuiOpenEvent event) {
 		// For any  open event, make sure cursor not overridden
 		if (null != event.getGui()) {
-			/* FIXME try {				
-				Mouse.setNativeCursor(null);
-			} catch (LWJGLException e) {
-			}*/
-		}
-		else {
+			this.setNativeCursor();
+		} else {
 			// For any close event, make sure we're in the right 'grabbed' state.
 			// (also sets cursor if applicable)
-			if (mInputSource == InputSource.Mouse) {
-			// FIXME	this.setMouseNotGrabbed(); // doesn't seem necessary/appropriate now
+			if (mInputSource == InputSource.Mouse) {			
+				this.setEmptyCursor();
 			}
 		}
 	}
