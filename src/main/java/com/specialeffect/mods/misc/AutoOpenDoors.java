@@ -111,7 +111,8 @@ extends ChildMod implements ChildModWithConfig
 					for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext();) {
 						BlockPos pos = iterator.next();
 
-						if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > mDoorRadius*mDoorRadius) {
+						double closeRadius = mDoorRadius + 0.1; // avoids any jumpiness between states 
+						if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > closeRadius*closeRadius) {
 							Block block = world.getBlockState(pos).getBlock();
 
 							OpenableBlock.close(world, block, pos);
