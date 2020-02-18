@@ -181,9 +181,13 @@ public class EyeMineConfig {
     	// the configspec values are updated for us, but we may want to hook into 
     	// here to notify other mods?
     	LOGGER.debug("ModConfig onReload");    
-    	//FIXME: this calls for *any* config, not just this one...
+
     	//FIXME: this architecture is a bit circular, think about responsibilities
-    	EyeGaze.refresh();
+
+    	ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
+    	if (loadSpec == CLIENT_CONFIG || loadSpec == COMMON_CONFIG) {
+    		EyeGaze.refresh();
+    	}
     }
     
 

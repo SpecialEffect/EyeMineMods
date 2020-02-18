@@ -106,8 +106,12 @@ public class InventoryConfig {
 
     @SubscribeEvent
     public static void onReload(final ModConfig.ConfigReloading configEvent) {
-    	// the configspec values are updated for us, but we may want to hook into here too?
-    	LOGGER.debug("InventoryConfig onReload");        	
+    	LOGGER.debug("InventoryConfig onReload");   
+    	
+    	ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
+    	if (loadSpec == CLIENT_CONFIG || loadSpec == COMMON_CONFIG) {
+        	// the configspec values are updated for us, but we may want to hook into here too?
+    	}
     }
     
     //     * Standard Return Key if there is a problem reading the config.
