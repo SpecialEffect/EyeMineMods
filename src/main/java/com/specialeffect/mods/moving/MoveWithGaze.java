@@ -509,7 +509,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
 		if (mToggleAutoWalkKB.isPressed()) {
 			mDoingAutoWalk = !mDoingAutoWalk;
-			// FIXME: MouseHandler.setWalking(mDoingAutoWalk);
+			MouseHandler.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}

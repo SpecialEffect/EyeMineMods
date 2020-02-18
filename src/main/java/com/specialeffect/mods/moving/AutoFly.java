@@ -112,8 +112,7 @@ extends ChildMod implements ChildModWithConfig
 					}
 				}
 			}
-
-			/* FIXME
+			
 			// Check flying wasn't forcefully stopped from elsewhere
 			if ((mIsFlyingAuto || mIsFlyingManual) &&
 					!player.abilities.isFlying) {
@@ -124,7 +123,7 @@ extends ChildMod implements ChildModWithConfig
 					player.abilities.isFlying) {
 				mIsFlyingManual = true;
 				updateIcons();
-			}*/
+			}
 		}
 	}
 	
