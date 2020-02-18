@@ -11,7 +11,6 @@
 package com.specialeffect.callbacks;
 
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 public interface IOnLiving {
     public void onClientTick(ClientTickEvent event);   

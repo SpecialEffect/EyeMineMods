@@ -15,13 +15,10 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.utils.ModUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 

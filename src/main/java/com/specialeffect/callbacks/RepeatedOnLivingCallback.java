@@ -13,7 +13,6 @@ package com.specialeffect.callbacks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 public class RepeatedOnLivingCallback implements OnLivingCallback {
 
