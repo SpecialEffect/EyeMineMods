@@ -9,6 +9,7 @@ modLoader="javafml" #mandatory
 loaderVersion="[25,)" #mandatory (24 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods" #optional
+logoFile="eyemine_logo.png"
 
 [[mods]]
 modId="eyemine"
