@@ -132,8 +132,8 @@ public class EyeMineConfig {
 		flyHeightAuto = COMMON_BUILDER.comment("How high to fly in auto mode") 
 				.defineInRange("flyHeightAuto", 6, 1, 10);
 
-  		mRadiusDoors = COMMON_BUILDER.comment("How far away a player needs to be from a door to automatically open/close")
-  				.defineInRange("radiusDoors", 3,  1, 20);
+  		mRadiusDoors = COMMON_BUILDER.comment("How far away a player needs to be from a door to automatically open/close, set to zero to turn off door-opening")
+  				.defineInRange("radiusDoors", 3,  0, 20);
 
   		// This is limited to 6 blocks since the gui doesn't appear if block is too far away
   		mRadiusChests = COMMON_BUILDER.comment("How far away a player needs to be from a chest/table to be able to open it")
