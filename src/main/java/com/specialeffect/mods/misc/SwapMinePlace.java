@@ -16,7 +16,9 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings.Input;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -24,16 +26,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class SwapMinePlace  extends ChildMod {
 	public final String MODID = "swapmineplace";
-	//FIXME for 1.14 public static SimpleNetworkWrapper network;
 
 	public void setup(final FMLCommonSetupEvent event) {
-
-		// Register for server messages
-		//FIXME network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
-		//FIXME network.registerMessage(SendCommandMessage.Handler.class, SendCommandMessage.class, 0, Side.SERVER);
-	
-		//init
-
 		// Register key bindings
 		mSwapKB = new KeyBinding("Swap mine/place keys", GLFW.GLFW_KEY_F10, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSwapKB);		
@@ -47,19 +41,18 @@ public class SwapMinePlace  extends ChildMod {
 		
 		if (mSwapKB.isPressed()) {
 			
-			/* FIXME: re-instate when fixed
 			Input attackInput = Minecraft.getInstance().gameSettings.keyBindAttack.getKey();
 			Input useInput = Minecraft.getInstance().gameSettings.keyBindUseItem.getKey();
 			
-			// FIXME: test this!
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindAttack, useInput);
 			Minecraft.getInstance().gameSettings.setKeyBindingCode(Minecraft.getInstance().gameSettings.keyBindUseItem, attackInput);
-
-			ModUtils.sendPlayerMessage("Swapping mine and place keys");
 			
+			// It's important to force a reload
+			Minecraft.getInstance().gameSettings.saveOptions();
+			Minecraft.getInstance().gameSettings.loadOptions();
 			
-			ModUtils.sendPlayerMessage("Swap mine/place not implemented yet!");
-			*/
+			ModUtils.sendPlayerMessage("Swapping mine and place keys");			
+			
 		}
 	}
 }
