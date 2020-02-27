@@ -89,6 +89,10 @@ extends MouseHelper
     public double lastXVelocity = 0.0;
     public double lastYVelocity = 0.0;
     
+    private boolean hasGLcontext() {
+    	return GLFW.glfwGetCurrentContext() != 0;
+    }
+    
     /** public entry points for automated cursor actions **/
    
     public void moveCursor(double xpos, double ypos) {
@@ -534,6 +538,7 @@ extends MouseHelper
      */
     public void grabMouse() {
     	System.out.println("grabMouse");
+    	if (!this.hasGLcontext()) { return; }
        if (this.minecraft.isGameFocused()) {
           if (!this.mouseGrabbed) {
              if (!Minecraft.IS_RUNNING_ON_MAC) {
@@ -556,6 +561,7 @@ extends MouseHelper
     }
     
     public void setUngrabbedMode(boolean ungrabbed) {
+    	if (!this.hasGLcontext()) { return; }
     	this.ungrabbedMouseMode = ungrabbed;
     	if (ungrabbed) {
     		this.ungrabMouse();
@@ -569,6 +575,7 @@ extends MouseHelper
      * Resets the player keystate, disables the ingame focus, and ungrabs the mouse cursor.
      */
     public void ungrabMouse() {
+    	if (!this.hasGLcontext()) { return; }
        if (this.mouseGrabbed) {
           this.mouseGrabbed = false;
           this.mouseX = (double)(this.minecraft.mainWindow.getWidth() / 2);

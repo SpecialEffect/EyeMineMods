@@ -30,6 +30,7 @@ import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -61,6 +62,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	private static IconOverlay mIconEye;
 	
 	private static int mTicksSinceMouseEvent = 1000;
+	
+	private boolean hasPendingConfigChange = false;
 
 	public void setup(final FMLCommonSetupEvent event) {
 		
@@ -177,11 +180,10 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL);			
 		}
 	}
-		
-	public void syncConfig() {
-		LOGGER.debug("syncConfig MouseHandler");
-		LOGGER.debug("usingMouseEmulation: " + 
-				EyeMineConfig.usingMouseEmulation.get());
+	
+	private void syncConfigImpl() {
+		// This has to be run on the main client thread, 
+		// since it needs the right GL context
 		
 		if (EyeMineConfig.usingMouseEmulation.get()) {
 			ownMouseHelper.setUngrabbedMode(true);
@@ -207,7 +209,20 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			}
 		}
 	}
+	
+		
+	public void syncConfig() {	
+		// wait until we're on GL thread before making changes...
+		this.hasPendingConfigChange = true;					
+	}
 
+	@SubscribeEvent
+	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
+		if (this.hasPendingConfigChange) {
+			syncConfigImpl();
+			this.hasPendingConfigChange = false;
+		}
+	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST) // important we get this
 														// *after* other mods
