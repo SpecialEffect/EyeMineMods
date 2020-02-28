@@ -162,21 +162,15 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 					forward *= fpsFactor();							
             	}
 
-				//FIXME: this relates to swimming
-				if (player.isInWater() && Swim.isSwimmingOn()) {
-					// if the player is swimming, and is more than one block under, don't move forward yet
+            	// The built-in autojump doesn't work when you're underwater, so we do our own implementation here 
+				if (player.isInWater()) {
 					
-					// if the player is swimming and there's a block in front, or in-front-one-down,
-					// then jump before moving
+					// Check the blocks around the player
 			    	World world = Minecraft.getInstance().world;
 
-					BlockPos playerPos = player.getPosition();
 					Vec3d posVec = player.getPositionVector();
 					Vec3d forwardVec = player.getForward();
-										
-					BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
-							playerPos.getY()+1, playerPos.getZ());
-
+					
 					Vector2d forward2d = new Vector2d(forwardVec.x, forwardVec.z);
 					forward2d.normalize();
 					
@@ -184,37 +178,24 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 							posVec.x + forward2d.x,
 							posVec.y , //y is UP
 							posVec.z + forward2d.y);
-					BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
-								
-					Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
-			    	
-					Material materialAbove = world.getBlockState(blockAbovePos).getMaterial();
-					Material materialHere = world.getBlockState(playerPos).getMaterial();
+					
+					BlockPos blockInFrontAbovePos = blockInFrontPos.add(0, 1, 0);
+												
 			    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
-			    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
+			    	Material materialAboveInFront = world.getBlockState(blockInFrontAbovePos).getMaterial();
 			    			    	
-			    	// only move if not in deep water
-			    	
-			    	// TODO: replace with LiquidBlockMatcher ?
-//			    	if (blockAbove != null && !(blockAbove instanceof FlowingFluidBlock)) {
-			    		
-			    		// if there's an obstruction in front, move up slightly first
-			    		if ((materialInFront != null  && materialInFront.isSolid()) &&
-			    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
-			    		{
-			    			if (jumpTicks == 0) {
+		    		if ((materialInFront != null  && materialInFront.isSolid()) &&
+		    			(materialAboveInFront != null  && !materialAboveInFront.isSolid()))
+		    		{
+		    			if (jumpTicks == 0) {
 							channel.sendToServer(new JumpMessage(player.getName().toString()));
 							player.jump();	
 							
 							// only jump every N ticks...
 							jumpTicks = 20;
-			    			
-			    			}
-			    		}
+		    			}
+		    		}
 				}
-				
-						
-					//}
 				
 				
 				// If riding, we need to move the ridden entity, not the player
