@@ -20,7 +20,9 @@ import javax.vecmath.Vector2d;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.messages.JumpMessage;
+import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
@@ -44,6 +46,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -85,6 +88,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
         int id = 0;         
         channel.registerMessage(id++, JumpMessage.class, JumpMessage::encode, 
         		JumpMessage::decode, JumpMessage.Handler::handle);                   	   
+        channel.registerMessage(id++, MovePlayerMessage.class, MovePlayerMessage::encode, 
+        		MovePlayerMessage::decode, MovePlayerMessage.Handler::handle);                   	   
 		        
 		// Register key bindings
 		mToggleAutoWalkKB = new KeyBinding("Start/stop walking forward", GLFW.GLFW_KEY_H, CommonStrings.EYEGAZE_COMMON);
@@ -99,10 +104,11 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
+				
 	}
 
 	public void syncConfig() {
-		mQueueLength = EyeMineConfig.filterLength.get();
+		mQueueLength =10;
 		mMoveWhenMouseStationary = EyeMineConfig.moveWhenMouseStationary.get();
 		mCustomSpeedFactor = EyeMineConfig.customSpeedFactor.get().floatValue();
 	}
@@ -240,11 +246,20 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 								forward *= 0.5;
 							}
 						}
-						else { // riding something other than a boat
-							for (int i = 0; i < 2; i++) {
-								//FIXME WalkIncrements.network.sendToServer(
-									//new MovePlayerMessage(halfForward, 0.0f));
-							}
+						else if (riddenEntity instanceof MinecartEntity) {
+							MinecartEntity cart = (MinecartEntity)riddenEntity;
+							Vec3d motion3d = player.getLookVec();
+							Vec3d motionAligned = motion3d.mul(1.0, 0, 1.0);
+							motionAligned.normalize();
+							
+							// Our movement override isn't enough to get cart moving
+							// It's critical we add motion to player on the server, not just
+							// locally
+							player.setMotion(motionAligned);
+							channel.sendToServer(new MovePlayerMessage(motionAligned));
+						}
+						else {
+							// Any other ridden entities that don't work with the movement override??
 						}
 					}
 				}
