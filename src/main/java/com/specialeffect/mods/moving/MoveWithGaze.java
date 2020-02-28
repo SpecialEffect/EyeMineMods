@@ -71,7 +71,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public static float mCustomSpeedFactor = 0.8f;
 
     private int jumpTicks = 0;
-    private boolean overriddenSteering = false;
     
     private BoatController boatController = new BoatController(0.5,  0,  0);
     
@@ -249,63 +248,15 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 						}
 					}
 				}
-				else {					
-//					if (player.isInWater() && Swim.isSwimmingOn()) {
-//						// if the player is swimming, and is more than one block under, don't move forward yet
-//						
-//						// if the player is swimming and there's a block in front, or in-front-one-down,
-//						// then jump before moving
-//				    	World world = Minecraft.getInstance().world;
-//
-//						BlockPos playerPos = player.getPosition();
-//						Vec3d posVec = player.getPositionVector();
-//						Vec3d forwardVec = player.getForward();
-//						
-//						BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
-//								playerPos.getY()+1, playerPos.getZ());
-//
-//						BlockPos blockInFrontPos = new BlockPos(
-//								posVec.x + forwardVec.x,
-//								posVec.y + forwardVec.y,
-//								posVec.z + forwardVec.z);
-//						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
-//									
-//						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
-//				    	
-//				    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
-//				    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
-//				    			    	
-//				    	// only move if not in deep water
-//				    	
-//				    	// TODO: replace with LiquidBlockMatcher ?
-//				    	if (blockAbove != null && !(blockAbove instanceof LiquidBlock)) {
-//				    		
-//				    		// if there's an obstruction in front, move up slightly first
-//				    		if ((materialInFront != null  && materialInFront.isSolid()) ||
-//				    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
-//				    		{
-//				    			player.move(MoverType.SELF, 0, 0.2, 0);
-//				    		}
-//				    		
-//							for (int i = 0; i < 2; i++) {
-//								// TODO: moveRelative (but not sure about friction)
-//								player.moveEntityWithHeading(0.0f, halfForward);
-//							}
-//							
-//						}
-//					}
-//					else {
-//						for (int i = 0; i < 2; i++) {
-////							player.handleWaterMovement();
-//							player.moveEntityWithHeading(0.0f, halfForward);
-//						}
-//					}
+				else {
+					boatController.releaseKeys();
 				}
-				
+            	
 				ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);
 			}
             else {
-            	ownMovementInput.setWalkOverride(false, 0.0f);
+            	boatController.releaseKeys();
+            	ownMovementInput.setWalkOverride(false, 0.0f);            	
             }
 			
     	}

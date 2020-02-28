@@ -29,6 +29,19 @@ public class BoatController {
 	private boolean haveOverriddenLeft = false;
 	private boolean haveOverriddenRight = false;
 
+	public void releaseKeys() {
+		final KeyBinding kbLeft = Minecraft.getInstance().gameSettings.keyBindLeft;
+		final KeyBinding kbRight = Minecraft.getInstance().gameSettings.keyBindRight;
+		
+		if (haveOverriddenLeft) {
+			KeyBinding.setKeyBindState(kbLeft.getKey(), false);
+			haveOverriddenLeft = false;
+		}
+		if (haveOverriddenRight) {
+			KeyBinding.setKeyBindState(kbRight.getKey(), false);
+			haveOverriddenRight = false;
+		}
+	}
 	
 	// speed [-1, +1] where +1 is for turning right
 	// if abs(speed) > 1, it will just clip the effect
@@ -49,14 +62,7 @@ public class BoatController {
 			}
 		}
 		else {
-			if (haveOverriddenLeft) {
-				KeyBinding.setKeyBindState(kbLeft.getKey(), false);
-				haveOverriddenLeft = false;
-			}
-			if (haveOverriddenRight) {
-				KeyBinding.setKeyBindState(kbRight.getKey(), false);
-				haveOverriddenRight = false;
-			}
+			this.releaseKeys();
 		}
 	}
 	
