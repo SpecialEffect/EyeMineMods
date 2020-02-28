@@ -64,7 +64,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	private static KeyBinding mIncreaseWalkSpeedKB;
 	private static KeyBinding mDecreaseWalkSpeedKB;
 
-	// FIXME public static Configuration mConfig;
 	private static int mQueueLength = 50;
 
 	private static boolean mMoveWhenMouseStationary = false;
@@ -121,7 +120,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
        		while (mPrevLookDirs.size() > mQueueLength) {
        			mPrevLookDirs.remove();
        		}
-       		
        		MovementInputFromOptionsOverride ownMovementInput = EyeGaze.ownMovementOverride;
        		
        		// Explanation of strategy:
@@ -136,45 +134,34 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
             	null == Minecraft.getInstance().currentScreen &&	
                 (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent())) {
 
-            	double forward = (double)mCustomSpeedFactor; 
+            	double forward = (double)mCustomSpeedFactor*2.0f; 
             	
-            	// Slow down when you've been turning a corner
-            	double slowDownCorners= slowdownFactorViewDirs();
-            	
-            	// Slow down when you've got a wall in front of you
-            	// TODO: Rethink this. It wasn't working so well
-            	//double slowDownWalls = slowdownFactorWall(player);
-            	
-            	// Slow down when you're looking really far up/down
-            	double slowDownPitch = slowdownFactorPitch(player);
-            			
-				if (!player.isOnLadder()) {
-					forward *= Math.min(slowDownCorners, slowDownPitch);
-				}
+            	if (!EyeMineConfig.mTurnOffSlowdown.get()) {
+	            	// Slow down when you've been turning a corner
+	            	double slowDownCorners= slowdownFactorViewDirs();
+	            	
+	            	// Slow down when you've got a wall in front of you
+	            	// TODO: Rethink this. It wasn't working so well
+	            	//double slowDownWalls = slowdownFactorWall(player);
+	            	
+	            	// Slow down when you're looking really far up/down
+	            	double slowDownPitch = slowdownFactorPitch(player);
+	            			
+					if (!player.isOnLadder()) {
+						forward *= Math.min(slowDownCorners, slowDownPitch);
+					}
+	
+	            	// Slow down if you're facing an animal/mob while attacking
+					// (without this it's easy to run past)				
+					if (ContinuouslyAttack.mIsAttacking) { 
+		            	forward *= slowdownFactorEntity(player);
+					}
+	
+					// Adjust according to FPS (to get some consistency across
+					// installations)
+					forward *= fpsFactor();							
+            	}
 
-            	// Slow down if you're facing an animal/mob while attacking
-				// (without this it's easy to run past)				
-				if (ContinuouslyAttack.mIsAttacking) { 
-	            	forward *= slowdownFactorEntity(player);
-				}
-
-				// Adjust according to FPS (to get some consistency across
-				// installations)
-				forward *= fpsFactor();		
-				
-				if (EyeMineConfig.mTurnOffSlowdown.get()) {
-					//ignore all the slowdown, go back to default
-	            	forward = (double)mCustomSpeedFactor; 
-				}
-
-            	// since the user-configurable range of speeds should allow 
-            	// faster than MC's maximum walking speed, we request half 
-            	// the overall distance twice. If we request any more than
-            	// moveEntityWithHeading( ..., forward=1.0), we don't travel
-            	// any further.
-				//FIXME: we don't do this any more! 
-				float halfForward = (float)(forward/2.0);
-				
 				//FIXME: this relates to swimming
 				if (player.isInWater() && Swim.isSwimmingOn()) {
 					// if the player is swimming, and is more than one block under, don't move forward yet
@@ -343,7 +330,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				}*/
 
 				// This probably won't work for some ridden entities, e.g. boats. See above.
-				ownMovementInput.setWalkOverride(mDoingAutoWalk, 4.0f*halfForward);			
+				ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);			
 			}
             else {
             	ownMovementInput.setWalkOverride(false, 0.0f);
