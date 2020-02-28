@@ -43,6 +43,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -70,6 +71,9 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public static float mCustomSpeedFactor = 0.8f;
 
     private int jumpTicks = 0;
+    private boolean overriddenSteering = false;
+    
+    private BoatController boatController = new BoatController(0.5,  0,  0);
     
 	public MoveWithGaze() {
 	}
@@ -198,11 +202,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				}
 				
 				
-				// If riding, we need to move the ridden entity, not the player
-				// This is a little tricky for some rideable things, and isn't 
-				// guaranteed to work perfectly
-				//FIXME: put back in 
-				/*if (player.isPassenger()) {
+				// If riding, we may need to do things differently
+				if (player.isPassenger()) {
 
 					Entity riddenEntity = player.getRidingEntity();
 
@@ -212,41 +213,32 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 							// so we first steer left/right with keys until the boat
 							// and the player's view are aligned, only then move 
 							// forward 
-							float yawError = riddenEntity.rotationYaw - player.rotationYaw;
-							if (yawError < -180) {
-								yawError += 360;
-							}
-							if (yawError > 180) {
-								yawError -= 360;
-							}
+							BoatEntity boat = (BoatEntity)riddenEntity;
+							if (boat.canPassengerSteer()) {								
+								
+								float yawError = boat.rotationYaw - player.rotationYaw;			
+								yawError %= 360;
+								if (yawError < -180) {
+									yawError += 360;
+								}
+								if (yawError > 180) {
+									yawError -= 360;
+								}
+								System.out.println(yawError);
+								
+								boatController.pid_step(boat, yawError);
 							
-							final KeyBinding kbLeft = Minecraft.getInstance().gameSettings.keyBindLeft;
-							final KeyBinding kbRight = Minecraft.getInstance().gameSettings.keyBindRight;
-
-							boolean needToRotate = Math.abs(yawError) > 20;
-
-							if (needToRotate) {
-								// press key, release after one tick
-								if (yawError > 0) {
-									KeyBinding.setKeyBindState(kbLeft.getKey(), true);
+								// downscale the forward motion if we've got lots of turning to do first
+								float yawErrorAbs = Math.abs(yawError);
+								if (yawErrorAbs > 5) {
+									forward *= (180 - yawErrorAbs)/180;									
 								}
-								else {
-									KeyBinding.setKeyBindState(kbRight.getKey(), true);
+								else if (yawErrorAbs > 45) {
+									forward = 0.0;
 								}
-								this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {
-									@Override
-									public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
-										KeyBinding.setKeyBindState(kbLeft.getKey(), false);
-										KeyBinding.setKeyBindState(kbRight.getKey(), false);
-									}
-								}, 1));
-							}							
-							else { // riding boat, facing right direction
-								for (int i = 0; i < 2; i++) {
-									//FIXME WalkIncrements.network.sendToServer(
-										//new MovePlayerMessage(halfForward, 0.0f));
-								}
+								
+								// slower in general since boats are quite hard to control
+								forward *= 0.5;
 							}
 						}
 						else { // riding something other than a boat
@@ -258,60 +250,59 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 					}
 				}
 				else {					
-					if (player.isInWater() && Swim.isSwimmingOn()) {
-						// if the player is swimming, and is more than one block under, don't move forward yet
-						
-						// if the player is swimming and there's a block in front, or in-front-one-down,
-						// then jump before moving
-				    	World world = Minecraft.getInstance().world;
-
-						BlockPos playerPos = player.getPosition();
-						Vec3d posVec = player.getPositionVector();
-						Vec3d forwardVec = player.getForward();
-						
-						BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
-								playerPos.getY()+1, playerPos.getZ());
-
-						BlockPos blockInFrontPos = new BlockPos(
-								posVec.x + forwardVec.x,
-								posVec.y + forwardVec.y,
-								posVec.z + forwardVec.z);
-						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
-									
-						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
-				    	
-				    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
-				    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
-				    			    	
-				    	// only move if not in deep water
-				    	
-				    	// TODO: replace with LiquidBlockMatcher ?
-				    	if (blockAbove != null && !(blockAbove instanceof LiquidBlock)) {
-				    		
-				    		// if there's an obstruction in front, move up slightly first
-				    		if ((materialInFront != null  && materialInFront.isSolid()) ||
-				    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
-				    		{
-				    			player.move(MoverType.SELF, 0, 0.2, 0);
-				    		}
-				    		
-							for (int i = 0; i < 2; i++) {
-								// TODO: moveRelative (but not sure about friction)
-								player.moveEntityWithHeading(0.0f, halfForward);
-							}
-							
-						}
-					}
-					else {
-						for (int i = 0; i < 2; i++) {
-//							player.handleWaterMovement();
-							player.moveEntityWithHeading(0.0f, halfForward);
-						}
-					}
-				}*/
-
-				// This probably won't work for some ridden entities, e.g. boats. See above.
-				ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);			
+//					if (player.isInWater() && Swim.isSwimmingOn()) {
+//						// if the player is swimming, and is more than one block under, don't move forward yet
+//						
+//						// if the player is swimming and there's a block in front, or in-front-one-down,
+//						// then jump before moving
+//				    	World world = Minecraft.getInstance().world;
+//
+//						BlockPos playerPos = player.getPosition();
+//						Vec3d posVec = player.getPositionVector();
+//						Vec3d forwardVec = player.getForward();
+//						
+//						BlockPos blockAbovePos = new BlockPos(playerPos.getX(),
+//								playerPos.getY()+1, playerPos.getZ());
+//
+//						BlockPos blockInFrontPos = new BlockPos(
+//								posVec.x + forwardVec.x,
+//								posVec.y + forwardVec.y,
+//								posVec.z + forwardVec.z);
+//						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
+//									
+//						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
+//				    	
+//				    	Material materialInFront = world.getBlockState(blockInFrontPos).getMaterial();
+//				    	Material materialBelowInFront = world.getBlockState(blockInFrontBelowPos).getMaterial();
+//				    			    	
+//				    	// only move if not in deep water
+//				    	
+//				    	// TODO: replace with LiquidBlockMatcher ?
+//				    	if (blockAbove != null && !(blockAbove instanceof LiquidBlock)) {
+//				    		
+//				    		// if there's an obstruction in front, move up slightly first
+//				    		if ((materialInFront != null  && materialInFront.isSolid()) ||
+//				    			(materialBelowInFront != null  && materialBelowInFront.isSolid()))
+//				    		{
+//				    			player.move(MoverType.SELF, 0, 0.2, 0);
+//				    		}
+//				    		
+//							for (int i = 0; i < 2; i++) {
+//								// TODO: moveRelative (but not sure about friction)
+//								player.moveEntityWithHeading(0.0f, halfForward);
+//							}
+//							
+//						}
+//					}
+//					else {
+//						for (int i = 0; i < 2; i++) {
+////							player.handleWaterMovement();
+//							player.moveEntityWithHeading(0.0f, halfForward);
+//						}
+//					}
+				}
+				
+				ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);
 			}
             else {
             	ownMovementInput.setWalkOverride(false, 0.0f);
@@ -463,6 +454,12 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		if (mDoingAutoWalk) {
 			mDoingAutoWalk = false;
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+			
+			// Make sure any overridden key bindings are removed
+			final KeyBinding kbLeft = Minecraft.getInstance().gameSettings.keyBindLeft;
+			final KeyBinding kbRight = Minecraft.getInstance().gameSettings.keyBindRight;
+			KeyBinding.setKeyBindState(kbLeft.getKey(), false);
+			KeyBinding.setKeyBindState(kbRight.getKey(), false);
 		}
 	}
 
@@ -470,10 +467,13 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	public void onKeyInput(KeyInputEvent event) {
 		if (ModUtils.hasActiveGui()) { return; }
 
-		if (mToggleAutoWalkKB.isPressed()) {
+		if (mToggleAutoWalkKB.isPressed()) {			
 			mDoingAutoWalk = !mDoingAutoWalk;
 			MouseHandler.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
+			if (!mDoingAutoWalk) {
+				MoveWithGaze.stop();
+			}
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
 		if (mDecreaseWalkSpeedKB.isPressed()) {
