@@ -99,18 +99,18 @@ public class EyeMineConfig {
     	// to split up again    
 		
     	customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze")
-      		.defineInRange("customSpeedFactor", 0.8f, 0.25f, 2.0f);                
+      		.defineInRange("walkingSpeed", 0.8f, 0.25f, 2.0f);                
       
       	defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?")
       		.define("defaultDoAutoJump", true);
 
-      	usingMouseEmulation = CLIENT_BUILDER.comment("Enable mouse-emulation compatibility mode. Turn this on if you're using mouse position as an input to EyeMine").
+      	usingMouseEmulation = CLIENT_BUILDER.comment("Enable mouse-emulation compatibility mode?.\nTurn this on if you're using mouse position as an input to EyeMine").
       		define("usingMouseEmulation", false);
 
-		mAutoSelectSword = CLIENT_BUILDER.comment("When attacking, do you want a sword selected automatically?")
+		mAutoSelectSword = CLIENT_BUILDER.comment("When attacking, do you want a sword selected automatically?\nThis only applies in Creative Mode.")
 				.define("autoSelectSword", true);
 		
-		mAutoSelectTool = CLIENT_BUILDER.comment("Auto-select tool for mining")
+		mAutoSelectTool = CLIENT_BUILDER.comment("When mining, do you want pickaxe selected automatically?\nThis only applies in Creative Mode.")
    			.define("autoSelectTool",  true);
 		
     }
@@ -118,20 +118,20 @@ public class EyeMineConfig {
     private static void setupAdvancedConfig() {    			
 		
     	// Flying
-		flyHeightManual = CLIENT_BUILDER.comment("How high to fly in manual mode")
+		flyHeightManual = CLIENT_BUILDER.comment("How high to fly (up/down) in manual mode")
 				.defineInRange("flyHeightManual", 2, 1, 20);
 		
 		flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode") 
 				.defineInRange("flyHeightAuto", 6, 1, 10);
 
-  		mRadiusDoors = CLIENT_BUILDER.comment("How far away a player needs to be from a door to automatically open/close, set to zero to turn off door-opening")
-  				.defineInRange("radiusDoors", 3,  0, 20);
+  		mRadiusDoors = CLIENT_BUILDER.comment("How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
+  				.defineInRange("radiusDoors", 2,  0, 10);
 
   		// This is limited to 6 blocks since the gui doesn't appear if block is too far away
   		mRadiusChests = CLIENT_BUILDER.comment("How far away a player needs to be from a chest/table to be able to open it")
   				.defineInRange("radiusChests", 5, 1, 6);  
   		
-        moveWhenMouseStationary = CLIENT_BUILDER.comment("Continue walking forward when the mouse is stationary? Recommended to be turned off for eye gaze control, on for joysticks.")
+        moveWhenMouseStationary = CLIENT_BUILDER.comment("Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
         		.define("moveWhenMouseStationary", false);
         
         mTurnOffSlowdown = CLIENT_BUILDER.comment("Turn off walking slowdown functionality")
@@ -141,9 +141,9 @@ public class EyeMineConfig {
     
     private static void setupExpertConfig() {    			
 		
-		// Move with gaze
-		filterLength = CLIENT_BUILDER.comment("How many ticks to take into account for slowing down while looking around. (smaller number = faster)")
-				.defineInRange("walkingFilterLength", 50, 1, 200);
+		    // Move with gaze
+		    filterLength = CLIENT_BUILDER.comment("How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
+				.defineInRange("walkingSlowdownFilter", 30, 1, 200);
 
         // MouseHandler
         mDeadBorder = CLIENT_BUILDER.comment("Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.")
