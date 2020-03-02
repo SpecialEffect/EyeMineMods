@@ -25,6 +25,7 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.settings.KeyBinding;
@@ -177,37 +178,9 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		}
 		else {
 			mInputSource = InputSource.EyeTracker;
-			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL);			
-		}
-	}
-	
-	private void syncConfigImpl() {
-		// This has to be run on the main client thread, 
-		// since it needs the right GL context
-		
-		if (EyeMineConfig.usingMouseEmulation.get()) {
-			ownMouseHelper.setUngrabbedMode(true);
-
-			if (mInputSource != InputSource.Mouse) {
-				LOGGER.debug("using mouse");
-				mInputSource = InputSource.Mouse;
-				MouseHandler.updateState(InteractionState.MOUSE_NOTHING); 
-			}
-			else {
-				LOGGER.debug("nothing to change");
-			}
-		} else {
+			MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL);
 			ownMouseHelper.setUngrabbedMode(false);
-
-			if (mInputSource != InputSource.EyeTracker) {
-				LOGGER.debug("using eyetracker");
-				mInputSource = InputSource.EyeTracker;
-				MouseHandler.updateState(InteractionState.EYETRACKER_NORMAL); 
-			} 
-			else {
-				LOGGER.debug("nothing to change");
-			}
-		}
+		}		
 	}
 	
 		
@@ -216,10 +189,11 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		this.hasPendingConfigChange = true;					
 	}
 
-	@SubscribeEvent
-	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
+	private void syncConfigImpl() {
 		if (this.hasPendingConfigChange) {
-			syncConfigImpl();
+			// These changes need to happen on the main UI thread,   
+			// since they need the right GL context	
+			setupInitialState();
 			this.hasPendingConfigChange = false;
 		}
 	}
@@ -237,9 +211,12 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			else {
 				mTicksSinceMouseEvent++;
 			}
-			
-			
 		}
+    	
+    	if (!(Minecraft.getInstance().currentScreen instanceof ConfigScreen)) {
+    		//	Sync config if necessary, but not while in config screen! 
+    		syncConfigImpl();	
+    	}
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // important we get this
@@ -323,6 +300,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
+
 		// For any  open event, make sure cursor not overridden
 		if (null != event.getGui()) {
 			this.setNativeCursor();
