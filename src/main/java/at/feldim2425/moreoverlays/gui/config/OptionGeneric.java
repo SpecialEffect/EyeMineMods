@@ -1,5 +1,6 @@
 package at.feldim2425.moreoverlays.gui.config;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,13 @@ public class OptionGeneric<V>
 
     @Override
     protected void overrideUnsaved(V value) {
-        this.tfConfigEntry.setText(value.toString());
+    	if (this.value instanceof ForgeConfigSpec.DoubleValue){
+    		DecimalFormat df = new DecimalFormat("###.##");
+            this.tfConfigEntry.setText(df.format(value));
+    	}
+    	else {
+    		this.tfConfigEntry.setText(value.toString());
+    	}
     }
 
     @Override
