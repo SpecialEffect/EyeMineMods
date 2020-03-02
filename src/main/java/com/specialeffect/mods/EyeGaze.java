@@ -46,9 +46,11 @@ import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.ModUtils;
 
+import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -124,6 +126,10 @@ public class EyeGaze {
 	        
 			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
 			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+			
+            // Hook up config gui
+            ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> this::openSettings);
+
 		});
 	}
 	
@@ -140,7 +146,11 @@ public class EyeGaze {
 			event.setGui(new CustomMainMenu());
 		}
 	}
-	
+
+	public Screen openSettings(Minecraft mc, Screen modlist){
+		return new ConfigScreen(modlist, EyeMineConfig.CLIENT_CONFIG, MODID);
+	}
+    
 	@SubscribeEvent()
     public void onClientTick(ClientTickEvent event) {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
