@@ -24,11 +24,7 @@ public class EyeMineConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
 	
-    public static final String CATEGORY_GENERAL = "general";
-    public static final String CATEGORY_POWER = "power";
-    public static final String SUBCATEGORY_FIRSTBLOCK = "firstblock";
-    
- // Category names for clustering config options in different UIs
+    // Category names for clustering config options in different UIs
     public static final String CATEGORY_BASIC = "basic";
  	public static final String CATEGORY_ADVANCED = "advanced";
  	public static final String CATEGORY_EXPERT = "expert";
@@ -37,10 +33,8 @@ public class EyeMineConfig {
  	public static final String CATEGORY_ADVANCED_USERSTRING = "Advanced options";
  	public static final String CATEGORY_EXPERT_USERSTRING = "Expert options";
 
-    private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-    public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     public static ForgeConfigSpec.IntValue FIRSTBLOCK_MAXPOWER;
@@ -82,20 +76,18 @@ public class EyeMineConfig {
      public static ForgeConfigSpec.BooleanValue mAutoSelectSword;
 
     static {
-    	//FIXME: can all these live in client config?
-        COMMON_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
+        CLIENT_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
         setupBasicConfig();        
-        COMMON_BUILDER.pop();
+        CLIENT_BUILDER.pop();
 
-        COMMON_BUILDER.comment(CATEGORY_ADVANCED_USERSTRING).push(CATEGORY_ADVANCED);
+        CLIENT_BUILDER.comment(CATEGORY_ADVANCED_USERSTRING).push(CATEGORY_ADVANCED);
         setupAdvancedConfig();
-        COMMON_BUILDER.pop();
+        CLIENT_BUILDER.pop();
 
-        COMMON_BUILDER.comment(CATEGORY_EXPERT_USERSTRING).push(CATEGORY_EXPERT);
+        CLIENT_BUILDER.comment(CATEGORY_EXPERT_USERSTRING).push(CATEGORY_EXPERT);
         setupExpertConfig();
-        COMMON_BUILDER.pop();
+        CLIENT_BUILDER.pop();
 
-        COMMON_CONFIG = COMMON_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
@@ -106,19 +98,19 @@ public class EyeMineConfig {
     	// in text file there's no limit to comment lenght, but if we make a GUI we'll need
     	// to split up again    
 		
-    	customSpeedFactor = COMMON_BUILDER.comment("Walking speed for walk-with-gaze")
+    	customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze")
       		.defineInRange("customSpeedFactor", 0.8f, 0.25f, 2.0f);                
       
-      	defaultDoAutoJump = COMMON_BUILDER.comment("Auto-jump switched on by default?")
+      	defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?")
       		.define("defaultDoAutoJump", true);
 
-      	usingMouseEmulation = COMMON_BUILDER.comment("Enable mouse-emulation compatibility mode. Turn this on if you're using mouse position as an input to EyeMine").
+      	usingMouseEmulation = CLIENT_BUILDER.comment("Enable mouse-emulation compatibility mode. Turn this on if you're using mouse position as an input to EyeMine").
       		define("usingMouseEmulation", false);
 
-		mAutoSelectSword = COMMON_BUILDER.comment("When attacking, do you want a sword selected automatically?")
+		mAutoSelectSword = CLIENT_BUILDER.comment("When attacking, do you want a sword selected automatically?")
 				.define("autoSelectSword", true);
 		
-		mAutoSelectTool = COMMON_BUILDER.comment("Auto-select tool for mining")
+		mAutoSelectTool = CLIENT_BUILDER.comment("Auto-select tool for mining")
    			.define("autoSelectTool",  true);
 		
     }
@@ -126,23 +118,23 @@ public class EyeMineConfig {
     private static void setupAdvancedConfig() {    			
 		
     	// Flying
-		flyHeightManual = COMMON_BUILDER.comment("How high to fly in manual mode")
+		flyHeightManual = CLIENT_BUILDER.comment("How high to fly in manual mode")
 				.defineInRange("flyHeightManual", 2, 1, 20);
 		
-		flyHeightAuto = COMMON_BUILDER.comment("How high to fly in auto mode") 
+		flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode") 
 				.defineInRange("flyHeightAuto", 6, 1, 10);
 
-  		mRadiusDoors = COMMON_BUILDER.comment("How far away a player needs to be from a door to automatically open/close, set to zero to turn off door-opening")
+  		mRadiusDoors = CLIENT_BUILDER.comment("How far away a player needs to be from a door to automatically open/close, set to zero to turn off door-opening")
   				.defineInRange("radiusDoors", 3,  0, 20);
 
   		// This is limited to 6 blocks since the gui doesn't appear if block is too far away
-  		mRadiusChests = COMMON_BUILDER.comment("How far away a player needs to be from a chest/table to be able to open it")
+  		mRadiusChests = CLIENT_BUILDER.comment("How far away a player needs to be from a chest/table to be able to open it")
   				.defineInRange("radiusChests", 5, 1, 6);  
   		
-        moveWhenMouseStationary = COMMON_BUILDER.comment("Continue walking forward when the mouse is stationary? Recommended to be turned off for eye gaze control, on for joysticks.")
+        moveWhenMouseStationary = CLIENT_BUILDER.comment("Continue walking forward when the mouse is stationary? Recommended to be turned off for eye gaze control, on for joysticks.")
         		.define("moveWhenMouseStationary", false);
         
-        mTurnOffSlowdown = COMMON_BUILDER.comment("Turn off walking slowdown functionality")
+        mTurnOffSlowdown = CLIENT_BUILDER.comment("Turn off walking slowdown functionality")
         	.define("turnOffSlowdown", false);
         
     }
@@ -150,11 +142,11 @@ public class EyeMineConfig {
     private static void setupExpertConfig() {    			
 		
 		// Move with gaze
-		filterLength = COMMON_BUILDER.comment("How many ticks to take into account for slowing down while looking around. (smaller number = faster)")
+		filterLength = CLIENT_BUILDER.comment("How many ticks to take into account for slowing down while looking around. (smaller number = faster)")
 				.defineInRange("walkingFilterLength", 50, 1, 200);
 
         // MouseHandler
-        mDeadBorder = COMMON_BUILDER.comment("Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.")
+        mDeadBorder = CLIENT_BUILDER.comment("Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.")
         		.defineInRange("deadBorder", 0.1, 0.0, 0.25);
     	     	
     }
@@ -185,7 +177,7 @@ public class EyeMineConfig {
     	//FIXME: this architecture is a bit circular, think about responsibilities
 
     	ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
-    	if (loadSpec == CLIENT_CONFIG || loadSpec == COMMON_CONFIG) {
+    	if (loadSpec == CLIENT_CONFIG) {
     		EyeGaze.refresh();
     	}
     }

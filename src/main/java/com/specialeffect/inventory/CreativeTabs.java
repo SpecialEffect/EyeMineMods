@@ -36,19 +36,14 @@ public class CreativeTabs
 
 	public static final String MODID = "creativetabs";
 	
-	public static EyeMineConfig mConfig;
-
 	public CreativeTabs() {
 		// Register ourselves for server and other game events we are interested in
 
 		// Config setup
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG);
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, InventoryConfig.COMMON_CONFIG);
 
 		InventoryConfig.loadConfig(InventoryConfig.CLIENT_CONFIG,
-				FMLPaths.CONFIGDIR.get().resolve("inventory-client.toml"));
-		InventoryConfig.loadConfig(InventoryConfig.COMMON_CONFIG,
-				FMLPaths.CONFIGDIR.get().resolve("inventory-common.toml"));
+				FMLPaths.CONFIGDIR.get().resolve("eyemine-inventory-config.toml"));
 		
 		// FIXME: did we lose any bus registering when refactoring??
 		MinecraftForge.EVENT_BUS.register(this);			
