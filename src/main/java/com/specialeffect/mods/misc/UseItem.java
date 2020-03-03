@@ -65,17 +65,48 @@ public class UseItem extends ChildMod {
 	}
 	
 	private class TargetBlock {
-		BlockPos pos;
-		Direction direction;
+
+		final BlockPos pos;
+		final Direction direction;
 		
 		public TargetBlock(BlockRayTraceResult res) {
 			this.pos = res.getPos();
 			this.direction = res.getFace();
 		}
+
+		private UseItem getOuterType() {
+			return UseItem.this;
+		}
 		
-		public boolean equals(TargetBlock other) {			
-			return (other != null &&
-					(this.pos.equals(other.pos) && this.direction.equals(other.direction)));
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + ((direction == null) ? 0 : direction.hashCode());
+			result = prime * result + ((pos == null) ? 0 : pos.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TargetBlock other = (TargetBlock) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (direction != other.direction)
+				return false;
+			if (pos == null) {
+				if (other.pos != null)
+					return false;
+			} else if (!pos.equals(other.pos))
+				return false;
+			return true;
 		}
 	}
 	
