@@ -47,6 +47,9 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 	private boolean mWaitingForPickaxe = false;
 	private int miningTimer = 0;
 	private int miningCooldown = 10; //FIXME: put in user config
+
+	private static boolean mIsAttacking = false;
+	private boolean mMouseEventLastTick = false;
 	
 	private static ContinuouslyMine instance;
 	
@@ -88,7 +91,7 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
+		PlayerEntity player = Minecraft.getInstance().player;
     	if (null != player && event.phase == TickEvent.Phase.START) {
 			
     		final KeyBinding attackBinding = 
@@ -155,9 +158,6 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 			
 		}
 	}
-	
-	private static boolean mIsAttacking = false;
-	private boolean mMouseEventLastTick = false;
 	
 
 	@SubscribeEvent
