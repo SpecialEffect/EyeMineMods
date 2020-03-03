@@ -63,6 +63,22 @@ public class UseItem extends ChildMod {
 		ClientRegistry.registerKeyBinding(mNextItemKB);
 
 	}
+	
+	private class TargetBlock {
+		BlockPos pos;
+		Direction direction;
+		
+		public TargetBlock(BlockRayTraceResult res) {
+			this.pos = res.getPos();
+			this.direction = res.getFace();
+		}
+		
+		public boolean equals(TargetBlock other) {			
+			return (other != null &&
+					(this.pos.equals(other.pos) && this.direction.equals(other.direction)));
+		}
+	}
+	
 
 	private static KeyBinding mUseItemOnceKB;
 	private static KeyBinding mUseItemContinuouslyKB;
@@ -80,8 +96,7 @@ public class UseItem extends ChildMod {
 	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
 	
-	private BlockPos targetBlockPos;
-	private Direction targetSide;
+	private TargetBlock currTarget;
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
@@ -117,20 +132,19 @@ public class UseItem extends ChildMod {
 				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
 
 	            if (rayTraceBlock != null) {
-	            	Direction faceHit = rayTraceBlock.getFace();
+	            	
+	            	TargetBlock target = new TargetBlock(rayTraceBlock);
 	            	
 	            	// Is this the block we're currently dwelling on? 
 	            	// TODO: persist dwells on >1 block, in case you're on the edge?
-	            	if (!rayTraceBlock.getPos().equals(this.targetBlockPos) || 
-	            			!faceHit.equals(targetSide)) {
+	            	if (!target.equals(this.currTarget)) {
 	            		this.currDwellTime = 0;
-	            		this.targetBlockPos = rayTraceBlock.getPos();
-	            		this.targetSide = faceHit;
+	            		this.currTarget = target;
 	            		return;
 	            	}
 					
 					Color color = new Color(0.75f, 0.25f, 0.0f);
-					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), faceHit, color, iAlpha);
+					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), target.direction, color, iAlpha);
 	            }
 			}
 		}
