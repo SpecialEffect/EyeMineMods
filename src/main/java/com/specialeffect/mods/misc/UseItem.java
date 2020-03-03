@@ -28,6 +28,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -37,6 +38,7 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -73,52 +75,52 @@ public class UseItem extends ChildMod {
 	private int usingCooldown = 10; //FIXME: put in user config
 	private Vec3d lastLook = new Vec3d(1.0,0.0,0.0);
 	
+	private long lastTime = 0;
+	private int dwellTimeInit = 500; // ms
+	private int dwellTimeComplete = 1000; // ms
+	private int currDwellTime = 0;
+	
+	private BlockPos targetBlockPos;
+	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
-		if (mUsingItem) {
-//			System.out.println(usingTimer);
-			// Timer to limit excessive construction  
-			// TODO: should we use wallclock time instead of ticks?
-			
-			// Modulate according to how much player has looked around in the last
-			// tick
-			PlayerEntity player = Minecraft.getInstance().player;
-			Vec3d look = player.getLookVec();			
-			boolean lookMoved = lastLook.dotProduct(look) < 0.99; // ~ 8 degrees  
-
-			if (usingTimer > 0 && !lookMoved) {
-				usingTimer -= 1;
-			}		
-							
-			// Set mouse in correct state - shouldn't build unless there's an
-			// accompanying mouse movement.	
-			if (MouseHandler.hasPendingEvent()) {		
-				if (usingTimer == 0) {
-					System.out.println("use!");
+		if (event.phase == Phase.START) {
+			long time = System.currentTimeMillis();
+			long dt = time - this.lastTime;
+			this.lastTime = time;
+			this.dwellTimeInit = 500;
+			if (mUsingItem) {
+				this.currDwellTime += dt;
+				System.out.println(this.currDwellTime);
+				
+				// Set mouse in correct state - shouldn't build unless there's an
+				// accompanying mouse movement.	
+				if (MouseHandler.hasPendingEvent() && this.currDwellTime > this.dwellTimeComplete) {						
 					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-					KeyBinding.onTick(useItemKeyBinding.getKey());				
-					usingTimer = usingCooldown;				
-				}			
+					KeyBinding.onTick(useItemKeyBinding.getKey());
+					this.currDwellTime = 0;				
+				}
 			}
-			this.lastLook = look;
 		}
 	}
 	
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
-		if (mUsingItem) {
+
+		if (mUsingItem && this.currDwellTime > this.dwellTimeInit) {
+			double dAlpha = (this.currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
+			int iAlpha = (int)dAlpha;
 			RayTraceResult raytraceResult = e.getTarget();			
 			if(e.getSubID() == 0 && raytraceResult.getType() == RayTraceResult.Type.BLOCK)
 			{
 				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
-				System.out.println(rayTraceBlock.getPos());
+//				System.out.println(rayTraceBlock.getPos());
 
 	            if (rayTraceBlock != null) {
-	            	Direction faceHit = rayTraceBlock.getFace();
-					int alpha = 10;
+	            	Direction faceHit = rayTraceBlock.getFace();					
 					Color color = new Color(0.75f, 0.25f, 0.0f);
-					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), faceHit, color, alpha);
+					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), faceHit, color, iAlpha);
 	            }
 			}
 		}
@@ -143,6 +145,7 @@ public class UseItem extends ChildMod {
 	        	ItemStack itemStack = player.inventory.getCurrentItem();
 		        Item item = player.inventory.getCurrentItem().getItem();
 		        
+		        this.currDwellTime = 0;
 				if (player.inventory.getCurrentItem().getItem() instanceof BlockItem) {
 					System.out.println("block item!");
 					usingCooldown = 30;
