@@ -76,11 +76,12 @@ public class UseItem extends ChildMod {
 	private Vec3d lastLook = new Vec3d(1.0,0.0,0.0);
 	
 	private long lastTime = 0;
-	private int dwellTimeInit = 500; // ms
+	private long currDwellTime = 0;
+	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
-	private int currDwellTime = 0;
 	
 	private BlockPos targetBlockPos;
+	private Direction targetSide;
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
@@ -88,7 +89,6 @@ public class UseItem extends ChildMod {
 			long time = System.currentTimeMillis();
 			long dt = time - this.lastTime;
 			this.lastTime = time;
-			this.dwellTimeInit = 500;
 			if (mUsingItem) {
 				this.currDwellTime += dt;
 				System.out.println(this.currDwellTime);
@@ -107,18 +107,28 @@ public class UseItem extends ChildMod {
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
-
 		if (mUsingItem && this.currDwellTime > this.dwellTimeInit) {
-			double dAlpha = (this.currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
+			double dAlpha = 255.0*(this.currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
 			int iAlpha = (int)dAlpha;
+//			System.out.println("alpha: "+iAlpha);
 			RayTraceResult raytraceResult = e.getTarget();			
 			if(e.getSubID() == 0 && raytraceResult.getType() == RayTraceResult.Type.BLOCK)
 			{
 				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
-//				System.out.println(rayTraceBlock.getPos());
 
 	            if (rayTraceBlock != null) {
-	            	Direction faceHit = rayTraceBlock.getFace();					
+	            	Direction faceHit = rayTraceBlock.getFace();
+	            	
+	            	// Is this the block we're currently dwelling on? 
+	            	// TODO: persist dwells on >1 block, in case you're on the edge?
+	            	if (!rayTraceBlock.getPos().equals(this.targetBlockPos) || 
+	            			!faceHit.equals(targetSide)) {
+	            		this.currDwellTime = 0;
+	            		this.targetBlockPos = rayTraceBlock.getPos();
+	            		this.targetSide = faceHit;
+	            		return;
+	            	}
+					
 					Color color = new Color(0.75f, 0.25f, 0.0f);
 					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), faceHit, color, iAlpha);
 	            }
@@ -148,15 +158,13 @@ public class UseItem extends ChildMod {
 		        this.currDwellTime = 0;
 				if (player.inventory.getCurrentItem().getItem() instanceof BlockItem) {
 					System.out.println("block item!");
-					usingCooldown = 30;
-					usingTimer = 0;
-					lastLook = player.getLookVec();
+					this.dwellTimeComplete = 1000;
+					this.dwellTimeInit = 200;
 				}
 				else {
 					System.out.println("not a block ...!");
-					usingCooldown = 2;
-					usingTimer = 0;
-					lastLook = player.getLookVec();
+					this.dwellTimeComplete = 300;
+					this.dwellTimeInit = 100;
 				}
 	        }
 
