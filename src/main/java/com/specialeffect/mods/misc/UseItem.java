@@ -11,12 +11,15 @@
 package com.specialeffect.mods.misc;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -118,16 +121,14 @@ public class UseItem extends ChildMod {
 	
 	// State for 'continuously use'
 	private boolean mUsingItem = false;
-	private int usingTimer = 0;
-	private int usingCooldown = 10; //FIXME: put in user config
-	private Vec3d lastLook = new Vec3d(1.0,0.0,0.0);
 	
 	private long lastTime = 0;
-	private long currDwellTime = 0;
 	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
 	
-	private TargetBlock currTarget;
+	private TargetBlock currentTarget;
+	// TODO: I'm here, setting up a memory of targets, will keep track of dwelltime on all of them
+	private Map<TargetBlock, Long> liveTargets = new HashMap<>();
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
@@ -135,16 +136,44 @@ public class UseItem extends ChildMod {
 			long time = System.currentTimeMillis();
 			long dt = time - this.lastTime;
 			this.lastTime = time;
+			
 			if (mUsingItem) {
-				this.currDwellTime += dt;
-				System.out.println(this.currDwellTime);
-				
-				// Set mouse in correct state - shouldn't build unless there's an
-				// accompanying mouse movement.	
-				if (MouseHandler.hasPendingEvent() && this.currDwellTime > this.dwellTimeComplete) {						
-					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-					KeyBinding.onTick(useItemKeyBinding.getKey());
-					this.currDwellTime = 0;				
+				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
+					// What are we currently targeting?
+					BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock(); 							
+					this.currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
+					
+					if (this.currentTarget != null) {
+											
+						// Make sure current target is in the liveTarget maps
+						if (!liveTargets.containsKey(currentTarget)) {
+							liveTargets.put(currentTarget, (long) 0);
+						}
+						
+						// Update all dwell times: the current target increments, others decrement
+						for (Map.Entry<TargetBlock, Long> entry : liveTargets.entrySet()) {
+							TargetBlock key = entry.getKey();
+						    long value = entry.getValue();
+						    if (key.equals(currentTarget)) {
+						    	entry.setValue(value+dt);
+						    }
+						    else {
+						    	entry.setValue(value-dt);
+						    }				    
+						}
+						
+						// Remove all that have decayed fully
+						liveTargets.entrySet().removeIf(e -> e.getValue() < (long)0);
+						
+						// Place block if dwell complete	
+						if (liveTargets.get(currentTarget) > this.dwellTimeComplete) {						
+							final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
+							KeyBinding.onTick(useItemKeyBinding.getKey());
+							liveTargets.remove(currentTarget);		
+						}
+					}
+					
+					// TODO: what if can't use item ? Currently this results in flashing again and again
 				}
 			}
 		}
@@ -153,30 +182,20 @@ public class UseItem extends ChildMod {
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
-		if (mUsingItem && this.currDwellTime > this.dwellTimeInit) {
-			double dAlpha = 255.0*(this.currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
-			int iAlpha = (int)dAlpha;
-//			System.out.println("alpha: "+iAlpha);
-			RayTraceResult raytraceResult = e.getTarget();			
-			if(e.getSubID() == 0 && raytraceResult.getType() == RayTraceResult.Type.BLOCK)
-			{
-				BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
-
-	            if (rayTraceBlock != null) {
-	            	
-	            	TargetBlock target = new TargetBlock(rayTraceBlock);
-	            	
-	            	// Is this the block we're currently dwelling on? 
-	            	// TODO: persist dwells on >1 block, in case you're on the edge?
-	            	if (!target.equals(this.currTarget)) {
-	            		this.currDwellTime = 0;
-	            		this.currTarget = target;
-	            		return;
-	            	}
+		if (mUsingItem && this.currentTarget != null && liveTargets.containsKey(currentTarget)) {
+			
+			long currDwellTime = liveTargets.get(this.currentTarget);
+			if (currDwellTime > this.dwellTimeInit) {
+				RayTraceResult raytraceResult = e.getTarget();			
+				if(e.getSubID() == 0 && raytraceResult.getType() == RayTraceResult.Type.BLOCK)
+				{
+					double dAlpha = 255.0*(currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
+					int iAlpha = (int)dAlpha;
+					// TODO: alpha blending not working
 					
 					Color color = new Color(0.75f, 0.25f, 0.0f);
-					AbstractRenderer.renderBlockFace(rayTraceBlock.getPos(), target.direction, color, iAlpha);
-	            }
+					AbstractRenderer.renderBlockFace(currentTarget.pos, currentTarget.direction, color, iAlpha);
+				}
 			}
 		}
 	}
@@ -200,7 +219,7 @@ public class UseItem extends ChildMod {
 	        	ItemStack itemStack = player.inventory.getCurrentItem();
 		        Item item = player.inventory.getCurrentItem().getItem();
 		        
-		        this.currDwellTime = 0;
+		        this.liveTargets.clear();
 				if (player.inventory.getCurrentItem().getItem() instanceof BlockItem) {
 					System.out.println("block item!");
 					this.dwellTimeComplete = 1000;
