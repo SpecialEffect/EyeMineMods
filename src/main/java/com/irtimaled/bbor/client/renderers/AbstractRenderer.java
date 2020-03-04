@@ -20,7 +20,8 @@ public abstract class AbstractRenderer {
 
     	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         GL11.glEnable(GL11.GL_BLEND);
-        
+        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+
         {
 			OffsetPoint min = new OffsetPoint(pos.getX(), pos.getY(), pos.getZ());
 			OffsetPoint max = new OffsetPoint(pos.getX()+1, pos.getY()+1, pos.getZ()+1);

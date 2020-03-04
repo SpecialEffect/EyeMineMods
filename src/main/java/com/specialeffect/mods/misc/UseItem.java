@@ -191,7 +191,6 @@ public class UseItem extends ChildMod {
 				{
 					double dAlpha = 255.0*(currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
 					int iAlpha = (int)dAlpha;
-					// TODO: alpha blending not working
 					
 					Color color = new Color(0.75f, 0.25f, 0.0f);
 					AbstractRenderer.renderBlockFace(currentTarget.pos, currentTarget.direction, color, iAlpha);
