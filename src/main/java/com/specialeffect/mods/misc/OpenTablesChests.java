@@ -16,6 +16,8 @@ import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
+import com.specialeffect.utils.ModUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.CraftingTableBlock;
@@ -104,6 +106,9 @@ extends ChildMod implements ChildModWithConfig
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 
+    	if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
 		if(mOpenChestKB.isPressed()) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			World world = Minecraft.getInstance().world;

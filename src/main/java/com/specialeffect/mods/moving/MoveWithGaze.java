@@ -431,7 +431,9 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
+		
 		if (ModUtils.hasActiveGui()) { return; }
+		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
 		if (mToggleAutoWalkKB.isPressed()) {			
 			mDoingAutoWalk = !mDoingAutoWalk;

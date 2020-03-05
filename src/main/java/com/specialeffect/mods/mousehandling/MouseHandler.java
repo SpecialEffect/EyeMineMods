@@ -222,7 +222,9 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // important we get this
 														// *before* other mods
 	public void onKeyInput(KeyInputEvent event) {
+
 		if (ModUtils.hasActiveGui()) { return; }
+		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
 		// FIXME: test that we do get this event soonest - are all mods on same thread?
 		

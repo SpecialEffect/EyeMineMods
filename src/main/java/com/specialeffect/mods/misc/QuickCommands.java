@@ -62,6 +62,8 @@ public class QuickCommands extends ChildMod {
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {		
 		
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
 		if (mNightVisionKB.isPressed()) {
 			// Toggle night vision effect
 			PlayerEntity player = Minecraft.getInstance().player;

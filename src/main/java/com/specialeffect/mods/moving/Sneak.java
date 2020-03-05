@@ -86,8 +86,10 @@ public class Sneak extends ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-	    if (ModUtils.hasActiveGui()) { return; }
 	    
+	    if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
 		if(mSneakKB.isPressed()) {			
 			updateSneak(!mIsSneaking);
 		}

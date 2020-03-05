@@ -114,7 +114,9 @@ public class Swim extends ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {   
-		if (ModUtils.hasActiveGui()) { return; }       	
+		
+		if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
 		if(mSwimKB.isPressed()) {
 			final KeyBinding swimBinding = 

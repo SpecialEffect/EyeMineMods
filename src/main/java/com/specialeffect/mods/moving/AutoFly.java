@@ -187,8 +187,10 @@ extends ChildMod implements ChildModWithConfig
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-		if (ModUtils.hasActiveGui()) { return; }
 		
+		if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
 		if (mFlyManualKB.isPressed()) {			
 			if (mIsFlyingManual) {
 				ModUtils.sendPlayerMessage("Fly manual: OFF");

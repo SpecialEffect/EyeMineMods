@@ -114,9 +114,9 @@ public class AutoPillar extends ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-		if (ModUtils.hasActiveGui()) {
-			return;
-		}
+
+		if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on

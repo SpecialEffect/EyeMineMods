@@ -39,8 +39,10 @@ public class SwapMinePlace  extends ChildMod {
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {	
-		if (ModUtils.hasActiveGui()) { return; }
-		
+
+		if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
 		if (mSwapKB.isPressed()) {
 			
 			Input attackInput = Minecraft.getInstance().gameSettings.keyBindAttack.getKey();
