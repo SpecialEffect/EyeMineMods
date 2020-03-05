@@ -58,17 +58,10 @@ public class SwapMinePlace  extends ChildMod {
 		}
 	}
 	
-	// This event is called by GuiIngameForge during each frame by
-	// GuiIngameForge.pre() and GuiIngameForce.post().
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 
-		// We draw after the ExperienceBar has drawn.  The event raised by GuiIngameForge.pre()
-		// will return true from isCancelable.  If you call event.setCanceled(true) in
-		// that case, the portion of rendering which this event represents will be canceled.
-		// We want to draw *after* the experience bar is drawn, so we make sure isCancelable() returns
-		// false and that the eventType represents the ExperienceBar event.
-		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
+		if(event.getType() != ElementType.TEXT)
 		{      
 			return;
 		}

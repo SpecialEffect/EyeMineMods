@@ -10,6 +10,9 @@
 
 package com.specialeffect.gui;
 
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.platform.GLX;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
@@ -77,22 +80,19 @@ public class IconOverlay
 
 	}
 	
-	// This event is called by GuiIngameForge during each frame by
-	// GuiIngameForge.pre() and GuiIngameForce.post().
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 
-		// We draw after the ExperienceBar has drawn.  The event raised by GuiIngameForge.pre()
-		// will return true from isCancelable.  If you call event.setCanceled(true) in
-		// that case, the portion of rendering which this event represents will be canceled.
-		// We want to draw *after* the experience bar is drawn, so we make sure isCancelable() returns
-		// false and that the eventType represents the ExperienceBar event.
-		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
+		if(event.getType() != ElementType.CROSSHAIRS)
 		{      
 			return;
 		}
 		
-		if (mVisible || fadeCountdown > 0) {		
+		if (mVisible || fadeCountdown > 0) {	
+			
+	        GL11.glEnable(GL11.GL_BLEND);
+	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+	        
 			// Update fading ticks
 			float fade = 1.0f;
 			if (fadeCountdown > 0) {
@@ -111,6 +111,9 @@ public class IconOverlay
 			int w = event.getWindow().getScaledWidth();
 			int h = event.getWindow().getScaledHeight();
 			this.drawTexture(h, w, fade);
+			
+	        GL11.glDisable(GL11.GL_BLEND);
+
 		}
 	}
 
