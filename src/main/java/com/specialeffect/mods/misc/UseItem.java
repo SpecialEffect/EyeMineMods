@@ -24,6 +24,7 @@ import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +37,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -125,10 +127,12 @@ public class UseItem extends ChildMod {
 	private long lastTime = 0;
 	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
+	private int dwellTimeDecay = 200;
 	
 	private TargetBlock currentTarget;
 	// TODO: I'm here, setting up a memory of targets, will keep track of dwelltime on all of them
-	private Map<TargetBlock, Long> liveTargets = new HashMap<>();
+	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
+
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
@@ -137,65 +141,104 @@ public class UseItem extends ChildMod {
 			long dt = time - this.lastTime;
 			this.lastTime = time;
 			
-			if (mUsingItem) {
-				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
+			this.dwellTimeDecay = 300;
+			
+			if (mUsingItem && !ModUtils.hasActiveGui()) {
+//				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
+					if ( true) {
 					// What are we currently targeting?
 					BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock(); 							
 					this.currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
+															
+					// Make sure current target is in the liveTarget maps
+					if (this.currentTarget != null && !liveTargets.containsKey(currentTarget)) {
+						liveTargets.put(currentTarget, 
+								new DwellState(this.dwellTimeComplete, this.dwellTimeInit, this.dwellTimeDecay));
+					}
 					
-					if (this.currentTarget != null) {
-											
-						// Make sure current target is in the liveTarget maps
-						if (!liveTargets.containsKey(currentTarget)) {
-							liveTargets.put(currentTarget, (long) 0);
-						}
-						
-						// Update all dwell times: the current target increments, others decrement
-						for (Map.Entry<TargetBlock, Long> entry : liveTargets.entrySet()) {
-							TargetBlock key = entry.getKey();
-						    long value = entry.getValue();
-						    if (key.equals(currentTarget)) {
-						    	entry.setValue(value+dt);
-						    }
-						    else {
-						    	entry.setValue(value-dt);
-						    }				    
-						}
-						
-						// Remove all that have decayed fully
-						liveTargets.entrySet().removeIf(e -> e.getValue() < (long)0);
-						
-						// Place block if dwell complete	
-						if (liveTargets.get(currentTarget) > this.dwellTimeComplete) {						
-							final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-							KeyBinding.onTick(useItemKeyBinding.getKey());
-							liveTargets.remove(currentTarget);		
-						}
+					// Update all dwell times: the current target increments, others decrement and decay
+					for (Map.Entry<TargetBlock, DwellState> entry : liveTargets.entrySet()) {
+						TargetBlock key = entry.getKey();						
+						boolean active = key.equals(currentTarget);
+						DwellState dwellState = entry.getValue(); 
+					    dwellState.update(dt, active);
+					}
+					
+					// Remove all that have decayed fully
+					liveTargets.entrySet().removeIf(e -> e.getValue().shouldDiscard());
+					
+					// Place block if dwell complete	
+					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {						
+						final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
+						KeyBinding.onTick(useItemKeyBinding.getKey());
+						liveTargets.remove(currentTarget);		
 					}
 					
 					// TODO: what if can't use item ? Currently this results in flashing again and again
+					// Add this to dwell state?
 				}
 			}
 		}
 	}
 	
+	private void renderCentralisedDwell(TargetBlock target, DwellState dwellState, boolean expanding) {
+		Color color = new Color(0.75f, 0.25f, 0.0f);
+
+		// size of square proportional to dwell progress
+		double dDwell = dwellState.getDwellProportionSinceLockon();
+		
+		// opacity proportional to decay progress
+		int usualOpacity = 125;
+		int iOpacity = (int) (usualOpacity*(0.25F + 0.75F*(1.0f - dwellState.getDecayProportion())));
+		
+		AbstractRenderer.renderBlockFaceCentralisedDwell(target.pos, target.direction, color, dDwell, iOpacity);	
+	}
+	
+	private void renderOpacityDwell(TargetBlock target, DwellState dwellState) {
+		Color color = new Color(0.75f, 0.25f, 0.0f);
+		double maxAlpha = 0.85*255.0; 
+		
+		// Opacity increases with dwell amount
+		double dAlpha = maxAlpha*(dwellState.getDwellProportion());
+		int iAlpha = (int)dAlpha;
+		
+		AbstractRenderer.renderBlockFace(target.pos, target.direction, color, iAlpha);
+	}
+	
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
+		if (Minecraft.getInstance().currentScreen != null) {
+			this.liveTargets.clear();
+			return;
+		}
+		
 		if (mUsingItem && this.currentTarget != null && liveTargets.containsKey(currentTarget)) {
 			
-			long currDwellTime = liveTargets.get(this.currentTarget);
-			if (currDwellTime > this.dwellTimeInit) {
-				RayTraceResult raytraceResult = e.getTarget();			
-				if(e.getSubID() == 0 && raytraceResult.getType() == RayTraceResult.Type.BLOCK)
-				{
-					double dAlpha = 255.0*(currDwellTime - this.dwellTimeInit)/this.dwellTimeComplete;
-					int iAlpha = (int)dAlpha;
-					
+			// Update all dwell times: the current target increments, others decrement and decay
+			System.out.println(liveTargets.size() + " targets are live");
+			for (Map.Entry<TargetBlock, DwellState> entry : liveTargets.entrySet()) {
+										
+				DwellState dwellState = entry.getValue(); 				
+				if (dwellState.shouldRender()) {
+					TargetBlock target = entry.getKey();
 					Color color = new Color(0.75f, 0.25f, 0.0f);
-					AbstractRenderer.renderBlockFace(currentTarget.pos, currentTarget.direction, color, iAlpha);
+					
+					boolean doCentralised = true;
+					boolean expanding = false;
+//					doCentralised = false;
+					
+					if (doCentralised) {
+						this.renderCentralisedDwell(target, dwellState, expanding);	
+					}
+					else {
+						this.renderOpacityDwell(target, dwellState);
+					}
 				}
 			}
+			
+//			I am here, playing with different dwell vis options, the dwellTimeInit is a little hardcoded / hacked 
+//			at the mo. waiting for feedback from Bill...
 		}
 	}
 	
