@@ -10,6 +10,10 @@
 
 package com.specialeffect.mods.moving;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.DismountPlayerMessage;
@@ -20,8 +24,14 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -50,7 +60,7 @@ public class Dismount  extends ChildMod {
 		mDismountKB = new KeyBinding("Ride or dismount", GLFW.GLFW_KEY_F15, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDismountKB);
 	}
-
+	
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
 
@@ -67,10 +77,40 @@ public class Dismount  extends ChildMod {
 		        channel.sendToServer(new DismountPlayerMessage());
 			}
 			else {						
-				EntityRayTraceResult entity = ModUtils.getMouseOverEntity();									
+				EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
+				Entity entity = entityResult == null ? null : entityResult.getEntity();
+				
+				if (entity == null) {
+					// If there's nothing under the crosshair, but there's something rideable really close, 
+					// assume this was the intended target
+					// (helps if mob walking away while you are dwelling)
+					
+					World world = Minecraft.getInstance().world;					
+					AxisAlignedBB box = player.getBoundingBox().grow(2);
+					
+					List<Entity> mobEntities = world.getEntitiesWithinAABB(MobEntity.class, box);
+					List<Entity> boatEntities = world.getEntitiesWithinAABB(BoatEntity.class, box);
+					List<Entity> minecartEntities = world.getEntitiesWithinAABB(MinecartEntity.class, box);					
+					
+					List<Entity> entities = ModUtils.joinLists(mobEntities, boatEntities, minecartEntities);					
+					
+					for (Entity e : entities) {
+						System.out.println(e);
+					}
+					if (entities.isEmpty()) {
+						ModUtils.sendPlayerMessage("Nothing found to ride");
+					}
+					else if (entities.size() == 1) {
+						entity = entities.get(0); 
+						ModUtils.sendPlayerMessage("Mounting nearby "+entity.getName().getString());						
+					}
+					else {
+						ModUtils.sendPlayerMessage("Found multiple rideable entities, please use crosshair to select");
+					}					
+				}
 				if (entity != null) {									
-					player.startRiding(entity.getEntity());
-					channel.sendToServer(new RideEntityMessage(entity.getEntity().getEntityId()));					
+					player.startRiding(entity);
+					channel.sendToServer(new RideEntityMessage(entity.getEntityId()));					
 				}
 			}			
 		}

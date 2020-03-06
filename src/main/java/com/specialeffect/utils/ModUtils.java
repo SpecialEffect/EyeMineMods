@@ -11,12 +11,17 @@
 package com.specialeffect.utils;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
+import it.unimi.dsi.fastutil.Arrays;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -57,6 +62,14 @@ public class ModUtils {
 		} else {
 			return false;
 		}
+	}
+	
+	public static <T> List<T> joinLists(List<T>... lists) {
+		List<T> combined = new ArrayList<T>();
+		for (List<T> list : lists) {
+			combined.addAll(list);
+		}
+        return combined; 
 	}
 	
 	public static boolean hasActiveGui( ) {
