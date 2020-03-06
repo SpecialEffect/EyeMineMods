@@ -28,10 +28,12 @@ public class EyeMineConfig {
     public static final String CATEGORY_BASIC = "basic";
  	public static final String CATEGORY_ADVANCED = "advanced";
  	public static final String CATEGORY_EXPERT = "expert";
+ 	public static final String CATEGORY_DWELLING = "dwelling";
  	
  	public static final String CATEGORY_BASIC_USERSTRING = "Basic options";
  	public static final String CATEGORY_ADVANCED_USERSTRING = "Advanced options";
  	public static final String CATEGORY_EXPERT_USERSTRING = "Expert options";
+ 	public static final String CATEGORY_DWELLING_USERSTRING = "Dwelling options";
 
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -70,6 +72,12 @@ public class EyeMineConfig {
      
      // ContinuouslyAttack
      public static ForgeConfigSpec.BooleanValue mAutoSelectSword;
+     
+     // Dwelling options
+     public static ForgeConfigSpec.DoubleValue dwellTimeSeconds;
+     public static ForgeConfigSpec.DoubleValue dwellLockonTimeSeconds;
+     public static ForgeConfigSpec.BooleanValue dwellShowExpanding;
+     public static ForgeConfigSpec.BooleanValue dwellShowWithTransparency;    
 
     static {
         CLIENT_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
@@ -83,6 +91,11 @@ public class EyeMineConfig {
         CLIENT_BUILDER.comment(CATEGORY_EXPERT_USERSTRING).push(CATEGORY_EXPERT);
         setupExpertConfig();
         CLIENT_BUILDER.pop();
+        
+        CLIENT_BUILDER.comment(CATEGORY_DWELLING_USERSTRING).push(CATEGORY_DWELLING);
+        setupDwellConfig();
+        CLIENT_BUILDER.pop();
+
 
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
@@ -147,8 +160,24 @@ public class EyeMineConfig {
     	     	
     }
     
+    private static void setupDwellConfig() {
+    	
+    	dwellTimeSeconds = CLIENT_BUILDER.comment("Time for dwell to complete (seconds)")
+    			.defineInRange("dwellTimeSeconds", 1.2, 0.2, 5.0);
+    	
+    	dwellLockonTimeSeconds = CLIENT_BUILDER.comment("Time for dwell to lock on (seconds)\n Must be lower than dwellTimeSeconds")
+    			.defineInRange("dwellLockonTimeSeconds", 0.2, 0.0, 1.0);
+    	
+    	dwellShowExpanding = CLIENT_BUILDER.comment("Show dwell expanding instead of shrinking")
+    			.define("dwellShowExpanding", false);
+    	
+    	dwellShowWithTransparency = CLIENT_BUILDER.comment("Show dwell by changing transparency instead of growing/shrinking\nThis option overrides dwellShowExpanding")
+    			.define("dwellShowWithTransparency", false);
+    	
+    }
+    
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
-
+    	
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()

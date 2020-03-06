@@ -18,13 +18,13 @@ import org.lwjgl.glfw.GLFW;
 
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 
+import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,10 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -48,7 +45,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class UseItem extends ChildMod {
+public class UseItem 
+extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "useitem";
 
 	public void setup(final FMLCommonSetupEvent event) {
@@ -67,6 +65,7 @@ public class UseItem extends ChildMod {
 		mNextItemKB = new KeyBinding("Select next item", GLFW.GLFW_KEY_KP_5, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNextItemKB);
 
+		this.syncConfig();
 	}
 	
 	private class TargetBlock {
@@ -133,6 +132,11 @@ public class UseItem extends ChildMod {
 	// TODO: I'm here, setting up a memory of targets, will keep track of dwelltime on all of them
 	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
 
+	public void syncConfig() {
+        this.dwellTimeComplete = (int) (1000*EyeMineConfig.dwellTimeSeconds.get());
+        this.dwellTimeInit = (int) (1000*EyeMineConfig.dwellLockonTimeSeconds.get());
+        this.dwellTimeDecay = this.dwellTimeComplete/5; 
+	}
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
@@ -144,8 +148,8 @@ public class UseItem extends ChildMod {
 			this.dwellTimeDecay = 300;
 			
 			if (mUsingItem && !ModUtils.hasActiveGui()) {
-//				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
-					if ( true) {
+				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
+//					if ( true) {
 					// What are we currently targeting?
 					BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock(); 							
 					this.currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
@@ -224,9 +228,8 @@ public class UseItem extends ChildMod {
 					TargetBlock target = entry.getKey();
 					Color color = new Color(0.75f, 0.25f, 0.0f);
 					
-					boolean doCentralised = true;
-					boolean expanding = false;
-//					doCentralised = false;
+					boolean doCentralised = !EyeMineConfig.dwellShowWithTransparency.get();
+					boolean expanding = EyeMineConfig.dwellShowExpanding.get();
 					
 					if (doCentralised) {
 						this.renderCentralisedDwell(target, dwellState, expanding);	
@@ -236,9 +239,6 @@ public class UseItem extends ChildMod {
 					}
 				}
 			}
-			
-//			I am here, playing with different dwell vis options, the dwellTimeInit is a little hardcoded / hacked 
-//			at the mo. waiting for feedback from Bill...
 		}
 	}
 	
