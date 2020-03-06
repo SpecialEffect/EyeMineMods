@@ -41,7 +41,8 @@ public class DismountPlayerMessage {
 				
 				if (null != riddenEntity) {
 					player.stopRiding();
-					player.dismountEntity(riddenEntity);												
+					player.dismountEntity(riddenEntity);			
+					player.jump();
 				}
 			}
 		}

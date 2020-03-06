@@ -62,6 +62,7 @@ public class Dismount  extends ChildMod {
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player.isPassenger()) {					
 				player.stopRiding();				
+				player.jump();
 				// Dismount player on server
 		        channel.sendToServer(new DismountPlayerMessage());
 			}
