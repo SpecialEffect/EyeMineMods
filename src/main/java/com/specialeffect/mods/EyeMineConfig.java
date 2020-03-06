@@ -52,10 +52,6 @@ public class EyeMineConfig {
  	public static ForgeConfigSpec.BooleanValue mTurnOffSlowdown; 	
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
 	
-	// OptiKey adjustments
-	public static ForgeConfigSpec.IntValue viewIncrement;
-	public static ForgeConfigSpec.DoubleValue moveIncrement;
-	
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
 	 
