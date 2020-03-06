@@ -93,6 +93,133 @@ public abstract class AbstractRenderer {
         GL11.glPolygonOffset(-1.f, -1.f);
     }
 
+
+    public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink) {    
+    	
+    	System.out.println(shrink);
+    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+        GL11.glEnable(GL11.GL_BLEND);
+        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+
+        {
+			OffsetPoint min = new OffsetPoint(pos.getX(), pos.getY(), pos.getZ());
+			OffsetPoint max = new OffsetPoint(pos.getX()+1, pos.getY()+1, pos.getZ()+1);
+	    	
+	    	double minX = min.getX();
+	        double minY = min.getY();
+	        double minZ = min.getZ();
+	
+	        double maxX = max.getX();
+	        double maxY = max.getY();
+	        double maxZ = max.getZ();
+	        
+	        // Shrink in two axes, according to dwell	       
+	        double removeX = 0.5f*shrink*(maxX - minX);
+	        double removeY = 0.5f*shrink*(maxY - minY);
+	        double removeZ = 0.5f*shrink*(maxZ - minZ);
+	
+	        Renderer renderer = Renderer.startQuads()
+	                .setColor(color)
+	                .setAlpha(123);
+	
+	        switch (facing) {
+	        case UP:
+	        	maxY += 0.01;
+	        	
+	        	minX += removeX;
+		        maxX -= removeX;
+		        
+		        minZ += removeZ;
+		        maxZ -= removeZ;
+		        
+	        	renderer.addPoint(minX, maxY, minZ)
+			            .addPoint(maxX, maxY, minZ)
+			            .addPoint(maxX, maxY, maxZ)
+			            .addPoint(minX, maxY, maxZ);
+	        	break;
+	        case DOWN:
+	        	minY -= 0.01;
+	        	
+	        	minX += removeX;
+		        maxX -= removeX;
+		        
+		        minZ += removeZ;
+		        maxZ -= removeZ;
+		        
+	        	renderer.addPoint(minX, minY, minZ)
+			            .addPoint(maxX, minY, minZ)
+			            .addPoint(maxX, minY, maxZ)
+			            .addPoint(minX, minY, maxZ);
+	        	break;
+			case NORTH:
+				minZ -= 0.01;
+				
+				minX += removeX;
+		        maxX -= removeX;
+		        
+		        minY += removeY;
+		        maxY -= removeY;
+		        
+				renderer.addPoint(minX, minY, minZ)
+			            .addPoint(minX, maxY, minZ)
+			            .addPoint(maxX, maxY, minZ)
+			            .addPoint(maxX, minY, minZ);
+				break;
+			case SOUTH:
+				maxZ += 0.01;
+				
+				minX += removeX;
+		        maxX -= removeX;
+		        
+		        minY += removeY;
+		        maxY -= removeY;
+		        
+				renderer.addPoint(minX, minY, maxZ)
+			            .addPoint(minX, maxY, maxZ)
+			            .addPoint(maxX, maxY, maxZ)
+			            .addPoint(maxX, minY, maxZ);
+				break;
+	        case EAST:
+	        	maxX += 0.01;
+	        	
+		        minY += removeY;
+		        maxY -= removeY;
+		        
+		        minZ += removeZ;
+		        maxZ -= removeZ;
+		        
+	        	renderer.addPoint(maxX, minY, minZ)
+			            .addPoint(maxX, minY, maxZ)
+			            .addPoint(maxX, maxY, maxZ)
+			            .addPoint(maxX, maxY, minZ);
+	        	break;
+			case WEST:
+				minX -= 0.01;
+				
+		        minY += removeY;
+		        maxY -= removeY;
+		        
+		        minZ += removeZ;
+		        maxZ -= removeZ;
+		        
+				renderer.addPoint(minX, minY, minZ)
+			            .addPoint(minX, minY, maxZ)
+			            .addPoint(minX, maxY, maxZ)
+			            .addPoint(minX, maxY, minZ);
+				break;
+			default:
+				break;
+	        }
+        
+	        renderer.render();
+        }
+        
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+        GL11.glPolygonOffset(-1.f, -1.f);
+    }
+
+    
     public static void renderFaces(OffsetPoint min, OffsetPoint max, Color color, int alpha) {
         double minX = min.getX();
         double minY = min.getY();
