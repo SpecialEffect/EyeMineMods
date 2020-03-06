@@ -75,7 +75,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
     private int jumpTicks = 0;
     
-    private BoatController boatController = new BoatController(0.5,  0,  0);
+    private BoatController boatController = new BoatController(0.35,  0.15,  0);	
+
     
 	public MoveWithGaze() {
 	}
@@ -230,13 +231,12 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 									yawError -= 360;
 								}
 								System.out.println(yawError);
-								
 								boatController.pid_step(boat, yawError);
 							
 								// downscale the forward motion if we've got lots of turning to do first
 								float yawErrorAbs = Math.abs(yawError);
 								if (yawErrorAbs > 5) {
-									forward *= (180 - yawErrorAbs)/180;									
+									forward *= 0.5*(180 - yawErrorAbs)/180;									
 								}
 								else if (yawErrorAbs > 45) {
 									forward = 0.0;
