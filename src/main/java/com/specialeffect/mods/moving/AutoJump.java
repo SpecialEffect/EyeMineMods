@@ -47,12 +47,16 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 		//FIXME: there was previously an ordering requirement for config syncing and 
 		// texture registering
 	}
+	
+	private void updateSettings(boolean autoJump) {
+		Minecraft.getInstance().gameSettings.autoJump = autoJump;
+		Minecraft.getInstance().gameSettings.saveOptions();
+		Minecraft.getInstance().gameSettings.loadOptions();
+	}
 
 	public void syncConfig() {
 		mDoingAutoJump = EyeMineConfig.defaultDoAutoJump.get();
-		// Turn off vanilla autojump since it doesn't play nicely with
-		// our gaze-based walking methods.
-		Minecraft.getInstance().gameSettings.autoJump = mDoingAutoJump;
+		this.updateSettings(mDoingAutoJump);
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
@@ -64,6 +68,7 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 		
 		if (autoJumpKeyBinding.isPressed()) {
 			mDoingAutoJump = !mDoingAutoJump;
+			this.updateSettings(mDoingAutoJump);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			
 			ModUtils.sendPlayerMessage("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF"));
 		}
