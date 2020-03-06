@@ -69,6 +69,11 @@ public class Sneak extends ChildMod {
 	}	
 	
 	private static void updateSneak(boolean bSneak) {
+		
+		if ( bSneak != mIsSneaking ) {
+			ModUtils.sendPlayerMessage("Sneaking: " + (bSneak ? "ON" : "OFF"));
+		}
+		
 		mIsSneaking = bSneak;
 
 		// TODO: is there any reason we don't want to just hold down the key here? 
@@ -78,7 +83,6 @@ public class Sneak extends ChildMod {
 
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindSneak;			
 		KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), bSneak);			
-		ModUtils.sendPlayerMessage("Sneaking: " + (bSneak ? "ON" : "OFF"));
 		
 		// Make sure icon up to date?
 		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
