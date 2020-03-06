@@ -185,8 +185,15 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	
 		
 	public void syncConfig() {	
-		// wait until we're on GL thread before making changes...
-		this.hasPendingConfigChange = true;					
+		// has anything *relevant* changed??
+		if ( (EyeMineConfig.usingMouseEmulation.get() &&
+				mInputSource == InputSource.EyeTracker) ||
+			 (!EyeMineConfig.usingMouseEmulation.get() &&
+					 mInputSource == InputSource.Mouse)) {
+			
+			// wait until we're on GL thread before making changes...
+			this.hasPendingConfigChange = true;
+		}
 	}
 
 	private void syncConfigImpl() {
