@@ -201,12 +201,13 @@ public class UseItem extends ChildMod {
 	
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
-		if (ModUtils.hasActiveGui()) { return; }
 		
+		if (ModUtils.hasActiveGui()) { return; }	    
+	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
 		PlayerEntity player = Minecraft.getInstance().player;
 		
-		if (mUseItemContinuouslyKB.isPressed()) {
+		if (event.getKey() == mUseItemContinuouslyKB.getKey().getKeyCode()) {
 			mUsingItem = !mUsingItem;
 //			boolean useItemNewState = !useItemKeyBinding.isKeyDown();
 //			KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), useItemNewState);
