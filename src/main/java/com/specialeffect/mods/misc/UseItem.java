@@ -244,7 +244,7 @@ public class UseItem extends ChildMod {
 	
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
-		if(event.isCancelable() || event.getType() != ElementType.EXPERIENCE)
+		if(event.getType() != ElementType.EXPERIENCE)
 		{      
 			return;
 		}
