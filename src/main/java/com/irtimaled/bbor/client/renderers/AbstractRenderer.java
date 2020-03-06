@@ -94,9 +94,12 @@ public abstract class AbstractRenderer {
     }
 
 
-    public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink) {    
+    public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink, int opacity) {    
     	
     	System.out.println(shrink);
+    	shrink = Math.min(shrink, 1.0f);
+    	shrink = Math.max(shrink, 0.0f);
+    	
     	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
         GL11.glEnable(GL11.GL_BLEND);
         GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
@@ -120,7 +123,7 @@ public abstract class AbstractRenderer {
 	
 	        Renderer renderer = Renderer.startQuads()
 	                .setColor(color)
-	                .setAlpha(123);
+	                .setAlpha(opacity);
 	
 	        switch (facing) {
 	        case UP:
