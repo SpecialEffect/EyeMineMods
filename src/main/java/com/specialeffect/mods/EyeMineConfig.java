@@ -147,10 +147,10 @@ public class EyeMineConfig {
         		.define("moveWhenMouseStationary", false);
         
         mSlowdownOnCorners = CLIENT_BUILDER.comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
-        	.define("turnOffSlowdown", true);
+        	.define("slowdownOnCorners", true);
         
         mSlowdownOnAttack = CLIENT_BUILDER.comment("Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
-            	.define("turnOffSlowdown", true);
+            	.define("slowdownOnAttack", true);
         
         mTicksBetweenMining = CLIENT_BUILDER.comment("How many ticks to wait before mining again\nOnly affects creative mode")
   				.defineInRange("ticksBetweenMining", 15,  0, 50);
