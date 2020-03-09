@@ -181,7 +181,7 @@ public class EyeGaze {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG);
 
 		EyeMineConfig.loadConfig(EyeMineConfig.CLIENT_CONFIG,
-				FMLPaths.CONFIGDIR.get().resolve("EyeMine-config.toml"));
+				FMLPaths.CONFIGDIR.get().resolve("eyemine-client.toml"));
 	}
 
     private void instantiateChildren() {
