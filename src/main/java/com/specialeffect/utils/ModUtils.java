@@ -22,6 +22,8 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import it.unimi.dsi.fastutil.Arrays;
+import net.minecraft.block.Block;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -31,11 +33,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 
 public class ModUtils {
 
@@ -204,5 +210,51 @@ public class ModUtils {
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unused")
+	private boolean isLadder(BlockPos pos) {
+		World world = Minecraft.getInstance().world;
+		Block block = world.getBlockState(pos).getBlock();
+		return (block != null && block instanceof LadderBlock);
+	}
+	
+	// Check if there's a block at the given position which
+	// blocks movement.
+	@SuppressWarnings("unused")
+	private boolean doesBlockMovement(BlockPos pos) {
+		World world = Minecraft.getInstance().world;
+		return world.getBlockState(pos).getMaterial().blocksMovement();
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3d lookVec) {
+		double thresh = 0.8;
+		switch (sideHit) {
+		case NORTH:
+			if (lookVec.z > thresh) {
+				return true;
+			}
+			break;
+		case EAST:
+			if (lookVec.x < -thresh) {
+				return true;
+			}
+			break;
+		case SOUTH:
+			if (lookVec.z < -thresh) {
+				return true;
+			}
+			break;
+		case WEST:
+			if (lookVec.x > thresh) {
+				return true;
+			}
+			break;
+		default:
+			break;
+		}
+		return false;
+	}
+	
 	
 }

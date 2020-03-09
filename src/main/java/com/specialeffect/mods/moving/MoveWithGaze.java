@@ -295,43 +295,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		int standardFps = 30; // what we tune on
 		return Math.min(1.0, (double) standardFps / (double) currFps);
 	}
-
-	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3d lookVec) {
-		double thresh = 0.8;
-		switch (sideHit) {
-		case NORTH:
-			if (lookVec.z > thresh) {
-				return true;
-			}
-			break;
-		case EAST:
-			if (lookVec.x < -thresh) {
-				return true;
-			}
-			break;
-		case SOUTH:
-			if (lookVec.z < -thresh) {
-				return true;
-			}
-			break;
-		case WEST:
-			if (lookVec.x > thresh) {
-				return true;
-			}
-			break;
-		default:
-			break;
-		}
-		return false;
-	}
-
-	// Check if there's a block at the given position which
-	// blocks movement.
-	private boolean doesBlockMovement(BlockPos pos) {
-		World world = Minecraft.getInstance().world;
-		return world.getBlockState(pos).getMaterial().blocksMovement();
-	}
-
 	/*
 	 * private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) { Vec3d
 	 * lookVec = player.getLookVec(); RayTraceResult movPos = player.rayTrace(1.0,
@@ -350,42 +313,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 			}
 		}
 		return 1.0f;
-	}
-
-	/*
-	 * FIXME? @SuppressWarnings("unused") private double
-	 * slowdownFactorWall(PlayerEntity player) { Vec3d lookVec =
-	 * player.getLookVec(); Vec3d posVec = player.getPositionVector();
-	 * 
-	 * // Check block in front of player, and the one above it. // Also same two
-	 * blocks in front. BlockPos posInFront = new BlockPos(posVec.x + lookVec.x,
-	 * posVec.y, posVec.z + lookVec.z);
-	 * 
-	 * //isPlayerDirectlyFacingBlock(player, posInFront);
-	 * 
-	 * BlockPos posInFrontAbove = new BlockPos(posVec.x + lookVec.x, posVec.y+1,
-	 * posVec.z + lookVec.z);
-	 * 
-	 * BlockPos posInFrontTwo = new BlockPos(posVec.x + 2*lookVec.x, posVec.y,
-	 * posVec.z + lookVec.z);
-	 * 
-	 * BlockPos posInFrontTwoAbove = new BlockPos(posVec.x + 2*lookVec.x,
-	 * posVec.y+1, posVec.z + lookVec.z);
-	 * 
-	 * if (doesBlockMovement(posInFront) && doesBlockMovement(posInFrontAbove)) { //
-	 * If there's a ladder, keep going! if (isLadder(posInFront)) { return 1.0f; }
-	 * // If you're *facing* the wall, then don't keep walking. if
-	 * (isPlayerDirectlyFacingBlock(player)) { return 0.0f; } else { // If looking
-	 * obliquely, slow down a little return 0.55f; } } else { // If 1 block away
-	 * from wall, start slowing if (doesBlockMovement(posInFrontTwo) &&
-	 * doesBlockMovement(posInFrontTwoAbove)) { return 0.5; } else { //default
-	 * return 1.0; } } }
-	 */
-
-	private boolean isLadder(BlockPos pos) {
-		World world = Minecraft.getInstance().world;
-		Block block = world.getBlockState(pos).getBlock();
-		return (block != null && block instanceof LadderBlock);
 	}
 
 	private double slowdownFactorViewDirs() {
