@@ -84,6 +84,7 @@ public class EyeMineConfig {
      public static ForgeConfigSpec.BooleanValue dwellShowWithTransparency;    
 
     static {
+    	
         CLIENT_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
         setupBasicConfig();        
         CLIENT_BUILDER.pop();
@@ -106,11 +107,6 @@ public class EyeMineConfig {
 
 
     private static void setupBasicConfig() {
-    	// TODO: how to manage tooltips on own UI?
-    	// previously had short comment, and tooltips
-    	// in text file there's no limit to comment lenght, but if we make a GUI we'll need
-    	// to split up again    
-		
     	customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze")
       		.defineInRange("walkingSpeed", 0.8f, 0.25f, 2.0f);                
       
