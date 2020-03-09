@@ -144,7 +144,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
             	null == Minecraft.getInstance().currentScreen &&	
                 (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent())) {
 
-            	double forward = (double)mCustomSpeedFactor*2.0f; 
+            	double forward = (double)mCustomSpeedFactor*1.25f; 
             	
             	if (!EyeMineConfig.mTurnOffSlowdown.get()) {
 	            	// Slow down when you've been turning a corner

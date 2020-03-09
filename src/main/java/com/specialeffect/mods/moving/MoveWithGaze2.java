@@ -113,6 +113,7 @@ implements ChildModWithConfig
     			}
 
     			// scaled by mCustomSpeedFactor 
+    			walkForwardAmount *= 0.15;
     			walkForwardAmount *= mCustomSpeedFactor;
 				ownMovementInput.setWalkOverride(true, walkForwardAmount);			
 
