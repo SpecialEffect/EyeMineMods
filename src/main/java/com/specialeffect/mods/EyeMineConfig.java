@@ -65,6 +65,7 @@ public class EyeMineConfig {
   	
   	// Mining
  	public static ForgeConfigSpec.BooleanValue mAutoSelectTool;
+ 	public static ForgeConfigSpec.IntValue mTicksBetweenMining;
 
  	// AutoOpenDoors
      public static ForgeConfigSpec.IntValue mRadiusDoors;
@@ -150,6 +151,10 @@ public class EyeMineConfig {
         
         mSlowdownOnAttack = CLIENT_BUILDER.comment("Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
             	.define("turnOffSlowdown", true);
+        
+        mTicksBetweenMining = CLIENT_BUILDER.comment("How many ticks to wait before mining again\nOnly affects creative mode")
+  				.defineInRange("ticksBetweenMining", 15,  0, 50);
+
         
     }
     

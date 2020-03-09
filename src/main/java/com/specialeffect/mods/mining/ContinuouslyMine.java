@@ -46,8 +46,8 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 	private boolean mAutoSelectTool = true;
 	private boolean mWaitingForPickaxe = false;
 	private int miningTimer = 0;
-	private int miningCooldown = 10; //FIXME: put in user config
-
+	private int miningCooldown = 10; // update from config
+	
 	private static boolean mIsAttacking = false;
 	private boolean mMouseEventLastTick = false;
 	
@@ -76,6 +76,7 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 	
 	public void syncConfig() {
 		mAutoSelectTool = EyeMineConfig.mAutoSelectTool.get();
+		miningCooldown = EyeMineConfig.mTicksBetweenMining.get();
 	}
 	
 	public static void stop() {
