@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.ParsingMode;
 import com.electronwill.nightconfig.core.io.WritingMode;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -188,12 +189,15 @@ public class EyeMineConfig {
     
     public static void loadConfig(ForgeConfigSpec spec, Path path) {
     	
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-
+    	 final CommentedFileConfig configData = CommentedFileConfig.builder(path)
+	        		.preserveInsertionOrder() 
+	        		.sync()
+	                .autosave()
+	                .writingMode(WritingMode.REPLACE)
+	                .parsingMode(ParsingMode.ADD)
+	                .concurrent()
+	                .build();
+	
         configData.load();
         spec.setConfig(configData);
     }
