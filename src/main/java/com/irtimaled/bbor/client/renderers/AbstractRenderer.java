@@ -96,7 +96,6 @@ public abstract class AbstractRenderer {
 
     public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink, int opacity) {    
     	
-    	System.out.println(shrink);
     	shrink = Math.min(shrink, 1.0f);
     	shrink = Math.max(shrink, 0.0f);
     	
