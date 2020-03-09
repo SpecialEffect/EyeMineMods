@@ -291,12 +291,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		int standardFps = 30; // what we tune on
 		return Math.min(1.0, (double) standardFps / (double) currFps);
 	}
-	/*
-	 * private boolean isPlayerDirectlyFacingBlock(PlayerEntity player) { Vec3d
-	 * lookVec = player.getLookVec(); RayTraceResult movPos = player.rayTrace(1.0,
-	 * 1.0f); if (null != movPos) { return isDirectlyFacingSideHit(movPos.sideHit,
-	 * lookVec); } return false; }
-	 */
 
 	private double slowdownFactorEntity(PlayerEntity player) {
 		EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
