@@ -220,7 +220,6 @@ extends ChildMod implements ChildModWithConfig {
 		if (mUsingItem && this.currentTarget != null && liveTargets.containsKey(currentTarget)) {
 			
 			// Update all dwell times: the current target increments, others decrement and decay
-			System.out.println(liveTargets.size() + " targets are live");
 			for (Map.Entry<TargetBlock, DwellState> entry : liveTargets.entrySet()) {
 										
 				DwellState dwellState = entry.getValue(); 				
@@ -264,12 +263,10 @@ extends ChildMod implements ChildModWithConfig {
 		        
 		        this.liveTargets.clear();
 				if (player.inventory.getCurrentItem().getItem() instanceof BlockItem) {
-					System.out.println("block item!");
-					this.dwellTimeComplete = 1000;
-					this.dwellTimeInit = 200;
+					syncConfig();
 				}
 				else {
-					System.out.println("not a block ...!");
+					syncConfig();
 					this.dwellTimeComplete = 300;
 					this.dwellTimeInit = 100;
 				}
