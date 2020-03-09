@@ -51,8 +51,10 @@ public class EyeMineConfig {
  	// Walking options -> walk with gaze
  	public static ForgeConfigSpec.IntValue filterLength;
  	public static ForgeConfigSpec.BooleanValue moveWhenMouseStationary;
- 	public static ForgeConfigSpec.BooleanValue mTurnOffSlowdown; 	
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
+	
+	public static ForgeConfigSpec.BooleanValue mSlowdownOnCorners;
+	public static ForgeConfigSpec.BooleanValue mSlowdownOnAttack;
 	
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
@@ -143,8 +145,11 @@ public class EyeMineConfig {
         moveWhenMouseStationary = CLIENT_BUILDER.comment("Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
         		.define("moveWhenMouseStationary", false);
         
-        mTurnOffSlowdown = CLIENT_BUILDER.comment("Turn off walking slowdown functionality")
-        	.define("turnOffSlowdown", false);
+        mSlowdownOnCorners = CLIENT_BUILDER.comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
+        	.define("turnOffSlowdown", true);
+        
+        mSlowdownOnAttack = CLIENT_BUILDER.comment("Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
+            	.define("turnOffSlowdown", true);
         
     }
     

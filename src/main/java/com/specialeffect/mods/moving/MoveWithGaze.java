@@ -146,30 +146,27 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 
             	double forward = (double)mCustomSpeedFactor*1.25f; 
             	
-            	if (!EyeMineConfig.mTurnOffSlowdown.get()) {
-	            	// Slow down when you've been turning a corner
-	            	double slowDownCorners= slowdownFactorViewDirs();
-	            	
-	            	// Slow down when you've got a wall in front of you
-	            	// TODO: Rethink this. It wasn't working so well
-	            	//double slowDownWalls = slowdownFactorWall(player);
-	            	
+            	if (!EyeMineConfig.mSlowdownOnCorners.get()) {
+	            		            	
 	            	// Slow down when you're looking really far up/down
-	            	double slowDownPitch = slowdownFactorPitch(player);
-	            			
-					if (!player.isOnLadder()) {
-						forward *= Math.min(slowDownCorners, slowDownPitch);
-					}
-	
+	            	if (EyeMineConfig.mSlowdownOnCorners.get()) {
+		            	double slowDownPitch = slowdownFactorPitch(player);
+		            
+		            	// Slow down when you've been turning a corner
+		            	double slowDownCorners= slowdownFactorViewDirs();
+		            			            	
+						if (!player.isOnLadder()) {
+							forward *= Math.min(slowDownCorners, slowDownPitch);
+						}
+	            	}
+						            	
 	            	// Slow down if you're facing an animal/mob while attacking
-					// (without this it's easy to run past)				
-					if (ContinuouslyAttack.mIsAttacking) { 
-		            	forward *= slowdownFactorEntity(player);
-					}
-	
-					// Adjust according to FPS (to get some consistency across
-					// installations)
-					forward *= fpsFactor();							
+					// (without this it's easy to run past)
+	            	if (EyeMineConfig.mSlowdownOnAttack.get()) {
+	            		if (ContinuouslyAttack.mIsAttacking) { 
+	            			forward *= slowdownFactorEntity(player);
+	            		}	
+	            	}	            											
             	}
 
             	// The built-in autojump doesn't work when you're underwater, so we do our own implementation here 
