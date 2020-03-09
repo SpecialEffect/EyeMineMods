@@ -144,7 +144,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
             	null == Minecraft.getInstance().currentScreen &&	
                 (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent())) {
 
-            	double forward = (double)mCustomSpeedFactor*1.25f; 
+            	double forward = (double)mCustomSpeedFactor; 
             	
             	if (!EyeMineConfig.mSlowdownOnCorners.get()) {
 	            		            	
