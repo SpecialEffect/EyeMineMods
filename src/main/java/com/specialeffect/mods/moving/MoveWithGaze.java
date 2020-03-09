@@ -247,7 +247,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 							}
 						}
 						else if (riddenEntity instanceof MinecartEntity) {
-							MinecartEntity cart = (MinecartEntity)riddenEntity;
 							Vec3d motion3d = player.getLookVec();
 							Vec3d motionAligned = motion3d.mul(1.0, 0, 1.0);
 							motionAligned.normalize();
@@ -303,7 +302,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	 */
 
 	private double slowdownFactorEntity(PlayerEntity player) {
-		RayTraceResult mov = Minecraft.getInstance().objectMouseOver;
 		EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
 		if (entityResult != null) {
 			Entity hitEntity = entityResult.getEntity();
