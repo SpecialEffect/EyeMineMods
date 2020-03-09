@@ -394,8 +394,8 @@ extends MouseHelper
         double d1 = d0 - this.lastLookTime;
         this.lastLookTime = d0;
         if (this.minecraft.isGameFocused()) {
-           double d4 = 0.1*this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;
-           double d5 = d4 * d4 * d4 * 8.0D;
+           double d4 = 0.1*this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;           
+           double d5 = 0.5d* d4 * d4 * d4 * 8.0D;
            double d2;
            double d3;
            if (this.minecraft.gameSettings.smoothCamera) {

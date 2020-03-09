@@ -82,9 +82,13 @@ implements ChildModWithConfig
 	
 	// Some hard-coded fudge factors for maximums.
 	// TODO: make configurable?
-	private final float mMaxForward = 1.5f;
-	private final float mMaxBackward = 0.5f;
+	private float mMaxForward = 1.5f;
+	private float mMaxBackward = 0.5f;
 	private final int mMaxYaw = 100; // at 100% sensitivity
+	
+	private int mTicksToLockOn=5; // wait this # of ticks before acting in a new region
+    private int ticksForward=0; 
+    private int ticksBackward=0; 
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
@@ -98,20 +102,35 @@ implements ChildModWithConfig
     			
     			MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
     			double lastMouseY = helper.lastYVelocity;
-    			System.out.println(lastMouseY);
     			
     			// Y gives distance to walk forward/back.
     			float walkForwardAmount = 0.0f;
     			float h = (float)Minecraft.getInstance().mainWindow.getScaledHeight();    			    		
     			float h6 = h/6.0f;
     			
-    			if (lastMouseY > h6) {    				
-    				walkForwardAmount = (float) (-mMaxForward*(lastMouseY-h6)/h6);
+    			if (lastMouseY < -h6) {
+    				// top of screen: forward!
+    				if (ticksForward > mTicksToLockOn) {    				
+    					walkForwardAmount = (float) (mMaxForward*(-lastMouseY-h6)/h6);
+    					ticksBackward = 0;
+    				}
+    				else {
+    					ticksForward++;	    					
+    				}
     			}
-    			else if (lastMouseY < -h6) {
-    				walkForwardAmount = (float) (mMaxBackward*(h6-lastMouseY)/h6);
+    			else if (lastMouseY > h6) {
+    				// backward
+    				
+    				if (ticksBackward > mTicksToLockOn) {    				
+    					// backward!
+    					walkForwardAmount = (float) (-mMaxBackward*(lastMouseY - h6)/h6);
+    					ticksForward = 0;
+    				}
+    				else {
+    					ticksBackward++;
+    				}
     			}
-
+    			
     			// scaled by mCustomSpeedFactor 
     			walkForwardAmount *= 0.15;
     			walkForwardAmount *= mCustomSpeedFactor;
