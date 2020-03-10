@@ -406,12 +406,36 @@ extends MouseHelper
            } else {
               this.xSmoother.reset();
               this.ySmoother.reset();
-              d2 = this.xVelocity * d5;
-              d3 = this.yVelocity * d5;
+              
+              // quadratic fit near centre
+              double d = 50;
+              double p = 2; // quadratic near centre
+              double k = 2; // magnitude at inflection point
+              double w = Minecraft.getInstance().mainWindow.getScaledHeight()/2;
+              k = (d5*w)/(1+p*(w/d - 1)); // adjust k so effect at edge is same as with linear version  
+              
+              // linear further out (but continuous at transition point)
+              double a = k*(1-p);
+              double m = p*k/d;
+              
+              if (Math.abs(this.xVelocity) > d) {
+             	 d2 = Math.signum(this.xVelocity) * (a + m*Math.abs(this.xVelocity));
+              }
+              else {
+             	 d2 = Math.signum(this.xVelocity) * k*Math.pow(Math.abs(this.xVelocity)/d, p);
+              }
+               
+              // When going backward, reduce the yaw effect
+              // TODO: ideally we'd have some smoother modulation here
+              double h6 = (double)Minecraft.getInstance().mainWindow.getScaledHeight()/6;
+              if (this.yVelocity>h6) {
+            	  d2 *= 0.5;
+              }
            }
            
            this.resetVelocity();
-           this.minecraft.getTutorial().onMouseMove(d2, d3);
+           
+           //this.minecraft.getTutorial().onMouseMove(d2, d3);
            if (this.minecraft.currentScreen == null) {
 	           if (this.minecraft.player != null) {
 	              this.minecraft.player.rotateTowards(d2, 0);     
@@ -441,6 +465,7 @@ extends MouseHelper
           double d5 = d4 * d4 * d4 * 8.0D;
           double d2;
           double d3;
+          
           if (this.minecraft.gameSettings.smoothCamera) {
              double d6 = this.xSmoother.smooth(this.xVelocity * d5, d1 * d5);
              double d7 = this.ySmoother.smooth(this.yVelocity * d5, d1 * d5);
@@ -449,8 +474,31 @@ extends MouseHelper
           } else {
              this.xSmoother.reset();
              this.ySmoother.reset();
-             d2 = this.xVelocity * d5;
-             d3 = this.yVelocity * d5;
+             
+             // quadratic fit near centre
+             double d = 50;
+             double p = 2; // quadratic near centre
+             double k = 2; // magnitude at inflection point
+             double w = Minecraft.getInstance().mainWindow.getScaledHeight()/2;
+             k = (d5*w)/(1+p*(w/d - 1)); // adjust k so effect at edge is same as with linear version  
+             
+             // linear further out (but continuous at transition point)
+             double a = k*(1-p);
+             double m = p*k/d;
+             
+             if (Math.abs(this.xVelocity) > d) {
+            	 d2 = Math.signum(this.xVelocity) * (a + m*Math.abs(this.xVelocity));
+             }
+             else {
+            	 d2 = Math.signum(this.xVelocity) * k*Math.pow(Math.abs(this.xVelocity)/d, p);
+             
+             }
+             if (Math.abs(this.yVelocity) > d) {
+            	 d3 = Math.signum(this.yVelocity) * (a + m*Math.abs(this.yVelocity));
+             }
+             else {
+            	 d3 = Math.signum(this.yVelocity) * k*Math.pow(Math.abs(this.yVelocity)/d, p);
+             }
           }
 
           this.resetVelocity();
