@@ -9,7 +9,7 @@ modLoader="javafml" #mandatory
 loaderVersion="[25,)" #mandatory (24 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods" #optional
-logoFile="eyemine_logo.png"
+
 
 [[mods]]
 modId="eyemine"
@@ -17,6 +17,17 @@ version="${file.jarVersion}"
 displayName="EyeMine"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
+logoFile="eyemine_logo.png"
+credits = "Written in collaboration with SpecialEffect"
+description='''
+EyeMine by SpecialEffect allows you to play Minecraft using eye gaze.
+
+It is designed to work alongside the EyeMine gaze-controlled keyboard. 
+
+For questions or support, contact eyemine@specialeffect.org.uk
+'''
+
+
 [[dependencies.eyemine]]
 	modId="forge"
 	mandatory=true
@@ -36,6 +47,12 @@ version="${file.jarVersion}"
 displayName="EyeInventory"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
+credits = "Written in collaboration with SpecialEffect"
+description='''
+This small extra mod gives keyboard navigation to inventory for use with EyeMine.
+'''
+
+
 [[dependencies.creativetabs]]
 	modId="forge"
 	mandatory=true
