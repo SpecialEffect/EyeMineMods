@@ -35,7 +35,7 @@ public class IconOverlay
 	private float mHeight = 1.0f;
 	private float mAspectRatio = 1.0f;
 	private float mAlpha = 1.0f;
-	private int fadeTime = 20;
+	private int fadeTime = 10;
 	private int fadeCountdown = 0;
 
 	public IconOverlay(Minecraft mc, String resourcePath)
