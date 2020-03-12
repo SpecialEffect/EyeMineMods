@@ -44,13 +44,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class ModUtils {
-
-	// This is where we specify the version that all our mods use
-	public static final String VERSION  = "2.0.3";
-
-	// version of optikey to use
-	// for now we're keeping them in lockstep
-	public static final String OPTIKEY_VERSION = ModUtils.VERSION;
 	
 	// Check if LivingEntity is the current player (and not another
 	// player on the network, for instance)
