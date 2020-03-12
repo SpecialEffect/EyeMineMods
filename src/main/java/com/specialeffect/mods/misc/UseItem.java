@@ -25,6 +25,8 @@ import com.specialeffect.mods.mousehandling.MouseHandler;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.LadderBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -74,6 +76,7 @@ extends ChildMod implements ChildModWithConfig {
 	
 	// State for 'continuously use'
 	private boolean mUsingItem = false;
+	private boolean mDwelling = false;
 	
 	private long lastTime = 0;
 	private int dwellTimeInit = 200; // ms
@@ -97,7 +100,7 @@ extends ChildMod implements ChildModWithConfig {
 			
 			this.dwellTimeDecay = 300;
 			
-			if (mUsingItem && !ModUtils.hasActiveGui()) {
+			if (mDwelling && !ModUtils.hasActiveGui()) {
 				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
 
 					// What are we currently targeting?
@@ -166,7 +169,7 @@ extends ChildMod implements ChildModWithConfig {
 			return;
 		}
 						
-		if (mUsingItem) {
+		if (mDwelling) {
 			
 			// Add current block to live targets if required
 			// (we only want to add from within this method, so we avoid floating un-buildable surfaces, 
@@ -212,29 +215,40 @@ extends ChildMod implements ChildModWithConfig {
 		PlayerEntity player = Minecraft.getInstance().player;
 		
 		if (event.getKey() == mUseItemContinuouslyKB.getKey().getKeyCode()) {
-			mUsingItem = !mUsingItem;
-//			boolean useItemNewState = !useItemKeyBinding.isKeyDown();
-//			KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), useItemNewState);
-			final String message = "Using item: " + (mUsingItem ? "ON" : "OFF");
-	        player.sendMessage(new StringTextComponent(message));
-	        
-	        // Tune throttling according to what's in your hand
-	        if (mUsingItem) {
-	        	ItemStack itemStack = player.inventory.getCurrentItem();
-		        Item item = player.inventory.getCurrentItem().getItem();
-		        
-		        this.liveTargets.clear();
-				if (player.inventory.getCurrentItem().getItem() instanceof BlockItem) {
-					syncConfig();
+			
+			if (mUsingItem || mDwelling) {
+				// Turn off whatever
+				final String message = (mUsingItem ? "Using item: " : "Dwell building: ") + "OFF";			
+		        player.sendMessage(new StringTextComponent(message));	       
+
+				mUsingItem = false;
+				mDwelling = false;
+				this.liveTargets.clear();			
+				KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), mUsingItem);
+			}
+			else {
+				// Turn on either dwell build or continuous-building
+						
+				ItemStack itemStack = player.inventory.getCurrentItem();
+				if (itemStack == null || itemStack.getItem() == null) {
+			        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
+			        return;
+				}
+		        Item item = player.inventory.getCurrentItem().getItem();			
+				
+				if (item instanceof BlockItem && !(((BlockItem) item).getBlock() instanceof LadderBlock)) {
+					// All blocks except ladders use dwell building
+					mDwelling = true;					
 				}
 				else {
-					syncConfig();
-					this.dwellTimeComplete = 300;
-					this.dwellTimeInit = 100;
+					// Non-blocks (e.g. food, tools) use continuous-use
+					mUsingItem = true;				
+					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), mUsingItem);
 				}
-	        }
-
-//	        if (player.inventory.currentItem)
+				
+				final String message = (mUsingItem ? "Using item: " : "Dwell building: ") + "ON";				
+		        player.sendMessage(new StringTextComponent(message));	       
+			}
 		} else if (mUseItemOnceKB.isPressed()) {
 			KeyBinding.onTick(useItemKeyBinding.getKey());
 		} else if (mPrevItemKB.isPressed()) {
