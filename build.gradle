@@ -13,14 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-//adds the build number to the end of the version string if on a build server
-String build_number = System.getenv().BUILD_NUMBER
-if (build_number == null) {
-    build_number = "9999"
-}
 
 String semver = "${version_major}.${version_minor}.${version_patch}"
-version = "${semver}.${build_number}"
+version = "${semver}"
 group = 'com.specialeffect.eyemine' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'eyemine'
 
@@ -125,16 +120,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 task sourcesJar(type: Jar) {
     classifier = "sources"
     from sourceSets.main.allJava
-    from sourceSets.api.allJava
-}
-
-task apiJar(type: Jar) {
-    classifier = "api"
-    from sourceSets.api.output
-
-    // TODO: when FG bug is fixed, remove allJava from the api jar.
-    // https://github.com/MinecraftForge/ForgeGradle/issues/369
-    // Gradle should be able to pull them from the -sources jar.
     from sourceSets.api.allJava
 }
 
