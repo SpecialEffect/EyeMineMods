@@ -414,7 +414,7 @@ extends MouseHelper
               double d = h/8;
               double p = 2; // quadratic near centre
               double k = 2; // magnitude at inflection point
-              k = (d5*w2)/(1+p*(w2/d - 1)); // adjust k so effect at edge is same as with linear version  
+              k = 0.5*(d5*w)/(1+p*(w/(2*d) - 1));    // adjust k so effect at edge is same as with linear version  
               
               // linear further out (but continuous at transition point)
               double a = k*(1-p);
@@ -479,14 +479,13 @@ extends MouseHelper
              
              // quadratic fit near centre
              double w = Minecraft.getInstance().mainWindow.getScaledWidth();
-             double h = Minecraft.getInstance().mainWindow.getScaledHeight();
-             double w2 = w/2;
+             double h = Minecraft.getInstance().mainWindow.getScaledHeight();             
              double d = h/8;
              
              double p = 2; // quadratic near centre
-             double k = 2; // magnitude at inflection point
-             k = (d5*w)/(1+p*(w2/d - 1)); // adjust k so effect at edge is same as with linear version  
-             
+             double k = 2; // magnitude at inflection point              
+             k = 0.5*(d5*w)/(1+p*(w/(2*d) - 1));   
+
              // linear further out (but continuous at transition point)
              double a = k*(1-p);
              double m = p*k/d;
