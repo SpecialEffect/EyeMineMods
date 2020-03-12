@@ -31,8 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -81,8 +79,6 @@ extends ChildMod implements ChildModWithConfig {
 	private int dwellTimeComplete = 1000; // ms
 	private int dwellTimeDecay = 200;
 	
-	private TargetBlock currentTarget;
-	// TODO: I'm here, setting up a memory of targets, will keep track of dwelltime on all of them
 	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
 
 	public void syncConfig() {
@@ -102,13 +98,13 @@ extends ChildMod implements ChildModWithConfig {
 			
 			if (mUsingItem && !ModUtils.hasActiveGui()) {
 				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
-//					if ( true) {
+
 					// What are we currently targeting?
 					BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock(); 							
-					this.currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
+					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
 															
 					// Make sure current target is in the liveTarget maps
-					if (this.currentTarget != null && !liveTargets.containsKey(currentTarget)) {
+					if (currentTarget != null && !liveTargets.containsKey(currentTarget)) {
 						liveTargets.put(currentTarget, 
 								new DwellState(this.dwellTimeComplete, this.dwellTimeInit, this.dwellTimeDecay));
 					}
@@ -130,7 +126,6 @@ extends ChildMod implements ChildModWithConfig {
 						KeyBinding.onTick(useItemKeyBinding.getKey());
 						liveTargets.remove(currentTarget);		
 					}
-					
 					// TODO: what if can't use item ? Currently this results in flashing again and again
 					// Add this to dwell state?
 				}
@@ -170,15 +165,13 @@ extends ChildMod implements ChildModWithConfig {
 			return;
 		}
 		
-		if (mUsingItem && this.currentTarget != null && liveTargets.containsKey(currentTarget)) {
-			
-			// Update all dwell times: the current target increments, others decrement and decay
+		if (mUsingItem) {
+			// Update dwell visualisation for all targets
 			for (Map.Entry<TargetBlock, DwellState> entry : liveTargets.entrySet()) {
 										
 				DwellState dwellState = entry.getValue(); 				
 				if (dwellState.shouldRender()) {
 					TargetBlock target = entry.getKey();
-					Color color = new Color(0.75f, 0.25f, 0.0f);
 					
 					boolean doCentralised = !EyeMineConfig.dwellShowWithTransparency.get();
 					boolean expanding = EyeMineConfig.dwellShowExpanding.get();
