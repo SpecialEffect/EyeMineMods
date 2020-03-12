@@ -51,7 +51,7 @@ credits = "Written in collaboration with SpecialEffect"
 description='''
 This small extra mod gives keyboard navigation to inventory for use with EyeMine.
 '''
-
+ 
 
 [[dependencies.creativetabs]]
 	modId="forge"
