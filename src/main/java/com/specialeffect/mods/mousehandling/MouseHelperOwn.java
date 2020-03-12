@@ -408,11 +408,13 @@ extends MouseHelper
               this.ySmoother.reset();
               
               // quadratic fit near centre
-              double d = 50;
+              double w = Minecraft.getInstance().mainWindow.getScaledWidth();
+              double h = Minecraft.getInstance().mainWindow.getScaledHeight();
+              double w2 = w/2;
+              double d = h/8;
               double p = 2; // quadratic near centre
               double k = 2; // magnitude at inflection point
-              double w = Minecraft.getInstance().mainWindow.getScaledWidth()/2;
-              k = (d5*w)/(1+p*(w/d - 1)); // adjust k so effect at edge is same as with linear version  
+              k = (d5*w2)/(1+p*(w2/d - 1)); // adjust k so effect at edge is same as with linear version  
               
               // linear further out (but continuous at transition point)
               double a = k*(1-p);
@@ -476,11 +478,14 @@ extends MouseHelper
              this.ySmoother.reset();
              
              // quadratic fit near centre
-             double d = 50;
+             double w = Minecraft.getInstance().mainWindow.getScaledWidth();
+             double h = Minecraft.getInstance().mainWindow.getScaledHeight();
+             double w2 = w/2;
+             double d = h/8;
+             
              double p = 2; // quadratic near centre
              double k = 2; // magnitude at inflection point
-             double w = Minecraft.getInstance().mainWindow.getScaledWidth()/2;
-             k = (d5*w)/(1+p*(w/d - 1)); // adjust k so effect at edge is same as with linear version  
+             k = (d5*w)/(1+p*(w2/d - 1)); // adjust k so effect at edge is same as with linear version  
              
              // linear further out (but continuous at transition point)
              double a = k*(1-p);
