@@ -32,6 +32,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -101,12 +102,11 @@ extends ChildMod implements ChildModWithConfig {
 
 					// What are we currently targeting?
 					BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock(); 							
-					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
-															
-					// Make sure current target is in the liveTarget maps
-					if (currentTarget != null && !liveTargets.containsKey(currentTarget)) {
-						liveTargets.put(currentTarget, 
-								new DwellState(this.dwellTimeComplete, this.dwellTimeInit, this.dwellTimeDecay));
+					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);	
+					
+					// If it's not in the hashmap yet, it means we hit here before the render event - just wait until next tick
+					if (!liveTargets.containsKey(currentTarget)) {
+						return;
 					}
 					
 					// Update all dwell times: the current target increments, others decrement and decay
@@ -160,12 +160,28 @@ extends ChildMod implements ChildModWithConfig {
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
+				
 		if (Minecraft.getInstance().currentScreen != null) {
 			this.liveTargets.clear();
 			return;
 		}
-		
+						
 		if (mUsingItem) {
+			
+			// Add current block to live targets if required
+			// (we only want to add from within this method, so we avoid floating un-buildable surfaces, 
+			// a.k.a. "MISS" ray trace results)
+			if (e.getTarget().getType() == RayTraceResult.Type.MISS) {
+				return;
+			}
+			
+			BlockRayTraceResult rayTraceBlock = ModUtils.getMouseOverBlock();
+			TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
+			if (currentTarget != null && !liveTargets.containsKey(currentTarget)) {
+				liveTargets.put(currentTarget, 
+						new DwellState(this.dwellTimeComplete, this.dwellTimeInit, this.dwellTimeDecay));
+			}
+			
 			// Update dwell visualisation for all targets
 			for (Map.Entry<TargetBlock, DwellState> entry : liveTargets.entrySet()) {
 										
