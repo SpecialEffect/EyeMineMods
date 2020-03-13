@@ -89,7 +89,7 @@ dependencies {
     minecraft([
         group  : "${project.forgegroup}",
         name   : "forge",
-        version: "${project.mcversion}-${project.forgeversion}"
+        version: "${project.minecraftversion}-${project.forgeversion}"
     ])
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -101,9 +101,9 @@ jar {
         attributes([
                 "Specification-Title": "EyeMine",
                 "Specification-Vendor": "SpecialEffect",
-                "Specification-Version": "${project.version}",
+                "Specification-Version": "${project.modversion}",
                 "Implementation-Title": project.name,
-                "Implementation-Version": "${project.version}",
+                "Implementation-Version": "${project.modversion}",
                 "Implementation-Vendor" :"SpecialEffect",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
         ])

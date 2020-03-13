@@ -85,18 +85,14 @@ def updateVersionGradle(filename, new_version):
 #    print( "Cannot continue, git working copy dirty")
 #    safeExit()
     
-# Make sure the mod reports the new version.
-version_file = "src/main/java/com/specialeffect/utils/ModUtils.java"
-new_version = updateModVersion(version_file, version_level);
-print(new_version)
 
 # Make sure gradle knows about the version
-gradle_file = 'build.gradle'
-updateVersionGradle(gradle_file, new_version)
+gradle_file = 'gradle.properties'
+updateVersionGradle(gradle_file, version_level)
 
 # Commit changes
-safeProcess("git add {}".format(version_file))
-safeProcess("git add {}".format(gradle_file))
-safeProcess('git commit -m "Update version number to ' + new_version + '"')
+# safeProcess("git add {}".format(version_file))
+# safeProcess("git add {}".format(gradle_file))
+# safeProcess('git commit -m "Update version number to ' + new_version + '"')
     
 
