@@ -40,7 +40,7 @@ def safeExit():
 #    safeProcess("git reset --hard head")
 
 def updateModVersion(filename, version_level):
-    pattern = re.compile("(String\s*VERSION\s*=\s*\")(\d*).(\d*).(\d*)\"");
+    pattern = re.compile("(\s*modversion\s*=\s*)(\d*).(\d*).(\d*)");
 
     new_version = None
     for line in fileinput.input(filename, inplace=True):
@@ -59,7 +59,7 @@ def updateModVersion(filename, version_level):
             elif version_level == "--revision":
                 revision += 1
             new_version =  "{}.{}.{}".format(major, minor, revision)
-            line = re.sub(pattern, "String VERSION  = \"{}\"".format(new_version), line);        
+            line = re.sub(pattern, "modversion={}".format(new_version), line);        
         print(line.rstrip('\n'))
     if not new_version:
         raise Exception("Could not find version in file {}".format(filename))
@@ -81,18 +81,17 @@ def updateVersionGradle(filename, new_version):
     
     
 # Don't continue if working copy is dirty
-#if not safeProcess('git diff-index --quiet HEAD --'):
-#    print( "Cannot continue, git working copy dirty")
-#    safeExit()
+if not safeProcess('git diff-index --quiet HEAD --'):
+   print( "Cannot continue, git working copy dirty")
+   safeExit()
     
-
 # Make sure gradle knows about the version
 gradle_file = 'gradle.properties'
-updateVersionGradle(gradle_file, version_level)
+new_version = updateModVersion(gradle_file, version_level)
 
 # Commit changes
-# safeProcess("git add {}".format(version_file))
-# safeProcess("git add {}".format(gradle_file))
-# safeProcess('git commit -m "Update version number to ' + new_version + '"')
+safeProcess("git add {}".format(version_file))
+safeProcess("git add {}".format(gradle_file))
+safeProcess('git commit -m "Update version number to ' + new_version + '"')
     
 
