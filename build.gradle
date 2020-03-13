@@ -14,8 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 
-String semver = "${version_major}.${version_minor}.${version_patch}"
-version = "${semver}"
+
 group = 'com.specialeffect.eyemine' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'eyemine'
 
@@ -102,7 +101,7 @@ jar {
         attributes([
                 "Specification-Title": "EyeMine",
                 "Specification-Vendor": "SpecialEffect",
-                "Specification-Version": "${semver}",
+                "Specification-Version": "${project.version}",
                 "Implementation-Title": project.name,
                 "Implementation-Version": "${project.version}",
                 "Implementation-Vendor" :"SpecialEffect",
