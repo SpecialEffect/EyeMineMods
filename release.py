@@ -26,7 +26,7 @@ def safeExit():
 #	safeProcess("git reset --hard head")
 
 def get_version(filename):
-    pattern = re.compile("String\s*VERSION\s*=\s*\"(\d*.\d*.\d*)\"");
+    pattern = re.compile("\s*modversion\s*=\s*(\d*.\d*.\d*)");
     for line in fileinput.input(filename):
         if re.search(pattern, line): 
             print(pattern.search(line).groups())
@@ -49,8 +49,9 @@ if not safeProcess("bash gradlew build"):
 	safeExit(); 
     
 # Tag code by version
-version_file = "src/main/java/com/specialeffect/utils/ModUtils.java"
-version = get_version(version_file)
+gradle_file = 'gradle.properties'
+
+version = get_version(gradle_file)
 safeProcess("git tag release/{}".format(version))
 
 
