@@ -90,7 +90,6 @@ gradle_file = 'gradle.properties'
 new_version = updateModVersion(gradle_file, version_level)
 
 # Commit changes
-safeProcess("git add {}".format(version_file))
 safeProcess("git add {}".format(gradle_file))
 safeProcess('git commit -m "Update version number to ' + new_version + '"')
     
