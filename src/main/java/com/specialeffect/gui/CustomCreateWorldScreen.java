@@ -4,7 +4,10 @@ import java.util.Random;
 
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
+import com.specialeffect.mods.EyeGaze;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.CreateWorldScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -26,6 +29,7 @@ public class CustomCreateWorldScreen extends Screen {
    private String saveDirName;
    private boolean alreadyGenerated;
    private Button btnCreateWorld;
+   private Button btnMoreOptions;
    private String worldName;
    public CompoundNBT chunkProviderSettingsJson = new CompoundNBT();
 
@@ -33,6 +37,7 @@ public class CustomCreateWorldScreen extends Screen {
       super(new TranslationTextComponent("selectWorld.create"));
       this.parentScreen = p_i46320_1_;
       this.worldName = I18n.format("selectWorld.newWorld");
+      EyeGaze.doCreateOwnDefaults = true;
    }
 
    public void tick() {
@@ -53,6 +58,11 @@ public class CustomCreateWorldScreen extends Screen {
       this.btnCreateWorld = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("selectWorld.create"), (p_214318_1_) -> {
          this.createWorld();
       }));
+      this.btnMoreOptions = this.addButton(new Button(this.width / 2 - 75, 137, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
+          EyeGaze.allowMoreOptions = true;
+          Minecraft.getInstance().displayGuiScreen(new CreateWorldScreen(this));
+       }));
+
       this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, I18n.format("gui.cancel"), (p_214317_1_) -> {
          this.minecraft.displayGuiScreen(this.parentScreen);
       }));
@@ -96,7 +106,7 @@ public class CustomCreateWorldScreen extends Screen {
 
          boolean generateStructures = true;
          boolean hardcoreMode = false;
-         WorldSettings worldsettings = new WorldSettings(i, GameType.getByName("creative"), generateStructures, hardcoreMode, WorldType.DEFAULT);
+         WorldSettings worldsettings = new WorldSettings(i, GameType.CREATIVE, generateStructures, hardcoreMode, WorldType.DEFAULT);
          worldsettings.setGeneratorOptions(Dynamic.convert(NBTDynamicOps.INSTANCE, JsonOps.INSTANCE, this.chunkProviderSettingsJson));
          
          // TODO: more options here?                 
@@ -125,6 +135,14 @@ public class CustomCreateWorldScreen extends Screen {
      this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 85, -6250336);
      this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
 
+     // Info strings
+     String info1 = "By default, EyeMine will give you a CREATIVE world";
+     String info2 = "with unlimited resources, free flying and no danger";
+//     String info2 = "Also: always daytime, no weather";
+    		 
+//     this.drawCenteredString(this.font, this.gameModeDesc1, this.width / 2, 137, -6250336);
+//     this.drawCenteredString(this.font, this.gameModeDesc2, this.width / 2, 149, -6250336);
+     
       super.render(p_render_1_, p_render_2_, p_render_3_);
    }
 

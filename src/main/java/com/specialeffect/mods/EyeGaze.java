@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.specialeffect.gui.CustomCreateWorldScreen;
 import com.specialeffect.gui.CustomMainMenu;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.mining.ContinuouslyMine;
@@ -49,6 +50,7 @@ import com.specialeffect.utils.ModUtils;
 import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.CreateWorldScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -137,12 +139,23 @@ public class EyeGaze {
     	this.setupComplete = true;
     	this.refresh();
 	}
+    
+    public static boolean doCreateOwnDefaults = false;
+	public static boolean allowMoreOptions = false;
 	
 	// Replace / augment some GUIs
 	@SubscribeEvent
 	public void onGuiOpen(GuiOpenEvent event) {
+		System.out.println(event.getGui());
 		if (event.getGui() instanceof MainMenuScreen && !(event.getGui() instanceof CustomMainMenu)) {
 			event.setGui(new CustomMainMenu());
+		}
+		if (event.getGui() instanceof CreateWorldScreen && !(event.getGui() instanceof CustomCreateWorldScreen)) {
+			if (!allowMoreOptions) {
+				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
+			}
+			allowMoreOptions = false;
 		}
 	}
 
@@ -155,6 +168,8 @@ public class EyeGaze {
 		ClientPlayerEntity player = Minecraft.getInstance().player;
     	if (null != player) {
             if (event.phase == TickEvent.Phase.START) {
+            	
+            	System.out.println(doCreateOwnDefaults);
 
         		// The movement input class can be re-created when respawning or moving to a 
         		// different dimension, so we need to make sure it's checked always.
