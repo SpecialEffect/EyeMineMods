@@ -52,7 +52,7 @@ public class CustomCreateWorldScreen extends Screen {
 
    protected void init() {
       this.minecraft.keyboardListener.enableRepeatEvents(true);
-      this.worldNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 55, 200, 20, I18n.format("selectWorld.enterName"));
+      this.worldNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 50, 200, 20, I18n.format("selectWorld.enterName"));
       this.worldNameField.setText(this.worldName);
       this.worldNameField.func_212954_a((p_214319_1_) -> {
          this.worldName = p_214319_1_;
@@ -64,6 +64,23 @@ public class CustomCreateWorldScreen extends Screen {
       this.btnCreateWorld = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("selectWorld.create"), (p_214318_1_) -> {
          this.createWorld();
       }));
+      
+      // Buttons for EyeMine options, contain their own boolean state
+      
+      String sDaytime = "Always daytime";
+      String sSunny = "Always sunny";
+      String sInventory = "Keep inventory after dying";
+
+      int w = (int) (this.font.getStringWidth(sInventory)*1.5); 
+      btnDaytime = new BooleanButton(this.font, sDaytime, true, this.width/2, 110, w);
+      btnSunny = new BooleanButton(this.font, sSunny, true, this.width/2, 130, w);
+      btnInventory = new BooleanButton(this.font, sInventory, true, this.width/2, 150, w);               
+      
+      this.addButton(btnDaytime.getButton());
+      this.addButton(btnSunny.getButton());
+      this.addButton(btnInventory.getButton());
+      
+      // More options -> back to the usual minecraft screens
       this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
           EyeGaze.allowMoreOptions = true;
           Minecraft.getInstance().displayGuiScreen(new CreateWorldScreen(this));
@@ -75,20 +92,6 @@ public class CustomCreateWorldScreen extends Screen {
       this.func_212928_a(this.worldNameField);
       this.calcSaveDirName();
       
-      // Buttons for EyeMine options, contain their own boolean state
-      
-      String sDaytime = "Always daytime";
-      String sSunny = "Always sunny";
-      String sInventory = "Keep inventory after dying";
-
-      int w = (int) (this.font.getStringWidth(sInventory)*1.5); 
-      btnDaytime = new BooleanButton(this.font, sDaytime, true, this.width/2, 100, w);
-      btnSunny = new BooleanButton(this.font, sSunny, true, this.width/2, 125, w);
-      btnInventory = new BooleanButton(this.font, sInventory, true, this.width/2, 150, w);               
-      
-      this.addButton(btnDaytime.getButton());
-      this.addButton(btnSunny.getButton());
-      this.addButton(btnInventory.getButton());
       
    }
    
@@ -193,10 +196,12 @@ public class CustomCreateWorldScreen extends Screen {
       this.renderBackground();
       this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 15, -1);
 
-      this.drawString(this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 42, -6250336);
-      this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 80, -6250336);
+      this.drawString(this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 37, -6250336);
+      this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 75, -6250336);
       this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
 
+      this.drawCenteredString(this.font, "Extra EyeMine Options:", this.width / 2, 95, -1);
+      
       super.render(p_render_1_, p_render_2_, p_render_3_);
    }
 
