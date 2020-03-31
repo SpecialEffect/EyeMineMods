@@ -29,7 +29,6 @@ public class CustomCreateWorldScreen extends Screen {
    private String saveDirName;
    private boolean alreadyGenerated;
    private Button btnCreateWorld;
-   private Button btnMoreOptions;
    private String worldName;
    public CompoundNBT chunkProviderSettingsJson = new CompoundNBT();
 
@@ -46,7 +45,7 @@ public class CustomCreateWorldScreen extends Screen {
 
    protected void init() {
       this.minecraft.keyboardListener.enableRepeatEvents(true);
-      this.worldNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 60, 200, 20, I18n.format("selectWorld.enterName"));
+      this.worldNameField = new TextFieldWidget(this.font, this.width / 2 - 100, 55, 200, 20, I18n.format("selectWorld.enterName"));
       this.worldNameField.setText(this.worldName);
       this.worldNameField.func_212954_a((p_214319_1_) -> {
          this.worldName = p_214319_1_;
@@ -58,7 +57,7 @@ public class CustomCreateWorldScreen extends Screen {
       this.btnCreateWorld = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, I18n.format("selectWorld.create"), (p_214318_1_) -> {
          this.createWorld();
       }));
-      this.btnMoreOptions = this.addButton(new Button(this.width / 2 - 75, 137, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
+      this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
           EyeGaze.allowMoreOptions = true;
           Minecraft.getInstance().displayGuiScreen(new CreateWorldScreen(this));
        }));
@@ -129,20 +128,20 @@ public class CustomCreateWorldScreen extends Screen {
 
    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
       this.renderBackground();
-      this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 20, -1);
+      this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 15, -1);
 
-     this.drawString(this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 47, -6250336);
-     this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 85, -6250336);
-     this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
+      this.drawString(this.font, I18n.format("selectWorld.enterName"), this.width / 2 - 100, 42, -6250336);
+      this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 80, -6250336);
+      this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
 
-     // Info strings
-     String info1 = "By default, EyeMine will give you a CREATIVE world";
-     String info2 = "with unlimited resources, free flying and no danger";
+      // Info strings
+      String info1 = "By default, EyeMine will give you a CREATIVE world";
+      String info2 = "with unlimited resources, free flying and no danger";
 //     String info2 = "Also: always daytime, no weather";
-    		 
+ 
 //     this.drawCenteredString(this.font, this.gameModeDesc1, this.width / 2, 137, -6250336);
 //     this.drawCenteredString(this.font, this.gameModeDesc2, this.width / 2, 149, -6250336);
-     
+ 
       super.render(p_render_1_, p_render_2_, p_render_3_);
    }
 
