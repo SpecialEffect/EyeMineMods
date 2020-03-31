@@ -4,9 +4,11 @@ import java.util.Random;
 
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.specialeffect.mods.EyeGaze;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.CreateWorldScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -31,6 +33,11 @@ public class CustomCreateWorldScreen extends Screen {
    private Button btnCreateWorld;
    private String worldName;
    public CompoundNBT chunkProviderSettingsJson = new CompoundNBT();
+   
+   // Buttons for EyeMine options
+   private BooleanButton btnDaytime;
+   private BooleanButton btnSunny;
+   private BooleanButton btnInventory;
 
    public CustomCreateWorldScreen(Screen p_i46320_1_) {
       super(new TranslationTextComponent("selectWorld.create"));
@@ -67,8 +74,64 @@ public class CustomCreateWorldScreen extends Screen {
       }));
       this.func_212928_a(this.worldNameField);
       this.calcSaveDirName();
-   }
+      
+      // Buttons for EyeMine options, contain their own boolean state
+      
+      String sDaytime = "Always daytime";
+      String sSunny = "Always sunny";
+      String sInventory = "Keep inventory after dying";
 
+      int w = (int) (this.font.getStringWidth(sInventory)*1.5); 
+      btnDaytime = new BooleanButton(this.font, sDaytime, true, this.width/2, 100, w);
+      btnSunny = new BooleanButton(this.font, sSunny, true, this.width/2, 125, w);
+      btnInventory = new BooleanButton(this.font, sInventory, true, this.width/2, 150, w);               
+      
+      this.addButton(btnDaytime.getButton());
+      this.addButton(btnSunny.getButton());
+      this.addButton(btnInventory.getButton());
+      
+   }
+   
+   class BooleanButton {
+	   private int x = 0;
+	   private int y = 0;
+	   private int w = 0;
+	   private boolean val;
+	   private String label;
+	   private Button btn;
+	   	   
+	   BooleanButton(FontRenderer font, String label, boolean defaultVal, 
+			    		int xPosCentre, int yPos, int width) {		   
+		   this.label = label;
+		   this.val = defaultVal;
+		   this.x = xPosCentre-width/2;
+		   this.y = yPos;
+		   this.w = width;
+		   
+		   btn = new Button(x, y, w, 20, this.getLabel(val), (b) -> {
+		   		  this.toggle(b); 
+		   	   });		   		   
+	   }
+	   
+	   public Button getButton() {
+		   return btn;
+	   }	   
+	   
+	   private String getLabel(boolean b) {
+		   String msgBool = b ? "ON" : "OFF";		   
+		   return label + ": " + msgBool; 
+	   }
+	   
+	   private void toggle(Button b) {
+		   val = !val;
+		   this.btn.setMessage(this.getLabel(val));
+	   }
+	   
+	   boolean getValue() {
+		   return val;
+	   }
+   }
+      
    /**
     * Determine a save-directory name from the world name
     */
@@ -90,7 +153,7 @@ public class CustomCreateWorldScreen extends Screen {
          }
       }
 
-   }
+   }     
 
    public void removed() {
       this.minecraft.keyboardListener.enableRepeatEvents(false);
@@ -134,14 +197,6 @@ public class CustomCreateWorldScreen extends Screen {
       this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 80, -6250336);
       this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
 
-      // Info strings
-      String info1 = "By default, EyeMine will give you a CREATIVE world";
-      String info2 = "with unlimited resources, free flying and no danger";
-//     String info2 = "Also: always daytime, no weather";
- 
-//     this.drawCenteredString(this.font, this.gameModeDesc1, this.width / 2, 137, -6250336);
-//     this.drawCenteredString(this.font, this.gameModeDesc2, this.width / 2, 149, -6250336);
- 
       super.render(p_render_1_, p_render_2_, p_render_3_);
    }
 
