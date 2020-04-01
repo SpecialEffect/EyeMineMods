@@ -10,10 +10,7 @@
 
 package com.specialeffect.mods.moving;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.DismountPlayerMessage;
@@ -30,9 +27,6 @@ import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AirItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;

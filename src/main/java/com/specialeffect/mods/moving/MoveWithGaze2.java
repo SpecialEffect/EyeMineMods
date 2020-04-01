@@ -10,9 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.JoystickControlOverlay;
@@ -29,7 +26,6 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
