@@ -28,7 +28,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.minecart.MinecartEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AirItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
@@ -68,9 +74,9 @@ public class Dismount  extends ChildMod {
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
 		if(mDismountKB.isPressed()) {
-			// Dismount player locally
 			PlayerEntity player = Minecraft.getInstance().player;
-			if (player.isPassenger()) {					
+			if (player.isPassenger()) {
+				// Dismount player locally
 				player.stopRiding();				
 				player.jump();
 				// Dismount player on server
@@ -102,15 +108,32 @@ public class Dismount  extends ChildMod {
 					}
 					else if (entities.size() == 1) {
 						entity = entities.get(0); 
-						ModUtils.sendPlayerMessage("Mounting nearby "+entity.getName().getString());						
+						ModUtils.sendPlayerMessage("Attempting to mount nearby "+entity.getName().getString());						
 					}
 					else {
-						ModUtils.sendPlayerMessage("Found multiple rideable entities, please use crosshair to select");
+						ModUtils.sendPlayerMessage("Found multiple entities nearby, please use crosshair to select");
 					}					
 				}
-				if (entity != null) {									
-					player.startRiding(entity);
-					channel.sendToServer(new RideEntityMessage(entity.getEntityId()));					
+				if (entity != null) {				
+					// Ideally we already have an empty hand, and we can use this to interact
+					// with the entity (and therefore let the entity handle all riding logic itself)
+					// If we try to ride the entity directly, we end up riding things that shouldn't be ridden!
+					
+					// Most EyeMine users will probably have an empty off-hand (since we don't give direct access
+					// to using the off-hand). We'll use this hand if it's empty, to avoid the need to remove items. 
+					// If someone is advanced enough to fill their offhand, they can work out how to drop their item.
+					Hand hand = Hand.MAIN_HAND;
+					if (player.getHeldItem(Hand.OFF_HAND).getItem() == Items.AIR) {
+						hand = Hand.OFF_HAND;
+					}
+					// special case warning (there are probably more scenarios)
+					else if (entity instanceof HorseEntity && 
+							player.getHeldItem(Hand.MAIN_HAND).getItem() != Items.AIR) {
+						ModUtils.sendPlayerMessage("You need an empty hand to ride a horse");
+					}
+					
+					entity.processInitialInteract(player, hand);
+					channel.sendToServer(new RideEntityMessage(entity.getEntityId(), hand));					
 				}
 			}			
 		}

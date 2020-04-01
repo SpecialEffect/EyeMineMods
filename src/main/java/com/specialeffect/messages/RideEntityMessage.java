@@ -15,22 +15,26 @@ import java.util.function.Supplier;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class RideEntityMessage {
     
     private int entityId;
+    private Hand hand;
     
-    public RideEntityMessage(int entityId) { 
+    public RideEntityMessage(int entityId, Hand hand) { 
     	this.entityId = entityId;
+    	this.hand = hand;
     }
     
 	public static RideEntityMessage decode(PacketBuffer buf) {		
-        return new RideEntityMessage(buf.readInt());
+        return new RideEntityMessage(buf.readInt(), buf.readEnumValue(Hand.class));
     }
 
     public static void encode(RideEntityMessage pkt, PacketBuffer buf) {
     	buf.writeInt(pkt.entityId);
+    	buf.writeEnumValue(pkt.hand);
     }    
 
     public static class Handler {
@@ -42,7 +46,7 @@ public class RideEntityMessage {
 
 	        Entity entity = player.world.getEntityByID(pkt.entityId);
 	        if (entity != null) {
-				player.startRiding(entity);
+				entity.processInitialInteract(player, pkt.hand);
 	        }
 		}
 	}       
