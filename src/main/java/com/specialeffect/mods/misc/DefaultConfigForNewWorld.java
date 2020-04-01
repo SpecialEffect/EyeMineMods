@@ -142,11 +142,7 @@ public class DefaultConfigForNewWorld extends ChildMod {
 				e.printStackTrace();
 			}        
         }        
-    }
-    
-    private void sendCommand(String cmd ) {
-        channel.sendToServer(new SendCommandMessage(cmd));
-    }
+    }    
     
     private void equipPlayer(PlayerInventory inventory) {
         // Ask server to put new item in hotbar     

@@ -37,15 +37,10 @@ public class Sneak extends ChildMod {
 	
 	private static int mIconIndex;
 	
-	private Minecraft mMinecraft;
-	
-
 	public Sneak() {
 	}
 	
 	public void setup(final FMLCommonSetupEvent event) {
-	    mMinecraft = Minecraft.getInstance();
-
 		// Register key bindings
 		mSneakKB = new KeyBinding("Start/stop sneaking", GLFW.GLFW_KEY_Z, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mSneakKB);

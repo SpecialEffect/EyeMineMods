@@ -57,8 +57,6 @@ implements ChildModWithConfig
     	mToggleAutoWalkKB = new KeyBinding("Start/stop walking (simple mode)", GLFW.GLFW_KEY_B, CommonStrings.EYEGAZE_COMMON);
         ClientRegistry.registerKeyBinding(mToggleAutoWalkKB);
         
-        mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
-        
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/legacy-mode.png");
     }
@@ -84,7 +82,6 @@ implements ChildModWithConfig
 	// TODO: make configurable?
 	private float mMaxForward = 1.5f;
 	private float mMaxBackward = 0.5f;
-	private final int mMaxYaw = 100; // at 100% sensitivity
 	
 	private int mTicksToLockOn=5; // wait this # of ticks before acting in a new region
     private int ticksForward=0; 
@@ -141,8 +138,6 @@ implements ChildModWithConfig
     }
     
 	private static boolean mDoingAutoWalk = false;
-    private double mWalkDistance = 1.0f;
-    private Queue<Vec3d> mPrevLookDirs;
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {

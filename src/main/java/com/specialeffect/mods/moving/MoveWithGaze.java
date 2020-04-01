@@ -281,12 +281,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		}
 	}
 
-	private double fpsFactor() {
-		int currFps = Minecraft.getDebugFPS();
-		int standardFps = 30; // what we tune on
-		return Math.min(1.0, (double) standardFps / (double) currFps);
-	}
-
 	private double slowdownFactorEntity(PlayerEntity player) {
 		EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
 		if (entityResult != null) {
