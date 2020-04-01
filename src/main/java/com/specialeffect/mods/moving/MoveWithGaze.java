@@ -20,7 +20,6 @@ import javax.vecmath.Vector2d;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.StateOverlay;
-import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeMineConfig;
@@ -37,8 +36,6 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.LadderBlock;
 //import net.minecraft.block.LiquidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -48,10 +45,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;

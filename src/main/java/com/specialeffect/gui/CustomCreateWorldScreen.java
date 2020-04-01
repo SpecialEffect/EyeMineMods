@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.mods.misc.DefaultConfigForNewWorld;
 

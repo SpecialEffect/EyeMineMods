@@ -5,7 +5,6 @@ import java.util.List;
 
 import at.feldim2425.moreoverlays.gui.config.ConfigOptionList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;

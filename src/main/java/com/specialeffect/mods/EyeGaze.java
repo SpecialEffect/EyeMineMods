@@ -45,8 +45,6 @@ import com.specialeffect.mods.moving.Swim;
 import com.specialeffect.mods.utils.DebugAverageFps;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.ChildModWithConfig;
-import com.specialeffect.utils.ModUtils;
-
 import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
