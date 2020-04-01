@@ -69,6 +69,7 @@ public class Swim extends ChildMod {
 	private static int jumpkeyTimer = 0;
 	private static int jumpkeyCooldown = 6;
 	
+	@SuppressWarnings("deprecation")
 	private boolean isPlayerInAir(PlayerEntity player) {
 		World world = Minecraft.getInstance().world;
 		BlockPos playerPos = player.getPosition();

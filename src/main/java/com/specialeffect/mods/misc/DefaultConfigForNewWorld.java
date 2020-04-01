@@ -125,10 +125,11 @@ public class DefaultConfigForNewWorld extends ChildMod {
         }	         
     }
 
-    private void printGameRules(GameRules rules) {
+    @SuppressWarnings("unused")
+	private void printGameRules(GameRules rules) {
         System.out.println("Game rules:");        
         
-        // We use reflaction to 
+        // We use reflection to print out any relevant fields 
         Field[] fields = rules.getClass().getFields();
         for(Field f : fields){        	           
 			try {
