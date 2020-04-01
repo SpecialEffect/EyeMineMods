@@ -134,8 +134,8 @@ public class EyeGaze {
 	
 
     public void setup(final FMLCommonSetupEvent event) {
-    	this.setupComplete = true;
-    	this.refresh();
+    	setupComplete = true;
+    	refresh();
 	}
     
 	public static boolean allowMoreOptions = false;

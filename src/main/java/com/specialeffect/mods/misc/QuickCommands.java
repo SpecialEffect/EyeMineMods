@@ -83,7 +83,7 @@ public class QuickCommands extends ChildMod {
 			GameRules rules = Minecraft.getInstance().world.getGameRules();
 			
 			
-			RuleKey<BooleanValue> gameRule = rules.DO_DAYLIGHT_CYCLE;			
+			RuleKey<BooleanValue> gameRule = GameRules.DO_DAYLIGHT_CYCLE;			
 			boolean newBool = !rules.getBoolean(gameRule);
 			
 			String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);			
