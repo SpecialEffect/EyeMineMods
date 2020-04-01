@@ -6,6 +6,7 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.types.JsonOps;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.misc.DefaultConfigForNewWorld;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -43,7 +44,6 @@ public class CustomCreateWorldScreen extends Screen {
       super(new TranslationTextComponent("selectWorld.create"));
       this.parentScreen = p_i46320_1_;
       this.worldName = I18n.format("selectWorld.newWorld");
-      EyeGaze.doCreateOwnDefaults = true;
    }
 
    public void tick() {
@@ -83,6 +83,7 @@ public class CustomCreateWorldScreen extends Screen {
       // More options -> back to the usual minecraft screens
       this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
           EyeGaze.allowMoreOptions = true;
+          DefaultConfigForNewWorld.setNewWorldOptions(btnDaytime.getValue(), btnSunny.getValue(), btnInventory.getValue());
           Minecraft.getInstance().displayGuiScreen(new CreateWorldScreen(this));
        }));
 
@@ -164,6 +165,9 @@ public class CustomCreateWorldScreen extends Screen {
 
    private void createWorld() {
       this.minecraft.displayGuiScreen((Screen)null);
+      
+      DefaultConfigForNewWorld.setNewWorldOptions(btnDaytime.getValue(), btnSunny.getValue(), btnInventory.getValue());
+      
       if (!this.alreadyGenerated) {
          this.alreadyGenerated = true;
          long i = (new Random()).nextLong();
@@ -200,7 +204,7 @@ public class CustomCreateWorldScreen extends Screen {
       this.drawString(this.font, I18n.format("selectWorld.resultFolder") + " " + this.saveDirName, this.width / 2 - 100, 75, -6250336);
       this.worldNameField.render(p_render_1_, p_render_2_, p_render_3_);
 
-      this.drawCenteredString(this.font, "Extra EyeMine Options:", this.width / 2, 95, -1);
+      this.drawCenteredString(this.font, "Extra EyeMine Options (creative only):", this.width / 2, 95, -1);
       
       super.render(p_render_1_, p_render_2_, p_render_3_);
    }

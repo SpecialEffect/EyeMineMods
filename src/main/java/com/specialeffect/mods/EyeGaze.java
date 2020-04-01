@@ -140,7 +140,6 @@ public class EyeGaze {
     	this.refresh();
 	}
     
-    public static boolean doCreateOwnDefaults = false;
 	public static boolean allowMoreOptions = false;
 	
 	// Replace / augment some GUIs
@@ -169,8 +168,6 @@ public class EyeGaze {
     	if (null != player) {
             if (event.phase == TickEvent.Phase.START) {
             	
-            	System.out.println(doCreateOwnDefaults);
-
         		// The movement input class can be re-created when respawning or moving to a 
         		// different dimension, so we need to make sure it's checked always.
         		if (!(player.movementInput instanceof MovementInputFromOptionsOverride))

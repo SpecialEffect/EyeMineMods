@@ -1,20 +1,32 @@
 package com.specialeffect.mods.misc;
 
+import java.lang.reflect.Field;
+
 import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.GameType;
+import net.minecraft.world.GameRules.BooleanValue;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.spawner.WorldEntitySpawner;
+import net.minecraft.world.storage.DimensionSavedDataManager;
+import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -23,12 +35,22 @@ import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 public class DefaultConfigForNewWorld extends ChildMod {
     public final String MODID = "specialeffect.defaultconfigworld";
 
-    private boolean firstWorldLoad = false;
+    
     private boolean firstOnLivingTick = true;
 
 	private boolean haveEquippedPlayer = false;   
+	
+	private static boolean alwaysDayTimeSetting = false;
+	private static boolean alwaysSunnySetting = false;
+	private static boolean keepInventorySetting = false;
     
-    
+	public static void setNewWorldOptions(boolean daytime, boolean sunny, boolean keepInventory) {
+		// allow "new world" gui to cache user preferences ready for new world creation
+		alwaysDayTimeSetting = daytime;
+		alwaysSunnySetting = sunny;
+		keepInventorySetting = keepInventory;
+	}
+	
     public void setup(final FMLCommonSetupEvent event) {
         
         this.setupChannel(MODID, 1);
@@ -79,53 +101,53 @@ public class DefaultConfigForNewWorld extends ChildMod {
                 }
                 haveEquippedPlayer = true;
             }
-            // The first time the world loads, we set our preferred game rules
-            // Users may override them manually later.
-            if (firstWorldLoad) {   
-                /* FIXME if (player.isCreative()) {
-                    WorldServer worldServer = DimensionManager.getWorld(0); // default world
-                    if (worldServer.getTotalWorldTime() < 10) {
-                        GameRules gameRules = worldServer.getGameRules();
-                        printGameRules(gameRules);
-                        setDefaultGameRules(gameRules);
-                    }
-                }*/
-                firstWorldLoad = false;
-            }
         }
     }
 
     @SubscribeEvent
-    public void onWorldLoad(FMLServerStartedEvent event) {
-        // Note first time world loads, we'll make changes on next
-        // onliving tick
-    	
-    	//FIXME
-        firstWorldLoad = true;
-//        WorldServer worldServer = DimensionManager.getWorld(0); // default world
-//        if (worldServer.getTotalWorldTime() < 10) {
-//            firstWorldLoad = true;
-//        }
-    }
-
-    private void setDefaultGameRules(GameRules rules) {
-        /* FIXME
-
-        rules.setOrCreateGameRule("doWeatherCycle", "False");
-        rules.setOrCreateGameRule("keepInventory", "True");
-
-        // we've just turned off daylightcycle while time = morning... 
-        // we prefer full daylight!
-        sendCommand("/time set day");
-         */
+    public void onWorldLoad(WorldEvent.Load event) {
+        
+    	LOGGER.debug("onWorldLoad: " + alwaysDayTimeSetting + ", " + alwaysSunnySetting + ", " + keepInventorySetting);
+    	     
+        IWorld world = event.getWorld();
+        MinecraftServer server = world.getWorld().getServer();
+        WorldInfo info = world.getWorldInfo();
+        GameRules rules = info.getGameRulesInstance();
+		 	   
+        if (info.getGameTime() < 10) {
+        	// First time loading, set rules according to user preference		
+        	if (info.getGameType() == GameType.CREATIVE) {
+				rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(!alwaysDayTimeSetting, server);		
+				rules.get(GameRules.DO_WEATHER_CYCLE).set(!alwaysSunnySetting, server);				
+				rules.get(GameRules.KEEP_INVENTORY).set(keepInventorySetting, server);
+			
+				// Extra settings as a result of the above
+				if (alwaysDayTimeSetting) {
+				    // we've just turned off daylightcycle while time = morning... 
+			        // we prefer full daylight!
+					info.setDayTime(2000);
+				}
+        	}
+        }	         
     }
 
     private void printGameRules(GameRules rules) {
         System.out.println("Game rules:");        
-        /*FIXME String[] keys = rules.getRules();
-        for (String key : keys) {
-            System.out.println(key + ": " + rules.getString(key));
-        }*/
+        
+        // We use reflaction to 
+        Field[] fields = rules.getClass().getFields();
+        for(Field f : fields){        	           
+			try {
+				Object v = f.get(rules);
+				
+				if (v instanceof GameRules.RuleKey<?>) {
+	        	   GameRules.RuleKey<?> key = (GameRules.RuleKey<?>)v;        	   
+	        	   LOGGER.debug(key + ": " + rules.get(key).toString());
+		        }    
+			} catch (Exception e) {
+				e.printStackTrace();
+			}        
+        }        
     }
     
     private void sendCommand(String cmd ) {
