@@ -69,7 +69,7 @@ public class CreativeTabs
 						event.setCanceled(true);
 					}
 				}
-				else if (currentScreen instanceof ChestScreen)// InventoryScreen
+				else if (currentScreen instanceof ChestScreen)
 				{
 					ChestScreen gui = (ChestScreen)currentScreen;
 					ChestInventoryManager con = ChestInventoryManager.getInstance(

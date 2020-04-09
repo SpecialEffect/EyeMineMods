@@ -38,7 +38,8 @@ public class InventoryConfig {
 										    keyScrollUp, keyScrollDown,
 										    keyNextItemRow, keyNextItemCol, keyDrop;
     
-    public static ConfigValue<Integer> keySurvNextTab, keySurvPrevTab, keySurvRecipes, keySurvCraftable; 
+    public static ConfigValue<Integer> keySurvNextTab, keySurvPrevTab, keySurvRecipes, keySurvCraftable, 
+    								   keySurvPrevPage, keySurvNextPage; 
     
     
     static {
@@ -61,10 +62,16 @@ public class InventoryConfig {
 
     private static void setupSurvivalKeys() {
 
-    	keySurvNextTab = CLIENT_BUILDER.comment("recipes: next tab").define("keySurvNextTab", GLFW.GLFW_KEY_KP_0);
-    	keySurvPrevTab  = CLIENT_BUILDER.comment("recipes: prev tab").define("keySurvPrevTab", GLFW.GLFW_KEY_KP_1);
-    	keySurvRecipes  = CLIENT_BUILDER.comment("open/close recipes").define("keySurvRecipes", GLFW.GLFW_KEY_KP_2);
-    	keySurvCraftable = CLIENT_BUILDER.comment("toggle all/craftable").define("keySurvCraftable", GLFW.GLFW_KEY_KP_3);    	
+    	keySurvPrevTab  = CLIENT_BUILDER.comment("recipes: prev tab").define("keySurvPrevTab", GLFW.GLFW_KEY_KP_0);
+    	keySurvNextTab = CLIENT_BUILDER.comment("recipes: next tab").define("keySurvNextTab", GLFW.GLFW_KEY_KP_1);
+    	
+    	keySurvRecipes  = CLIENT_BUILDER.comment("open/close recipe book").define("keySurvRecipes", GLFW.GLFW_KEY_KP_2);
+    	keySurvCraftable = CLIENT_BUILDER.comment("toggle all/craftable").define("keySurvCraftable", GLFW.GLFW_KEY_KP_3);  
+    	
+    	keySurvPrevPage  = CLIENT_BUILDER.comment("recipes: prev page").define("keySurvPrevPage", GLFW.GLFW_KEY_KP_4);
+    	keySurvNextPage = CLIENT_BUILDER.comment("recipes: next page").define("keySurvNextPage", GLFW.GLFW_KEY_KP_5);
+    	
+    	
     			
     }
     

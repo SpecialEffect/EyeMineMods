@@ -102,7 +102,28 @@ public class SurvivalInventoryManager {
 		helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);		
 	}
 	
+	public void changePage(boolean forward) {
+		LOGGER.debug("Page "+forward);
 		
+		int yPos = (int) (top + 5.5*tabWidth);
+		int xPos = forward ? xPos = left - 100 : left - 50;		
+		 		
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;	
+		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);
+		helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);		
+	}
+	
+	public void toggleCraftable() {
+		LOGGER.debug("craftable");
+		
+		int yPos = (int) (top + tabWidth/2);
+		int xPos = 	left - 20;
+		 		
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;	
+		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);
+		helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);		
+	}
+	
 	public void clickItem() {
 		int yPos = topItemYPos;
 		int xPos = leftItemXPos;
@@ -136,8 +157,16 @@ public class SurvivalInventoryManager {
 		}
 		else if (key == InventoryConfig.keySurvNextTab.get()) {
 			this.switchToTab(validateTabIdx(currTab + 1));			
-		}	
-		
+		}		
+		else if (key == InventoryConfig.keySurvPrevPage.get()) {
+			this.changePage(true);			
+		}
+		else if (key == InventoryConfig.keySurvNextPage.get()) {
+			this.changePage(false);			
+		}
+		else if (key == InventoryConfig.keySurvCraftable.get()) {
+			this.toggleCraftable();
+		}
 	}
 	
 	private int itemRow = -1;
