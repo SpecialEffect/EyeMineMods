@@ -47,14 +47,14 @@ public class SurvivalInventoryManager {
 	int left = 0;
 	int top = 0;
 	
-	private int tabWidth = 0; // width between centres of consecutive tabs
+	private int tabHeight = 0; // width between centres of consecutive tabs
 	private int itemWidth = 0; // width between centres of consecutive items
 	
-	private int topRowYPos = 0;
+	private int topTapYPos = 0;
 	private int bottomRowYPos = 0;
 	private int topItemYPos = 0;
 	
-	private int leftColXPos = 0;
+	private int tabXPos = 0;
 	private int leftItemXPos = 0;
 	
 	private float xScale = 1.0f;
@@ -77,12 +77,14 @@ public class SurvivalInventoryManager {
 		this.top = top;
 				
 		
-		this.tabWidth = (int) (inventoryWidth/6.9);
+		this.tabHeight = (int) (inventoryWidth/6.9);
 		this.itemWidth = (int) (inventoryWidth/9.5);		
-		this.topRowYPos = top + tabWidth/2;
+		this.topTapYPos = top + tabHeight/2;
+		this.tabXPos = left-inventoryWidth;
+		
 		this.topItemYPos = (int) (top + itemWidth*1.5);
 
-		this.leftColXPos = left-inventoryWidth;
+		
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
 		
 		this.recipeX = (int) (inventoryWidth*0.65);
@@ -105,7 +107,7 @@ public class SurvivalInventoryManager {
 	public void changePage(boolean forward) {
 		LOGGER.debug("Page "+forward);
 		
-		int yPos = (int) (top + 5.5*tabWidth);
+		int yPos = (int) (top + 5.5*tabHeight);
 		int xPos = forward ? xPos = left - 100 : left - 50;		
 		 		
 		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;	
@@ -116,7 +118,7 @@ public class SurvivalInventoryManager {
 	public void toggleCraftable() {
 		LOGGER.debug("craftable");
 		
-		int yPos = (int) (top + tabWidth/2);
+		int yPos = (int) (top + tabHeight/2);
 		int xPos = 	left - 20;
 		 		
 		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;	
@@ -192,55 +194,55 @@ public class SurvivalInventoryManager {
 		switch(iTab) {
 		case -1:
 			// this is proxy for "drop by clicking outside inventory"
-			xPos = leftColXPos - tabWidth;
-			yPos = topRowYPos;
+			xPos = tabXPos - tabHeight;
+			yPos = topTapYPos;
 			break;
 		case 0:
-			xPos = leftColXPos;
-			yPos = topRowYPos;
+			xPos = tabXPos;
+			yPos = topTapYPos;
 			break;
 		case 1:
-			xPos = leftColXPos;
-			yPos = topRowYPos+tabWidth;
+			xPos = tabXPos;
+			yPos = topTapYPos+tabHeight;
 			break;
 		case 2:
-			xPos = leftColXPos;
-			yPos = topRowYPos+2*tabWidth;
+			xPos = tabXPos;
+			yPos = topTapYPos+2*tabHeight;
 			break;
 		case 3:
-			xPos = leftColXPos;
-			yPos = topRowYPos+3*tabWidth;
+			xPos = tabXPos;
+			yPos = topTapYPos+3*tabHeight;
 			break;
 		case 4:
-			xPos = leftColXPos;
-			yPos = topRowYPos+4*tabWidth;
+			xPos = tabXPos;
+			yPos = topTapYPos+4*tabHeight;
 			break;
 		case 5: 
-			xPos = leftColXPos;
-			yPos = topRowYPos+6*tabWidth;
+			xPos = tabXPos;
+			yPos = topTapYPos+6*tabHeight;
 			break;
 		case 6:
-			xPos = leftColXPos;
+			xPos = tabXPos;
 			yPos = bottomRowYPos;
 			break;
 		case 7:
-			xPos = leftColXPos+tabWidth;;
+			xPos = tabXPos+tabHeight;;
 			yPos = bottomRowYPos;
 			break;
 		case 8:
-			xPos = leftColXPos+2*tabWidth;;
+			xPos = tabXPos+2*tabHeight;;
 			yPos = bottomRowYPos;
 			break;
 		case 9:
-			xPos = leftColXPos+3*tabWidth;;
+			xPos = tabXPos+3*tabHeight;;
 			yPos = bottomRowYPos;
 			break;
 		case 10:
-			xPos = leftColXPos+4*tabWidth;
+			xPos = tabXPos+4*tabHeight;
 			yPos = bottomRowYPos;
 			break;			
 		case 11:
-			xPos = leftColXPos+6*tabWidth;
+			xPos = tabXPos+6*tabHeight;
 			yPos = bottomRowYPos;
 			break;
 		default:
