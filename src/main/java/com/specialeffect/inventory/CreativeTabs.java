@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ChestScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,6 +73,14 @@ public class CreativeTabs
 				{
 					ChestScreen gui = (ChestScreen)currentScreen;
 					ChestInventoryManager con = ChestInventoryManager.getInstance(
+							gui.getGuiLeft(), gui.getGuiTop(), 
+							gui.getXSize(), gui.getYSize());            	
+					con.acceptKey(key);					
+				}
+				else if (currentScreen instanceof InventoryScreen)
+				{
+					InventoryScreen gui = (InventoryScreen)currentScreen;
+					SurvivalInventoryManager con = SurvivalInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
 							gui.getXSize(), gui.getYSize());            	
 					con.acceptKey(key);					

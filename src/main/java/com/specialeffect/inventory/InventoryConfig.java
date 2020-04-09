@@ -38,6 +38,9 @@ public class InventoryConfig {
 										    keyScrollUp, keyScrollDown,
 										    keyNextItemRow, keyNextItemCol, keyDrop;
     
+    public static ConfigValue<Integer> keySurvNextTab, keySurvPrevTab, keySurvRecipes, keySurvCraftable; 
+    
+    
     static {
         CLIENT_BUILDER.comment("Inventory shortcut keys").push("Keys");
         setupConfigKeys();        
@@ -47,11 +50,24 @@ public class InventoryConfig {
         setupNavKeys();
         CLIENT_BUILDER.pop();
 
+        CLIENT_BUILDER.comment("Survival inventory keys").push("Keys");
+        setupSurvivalKeys();
+        CLIENT_BUILDER.pop();
+
         COMMON_CONFIG = CLIENT_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
 
+    private static void setupSurvivalKeys() {
+
+    	keySurvNextTab = CLIENT_BUILDER.comment("recipes: next tab").define("keySurvNextTab", GLFW.GLFW_KEY_KP_0);
+    	keySurvPrevTab  = CLIENT_BUILDER.comment("recipes: prev tab").define("keySurvPrevTab", GLFW.GLFW_KEY_KP_1);
+    	keySurvRecipes  = CLIENT_BUILDER.comment("open/close recipes").define("keySurvRecipes", GLFW.GLFW_KEY_KP_2);
+    	keySurvCraftable = CLIENT_BUILDER.comment("toggle all/craftable").define("keySurvCraftable", GLFW.GLFW_KEY_KP_3);    	
+    			
+    }
+    
     private static void setupConfigKeys() {
     	        	
     	key0 = CLIENT_BUILDER.comment("key0").define("key0", GLFW.GLFW_KEY_KP_0);
