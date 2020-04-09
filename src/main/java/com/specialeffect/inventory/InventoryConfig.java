@@ -53,10 +53,7 @@ public class InventoryConfig {
 
 
     private static void setupConfigKeys() {
-    	    
-    	key0 = CLIENT_BUILDER.comment("How high to fly in manual mode")
-				.defineInRange("flyHeightManual", 2, 1, 20);
-    	
+    	        	
     	key0 = CLIENT_BUILDER.comment("key0").define("key0", GLFW.GLFW_KEY_KP_0);
     	key1 = CLIENT_BUILDER.comment("key1").define("key1", GLFW.GLFW_KEY_KP_1);
     	key2 = CLIENT_BUILDER.comment("key2").define("key2", GLFW.GLFW_KEY_KP_2);
