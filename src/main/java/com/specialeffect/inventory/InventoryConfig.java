@@ -39,7 +39,7 @@ public class InventoryConfig {
 										    keyNextItemRow, keyNextItemCol, keyDrop;
     
     public static ConfigValue<Integer> keySurvNextTab, keySurvPrevTab, keySurvRecipes, keySurvCraftable, 
-    								   keySurvPrevPage, keySurvNextPage; 
+    								   keySurvPrevPage, keySurvNextPage, keySurvOutput; 
     
     
     static {
@@ -71,7 +71,7 @@ public class InventoryConfig {
     	keySurvPrevPage  = CLIENT_BUILDER.comment("recipes: prev page").define("keySurvPrevPage", GLFW.GLFW_KEY_KP_4);
     	keySurvNextPage = CLIENT_BUILDER.comment("recipes: next page").define("keySurvNextPage", GLFW.GLFW_KEY_KP_5);
     	
-    	
+    	keySurvOutput = CLIENT_BUILDER.comment("hover output").define("keySurvOutput", GLFW.GLFW_KEY_KP_6);
     			
     }
     

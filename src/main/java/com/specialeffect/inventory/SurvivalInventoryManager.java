@@ -104,6 +104,19 @@ public class SurvivalInventoryManager {
 		helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);		
 	}
 	
+	public void hoverOutput() {
+		LOGGER.debug("output");		
+
+		int xPos = left + recipeX; 
+		int yPos = top + recipeY;
+		xPos = xPos + itemWidth*3;
+		yPos = (int) (yPos - itemWidth*2.2);
+		
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;				
+		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);
+		
+	}
+	
 	public void changePage(boolean forward) {
 		LOGGER.debug("Page "+forward);
 		
@@ -168,6 +181,9 @@ public class SurvivalInventoryManager {
 		}
 		else if (key == InventoryConfig.keySurvCraftable.get()) {
 			this.toggleCraftable();
+		} 
+		else if (key == InventoryConfig.keySurvOutput.get()) {
+			this.hoverOutput();
 		}
 	}
 	
