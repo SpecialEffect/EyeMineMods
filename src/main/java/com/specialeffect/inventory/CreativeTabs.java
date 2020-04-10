@@ -10,6 +10,8 @@
 
 package com.specialeffect.inventory;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -20,6 +22,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ChestScreen;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -63,7 +66,8 @@ public class CreativeTabs
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
 							gui.getXSize(), gui.getYSize(),
-							gui.getSelectedTabIndex());            	
+							gui.getSelectedTabIndex(),
+							gui.getContainer());            	
 					boolean handled = con.acceptKey(key);
 					if (handled && event.isCancelable()) {
 						event.setCanceled(true);
@@ -81,9 +85,11 @@ public class CreativeTabs
 				else if (currentScreen instanceof InventoryScreen)
 				{
 					InventoryScreen gui = (InventoryScreen)currentScreen;
+					
 					SurvivalInventoryManager con = SurvivalInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
-							gui.getXSize(), gui.getYSize());            	
+							gui.getXSize(), gui.getYSize(), gui.getContainer());					
+					
 					con.acceptKey(key);					
 				}
 			}

@@ -1,11 +1,15 @@
 package com.specialeffect.inventory;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
 import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -31,16 +35,18 @@ public class SurvivalInventoryManager {
 
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
+	 * @param playerContainer 
 	 *
 	 * @param container A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static SurvivalInventoryManager getInstance(int left, int top, 
-													   int xSize, int ySize) {
+													   int xSize, int ySize, 
+													   PlayerContainer playerContainer) {
 		if (instance == null) {
 			instance = new SurvivalInventoryManager();
 		} 
-		instance.updateCoordinates(left, top, xSize, ySize);
+		instance.updateCoordinates(left, top, xSize, ySize, playerContainer);
 		return instance;
 	}
 		
@@ -65,17 +71,27 @@ public class SurvivalInventoryManager {
 	
 	private int currTab;
 	
+	PlayerContainer playerContainer;
+	
+	private Slot outputSlot;		
+		
+	private int slotFirstX = 0;
+	private int slotFirstY = 0;
+	private int slotDelta = 0;
+	 
+	
 	private void onTabChanged() {
 		// reset to hovering over first item when changing tabs
 		itemRow = -1;
 		itemCol = -1;
 	}
 	
-	private void updateCoordinates(int left, int top, int width, int height) {
+	private void updateCoordinates(int left, int top, int width, int height, PlayerContainer playerContainer) {
 		int inventoryWidth = width;
 		this.left = left;
 		this.top = top;
-				
+		
+		this.playerContainer = playerContainer;				
 		
 		this.tabHeight = (int) (inventoryWidth/6.9);
 		this.itemWidth = (int) (inventoryWidth/9.5);		
@@ -83,8 +99,6 @@ public class SurvivalInventoryManager {
 		this.tabXPos = left-inventoryWidth;
 		
 		this.topItemYPos = (int) (top + itemWidth*1.5);
-
-		
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
 		
 		this.recipeX = (int) (inventoryWidth*0.65);
@@ -93,8 +107,59 @@ public class SurvivalInventoryManager {
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
 		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
-		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
+		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();		
+		
+
+		List<Slot> slots = playerContainer.inventorySlots;
+		int iSlotOutput = playerContainer.getOutputSlot();
+		
+		for (Slot slot : slots) {
+	
+			LOGGER.debug(slot.xPos+ ", "+ slot.yPos);
+		}
+		this.processSlots();
+		
+		int a = 2;
+		
 	}
+	
+	private void processSlots() {
+		// parse the container to get positions and sizes of slots 
+	
+	    /* slot order for survival inventory is:
+	     * - crafting output slot (0)
+	     * - 4 crafting input slots (1..4)
+	     * - 4 player armour slots (5..8)
+	     * - all the other slots (...)
+	     * - player shield slot
+	     */
+		
+		List<Slot> slots = playerContainer.inventorySlots;
+
+		this.outputSlot = slots.get(playerContainer.getOutputSlot());		
+					
+		this.slotFirstX = slots.get(10).xPos;
+		this.slotFirstY = slots.get(10).yPos;
+		this.slotDelta = slots.get(10).xPos - slots.get(9).xPos;
+		
+		// offset by half a slot
+		this.slotFirstX += this.slotDelta/2;
+		this.slotFirstY += this.slotDelta/2;
+	} 
+	    /*
+		
+		for (Slot slot : slots) {	
+			LOGGER.debug(slot.xPos+ ", "+ slot.yPos);
+		}
+	  
+		// Parse the list of slots to work out the location of things
+		List<Slot> slots = playerContainer.inventorySlots;
+		int iSlotOutput = playerContainer.getOutputSlot();
+		for (Slot slot : slots) {
+//			if (slot instanceof )
+			LOGGER.debug(slot.xPos+ ", "+ slot.yPos);
+		}
+	}*/
 	
 	public void clickRecipeBook() {
 		LOGGER.debug("Recipe book");		
@@ -114,6 +179,9 @@ public class SurvivalInventoryManager {
 		
 		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;				
 		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);
+		
+		
+		playerContainer.transferStackInSlot(Minecraft.getInstance().player, playerContainer.getOutputSlot());
 		
 	}
 	

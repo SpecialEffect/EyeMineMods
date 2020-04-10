@@ -1,11 +1,15 @@
 package com.specialeffect.inventory;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.inventory.CreativeScreen.CreativeContainer;
+import net.minecraft.inventory.container.Slot;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -31,17 +35,19 @@ public class CreativeInventoryManager {
 
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
+	 * @param creativeContainer 
 	 *
 	 * @param container A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static CreativeInventoryManager getInstance(int left, int top, 
 													   int xSize, int ySize,
-													   int currTab) {
+													   int currTab, 
+													   CreativeContainer creativeContainer) {
 		if (instance == null) {
 			instance = new CreativeInventoryManager();
 		} 
-		instance.updateCoordinates(left, top, xSize, ySize);
+		instance.updateCoordinates(left, top, xSize, ySize, creativeContainer);
 		if (instance.currTab != currTab) {
 			instance.onTabChanged();
 			instance.currTab = currTab;
@@ -65,13 +71,16 @@ public class CreativeInventoryManager {
 	
 	private int currTab;
 	
+	private CreativeContainer creativeContainer;
+	
+	
 	private void onTabChanged() {
 		// reset to hovering over first item when changing tabs
 		itemRow = -1;
 		itemCol = -1;
 	}
 	
-	private void updateCoordinates(int left, int top, int width, int height) {
+	private void updateCoordinates(int left, int top, int width, int height, CreativeContainer creativeContainer) {
 		int inventoryWidth = width;
 		this.tabWidth = (int) (inventoryWidth/6.9);
 		this.itemWidth = (int) (inventoryWidth/10.8);
@@ -82,6 +91,15 @@ public class CreativeInventoryManager {
 		this.leftColXPos = left + tabWidth/2;
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
 		
+		List<Slot> slots = creativeContainer.inventorySlots;
+		this.creativeContainer = creativeContainer;
+		// equiv SHIFT CLICK creativeContainer.transferStackInSlot(playerIn, index)
+		
+//		creativeContainer
+		
+		// SLOTS:
+		// 0..44:  Locked slots
+		// 45..52: 9 normal slots (hotbar?)
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
 		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
