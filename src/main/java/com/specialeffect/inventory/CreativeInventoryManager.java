@@ -21,10 +21,6 @@ public class CreativeInventoryManager {
 
 	private static CreativeInventoryManager instance = null;
 
-    private final int NUM_TABS = 12;
-	private final int NUM_COLS = 9;
-	private final int NUM_ROWS = 5;
-
 	/**
 	 * Creates a new Inventory Manager with the given container.
 	 *
@@ -53,7 +49,13 @@ public class CreativeInventoryManager {
 			instance.currTab = currTab;
 		}
 		return instance;
-	}
+	}	
+
+    private final int NUM_TABS = 12;
+	private final int NUM_COLS = 9;
+	private final int NUM_ROWS = 5;
+	
+	private CreativeContainer creativeContainer;
 		
 	// GUI position in absolute screen coords (unscaled)
 	private int guiLeft = 0;
@@ -73,11 +75,9 @@ public class CreativeInventoryManager {
 	private float xScale = 1.0f;
 	private float yScale = 1.0f;
 	
-	private int currTab;
-	
-	private CreativeContainer creativeContainer;
-	
-	
+	// Current state, reported by GUI and cached
+	private int currTab;	
+		
 	private void onTabChanged() {
 		// reset to hovering over first item when changing tabs
 		itemRow = -1;
