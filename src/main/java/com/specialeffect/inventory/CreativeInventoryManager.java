@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
+import com.specialeffect.utils.ModUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen.CreativeContainer;
 import net.minecraft.inventory.container.Slot;
@@ -85,7 +87,10 @@ public class CreativeInventoryManager {
 	}
 	
 	private void updateCoordinates(int left, int top, int width, int height, CreativeContainer creativeContainer) {
+		
 		this.creativeContainer = creativeContainer;
+		this.guiLeft = left;
+		this.guiTop = top;		
 		
 		// tabs dimensions, hard-coded
 		this.tabWidth = (int) (width/6.9);
@@ -118,6 +123,22 @@ public class CreativeInventoryManager {
 		Minecraft mc = Minecraft.getInstance();
 		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
 		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
+	}
+	
+	private void updateItemPos() {
+		// Query mouse position to identify which item we're hovered over
+		// This allows users to set cursor position manually and then make adjustments
+		// with prev/next
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
+		System.out.println(helper.getMouseX() + ", " + helper.getMouseY());
+		int x = (int) (helper.getMouseX()/this.xScale);
+		int y = (int) (helper.getMouseY()/this.yScale);
+		int i = ModUtils.findSlotInContainer(creativeContainer, guiLeft, guiTop, x, y, itemWidth);
+		if (i > -1) {
+			LOGGER.debug("slot "+i);
+			itemRow = Math.floorDiv(i, NUM_COLS);
+			itemCol = i % NUM_COLS;
+		}
 	}
 
 	public boolean acceptKey(int key) {
@@ -171,6 +192,7 @@ public class CreativeInventoryManager {
 			this.switchToTab(validateTabIdx(currTab + 1));
 			handled = true;
 		} else if (key == InventoryConfig.keyNextItemRow.get()) {
+			this.updateItemPos();
 			itemRow++;
 			itemRow %= NUM_ROWS;
 			// first position on a page starts at -1, -1
@@ -178,6 +200,7 @@ public class CreativeInventoryManager {
 			this.hoverItem();
 			handled = true;
 		} else if (key == InventoryConfig.keyNextItemCol.get()) {
+			this.updateItemPos();
 			itemCol++;
 			itemCol %= NUM_COLS;
 			// first position on a page starts at -1, -1
