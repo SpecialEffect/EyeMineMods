@@ -55,16 +55,20 @@ public class CreativeInventoryManager {
 		return instance;
 	}
 		
+	// GUI position in absolute screen coords (unscaled)
+	private int guiLeft = 0;
+	private int guiTop = 0;
 	
-	private int tabWidth = 0; // width between centres of consecutive tabs
+	// Container coords, start from centre of top left slot, in absolute coords
+	private int containerTop = 0;
+	private int containerLeft = 0;
 	private int itemWidth = 0; // width between centres of consecutive items
 	
-	private int topRowYPos = 0;
-	private int bottomRowYPos = 0;
-	private int topItemYPos = 0;
-	
-	private int leftColXPos = 0;
-	private int leftItemXPos = 0;
+	// Tab coords, start from centres of tabs	
+	private int tabsLeft = 0;
+	private int tabsTop = 0;
+	private int tabsBottom = 0;
+	private int tabWidth = 0; 
 	
 	private float xScale = 1.0f;
 	private float yScale = 1.0f;
@@ -81,18 +85,26 @@ public class CreativeInventoryManager {
 	}
 	
 	private void updateCoordinates(int left, int top, int width, int height, CreativeContainer creativeContainer) {
-		int inventoryWidth = width;
-		this.tabWidth = (int) (inventoryWidth/6.9);
-		this.itemWidth = (int) (inventoryWidth/10.8);
-		this.bottomRowYPos = top + height + tabWidth/2;
-		this.topRowYPos = top - tabWidth/2;
-		this.topItemYPos = (int) (top + itemWidth*1.5);
-
-		this.leftColXPos = left + tabWidth/2;
-		this.leftItemXPos = (int) (left + itemWidth*0.9);
-		
-		List<Slot> slots = creativeContainer.inventorySlots;
 		this.creativeContainer = creativeContainer;
+		
+		// tabs dimensions, hard-coded
+		this.tabWidth = (int) (width/6.9);
+		this.tabsBottom = top + height + tabWidth/2;
+		this.tabsTop = top - tabWidth/2;
+		this.tabsLeft = left + tabWidth/2;
+		
+		// item dimensions, get from container:	
+		// SLOTS:
+		// 0..44:  Locked slots
+		// 45..52: 9 normal slots (hotbar?)		
+		int w = creativeContainer.getSlot(1).xPos - creativeContainer.getSlot(0).xPos;
+		int x = creativeContainer.getSlot(0).xPos;
+		int y = creativeContainer.getSlot(0).yPos;				
+	
+		this.itemWidth = w;
+		this.containerLeft = left + x + w/2;
+		this.containerTop = top + y + w/2;	
+		
 		// equiv SHIFT CLICK creativeContainer.transferStackInSlot(playerIn, index)
 		
 //		creativeContainer
@@ -100,6 +112,8 @@ public class CreativeInventoryManager {
 		// SLOTS:
 		// 0..44:  Locked slots
 		// 45..52: 9 normal slots (hotbar?)
+		
+		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
 		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
@@ -194,8 +208,8 @@ public class CreativeInventoryManager {
 	}
 	
 	private void hoverItem() {		
-		int yPos = topItemYPos + itemRow*itemWidth;
-		int xPos = leftItemXPos + itemCol*itemWidth;
+		int yPos = containerTop + itemRow*itemWidth;
+		int xPos = containerLeft + itemCol*itemWidth;
 		
 		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
 	}
@@ -208,56 +222,56 @@ public class CreativeInventoryManager {
 		switch(iTab) {
 		case -1:
 			// this is proxy for "drop by clicking outside inventory"
-			xPos = leftColXPos - tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft - tabWidth;
+			yPos = tabsTop;
 			break;
 		case 0:
-			xPos = leftColXPos;
-			yPos = topRowYPos;
+			xPos = tabsLeft;
+			yPos = tabsTop;
 			break;
 		case 1:
-			xPos = leftColXPos+tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft+tabWidth;
+			yPos = tabsTop;
 			break;
 		case 2:
-			xPos = leftColXPos+2*tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft+2*tabWidth;
+			yPos = tabsTop;
 			break;
 		case 3:
-			xPos = leftColXPos+3*tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft+3*tabWidth;
+			yPos = tabsTop;
 			break;
 		case 4:
-			xPos = leftColXPos+4*tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft+4*tabWidth;
+			yPos = tabsTop;
 			break;
 		case 5: 
-			xPos = leftColXPos+6*tabWidth;
-			yPos = topRowYPos;
+			xPos = tabsLeft+6*tabWidth;
+			yPos = tabsTop;
 			break;
 		case 6:
-			xPos = leftColXPos;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft;
+			yPos = tabsBottom;
 			break;
 		case 7:
-			xPos = leftColXPos+tabWidth;;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft+tabWidth;;
+			yPos = tabsBottom;
 			break;
 		case 8:
-			xPos = leftColXPos+2*tabWidth;;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft+2*tabWidth;;
+			yPos = tabsBottom;
 			break;
 		case 9:
-			xPos = leftColXPos+3*tabWidth;;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft+3*tabWidth;;
+			yPos = tabsBottom;
 			break;
 		case 10:
-			xPos = leftColXPos+4*tabWidth;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft+4*tabWidth;
+			yPos = tabsBottom;
 			break;			
 		case 11:
-			xPos = leftColXPos+6*tabWidth;
-			yPos = bottomRowYPos;
+			xPos = tabsLeft+6*tabWidth;
+			yPos = tabsBottom;
 			break;
 		default:
 			LOGGER.debug("Unknown tab requested");
