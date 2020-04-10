@@ -27,6 +27,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -71,6 +73,24 @@ public class ModUtils {
 		// Is there a GUI currently open ?
 		// (i.e. false means in-game without gui)
 		return (null != Minecraft.getInstance().currentScreen);
+	}
+	
+
+	public static int findSlotInContainer(Container container, int guiLeft, int guiTop, int x, int y, int slotWidth) {
+		// Find index of slot in container that contains the mouse position (x, y)
+		// Note that (x,y) is in absolute screen coords (unscaled)
+		// and a slot's xPos, yPos are relative to the inner gui with position (guiLeft, guiTop)
+		List<Slot> slots = container.inventorySlots;		
+		for (int i = 0; i < slots.size(); i++) {
+			Slot slot = slots.get(i);		
+			if (x > guiLeft + slot.xPos &&
+				x < guiLeft + slot.xPos + slotWidth &&
+				y > guiTop + slot.yPos &&
+				y < guiTop + slot.yPos + slotWidth ){
+				return i;
+			}
+		}
+		return -1;		
 	}
 
 	// Get the x, y point corresponding to one of 8 compass points

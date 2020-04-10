@@ -7,8 +7,11 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.mousehandling.MouseHelperOwn;
+import com.specialeffect.utils.ModUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 
 /**
@@ -110,31 +113,15 @@ public class ChestInventoryManager {
 		
 		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
 		helper.moveCursor(xPos*this.xScale, yPos*this.yScale);
-		
-		int idx = findSlot(xPos, yPos);
+				
+		int idx = ModUtils.findSlotInContainer(chestContainer, guiLeft, guiTop, xPos, yPos, itemWidth);
 		if (idx > -1) {
 			LOGGER.debug("taking slot "+idx);
 			chestContainer.transferStackInSlot(Minecraft.getInstance().player, idx);
 		}
 		else {
 			LOGGER.debug("No slot found at ("+xPos+", "+yPos+")");
-		}
-		
-	}
-	
-	private int findSlot(int x, int y) {
-		List<Slot> slots = chestContainer.inventorySlots;
-		int w = this.itemWidth;
-		for (int i = 0; i < slots.size(); i++) {
-			Slot slot = slots.get(i);		
-			if (x > guiLeft + slot.xPos &&
-				x < guiLeft + slot.xPos + w &&
-				y > guiTop + slot.yPos &&
-				y < guiTop + slot.yPos + w ){
-				return i;
-			}
-		}
-		return -1;		
+		}	
 	}
 
 	public void acceptKey(int key) {
