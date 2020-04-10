@@ -74,7 +74,8 @@ public class CreativeTabs
 					ChestScreen gui = (ChestScreen)currentScreen;
 					ChestInventoryManager con = ChestInventoryManager.getInstance(
 							gui.getGuiLeft(), gui.getGuiTop(), 
-							gui.getXSize(), gui.getYSize());            	
+							gui.getXSize(), gui.getYSize(),
+							gui.getContainer());            	
 					con.acceptKey(key);					
 				}
 				else if (currentScreen instanceof InventoryScreen)
