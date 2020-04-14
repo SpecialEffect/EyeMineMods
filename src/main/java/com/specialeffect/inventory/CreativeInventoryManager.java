@@ -322,5 +322,11 @@ public class CreativeInventoryManager {
 		idx %= NUM_TABS; // modulo into range	
 		return idx;
 	}
+
+	public void resetMouse() {
+		LOGGER.debug("reset mouse");
+		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;		
+		helper.moveCursor(guiLeft*xScale, guiTop*yScale);
+	}
 	
 }

@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import com.specialeffect.gui.CustomCreateWorldScreen;
 import com.specialeffect.gui.CustomMainMenu;
 import com.specialeffect.gui.StateOverlay;
+import com.specialeffect.inventory.CreativeInventoryManager;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.mods.mining.MineOne;
@@ -51,6 +52,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.CreateWorldScreen;
 import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.inventory.CreativeScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -153,6 +155,16 @@ public class EyeGaze {
 				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
 			}
 			allowMoreOptions = false;
+		}
+		if (event.getGui() instanceof CreativeScreen) {
+			// Make sure mouse starts outside container, so we have a sensible reference point
+			CreativeScreen gui = (CreativeScreen)event.getGui() ;
+			CreativeInventoryManager con = CreativeInventoryManager.getInstance(
+					gui.getGuiLeft(), gui.getGuiTop(), 
+					gui.getXSize(), gui.getYSize(),
+					gui.getSelectedTabIndex(),
+					gui.getContainer());            	
+			con.resetMouse();
 		}
 	}
 
