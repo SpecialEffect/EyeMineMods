@@ -97,6 +97,7 @@ extends MouseHelper
    
     public void moveCursor(double xpos, double ypos) {
     	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xpos, ypos);
     	this.cursorPosCallbackOwn(handle, xpos, ypos);
     }
     
