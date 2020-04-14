@@ -265,7 +265,7 @@ public class CreativeInventoryManager {
 			yPos = tabsTop;
 			break;
 		case 4:
-			xPos = tabsLeft+4*tabWidth;
+			xPos = tabsLeft+5*tabWidth;
 			yPos = tabsTop;
 			break;
 		case 5: 
