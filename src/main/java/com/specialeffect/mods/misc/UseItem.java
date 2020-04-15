@@ -30,6 +30,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -39,6 +41,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -82,12 +85,18 @@ extends ChildMod implements ChildModWithConfig {
 	private int dwellTimeComplete = 1000; // ms
 	private int dwellTimeDecay = 200;
 	
+	// State for firing bows
+	private int bowTime = 2000; //ms
+	private int bowCountdown = 0;
+	private boolean needBowFire = false;
+	
 	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
 
 	public void syncConfig() {
         this.dwellTimeComplete = (int) (1000*EyeMineConfig.dwellTimeSeconds.get());
         this.dwellTimeInit = (int) (1000*EyeMineConfig.dwellLockonTimeSeconds.get());
-        this.dwellTimeDecay = this.dwellTimeComplete/5; 
+        this.dwellTimeDecay = this.dwellTimeComplete/5;
+        this.bowTime = (int) (1000*EyeMineConfig.bowDrawTime.get());
 	}
 	
 	@SubscribeEvent
@@ -95,9 +104,34 @@ extends ChildMod implements ChildModWithConfig {
 		if (event.phase == Phase.START) {
 			long time = System.currentTimeMillis();
 			long dt = time - this.lastTime;
-			this.lastTime = time;
+			this.lastTime = time;			
 			
 			this.dwellTimeDecay = 300;
+			
+			// Behaviour for shootable items (bows)
+			if (this.bowCountdown > 0 ) {
+				this.bowCountdown -= dt;
+				if (this.bowCountdown < 1) {
+					// Release bow if count-down complete
+					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
+					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), false);
+					
+					// If it was a crossbow we'll need to re-click to actually fire it
+					PlayerEntity player = Minecraft.getInstance().player;					
+					Item item = player.inventory.getCurrentItem().getItem();
+					if (item instanceof CrossbowItem) {
+						// Crossbows don't fire on mouse-release, they need another 'click' on the next tick to be shot
+						needBowFire = true;
+					}
+				}
+			}
+			else {
+				if (needBowFire) {
+					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
+					KeyBinding.onTick(useItemKeyBinding.getKey());
+					needBowFire = false;
+				}
+			}
 			
 			if (mDwelling && !ModUtils.hasActiveGui()) {
 				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
@@ -249,7 +283,37 @@ extends ChildMod implements ChildModWithConfig {
 		        player.sendMessage(new StringTextComponent(message));	       
 			}
 		} else if (mUseItemOnceKB.getKey().getKeyCode() == event.getKey()) {
-			KeyBinding.onTick(useItemKeyBinding.getKey());
+			
+			
+			
+			ItemStack stack = player.inventory.getCurrentItem();
+			Item item = stack.getItem();
+			
+			// Special case for shootable items			
+			if (item instanceof CrossbowItem) {
+				// Crossbows need charging separately to firing. If already charged, shoot it. 
+				// Otherwise start chargin. 				
+				if (CrossbowItem.isCharged(stack)) {
+					KeyBinding.onTick(useItemKeyBinding.getKey());					
+				}						
+				else {
+					int crossbowTime = 1500;
+					ModUtils.sendPlayerMessage("Firing bow");
+					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), true);
+					this.bowCountdown = Math.max(crossbowTime, this.bowTime);
+				}
+			}
+			else if (item instanceof BowItem) {
+				// Bows need charging + firing all in one go			
+				this.bowTime = 1500;
+				ModUtils.sendPlayerMessage("Firing bow");
+				KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), true);
+				this.bowCountdown = this.bowTime;							
+			}
+			else {
+				KeyBinding.onTick(useItemKeyBinding.getKey());	
+			}			
+			
 		} else if (mPrevItemKB.getKey().getKeyCode() == event.getKey()) {
 			player.inventory.changeCurrentItem(1);
 		} else if (mNextItemKB.getKey().getKeyCode() == event.getKey()) {

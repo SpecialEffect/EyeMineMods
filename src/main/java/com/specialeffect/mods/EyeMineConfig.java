@@ -87,6 +87,9 @@ public class EyeMineConfig {
      public static ForgeConfigSpec.DoubleValue ironsightsSensitivityReduction;
      public static ForgeConfigSpec.IntValue ironsightsFovReduction;
      
+     // Bow and arrow
+     public static ForgeConfigSpec.DoubleValue bowDrawTime;
+     
 
     static {
     	
@@ -176,6 +179,10 @@ public class EyeMineConfig {
         
         ironsightsSensitivityReduction = CLIENT_BUILDER.comment("How much to reduce sensitivity (%) when using ironsights")
         		.defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
+        
+        // Bow-firing
+        bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
+        		.defineInRange("ironsightsSensitivityReduction", 1.0, 0.5, 5.0);
     	     	
     }
     
