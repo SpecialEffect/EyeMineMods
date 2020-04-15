@@ -265,12 +265,19 @@ extends ChildMod implements ChildModWithConfig {
 		}
 		
 		// If use-item is on, show a warning message
+		String msg = "";
 		if (mUsingItem) {
+			msg = "USING";
+		}
+		if (mDwelling) {
+			msg = "DWELLING";
+		}
+		
+		if (!msg.isEmpty()) {
 			Minecraft mc = Minecraft.getInstance();
 			int w = mc.mainWindow.getScaledWidth();
 			int h = mc.mainWindow.getScaledHeight();
 						
-			String msg = "USING";
 			int msgWidth = mc.fontRenderer.getStringWidth(msg);
 		    
 		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20, 0xffFFFFFF);		    
