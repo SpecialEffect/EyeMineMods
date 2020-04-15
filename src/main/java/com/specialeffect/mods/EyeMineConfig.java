@@ -82,6 +82,11 @@ public class EyeMineConfig {
      public static ForgeConfigSpec.DoubleValue dwellLockonTimeSeconds;
      public static ForgeConfigSpec.BooleanValue dwellShowExpanding;
      public static ForgeConfigSpec.BooleanValue dwellShowWithTransparency;    
+     
+     // Ironsights
+     public static ForgeConfigSpec.DoubleValue ironsightsSensitivityReduction;
+     public static ForgeConfigSpec.IntValue ironsightsFovReduction;
+     
 
     static {
     	
@@ -164,6 +169,13 @@ public class EyeMineConfig {
         // MouseHandler
         mDeadBorder = CLIENT_BUILDER.comment("Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.")
         		.defineInRange("deadBorder", 0.1, 0.0, 0.25);
+        
+        // Ironsights
+        ironsightsFovReduction = CLIENT_BUILDER.comment("How much to reduce field of view (degrees) when using ironsights")
+        		.defineInRange("ironsightsFovReduction", 20, 0, 40);
+        
+        ironsightsSensitivityReduction = CLIENT_BUILDER.comment("How much to reduce sensitivity (%) when using ironsights")
+        		.defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
     	     	
     }
     
