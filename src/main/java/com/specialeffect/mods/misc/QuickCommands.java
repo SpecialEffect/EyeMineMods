@@ -64,7 +64,7 @@ public class QuickCommands extends ChildMod {
 		
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if (mNightVisionKB.isPressed()) {
+		if (mNightVisionKB.getKey().getKeyCode() == event.getKey()) {
 			// Toggle night vision effect
 			PlayerEntity player = Minecraft.getInstance().player;
 			Effect nightVision = Effects.NIGHT_VISION;
@@ -79,7 +79,7 @@ public class QuickCommands extends ChildMod {
 		
 		if (ModUtils.hasActiveGui()) { return; }
 
-		if (mDayNightKB.isPressed()) {
+		if (mDayNightKB.getKey().getKeyCode() == event.getKey()) {
 			GameRules rules = Minecraft.getInstance().world.getGameRules();
 			
 			

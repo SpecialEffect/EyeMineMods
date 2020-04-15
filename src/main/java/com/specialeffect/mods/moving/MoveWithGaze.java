@@ -340,7 +340,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		if (ModUtils.hasActiveGui()) { return; }
 		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if (mToggleAutoWalkKB.isPressed()) {			
+		if (mToggleAutoWalkKB.getKey().getKeyCode() == event.getKey()) {			
 			mDoingAutoWalk = !mDoingAutoWalk;
 			MouseHandler.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
@@ -349,12 +349,12 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 			}
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
-		if (mDecreaseWalkSpeedKB.isPressed()) {
+		if (mDecreaseWalkSpeedKB.getKey().getKeyCode() == event.getKey()) {
 			float newSpeed = (float) Math.max(0.1f, 0.9f * EyeMineConfig.customSpeedFactor.get());
 			EyeGaze.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
-		if (mIncreaseWalkSpeedKB.isPressed()) {
+		if (mIncreaseWalkSpeedKB.getKey().getKeyCode() == event.getKey()) {
 			float newSpeed = (float) Math.min(2.0f, EyeMineConfig.customSpeedFactor.get() * 1.1f);
 			EyeGaze.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();

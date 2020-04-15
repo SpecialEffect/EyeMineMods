@@ -64,7 +64,7 @@ public class GatherDrops  extends ChildMod
         if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
         
-    	if(mGatherKB.isPressed()) {
+    	if(mGatherKB.getKey().getKeyCode() == event.getKey()) {
     		PlayerEntity player = Minecraft.getInstance().player;
 			gatherBlocks(player);
 		}

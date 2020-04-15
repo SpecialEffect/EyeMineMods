@@ -191,7 +191,7 @@ extends ChildMod implements ChildModWithConfig
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if (mFlyManualKB.isPressed()) {			
+		if (mFlyManualKB.getKey().getKeyCode() == event.getKey()) {			
 			if (mIsFlyingManual) {
 				ModUtils.sendPlayerMessage("Fly manual: OFF");
 				this.stopFlying();
@@ -201,7 +201,7 @@ extends ChildMod implements ChildModWithConfig
 				boolean doFlyUp = !mIsFlyingAuto;
 				this.setFlying(doFlyUp, false);
 			}			
-		} else if (mFlyAutoKB.isPressed()) {
+		} else if (mFlyAutoKB.getKey().getKeyCode() == event.getKey()) {
 			if (mIsFlyingAuto) {
 				ModUtils.sendPlayerMessage("Fly auto: OFF");
 				this.stopFlying();
@@ -212,7 +212,7 @@ extends ChildMod implements ChildModWithConfig
 				this.setFlying(doFlyUp, true);
 			}
 		}
-		else if (mFlyUpKB.isPressed()) {
+		else if (mFlyUpKB.getKey().getKeyCode() == event.getKey()) {
 			this.setFlying(true, mIsFlyingAuto);
 		}
 		AutoFly.updateIcons();

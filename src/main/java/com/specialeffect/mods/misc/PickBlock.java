@@ -45,7 +45,7 @@ public class PickBlock extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
-		if (mPickBlockKB.isPressed()) {
+		if (mPickBlockKB.getKey().getKeyCode() == event.getKey()) {
 	        final Input pickBlockKey = Minecraft.getInstance().gameSettings.keyBindPickBlock.getKey();
 			KeyBinding.onTick(pickBlockKey);
 		}

@@ -235,13 +235,13 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		// FIXME: test that we do get this event soonest - are all mods on same thread?
 		
 		//FIXME also: shall we rejig user-reported sensitivity so it doesn't go negative?
-		if (mSensitivityUpKB.isPressed()) {
+		if (mSensitivityUpKB.getKey().getKeyCode() == event.getKey()) {
 			increaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));
-		} else if (mSensitivityDownKB.isPressed()) {
+		} else if (mSensitivityDownKB.getKey().getKeyCode() == event.getKey()) {
 			decreaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));						    	
-		} else if (mToggleMouseViewControlKB.isPressed()) {
+		} else if (mToggleMouseViewControlKB.getKey().getKeyCode() == event.getKey()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				LOGGER.debug("this key doesn't do anything in eyetracker mode");
 				ModUtils.sendPlayerMessage("Warning: Minecraft expects eye tracker input, not mouse");

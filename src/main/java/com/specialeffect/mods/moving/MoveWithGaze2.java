@@ -141,7 +141,7 @@ implements ChildModWithConfig
         if (ModUtils.hasActiveGui()) { return; }        
         if (event.getAction() != GLFW.GLFW_PRESS) { return; }
         
-        if(mToggleAutoWalkKB.isPressed()) {
+        if(mToggleAutoWalkKB.getKey().getKeyCode() == event.getKey()) {
         	mDoingAutoWalk = !mDoingAutoWalk;        	
         	MouseHandler.setLegacyWalking(mDoingAutoWalk);
         	

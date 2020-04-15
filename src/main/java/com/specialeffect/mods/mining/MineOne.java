@@ -119,7 +119,7 @@ public class MineOne
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if(mDestroyKB.isPressed()) {
+		if(mDestroyKB.getKey().getKeyCode() == event.getKey()) {
 			// turn off continuous mining
 			ContinuouslyMine.stop();
 			

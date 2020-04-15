@@ -119,7 +119,7 @@ public class Swim extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
-		if(mSwimKB.isPressed()) {
+		if(mSwimKB.getKey().getKeyCode() == event.getKey()) {
 			final KeyBinding swimBinding = 
 					Minecraft.getInstance().gameSettings.keyBindJump;
 			

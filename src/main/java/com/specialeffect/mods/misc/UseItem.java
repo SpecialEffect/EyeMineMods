@@ -248,11 +248,11 @@ extends ChildMod implements ChildModWithConfig {
 				final String message = (mUsingItem ? "Using item: " : "Dwell building: ") + "ON";				
 		        player.sendMessage(new StringTextComponent(message));	       
 			}
-		} else if (mUseItemOnceKB.isPressed()) {
+		} else if (mUseItemOnceKB.getKey().getKeyCode() == event.getKey()) {
 			KeyBinding.onTick(useItemKeyBinding.getKey());
-		} else if (mPrevItemKB.isPressed()) {
+		} else if (mPrevItemKB.getKey().getKeyCode() == event.getKey()) {
 			player.inventory.changeCurrentItem(1);
-		} else if (mNextItemKB.isPressed()) {
+		} else if (mNextItemKB.getKey().getKeyCode() == event.getKey()) {
 			player.inventory.changeCurrentItem(-1);
 		}
 	}

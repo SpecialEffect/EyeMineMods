@@ -109,7 +109,7 @@ extends ChildMod implements ChildModWithConfig
     	if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if(mOpenChestKB.isPressed()) {
+		if(mOpenChestKB.getKey().getKeyCode() == event.getKey()) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			World world = Minecraft.getInstance().world;
 
@@ -125,7 +125,7 @@ extends ChildMod implements ChildModWithConfig
                 channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
 			}
 		}
-		else if(mOpenCraftingTableKB.isPressed()) {
+		else if(mOpenCraftingTableKB.getKey().getKeyCode() == event.getKey()) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			World world = Minecraft.getInstance().world;
 

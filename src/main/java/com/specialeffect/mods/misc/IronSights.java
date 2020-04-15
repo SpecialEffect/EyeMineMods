@@ -65,8 +65,8 @@ extends ChildMod implements ChildModWithConfig
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
-
-		if (mToggleIronsight.isPressed()) {		
+	    
+		if (event.getKey() == mToggleIronsight.getKey().getKeyCode()) {		
 			
 			System.out.println(Minecraft.getInstance().gameSettings.fov);
 			

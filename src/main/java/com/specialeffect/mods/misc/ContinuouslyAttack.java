@@ -132,7 +132,7 @@ extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
-        if(mAttackKB.isPressed()) {
+        if(mAttackKB.getKey().getKeyCode() == event.getKey()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 			

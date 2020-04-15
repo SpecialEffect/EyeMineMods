@@ -66,7 +66,7 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
-		if (autoJumpKeyBinding.isPressed()) {
+		if (autoJumpKeyBinding.getKey().getKeyCode() == event.getKey()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			this.updateSettings(mDoingAutoJump);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			

@@ -166,9 +166,9 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+        
+		if (event.getKey() == mDestroyKB.getKey().getKeyCode()) {		
 
-        if(mDestroyKB.isPressed()) {
-			        	
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 

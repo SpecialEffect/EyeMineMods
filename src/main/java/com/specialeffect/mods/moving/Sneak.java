@@ -89,7 +89,7 @@ public class Sneak extends ChildMod {
 	    if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-		if(mSneakKB.isPressed()) {			
+		if(mSneakKB.getKey().getKeyCode() == event.getKey()) {			
 			updateSneak(!mIsSneaking);
 		}
 	}

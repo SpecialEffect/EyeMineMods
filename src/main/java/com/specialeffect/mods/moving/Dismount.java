@@ -67,7 +67,7 @@ public class Dismount  extends ChildMod {
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 		
-		if(mDismountKB.isPressed()) {
+		if(mDismountKB.getKey().getKeyCode() == event.getKey()) {
 			PlayerEntity player = Minecraft.getInstance().player;
 			if (player.isPassenger()) {
 				// Dismount player locally

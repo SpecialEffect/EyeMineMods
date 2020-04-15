@@ -126,7 +126,7 @@ public class AutoPillar extends ChildMod {
 		// Technically there is no need to change player's view, but the user
 		// experience
 		// is weird if you don't (you don't really know what just happened).
-		if (autoPlaceKeyBinding.isPressed()) {
+		if (autoPlaceKeyBinding.getKey().getKeyCode() == event.getKey()) {
 			float origPitchTemp = 0;
 			synchronized (mOnLivingQueue) {
 				origPitchTemp = this.lastPlayerPitch;
