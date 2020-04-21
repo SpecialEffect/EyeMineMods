@@ -613,9 +613,11 @@ extends MouseHelper
        }
     }
     
-    public void setUngrabbedMode(boolean ungrabbed) {
-    	if (!this.hasGLcontext()) { return; }
+    public void setUngrabbedMode(boolean ungrabbed) {    	
     	this.ungrabbedMouseMode = ungrabbed;
+    	
+    	if (!this.hasGLcontext()) { return; }
+    	
     	if (ungrabbed) {
     		this.ungrabMouse();
     	}
