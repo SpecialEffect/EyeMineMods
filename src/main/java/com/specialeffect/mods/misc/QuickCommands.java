@@ -20,6 +20,7 @@ import com.specialeffect.callbacks.IOnLiving;
 import com.specialeffect.callbacks.OnLivingCallback;
 import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.messages.SendCommandMessage;
+import com.specialeffect.messages.TeleportPlayerMessage;
 import com.specialeffect.mods.EyeGaze;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -34,6 +35,7 @@ import net.minecraft.init.PotionTypes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -70,6 +72,8 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(this.NAME);
         network.registerMessage(SendCommandMessage.Handler.class, 
         						SendCommandMessage.class, 0, Side.SERVER);
+		network.registerMessage(TeleportPlayerMessage.Handler.class, 
+								TeleportPlayerMessage.class, 1, Side.SERVER);
 
 
 	}
@@ -86,11 +90,16 @@ public class QuickCommands extends BaseClassWithCallbacks {
 
 		mDayNightKB = new KeyBinding("Turn day/night cycle on/off", Keyboard.KEY_F14, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDayNightKB);
+		
+		// Register key bindings
+		respawnBinding = new KeyBinding("Respawn player", Keyboard.KEY_BACK, CommonStrings.EYEGAZE_EXTRA);
+		ClientRegistry.registerKeyBinding(respawnBinding);
 
 	}
 
 	private static KeyBinding mNightVisionKB;
 	private static KeyBinding mDayNightKB;
+	private static KeyBinding respawnBinding;
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
@@ -115,6 +124,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 						else {
 							System.out.println("night vision");
 							player.addPotionEffect(new PotionEffect(nightVision));
+							NightVisionHelper.cancelAndHide();
 						}
 					}
 				}
@@ -134,6 +144,16 @@ public class QuickCommands extends BaseClassWithCallbacks {
 					QuickCommands.network.sendToServer(new SendCommandMessage(cmd));
 				}
 			}));			
+		}
+		if (respawnBinding.isPressed()) {		
+			EntityPlayer player = Minecraft.getMinecraft().player;
+			World world = Minecraft.getMinecraft().world;
+			
+			// get world spawn and shift up until on top of solid/liquid
+			BlockPos worldSpawn = world.getTopSolidOrLiquidBlock(world.getSpawnPoint());
+			
+			QuickCommands.network.sendToServer(new TeleportPlayerMessage(worldSpawn));	
+			NightVisionHelper.cancelAndHide();
 		}
 	}
 }
