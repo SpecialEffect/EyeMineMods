@@ -92,7 +92,7 @@ public class QuickCommands extends BaseClassWithCallbacks {
 		ClientRegistry.registerKeyBinding(mDayNightKB);
 		
 		// Register key bindings
-		respawnBinding = new KeyBinding("Respawn player", Keyboard.KEY_BACK, CommonStrings.EYEGAZE_EXTRA);
+		respawnBinding = new KeyBinding("Reset player location", Keyboard.KEY_HOME, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(respawnBinding);
 
 	}
