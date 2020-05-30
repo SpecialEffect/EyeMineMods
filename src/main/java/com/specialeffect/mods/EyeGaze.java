@@ -80,6 +80,7 @@ public class EyeGaze extends BaseClassWithCallbacks {
  	
  	// Mining
 	public static boolean mAutoSelectTool;
+	public static int mTicksBetweenMining = 15;
 
 	// AutoOpenDoors
     public static int mRadiusDoors = 3;
@@ -203,7 +204,9 @@ public class EyeGaze extends BaseClassWithCallbacks {
      	mAutoSelectTool = mConfig.getBoolean( "Auto-select tool for mining", CATEGORY_BASIC, 
      			true, "When mining, do you want a pickaxe selected automatically?");
      	
- 		
+     	mTicksBetweenMining = mConfig.getInt( "Ticks between mining", CATEGORY_ADVANCED, mTicksBetweenMining, 
+  				0, 50, "How many ticks to wait before mining again. Only affects creative mode");
+			
 		if (mConfig.hasChanged()) {
 			mConfig.save();
 		}
