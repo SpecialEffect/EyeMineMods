@@ -20,6 +20,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -118,6 +120,11 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 				if (mDisabled && mShowMessageTicksAccum > 20*20) {
 					mShowMessage = false;
 				}				
+			}
+			
+			// If night vision is on, abort						
+			if (player.isPotionActive(MobEffects.NIGHT_VISION)) {
+				return;
 			}
 			
 			if (mDisabled) {
