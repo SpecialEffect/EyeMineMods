@@ -103,6 +103,14 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {
 		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			
+			EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+			World world = Minecraft.getMinecraft().world;
+			
+			if (!player.isCreative()) {
+				// We won't worry about survival players, they know what they're doing
+				return;
+			}
             
 			// If message is visible, keep alive for minimum time
 			if (mShowMessage) {
@@ -116,9 +124,6 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 				return;
 			}
 			
-			World world = Minecraft.getMinecraft().world;
-            EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-
             if (player instanceof EntityPlayerMP) { // sometimes on local side, brightness flickers to zero, so we only look at server info
             	                  	
 	            RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
