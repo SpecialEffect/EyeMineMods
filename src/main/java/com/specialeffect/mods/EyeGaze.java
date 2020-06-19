@@ -28,6 +28,7 @@ import com.specialeffect.mods.misc.AutoOpenDoors;
 import com.specialeffect.mods.misc.AutoPillar;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.misc.DefaultConfigForNewWorld;
+import com.specialeffect.mods.misc.DwellBuild;
 import com.specialeffect.mods.misc.IronSights;
 import com.specialeffect.mods.misc.OpenChat;
 import com.specialeffect.mods.misc.OpenTablesChests;
@@ -222,6 +223,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new QuickCommands());
         this.setupChildMod((ChildMod) new SwapMinePlace());
         this.setupChildMod((ChildMod) new UseItem());
+        this.setupChildMod((ChildMod) new DwellBuild());
         this.setupChildMod((ChildMod) new MouseHandler());
         this.setupChildMod((ChildMod) new AutoFly());
         this.setupChildMod((ChildMod) new AutoJump());

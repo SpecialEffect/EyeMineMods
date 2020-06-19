@@ -26,14 +26,9 @@ import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
-import net.minecraft.block.LadderBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -42,7 +37,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,53 +45,33 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class DwellBuild 
 extends ChildMod implements ChildModWithConfig {
-	public final String MODID = "useitem";
+	public final String MODID = "dwellbuild";
 
 	public void setup(final FMLCommonSetupEvent event) {
 
 		// Register key bindings
-		mUseItemOnceKB = new KeyBinding("Use item", GLFW.GLFW_KEY_KP_0, CommonStrings.EYEGAZE_COMMON);
-		ClientRegistry.registerKeyBinding(mUseItemOnceKB);
-
-		mUseItemContinuouslyKB = new KeyBinding("Use item continuously", GLFW.GLFW_KEY_KP_1,
+		mDwellBuildKB = new KeyBinding("Dwell build", GLFW.GLFW_KEY_KP_3,
 				CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mUseItemContinuouslyKB);
-
-		mPrevItemKB = new KeyBinding("Select previous item", GLFW.GLFW_KEY_KP_4, CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mPrevItemKB);
-
-		mNextItemKB = new KeyBinding("Select next item", GLFW.GLFW_KEY_KP_5, CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mNextItemKB);
+		ClientRegistry.registerKeyBinding(mDwellBuildKB);
 
 		this.syncConfig();
 	}
 
-	private static KeyBinding mUseItemOnceKB;
-	private static KeyBinding mUseItemContinuouslyKB;
-	private static KeyBinding mPrevItemKB;
-	private static KeyBinding mNextItemKB;
-	
-	// State for 'continuously use'
-	private boolean mUsingItem = false;
+	private static KeyBinding mDwellBuildKB;
+		
 	private boolean mDwelling = false;
 	
 	private long lastTime = 0;
 	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
 	private int dwellTimeDecay = 200;
-	
-	// State for firing bows
-	private int bowTime = 2000; //ms
-	private int bowCountdown = 0;
-	private boolean needBowFire = false;
-	
+		
 	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
 
 	public void syncConfig() {
         this.dwellTimeComplete = (int) (1000*EyeMineConfig.dwellTimeSeconds.get());
         this.dwellTimeInit = (int) (1000*EyeMineConfig.dwellLockonTimeSeconds.get());
-        this.dwellTimeDecay = this.dwellTimeComplete/5;
-        this.bowTime = (int) (1000*EyeMineConfig.bowDrawTime.get());
+        this.dwellTimeDecay = (int) (this.dwellTimeComplete/3.5);    
 	}
 	
 	@SubscribeEvent
@@ -105,34 +79,7 @@ extends ChildMod implements ChildModWithConfig {
 		if (event.phase == Phase.START) {
 			long time = System.currentTimeMillis();
 			long dt = time - this.lastTime;
-			this.lastTime = time;			
-			
-			this.dwellTimeDecay = 300;
-			
-			// Behaviour for shootable items (bows)
-			if (this.bowCountdown > 0 ) {
-				this.bowCountdown -= dt;
-				if (this.bowCountdown < 1) {
-					// Release bow if count-down complete
-					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), false);
-					
-					// If it was a crossbow we'll need to re-click to actually fire it
-					PlayerEntity player = Minecraft.getInstance().player;					
-					Item item = player.inventory.getCurrentItem().getItem();
-					if (item instanceof CrossbowItem) {
-						// Crossbows don't fire on mouse-release, they need another 'click' on the next tick to be shot
-						needBowFire = true;
-					}
-				}
-			}
-			else {
-				if (needBowFire) {
-					final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-					KeyBinding.onTick(useItemKeyBinding.getKey());
-					needBowFire = false;
-				}
-			}
+			this.lastTime = time;							
 			
 			if (mDwelling && !ModUtils.hasActiveGui()) {
 				if (MouseHandler.hasPendingEvent() || EyeMineConfig.moveWhenMouseStationary.get()) {
@@ -206,7 +153,7 @@ extends ChildMod implements ChildModWithConfig {
 		if (mDwelling) {
 			
 			// Add current block to live targets if required
-			// (we only want to add from within this method, so we avoid floating un-buildable surfaces, 
+			// (we only want to add from within this method, so we avoid un-buildable surfaces, 
 			// a.k.a. "MISS" ray trace results)
 			if (e.getTarget().getType() == RayTraceResult.Type.MISS) {
 				return;
@@ -247,82 +194,30 @@ extends ChildMod implements ChildModWithConfig {
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
 	    if (KeyWatcher.f3Pressed) { return; }
-
-		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
-		PlayerEntity player = Minecraft.getInstance().player;
 		
-		if (event.getKey() == mUseItemContinuouslyKB.getKey().getKeyCode()) {
-			
-			if (mUsingItem || mDwelling) {
-				// Turn off whatever
-				final String message = (mUsingItem ? "Using item: " : "Dwell building: ") + "OFF";			
-		        player.sendMessage(new StringTextComponent(message));	       
-
-				mUsingItem = false;
-				mDwelling = false;
-				this.liveTargets.clear();			
-				KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), mUsingItem);
+				
+		if (event.getKey() == mDwellBuildKB.getKey().getKeyCode()) {
+			PlayerEntity player = Minecraft.getInstance().player;	
+			if (mDwelling) {
+				
+				// Turn off dwell build
+		        mDwelling = false;
+		        ModUtils.sendPlayerMessage("Dwell building: OFF");
+		        
+				this.liveTargets.clear();							
 			}
 			else {
-				// Turn on either dwell build or continuous-building
-						
+				// Turn on dwell build 						
 				ItemStack itemStack = player.inventory.getCurrentItem();
 				if (itemStack == null || itemStack.getItem() == null) {
 			        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
 			        return;
 				}
-		        Item item = player.inventory.getCurrentItem().getItem();			
-				
-				if (item instanceof BlockItem && !(((BlockItem) item).getBlock() instanceof LadderBlock)) {
-					// All blocks except ladders use dwell building
-					mDwelling = true;					
-				}
-				else {
-					// Non-blocks (e.g. food, tools) use continuous-use
-					mUsingItem = true;				
-					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), mUsingItem);
-				}
-				
-				final String message = (mUsingItem ? "Using item: " : "Dwell building: ") + "ON";				
-		        player.sendMessage(new StringTextComponent(message));	       
+		        						
+				mDwelling = true;													
+				ModUtils.sendPlayerMessage("Dwell building: ON");					      
 			}
-		} else if (mUseItemOnceKB.getKey().getKeyCode() == event.getKey()) {
-			
-			
-			
-			ItemStack stack = player.inventory.getCurrentItem();
-			Item item = stack.getItem();
-			
-			// Special case for shootable items			
-			if (item instanceof CrossbowItem) {
-				// Crossbows need charging separately to firing. If already charged, shoot it. 
-				// Otherwise start chargin. 				
-				if (CrossbowItem.isCharged(stack)) {
-					KeyBinding.onTick(useItemKeyBinding.getKey());					
-				}						
-				else {
-					int crossbowTime = 1500;
-					ModUtils.sendPlayerMessage("Firing bow");
-					KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), true);
-					this.bowCountdown = Math.max(crossbowTime, this.bowTime);
-				}
-			}
-			else if (item instanceof BowItem) {
-				// Bows need charging + firing all in one go			
-				this.bowTime = 1500;
-				ModUtils.sendPlayerMessage("Firing bow");
-				KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), true);
-				this.bowCountdown = this.bowTime;							
-			}
-			else {
-				KeyBinding.onTick(useItemKeyBinding.getKey());	
-			}			
-			
-		} else if (mPrevItemKB.getKey().getKeyCode() == event.getKey()) {
-			player.inventory.changeCurrentItem(1);
-		} else if (mNextItemKB.getKey().getKeyCode() == event.getKey()) {
-			player.inventory.changeCurrentItem(-1);
-		}
+		} 
 	}
 	
 	@SubscribeEvent
@@ -332,16 +227,10 @@ extends ChildMod implements ChildModWithConfig {
 			return;
 		}
 		
-		// If use-item is on, show a warning message
-		String msg = "";
-		if (mUsingItem) {
-			msg = "USING";
-		}
+		// If dwell is on, show a warning message		
 		if (mDwelling) {
-			msg = "DWELLING";
-		}
+			String msg = "DWELL BUILD";
 		
-		if (!msg.isEmpty()) {
 			Minecraft mc = Minecraft.getInstance();
 			int w = mc.mainWindow.getScaledWidth();
 			int h = mc.mainWindow.getScaledHeight();
