@@ -46,6 +46,7 @@ extends ChildMod implements ChildModWithConfig
 	private static KeyBinding mFlyManualKB;
 	private static KeyBinding mFlyAutoKB;
 	private static KeyBinding mFlyUpKB;
+	private static KeyBinding mFlyDownKB;
 
 	private static int mFlyHeightManual = 2;
 	private static int mFlyHeightAuto = 6;
@@ -66,10 +67,12 @@ extends ChildMod implements ChildModWithConfig
 		mFlyManualKB = new KeyBinding("Start/stop flying (manual)", GLFW.GLFW_KEY_COMMA,CommonStrings.EYEGAZE_EXTRA);
 		mFlyAutoKB = new KeyBinding("Start/stop flying (auto)", GLFW.GLFW_KEY_G, CommonStrings.EYEGAZE_COMMON);
 		mFlyUpKB = new KeyBinding("Fly higher", GLFW.GLFW_KEY_PERIOD, CommonStrings.EYEGAZE_EXTRA);
+		mFlyDownKB = new KeyBinding("Fly lower", GLFW.GLFW_KEY_APOSTROPHE, CommonStrings.EYEGAZE_EXTRA);
 		
 		ClientRegistry.registerKeyBinding(mFlyManualKB);
 		ClientRegistry.registerKeyBinding(mFlyAutoKB);
 		ClientRegistry.registerKeyBinding(mFlyUpKB);
+		ClientRegistry.registerKeyBinding(mFlyDownKB);
 
 		// Register an icon for the overlay
 		mIconIndexAuto = StateOverlay.registerTextureLeft("specialeffect:icons/fly-auto.png");
@@ -185,6 +188,29 @@ extends ChildMod implements ChildModWithConfig
 		updateIcons();
 
 	}
+	
+	private void flyDown() {
+		PlayerEntity player = Minecraft.getInstance().player;
+				
+		if (!player.abilities.allowFlying) {
+			player.sendMessage(new StringTextComponent(
+					"Player unable to fly"));
+			return;
+		}		
+		if (!mIsFlyingAuto && !mIsFlyingManual) {
+			player.sendMessage(new StringTextComponent(
+					"Player not flying"));
+			return;
+		}	
+
+		// fly upward
+		int flyHeight = 0;		
+		if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
+		if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
+				
+		player.move(MoverType.SELF, new Vec3d(0, -flyHeight, 0));	 
+
+	}
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {
@@ -217,6 +243,9 @@ extends ChildMod implements ChildModWithConfig
 		}
 		else if (mFlyUpKB.getKey().getKeyCode() == event.getKey()) {
 			this.setFlying(true, mIsFlyingAuto);
+		}
+		else if (mFlyDownKB.getKey().getKeyCode() == event.getKey()) {
+			flyDown();
 		}
 		AutoFly.updateIcons();
 	}
