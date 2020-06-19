@@ -22,6 +22,7 @@ import com.specialeffect.gui.CustomMainMenu;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.inventory.CreativeInventoryManager;
 import com.specialeffect.mods.mining.ContinuouslyMine;
+import com.specialeffect.mods.mining.DwellMine;
 import com.specialeffect.mods.mining.GatherDrops;
 import com.specialeffect.mods.mining.MineOne;
 import com.specialeffect.mods.misc.AutoOpenDoors;
@@ -225,6 +226,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new UseItem());
         this.setupChildMod((ChildMod) new DwellBuild());
         this.setupChildMod((ChildMod) new MouseHandler());
+        this.setupChildMod((ChildMod) new DwellMine());        
         this.setupChildMod((ChildMod) new AutoFly());
         this.setupChildMod((ChildMod) new AutoJump());
         this.setupChildMod((ChildMod) new Dismount());
