@@ -22,6 +22,7 @@ import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -244,6 +245,9 @@ extends ChildMod implements ChildModWithConfig {
 		
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
+
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
 		PlayerEntity player = Minecraft.getInstance().player;
 		

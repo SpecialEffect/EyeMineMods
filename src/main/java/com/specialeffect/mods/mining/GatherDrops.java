@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.GatherBlockMessage;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -63,7 +64,9 @@ public class GatherDrops  extends ChildMod
         
         if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
-        
+
+	    if (KeyWatcher.f3Pressed) { return; }
+
     	if(mGatherKB.getKey().getKeyCode() == event.getKey()) {
     		PlayerEntity player = Minecraft.getInstance().player;
 			gatherBlocks(player);

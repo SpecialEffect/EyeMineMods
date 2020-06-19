@@ -13,6 +13,7 @@ package com.specialeffect.mods.mining;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -118,6 +119,8 @@ public class MineOne
 		
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if(mDestroyKB.getKey().getKeyCode() == event.getKey()) {
 			// turn off continuous mining

@@ -23,6 +23,7 @@ import com.specialeffect.messages.JumpMessage;
 import com.specialeffect.messages.SetPositionAndRotationMessage;
 import com.specialeffect.messages.UseItemAtPositionMessage;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -117,6 +118,8 @@ public class AutoPillar extends ChildMod {
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on

@@ -12,6 +12,7 @@ package com.specialeffect.mods.misc;
 
 
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -41,6 +42,8 @@ public class PickBlock extends ChildMod {
 	
 	@SubscribeEvent
     public void onKeyInput(KeyInputEvent event) {   
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }

@@ -16,6 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import com.specialeffect.mods.utils.KeyWatcher;
+
 //fIXME import de.skate702.craftingkeys.config.GuiConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -56,6 +58,8 @@ public class CreativeTabs
 
     @SubscribeEvent
     public void onKeyInput(KeyInputEvent event) { 
+	    if (KeyWatcher.f3Pressed) { return; }
+
         if (event.getAction() == GLFW.GLFW_RELEASE) {
 	    	int key = event.getKey();
 	        LOGGER.debug(key);

@@ -21,6 +21,7 @@ import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mousehandling.MouseHelperOwn.PlayerMovement;
 import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.MoveWithGaze2;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -231,6 +232,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 
 		if (ModUtils.hasActiveGui()) { return; }
 		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		// FIXME: test that we do get this event soonest - are all mods on same thread?
 		

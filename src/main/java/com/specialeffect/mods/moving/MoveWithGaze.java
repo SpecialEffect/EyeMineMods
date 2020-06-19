@@ -25,6 +25,7 @@ import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.mods.ChildMod;
 //import com.specialeffect.gui.StateOverlay;
 //import com.specialeffect.messages.MovePlayerMessage;
@@ -339,6 +340,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		
 		if (ModUtils.hasActiveGui()) { return; }
 		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if (mToggleAutoWalkKB.getKey().getKeyCode() == event.getKey()) {			
 			mDoingAutoWalk = !mDoingAutoWalk;

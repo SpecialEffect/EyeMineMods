@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -63,6 +64,8 @@ public class QuickCommands extends ChildMod {
 	public void onKeyInput(KeyInputEvent event) {		
 		
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if (mNightVisionKB.getKey().getKeyCode() == event.getKey()) {
 			// Toggle night vision effect

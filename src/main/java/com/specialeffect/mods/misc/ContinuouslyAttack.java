@@ -17,6 +17,7 @@ import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.mining.ContinuouslyMine;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -131,7 +132,9 @@ extends ChildMod {
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
-		
+
+	    if (KeyWatcher.f3Pressed) { return; }
+
         if(mAttackKB.getKey().getKeyCode() == event.getKey()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);

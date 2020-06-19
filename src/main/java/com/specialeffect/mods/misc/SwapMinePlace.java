@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -42,6 +43,8 @@ public class SwapMinePlace  extends ChildMod {
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if (mSwapKB.getKey().getKeyCode() == event.getKey()) {
 			

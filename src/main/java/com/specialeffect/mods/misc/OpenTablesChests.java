@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.ActivateBlockAtPosition;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -108,6 +109,8 @@ extends ChildMod implements ChildModWithConfig
     public void onKeyInput(KeyInputEvent event) { 
     	if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
 
 		if(mOpenChestKB.getKey().getKeyCode() == event.getKey()) {
 			PlayerEntity player = Minecraft.getInstance().player;

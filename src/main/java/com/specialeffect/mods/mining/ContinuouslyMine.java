@@ -18,6 +18,7 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.mousehandling.MouseHandler;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.ChildModWithConfig;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
@@ -166,6 +167,8 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+
+	    if (KeyWatcher.f3Pressed) { return; }
         
 		if (event.getKey() == mDestroyKB.getKey().getKeyCode()) {		
 

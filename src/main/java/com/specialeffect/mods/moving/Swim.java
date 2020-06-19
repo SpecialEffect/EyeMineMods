@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -118,6 +119,8 @@ public class Swim extends ChildMod {
 		
 		if (ModUtils.hasActiveGui()) { return; }	    
 	    if (event.getAction() != GLFW.GLFW_PRESS) { return; }
+		
+		if (KeyWatcher.f3Pressed) { return; }
 		
 		if(mSwimKB.getKey().getKeyCode() == event.getKey()) {
 			final KeyBinding swimBinding = 
