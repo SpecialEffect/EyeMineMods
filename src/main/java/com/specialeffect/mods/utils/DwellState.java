@@ -1,4 +1,4 @@
-package com.specialeffect.mods.misc;
+package com.specialeffect.mods.utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

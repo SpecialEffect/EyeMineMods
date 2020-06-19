@@ -1,10 +1,10 @@
-package com.specialeffect.mods.misc;
+package com.specialeffect.mods.utils;
 
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 
-class TargetBlock {
+public class TargetBlock {
 
 	final BlockPos pos;
 	final Direction direction;
