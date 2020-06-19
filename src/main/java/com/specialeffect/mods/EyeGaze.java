@@ -224,8 +224,8 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new QuickCommands());
         this.setupChildMod((ChildMod) new SwapMinePlace());
         this.setupChildMod((ChildMod) new UseItem());
-        this.setupChildMod((ChildMod) new DwellBuild());
         this.setupChildMod((ChildMod) new MouseHandler());
+        this.setupChildMod((ChildMod) new DwellBuild());
         this.setupChildMod((ChildMod) new DwellMine());        
         this.setupChildMod((ChildMod) new AutoFly());
         this.setupChildMod((ChildMod) new AutoJump());

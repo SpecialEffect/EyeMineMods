@@ -186,7 +186,8 @@ extends ChildMod implements ChildModWithConfig {
 	
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
-		if(event.getType() != ElementType.EXPERIENCE)
+
+		if(event.getType() != ElementType.CROSSHAIRS)
 		{      
 			return;
 		}
