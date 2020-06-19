@@ -40,6 +40,11 @@ extends ChildMod implements ChildModWithConfig {
 	public DwellAction(String name) {
 		this.actionName = name;
 	}
+	
+	public DwellAction(String name, int labelOffset) {
+		this.actionName = name;
+		this.labelOffset = labelOffset;
+	}
 
 	public void setup(final FMLCommonSetupEvent event) {
 		this.syncConfig();
@@ -53,6 +58,7 @@ extends ChildMod implements ChildModWithConfig {
 	private int dwellTimeDecay = 200;
 	
 	public String actionName = "DWELL"; 
+	private int labelOffset = 0;
 		
 	private Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
 
@@ -202,7 +208,7 @@ extends ChildMod implements ChildModWithConfig {
 						
 			int msgWidth = mc.fontRenderer.getStringWidth(msg);
 		    
-		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20, 0xffFFFFFF);		    
+		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20 - labelOffset, 0xffFFFFFF);		    
 		    
 		}
 		

@@ -29,7 +29,7 @@ public class DwellMine
 extends DwellAction {
 	
 	public DwellMine() {
-		super("DWELL MINING"); 
+		super("DWELL MINING", 15); 
 	}
 
 	public final String MODID = "dwellbuild";
