@@ -45,6 +45,7 @@ import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.mods.moving.Sneak;
 import com.specialeffect.mods.moving.Swim;
 import com.specialeffect.mods.utils.DebugAverageFps;
+import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 import com.specialeffect.utils.ChildModWithConfig;
 import at.feldim2425.moreoverlays.gui.ConfigScreen;
@@ -208,6 +209,7 @@ public class EyeGaze {
 
     private void instantiateChildren() {
         // In older versions of forge we had child/parent mods, here we have to set this up manually
+        this.setupChildMod((ChildMod) new KeyWatcher());
         this.setupChildMod((ChildMod) new ContinuouslyMine());
         this.setupChildMod((ChildMod) new GatherDrops());
         this.setupChildMod((ChildMod) new MineOne());
