@@ -182,7 +182,7 @@ public class EyeMineConfig {
         
         // Bow-firing
         bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
-        		.defineInRange("ironsightsSensitivityReduction", 1.0, 0.5, 5.0);
+        		.defineInRange("bowDrawTime", 1.0, 0.5, 5.0);
     	     	
     }
     
