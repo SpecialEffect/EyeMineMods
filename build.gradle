@@ -13,10 +13,8 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-
-
 group = 'com.specialeffect.eyemine' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'eyemine'
+archivesBaseName = "eyemine-${project.modversion}"
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 compileJava {
