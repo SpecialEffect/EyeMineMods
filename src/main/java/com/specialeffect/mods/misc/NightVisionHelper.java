@@ -10,38 +10,30 @@
 
 package com.specialeffect.mods.misc;
 
-import com.specialeffect.callbacks.BaseClassWithCallbacks;
-import com.specialeffect.callbacks.DelayedOnLivingCallback;
-import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@Mod(modid = NightVisionHelper.MODID, version = ModUtils.VERSION, name = NightVisionHelper.NAME)
-public class NightVisionHelper extends BaseClassWithCallbacks {
-	public static final String MODID = "specialeffect.nightvisionhelper";
+
+public class NightVisionHelper extends ChildMod {
+	public static final String MODID = "nightvisionhelper";
 	public static final String NAME = "NightVisionHelper";
 
 	private int mDarkTicksAccum = 0;
 	private int mShowMessageTicksAccum = 0;
+	private int mTicksLoaded = 0;
 	
 	private static boolean mShowMessage;
 	private static boolean mDisabled;
@@ -53,60 +45,48 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 		mDisabled = true;
 		mShowMessage = false;
 	}
+	
+	public void setup(final FMLCommonSetupEvent event) {
 
-	@EventHandler
-	public void onWorldLoad(FMLServerStartedEvent event) {		
+	}
+	
+
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event) {
 		
 		// Reset state
 		mDisabled = false;
 		mShowMessage = false;
 		mDarkTicksAccum = 0;
-		mShowMessageTicksAccum = 0;		
+		mShowMessageTicksAccum = 0;	
+		mTicksLoaded = 0;
 		mLightnessThreshold = 0.2f;
 		mTicksThreshold = 2*20;
 		
 		// If player has overridden brightness beyond what's allowed in the settings menu, 
 		// (i.e. by hacking options.txt) then they are a power user and we'll leave them to it			
-		if (Minecraft.getMinecraft().gameSettings.gammaSetting > 1.01f) {
+		if (Minecraft.getInstance().gameSettings.gamma > 1.01f) {
 			NightVisionHelper.cancelAndHide();
 		}
+	}	
 
-		// We'll reduce (make stricter) the threshold for showing a warning message once the world
-		// has been loaded a while. We're mainly trying to catch the "reloaded into pitch black and
-		// don't know what's going on" failure mode.
-		this.queueOnLivingCallback(new DelayedOnLivingCallback(new IOnLiving() {			
-			@Override
-			public void onLiving(LivingUpdateEvent event) {
-				// TODO Auto-generated method stub
+	@SubscribeEvent
+	public void onLiving(LivingUpdateEvent event) {			
+	
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			
+			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
+			World world = Minecraft.getInstance().world;
+			
+			// We'll reduce (make stricter) the threshold for showing a warning message once the world
+			// has been loaded a while. We're mainly trying to catch the "reloaded into pitch black and
+			// don't know what's going on" failure mode.
+			mTicksLoaded++;
+			if (mTicksLoaded > 20*20) {
 				mLightnessThreshold = 0.13f;
 				mTicksThreshold = 10*20;
 			}
-		}, 20*20));
-	}
-	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		FMLCommonHandler.instance().bus().register(this);
-
-		ModUtils.setupModInfo(event, this.MODID, this.NAME, "Automatic warning if respawning in the dark");
-		ModUtils.setAsParent(event, EyeGaze.MODID);
-	}
-
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		// Subscribe to event buses
-		FMLCommonHandler.instance().bus().register(this);
-		MinecraftForge.EVENT_BUS.register(this);		
-	}
-
-
-	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			
-			EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-			World world = Minecraft.getMinecraft().world;
-			
+		
 			if (!player.isCreative()) {
 				// We won't worry about survival players, they know what they're doing
 				return;
@@ -124,61 +104,53 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 				return;
 			}
 			
-            if (player instanceof EntityPlayerMP) { // sometimes on local side, brightness flickers to zero, so we only look at server info
-            	                  	
-	            RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
-	            if (result != null) {
-	            	
-	            	// Get lightness of block(s) we're looking at
-	            	BlockPos pos = result.getBlockPos().offset(result.sideHit);	            		            			          
-		            float lightnessBlock = world.getLightBrightness(pos);		   
-		            
-		            // Get lightness where player is
-		            BlockPos posPlayer = player.getPosition();
-		            float lightnessPlayer = world.getLightBrightness(posPlayer);		   
-		            
-		            float lightness = Math.max(lightnessBlock, lightnessPlayer);
-		            
-		            // If it's really dark, put message up to remind of night vision
-		            
-		            float gamma = Minecraft.getMinecraft().gameSettings.gammaSetting;
-		            float threshold = mLightnessThreshold - gamma/10f; // i.e. 0.03f for max brightness
-		            if (lightness < threshold) {
-		            	mDarkTicksAccum++;		            		              		          
-		            }
-		            else if (mDarkTicksAccum > 0) {
-		            	mDarkTicksAccum--;	           
-		            }			           
-		            
-		            if (mDarkTicksAccum >= mTicksThreshold) { 
-		            	mShowMessage = true;
-		            }
+            	                  		            
+            BlockRayTraceResult result = ModUtils.getMouseOverBlock();
+            if (result != null) {
+            	
+            	// Get lightness of block(s) we're looking at	            	
+            	BlockPos pos = result.getPos().offset(result.getFace());	            		            			          
+	            float lightnessBlock = world.getBrightness(pos);		   
+	            
+	            // Get lightness where player is
+	            BlockPos posPlayer = player.getPosition();
+	            float lightnessPlayer = world.getBrightness(posPlayer);		   
+	            
+	            float lightness = Math.max(lightnessBlock, lightnessPlayer);
+	            
+	            // If it's really dark, put message up to remind of night vision
+	            
+	            float gamma = (float) Minecraft.getInstance().gameSettings.gamma;
+	            float threshold = mLightnessThreshold - gamma/10f; // i.e. 0.03f for max brightness
+	            if (lightness < threshold) {
+	            	mDarkTicksAccum++;		            		              		          
 	            }
+	            else if (mDarkTicksAccum > 0) {
+	            	mDarkTicksAccum--;	           
+	            }			           
+	            
+	            if (mDarkTicksAccum >= mTicksThreshold) { 
+	            	mShowMessage = true;
+	            }	            
             }
-
-			// Process any events which were queued by key events
-			this.processQueuedCallbacks(event);
 		}
 	}
 	
 
-	// This event is called by GuiIngameForge during each frame by
-	// GuiIngameForge.pre() and GuiIngameForce.post().
 	@SubscribeEvent
 	public void onRenderExperienceBar(RenderGameOverlayEvent event)
 	{		
 		if (mShowMessage) {
-			Minecraft mc = Minecraft.getMinecraft();
+			Minecraft mc = Minecraft.getInstance();
 			
-			ScaledResolution res = new ScaledResolution(mc);						
-			int w = res.getScaledWidth();
-			int h = res.getScaledHeight();
+			int w = mc.mainWindow.getScaledWidth();
+			int h = mc.mainWindow.getScaledHeight();
 			
 			String msg1 = "You are in the dark!";
 			String msg2 = "To turn on night vision, use the EyeMine keyboard or press F12";
 			String msg3 = "To reset to start location, press Home";
 						
-			FontRenderer font = mc.fontRendererObj;
+			FontRenderer font = mc.fontRenderer;
 			
 			int y = h/5;
 			drawCenteredString(font, msg1, w/2,      y, 0xffffff);
@@ -189,11 +161,11 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 	
 	private void drawCenteredString(FontRenderer font, String msg, int x, int y, int c) {
 		int stringWidth = font.getStringWidth(msg);		
-        font.drawString(msg, x - stringWidth/2, y, c);        
+        font.drawStringWithShadow(msg, x - stringWidth/2, y, c);        
 	}
-	
+
 	@SubscribeEvent
-	public void onKeyInput(InputEvent.KeyInputEvent event) {
+	public void onKeyInput(KeyInputEvent event) {	
 		// Any key dismisses the message (eventually, after minimum time)
 		if (mShowMessage) {
 			mDisabled = true;

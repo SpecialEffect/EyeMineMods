@@ -31,6 +31,7 @@ import com.specialeffect.mods.misc.ContinuouslyAttack;
 import com.specialeffect.mods.misc.DefaultConfigForNewWorld;
 import com.specialeffect.mods.misc.DwellBuild;
 import com.specialeffect.mods.misc.IronSights;
+import com.specialeffect.mods.misc.NightVisionHelper;
 import com.specialeffect.mods.misc.OpenChat;
 import com.specialeffect.mods.misc.OpenTablesChests;
 import com.specialeffect.mods.misc.PickBlock;
@@ -238,6 +239,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new DefaultConfigForNewWorld());
         this.setupChildMod((ChildMod) new IronSights());
         this.setupChildMod((ChildMod) new MoveWithGaze2());
+        this.setupChildMod((ChildMod) new NightVisionHelper());
         
     }
     

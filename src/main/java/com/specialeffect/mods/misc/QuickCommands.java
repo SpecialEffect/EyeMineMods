@@ -83,7 +83,8 @@ public class QuickCommands extends ChildMod {
 				player.removePotionEffect(nightVision);
 			}
 			else {
-				player.addPotionEffect(new EffectInstance(nightVision)); 							
+				player.addPotionEffect(new EffectInstance(nightVision)); 		
+				NightVisionHelper.cancelAndHide();
 			}		
 		}
 		
@@ -101,7 +102,8 @@ public class QuickCommands extends ChildMod {
 		}
 		
 		if (mRespawnKB.getKey().getKeyCode() == event.getKey()) {       								
-            channel.sendToServer(new TeleportPlayerToSpawnPointMessage());    
+            channel.sendToServer(new TeleportPlayerToSpawnPointMessage());   
+            NightVisionHelper.cancelAndHide();
         }
 	}
 }
