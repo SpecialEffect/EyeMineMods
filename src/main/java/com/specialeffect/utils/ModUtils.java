@@ -19,7 +19,9 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -40,6 +42,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 public class ModUtils {
 	
@@ -265,5 +268,28 @@ public class ModUtils {
 		return false;
 	}
 	
+	public static BlockPos highestSolidPoint(BlockPos pos)
+    {
+		// Gets a spawn-able location above the point
+		// Highest solid block that isn't foliage
+        World world = Minecraft.getInstance().world;
+        Chunk chunk = world.getChunkAt(pos);
+        
+        BlockPos blockpos;
+        BlockPos blockpos1;
+        for (blockpos = new BlockPos(pos.getX(), chunk.getTopFilledSegment() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
+        {
+            blockpos1 = blockpos.down();
+            BlockState state = chunk.getBlockState(blockpos1);
+            
+            if (state.getMaterial().blocksMovement() && !(state.getBlock() instanceof LeavesBlock))
+            {
+                break;
+            }
+        }
+
+        return blockpos;
+    }
+
 	
 }
