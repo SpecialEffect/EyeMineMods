@@ -13,6 +13,7 @@ package com.specialeffect.mods.misc;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.SendCommandMessage;
+import com.specialeffect.messages.TeleportPlayerToSpawnPointMessage;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
@@ -44,7 +45,9 @@ public class QuickCommands extends ChildMod {
         channel.registerMessage(id++, SendCommandMessage.class, SendCommandMessage::encode, 
         		SendCommandMessage::decode, SendCommandMessage.Handler::handle);        
    
-		        
+        channel.registerMessage(id++, TeleportPlayerToSpawnPointMessage.class, TeleportPlayerToSpawnPointMessage::encode, 
+        		TeleportPlayerToSpawnPointMessage::decode, TeleportPlayerToSpawnPointMessage.Handler::handle);        
+        
 
 		// init
 		
@@ -53,12 +56,16 @@ public class QuickCommands extends ChildMod {
 		ClientRegistry.registerKeyBinding(mNightVisionKB);
 
 		mDayNightKB = new KeyBinding("Turn day/night cycle on/off", GLFW.GLFW_KEY_F14, CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mDayNightKB);
+		ClientRegistry.registerKeyBinding(mDayNightKB);	
+
+        mRespawnKB = new KeyBinding("Reset player location", GLFW.GLFW_KEY_HOME, CommonStrings.EYEGAZE_EXTRA);
+		ClientRegistry.registerKeyBinding(mRespawnKB);
 
 	}
 
 	private static KeyBinding mNightVisionKB;
 	private static KeyBinding mDayNightKB;
+	private static KeyBinding mRespawnKB;
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {		
@@ -92,5 +99,9 @@ public class QuickCommands extends ChildMod {
 			String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);			
 			channel.sendToServer(new SendCommandMessage(cmd));
 		}
+		
+		if (mRespawnKB.getKey().getKeyCode() == event.getKey()) {       								
+            channel.sendToServer(new TeleportPlayerToSpawnPointMessage());    
+        }
 	}
 }
