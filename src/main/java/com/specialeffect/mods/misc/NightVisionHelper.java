@@ -12,9 +12,13 @@ package com.specialeffect.mods.misc;
 
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
+
+import io.netty.handler.codec.http2.DefaultHttp2WindowUpdateFrame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.DeathScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -22,6 +26,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +43,7 @@ public class NightVisionHelper extends ChildMod {
 	
 	private static boolean mShowMessage;
 	private static boolean mDisabled;
+	private static boolean mTemporarilyDisabled;
 	
 	private float mLightnessThreshold;
 	private int mTicksThreshold;
@@ -54,14 +61,7 @@ public class NightVisionHelper extends ChildMod {
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
 		
-		// Reset state
-		mDisabled = false;
-		mShowMessage = false;
-		mDarkTicksAccum = 0;
-		mShowMessageTicksAccum = 0;	
-		mTicksLoaded = 0;
-		mLightnessThreshold = 0.2f;
-		mTicksThreshold = 2*20;
+		this.resetState();
 		
 		// If player has overridden brightness beyond what's allowed in the settings menu, 
 		// (i.e. by hacking options.txt) then they are a power user and we'll leave them to it			
@@ -69,6 +69,33 @@ public class NightVisionHelper extends ChildMod {
 			NightVisionHelper.cancelAndHide();
 		}
 	}	
+    
+    private void resetState() {
+    	// Reset state
+		mDisabled = false;
+		mShowMessage = false;
+		mDarkTicksAccum = 0;
+		mShowMessageTicksAccum = 0;	
+		mTicksLoaded = 0;
+		mLightnessThreshold = 0.2f;
+		mTicksThreshold = 2*20;
+    }
+    
+    @SubscribeEvent 
+    public void onDeath(LivingDeathEvent event) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			this.resetState();
+			mTemporarilyDisabled = true;			
+		}
+    }
+
+    @SubscribeEvent 
+    public void onSpawn(LivingSpawnEvent event) {
+		if (ModUtils.entityIsMe(event.getEntityLiving())) {
+			this.resetState();
+			mTemporarilyDisabled = false;
+		}
+    }
 
 	@SubscribeEvent
 	public void onLiving(LivingUpdateEvent event) {			
@@ -100,7 +127,7 @@ public class NightVisionHelper extends ChildMod {
 				}				
 			}
 			
-			if (mDisabled) {
+			if (mDisabled || mTemporarilyDisabled) {
 				return;
 			}
 			
