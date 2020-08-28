@@ -46,7 +46,7 @@ public class TeleportPlayerToSpawnPointMessage {
             if (null == pos) {
             	pos = world.getSpawnPoint();
             }
-            pos = ModUtils.highestSolidPoint(pos);          
+            
             player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
        }
 	}       
