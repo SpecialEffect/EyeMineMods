@@ -101,7 +101,7 @@ public class InventoryConfig {
     	keyScrollDown = CLIENT_BUILDER.comment("keyScrollDown").define("keyScrollDown", GLFW.GLFW_KEY_F9);
     	
     	keySearch = CLIENT_BUILDER.comment("keySearch").define("keySearch", GLFW.GLFW_KEY_DOWN);
-    	keyDrop = CLIENT_BUILDER.comment("keyDrop").define("keyDrop", GLFW.GLFW_KEY_HOME);
+    	keyDrop = CLIENT_BUILDER.comment("keyDrop2").define("keyDrop2", GLFW.GLFW_KEY_MINUS);
     	
     }
         
