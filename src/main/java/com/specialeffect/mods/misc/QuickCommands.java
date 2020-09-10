@@ -60,12 +60,16 @@ public class QuickCommands extends ChildMod {
 
         mRespawnKB = new KeyBinding("Reset player location", GLFW.GLFW_KEY_HOME, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mRespawnKB);
+		
+        mDropItemKB = new KeyBinding("Drop item", GLFW.GLFW_KEY_MINUS, CommonStrings.EYEGAZE_EXTRA);
+		ClientRegistry.registerKeyBinding(mRespawnKB);
 
 	}
 
 	private static KeyBinding mNightVisionKB;
 	private static KeyBinding mDayNightKB;
 	private static KeyBinding mRespawnKB;
+	private static KeyBinding mDropItemKB;
 
 	@SubscribeEvent
 	public void onKeyInput(KeyInputEvent event) {		
@@ -90,6 +94,15 @@ public class QuickCommands extends ChildMod {
 		
 		if (ModUtils.hasActiveGui()) { return; }
 
+		if (mDropItemKB.getKey().getKeyCode() == event.getKey()) {
+			// Drop item 
+			// This is a duplicate key binding to the built-in one, so we can use the same for discarding
+			// an item while the inventory is open. The inventory keybinding needs to be a key not used
+			// for typing.
+			PlayerEntity player = Minecraft.getInstance().player;
+			player.dropItem(true);
+		}
+		
 		if (mDayNightKB.getKey().getKeyCode() == event.getKey()) {
 			GameRules rules = Minecraft.getInstance().world.getGameRules();
 			
