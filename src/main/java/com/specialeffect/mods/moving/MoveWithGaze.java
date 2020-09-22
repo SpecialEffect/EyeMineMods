@@ -286,9 +286,11 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		EntityRayTraceResult entityResult = ModUtils.getMouseOverEntity();
 		if (entityResult != null) {
 			Entity hitEntity = entityResult.getEntity();
-			LivingEntity liveEntity = (LivingEntity) hitEntity;
-			if (liveEntity != null) {
-				return 0.2f;
+			if (hitEntity instanceof LivingEntity) {
+				LivingEntity liveEntity = (LivingEntity) hitEntity;
+				if (liveEntity != null) {
+					return 0.2f;
+				}
 			}
 		}
 		return 1.0f;
