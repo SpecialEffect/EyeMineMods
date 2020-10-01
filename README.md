@@ -1,9 +1,12 @@
-# SpecialEffectMinecraftMods
-A collection of small minecraft modifications to support the use of alternative input methods including eye-gaze control. Designed to accompany [EyeMine](https://github.com/SpecialEffect/EyeMine), which provides a gaze-controlled keyboard for in-game actions.
+# EyeMineMods
+This repository contains the Minecraft mods used with [EyeMine](https://github.com/SpecialEffect/EyeMine), which provides a gaze-controlled keyboard for in-game actions.
 
-Certain functionality would also be applicable for switch or joystick control - get in touch with SpecialEffect if you have particular input requirements.
 
-To download and find out more, visit the [EyeMine wiki](https://github.com/SpecialEffect/EyeMine/wiki).
+## Information for users
+
+[**The EyeMine wiki**](https://github.com/SpecialEffect/EyeMine/wiki) contains full information on how to get started, system requirements, a user guide, demo videos, a troubleshooting page, and more.
+
+EyeMine is designed for eye-gaze control, and also supports head-pointer control. If you want to play Minecraft with different alternative inputs such as assistive switches and joystick, please [contact SpecialEffect](https://www.specialeffect.org.uk/contact) with more information about your setup. Some of the functionality in these mods may be helpful. 
 
 ## Dev setup
 If you want to contribute, you need to install minecraft forge to build the mods. 
