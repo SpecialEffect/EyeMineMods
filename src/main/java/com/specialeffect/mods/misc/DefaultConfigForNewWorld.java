@@ -7,6 +7,7 @@ import com.specialeffect.messages.SendCommandMessage;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -65,13 +66,15 @@ public class DefaultConfigForNewWorld extends ChildMod {
         	PlayerEntity player = (PlayerEntity)entity;
             if (ModUtils.entityIsMe(player)) {
                 firstOnLivingTick = true;
+                haveEquippedPlayer = false;
             }
         }
     }
     
     @SubscribeEvent
     public void onLiving(LivingUpdateEvent event) {
-        if (ModUtils.entityIsMe(event.getEntityLiving())) {
+        if (ModUtils.entityIsMe(event.getEntityLiving()) && 
+        		event.getEntityLiving() instanceof ClientPlayerEntity) {        	
         	PlayerEntity player = (PlayerEntity) event.getEntityLiving();
 
             // First onliving tick, we check inventory and fill it with default set
@@ -108,7 +111,7 @@ public class DefaultConfigForNewWorld extends ChildMod {
         WorldInfo info = world.getWorldInfo();
         GameRules rules = info.getGameRulesInstance();
 		 	   
-        if (info.getGameTime() < 10) {
+        if (info.getGameTime() < 60) {
         	// First time loading, set rules according to user preference		
         	if (info.getGameType() == GameType.CREATIVE) {
 				rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(!alwaysDayTimeSetting, server);		
@@ -148,13 +151,13 @@ public class DefaultConfigForNewWorld extends ChildMod {
     private void equipPlayer(PlayerInventory inventory) {
         // Ask server to put new item in hotbar     
         channel.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.BRICKS)));
+                new ItemStack(Blocks.BRICKS), 0));
         channel.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.SANDSTONE)));
+                new ItemStack(Blocks.SANDSTONE), 1));
         channel.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.GLASS_PANE)));
+                new ItemStack(Blocks.GLASS_PANE), 2));
         channel.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.MOSSY_COBBLESTONE)));
+                new ItemStack(Blocks.MOSSY_COBBLESTONE), 3));
         
         channel.sendToServer(new AddItemToHotbar(
                 new ItemStack(Blocks.TORCH), 6));
@@ -163,6 +166,6 @@ public class DefaultConfigForNewWorld extends ChildMod {
         channel.sendToServer(new AddItemToHotbar(
                 new ItemStack(Items.DIAMOND_SWORD), 8));
         
-        inventory.currentItem = 0;
+        inventory.currentItem = 1;
     }
 }
