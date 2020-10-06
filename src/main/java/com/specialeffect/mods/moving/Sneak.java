@@ -17,6 +17,8 @@ import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
+import com.specialeffect.mods.EyeGaze;
+import com.specialeffect.overrides.MovementInputFromOptionsOverride;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -53,8 +55,11 @@ public class Sneak extends ChildMod {
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
 		PlayerEntity player = Minecraft.getInstance().player;
-    	if (null != player && event.phase == TickEvent.Phase.START) {			
-			player.setSneaking(mIsSneaking);
+    	if (null != player && event.phase == TickEvent.Phase.START) {
+    		// Sneaking is handled by the MovementInput class these days
+    		MovementInputFromOptionsOverride ownMovementInput = EyeGaze.ownMovementOverride;   		
+       		ownMovementInput.setSneakOverride(mIsSneaking);
+       		
 			// Make sure icon up to date
 			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);    		
 		}
