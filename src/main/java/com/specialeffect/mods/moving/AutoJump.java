@@ -33,7 +33,6 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 	public final String MODID = "autojump";
 
 	public static KeyBinding autoJumpKeyBinding;
-	// FIXME public static Configuration mConfig;
 
 	private boolean mDoingAutoJump = true;
 	private int mIconIndex;
@@ -46,9 +45,6 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/jump.png");
-
-		//FIXME: there was previously an ordering requirement for config syncing and 
-		// texture registering
 	}
 	
 	private void updateSettings(boolean autoJump) {

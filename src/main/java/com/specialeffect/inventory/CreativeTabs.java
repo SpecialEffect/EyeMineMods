@@ -18,7 +18,6 @@ import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.utils.KeyWatcher;
 
-//fIXME import de.skate702.craftingkeys.config.GuiConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ChestScreen;
@@ -49,10 +48,8 @@ public class CreativeTabs
 
 		InventoryConfig.loadConfig(InventoryConfig.CLIENT_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("eyemine-inventory-config.toml"));
-		
-		// FIXME: did we lose any bus registering when refactoring??
-		MinecraftForge.EVENT_BUS.register(this);			
-		 
+				
+		MinecraftForge.EVENT_BUS.register(this);					
 	}
 
 

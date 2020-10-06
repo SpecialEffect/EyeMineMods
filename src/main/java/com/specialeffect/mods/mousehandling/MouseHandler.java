@@ -100,9 +100,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		// Turn off raw mouse input: this wreaks havoc with gaze-provided cursor movements! 
 		GLFW.glfwSetInputMode(window, GLFW.GLFW_RAW_MOUSE_MOTION, GLFW.GLFW_FALSE);
 		
-
 		// Rejig the state after mouse helper has been created
-		setupInitialState(); // FIXME: we don't have postInit any more... 
+		setupInitialState(); 
 	}
 
 	
@@ -233,11 +232,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		if (ModUtils.hasActiveGui()) { return; }
 		if (event.getAction() != GLFW.GLFW_PRESS) { return; }
 
-	    if (KeyWatcher.f3Pressed) { return; }
-
-		// FIXME: test that we do get this event soonest - are all mods on same thread?
+	    if (KeyWatcher.f3Pressed) { return; }	
 		
-		//FIXME also: shall we rejig user-reported sensitivity so it doesn't go negative?
 		if (mSensitivityUpKB.getKey().getKeyCode() == event.getKey()) {
 			increaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f*Minecraft.getInstance().gameSettings.mouseSensitivity));

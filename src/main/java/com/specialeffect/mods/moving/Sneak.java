@@ -77,11 +77,8 @@ public class Sneak extends ChildMod {
 		
 		mIsSneaking = bSneak;
 
-		// TODO: is there any reason we don't want to just hold down the key here? 
-		// this also helps with mod tooltips
-		
-		// FIXME: remove movement override stuff if not using for Sneak  
-
+		// we both hold down the key here (helps with mod tooltips) *and*
+		// override the movementInput each tick (more robust to lost focus etc)
 		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindSneak;			
 		KeyBinding.setKeyBindState(useItemKeyBinding.getKey(), bSneak);			
 		

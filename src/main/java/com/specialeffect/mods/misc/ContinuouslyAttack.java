@@ -49,9 +49,7 @@ extends ChildMod {
 	
 	private boolean mWaitingForSword = false;
 	
-	public void setup(final FMLCommonSetupEvent event) {
-		
-		// FIXME: now in eyegaze mod, check working okay // FMLJavaModLoadingContext.get().getModEventBus().register(this);
+	public void setup(final FMLCommonSetupEvent event) {			
 
 		// setup channel for comms
 		this.setupChannel(this.MODID, 1);

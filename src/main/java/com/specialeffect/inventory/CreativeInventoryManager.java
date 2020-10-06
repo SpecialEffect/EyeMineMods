@@ -213,8 +213,7 @@ public class CreativeInventoryManager {
 		} else if (key == InventoryConfig.keyScrollUp.get()) {
 			this.scrollDown(-2);
 			handled = true;
-			// FIXME: decide how far to scroll, this seems to be nice
-			// (almost an entire screen, but 1 row repeated to ground you)
+			// (scrollamount = almost an entire screen, but 1 row repeated to ground you)
 		} else if (key == InventoryConfig.keyScrollDown.get()) {
 			this.scrollDown(+2);
 			handled = true;

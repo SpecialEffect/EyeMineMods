@@ -135,7 +135,6 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
        		//   hasn't moved at all. This is mainly applicable to gaze input.
        		// - If walking into a wall, don't keep walking fast!
        		
-       		// FIXME: mousehandler logic
             if (mDoingAutoWalk && 
             	null == Minecraft.getInstance().currentScreen &&	
                 (mMoveWhenMouseStationary || MouseHandler.hasPendingEvent())) {

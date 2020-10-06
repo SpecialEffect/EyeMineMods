@@ -81,9 +81,9 @@ public class UseItemAtPositionMessage {
                 	player.sendMessage(new StringTextComponent(
                 			"Cannot place " + item.getDisplayName().getString() + " here"));
                 }
-//                //FIXME: look into reported bug here
+
                 if (player.isCreative()) {
-                	item.setCount(oldCount); //some items are decremented; others aren't
+                	item.setCount(oldCount); 
                 }
         	}
 			

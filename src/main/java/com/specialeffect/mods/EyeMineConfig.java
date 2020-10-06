@@ -220,8 +220,6 @@ public class EyeMineConfig {
 		// here to notify other mods?
 		LOGGER.debug("ModConfig onReload");
 
-		// FIXME: this architecture is a bit circular, think about responsibilities
-
 		ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
 		if (loadSpec == CLIENT_CONFIG) {
 			EyeGaze.refresh();

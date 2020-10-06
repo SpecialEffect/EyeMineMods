@@ -89,7 +89,6 @@ public class EyeGaze {
 	 * ghost town. We might consider updating it as our own uber-mod, with other
 	 * mods registered to it.
 	 * 
-	 * FIXME: figure out what to do with it architecturally :-)
 	 */
 
 	public static final String MODID = "eyemine";
@@ -263,9 +262,7 @@ public class EyeGaze {
 	}
 
 	public static void saveWalkingSpeed(float speed) {
-		// FIXME: put this on EyeMineConfig class?
 		EyeMineConfig.customSpeedFactor.set((double) speed);
-
 		EyeGaze.refresh();
 	}
 
