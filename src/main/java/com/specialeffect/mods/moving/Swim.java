@@ -90,7 +90,7 @@ public class Swim extends ChildMod {
 						Minecraft.getInstance().gameSettings.keyBindJump;
 
 				// Switch on swim key when in water
-				if (player.isInWater() && 						
+				if ((player.isInWater() || player.isInLava()) && 						
 						!swimBinding.isKeyDown() &&
 						jumpkeyTimer == 0) {
 					KeyBinding.setKeyBindState(swimBinding.getKey(), true);			
