@@ -326,6 +326,14 @@ extends MouseHelper
                this.mouseY = ypos;
             }
             else {
+            	
+            	// If mouse should be grabbed but isn't - this can happen if we alt-tab
+            	// away while world is loading, with pauseOnLostFocus=false
+            	if (!this.ungrabbedMouseMode &&
+        			this.minecraft.isGameFocused() && 
+        			!this.mouseGrabbed) {            		
+            		this.grabMouse();	
+            	}            	 
       
                 this.minecraft.getProfiler().startSection("mouse");
                 if (this.minecraft.isGameFocused()) {
