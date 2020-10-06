@@ -27,12 +27,12 @@ public class EyeMineConfig {
 	// Category names for clustering config options in different UIs
 	public static final String CATEGORY_BASIC = "basic";
 	public static final String CATEGORY_ADVANCED = "advanced";
-	public static final String CATEGORY_EXPERT = "expert";
+	public static final String CATEGORY_MOVING = "moving";
 	public static final String CATEGORY_DWELLING = "dwelling";
 
 	public static final String CATEGORY_BASIC_USERSTRING = "Basic options";
 	public static final String CATEGORY_ADVANCED_USERSTRING = "Advanced options";
-	public static final String CATEGORY_EXPERT_USERSTRING = "Expert options";
+	public static final String CATEGORY_MOVING_USERSTRING = "Moving options";
 	public static final String CATEGORY_DWELLING_USERSTRING = "Dwelling options";
 
 	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
@@ -92,8 +92,8 @@ public class EyeMineConfig {
 		setupAdvancedConfig();
 		CLIENT_BUILDER.pop();
 
-		CLIENT_BUILDER.comment(CATEGORY_EXPERT_USERSTRING).push(CATEGORY_EXPERT);
-		setupExpertConfig();
+		CLIENT_BUILDER.comment(CATEGORY_MOVING_USERSTRING).push(CATEGORY_MOVING);
+		setupMovingConfig();
 		CLIENT_BUILDER.pop();
 
 		CLIENT_BUILDER.comment(CATEGORY_DWELLING_USERSTRING).push(CATEGORY_DWELLING);
@@ -127,15 +127,6 @@ public class EyeMineConfig {
 
 	private static void setupAdvancedConfig() {
 
-		// Flying
-		flyHeightManual = CLIENT_BUILDER.comment("How high to fly (up/down) in manual mode")
-				.defineInRange("flyHeightManual", 2, 1, 20);
-
-		flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode").defineInRange("flyHeightAuto", 6, 1, 10);
-
-		mRadiusDoors = CLIENT_BUILDER.comment(
-				"How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
-				.defineInRange("radiusDoors", 2, 0, 10);
 
 		// This is limited to 6 blocks since the gui doesn't appear if block is too far
 		// away
@@ -143,43 +134,51 @@ public class EyeMineConfig {
 				.comment("How far away a player needs to be from a chest/table to be able to open it")
 				.defineInRange("radiusChests", 5, 1, 6);
 
-		moveWhenMouseStationary = CLIENT_BUILDER.comment(
-				"Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
-				.define("moveWhenMouseStationary", false);
-
-		mSlowdownOnCorners = CLIENT_BUILDER
-				.comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
-				.define("slowdownOnCorners", true);
-
-		mSlowdownOnAttack = CLIENT_BUILDER.comment(
-				"Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
-				.define("slowdownOnAttack", true);
+    mRadiusDoors = CLIENT_BUILDER.comment(
+        "How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
+        .defineInRange("radiusDoors", 2, 0, 10);
 
 		mTicksBetweenMining = CLIENT_BUILDER
 				.comment("How many ticks to wait before mining again\nOnly affects creative mode")
 				.defineInRange("ticksBetweenMining", 15, 0, 50);
 
+    // Ironsights
+    ironsightsFovReduction = CLIENT_BUILDER
+        .comment("How much to reduce field of view (degrees) when using ironsights")
+        .defineInRange("ironsightsFovReduction", 20, 0, 40);
+
+    ironsightsSensitivityReduction = CLIENT_BUILDER
+        .comment("How much to reduce sensitivity (%) when using ironsights")
+        .defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
+
+    // Bow-firing
+    bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
+        .defineInRange("bowDrawTime", 1.0, 0.5, 5.0);
+
 	}
 
-	private static void setupExpertConfig() {
+	private static void setupMovingConfig() {
 
-		// Move with gaze
+    mSlowdownOnCorners = CLIENT_BUILDER
+        .comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
+        .define("slowdownOnCorners", true);
+
 		filterLength = CLIENT_BUILDER.comment(
 				"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
 				.defineInRange("walkingSlowdownFilter", 30, 1, 200);
 
-		// Ironsights
-		ironsightsFovReduction = CLIENT_BUILDER
-				.comment("How much to reduce field of view (degrees) when using ironsights")
-				.defineInRange("ironsightsFovReduction", 20, 0, 40);
+    moveWhenMouseStationary = CLIENT_BUILDER.comment(
+        "Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
+        .define("moveWhenMouseStationary", false);
 
-		ironsightsSensitivityReduction = CLIENT_BUILDER
-				.comment("How much to reduce sensitivity (%) when using ironsights")
-				.defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
+    mSlowdownOnAttack = CLIENT_BUILDER.comment(
+        "Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
+        .define("slowdownOnAttack", true);
+        
+    flyHeightManual = CLIENT_BUILDER.comment("How high to fly (up/down) in manual mode")
+        .defineInRange("flyHeightManual", 2, 1, 20);
 
-		// Bow-firing
-		bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
-				.defineInRange("bowDrawTime", 1.0, 0.5, 5.0);
+    flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode").defineInRange("flyHeightAuto", 6, 1, 10);
 
 	}
 
