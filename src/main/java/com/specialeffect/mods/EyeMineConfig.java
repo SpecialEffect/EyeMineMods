@@ -36,13 +36,7 @@ public class EyeMineConfig {
 	public static final String CATEGORY_DWELLING_USERSTRING = "Dwelling options";
 
 	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
-
 	public static ForgeConfigSpec CLIENT_CONFIG;
-
-	public static ForgeConfigSpec.IntValue FIRSTBLOCK_MAXPOWER;
-	public static ForgeConfigSpec.IntValue FIRSTBLOCK_GENERATE;
-	public static ForgeConfigSpec.IntValue FIRSTBLOCK_SEND;
-	public static ForgeConfigSpec.IntValue FIRSTBLOCK_TICKS;
 
 	// Flying options
 	public static ForgeConfigSpec.IntValue flyHeightManual;
@@ -59,8 +53,7 @@ public class EyeMineConfig {
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
 
-	// MouseHandler options
-	public static ForgeConfigSpec.DoubleValue mDeadBorder;
+	// MouseHandler options	
 	public static ForgeConfigSpec.BooleanValue usingMouseEmulation;
 
 	// Mining
@@ -174,11 +167,6 @@ public class EyeMineConfig {
 		filterLength = CLIENT_BUILDER.comment(
 				"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
 				.defineInRange("walkingSlowdownFilter", 30, 1, 200);
-
-		// MouseHandler
-		mDeadBorder = CLIENT_BUILDER.comment(
-				"Fraction of screen in which mouse movements are ignored. Increase this if you find your view being dragged toward your eyegaze keyboard.")
-				.defineInRange("deadBorder", 0.1, 0.0, 0.25);
 
 		// Ironsights
 		ironsightsFovReduction = CLIENT_BUILDER
