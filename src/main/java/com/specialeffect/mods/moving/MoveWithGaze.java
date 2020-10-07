@@ -147,7 +147,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	            
 	            	// Slow down when you've been turning a corner
 	            	double slowDownCorners= slowdownFactorViewDirs();
-	            	System.out.println("slowdown corners: "+ slowDownCorners);
+//	            	System.out.println("slowdown corners: "+ slowDownCorners);
 	            			            	
 					if (!player.isOnLadder()) {
 						forward *= Math.min(slowDownCorners, slowDownPitch);
