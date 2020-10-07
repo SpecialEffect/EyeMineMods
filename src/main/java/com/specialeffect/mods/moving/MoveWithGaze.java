@@ -153,7 +153,18 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 						forward *= Math.min(slowDownCorners, slowDownPitch);
 					}
             	}
-             	            	
+             	
+             	// Don't go "forward" if looking down ladder - let it naturally go down
+             	// We're stricter 
+             	if (player.isOnLadder()) {             		
+    				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
+    				// ladder okay.
+    				if ((player.onGround && player.rotationPitch > 20) ||
+    				    (!player.onGround && player.rotationPitch > 0)) {    					
+    					return;
+            		}
+             	}
+						            	
             	// Slow down if you're facing an animal/mob while attacking
 				// (without this it's easy to run past)
             	if (EyeMineConfig.mSlowdownOnAttack.get()) {
