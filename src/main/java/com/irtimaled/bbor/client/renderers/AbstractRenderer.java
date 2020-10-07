@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 import org.lwjgl.opengl.GL11;
 
@@ -215,6 +216,67 @@ public abstract class AbstractRenderer {
         
 	        renderer.render();
         }
+        
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+        GL11.glPolygonOffset(-1.f, -1.f);
+    }
+    
+    
+    public static void renderCubeAtPosition(Vec3d pos, Color color, int opacity, double size) {        	    	
+    	
+    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+        GL11.glEnable(GL11.GL_BLEND);
+        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+
+        // Set up bounding cube corners 
+		OffsetPoint min = new OffsetPoint(pos.getX()-size, pos.getY()-size, pos.getZ()-size);
+		OffsetPoint max = new OffsetPoint(pos.getX()+size, pos.getY()+size, pos.getZ()+size);
+    	
+    	double minX = min.getX();
+        double minY = min.getY();
+        double minZ = min.getZ();
+
+        double maxX = max.getX();
+        double maxY = max.getY();
+        double maxZ = max.getZ();
+        
+        // Render a quad for each face
+        Renderer renderer = Renderer.startQuads()
+                .setColor(color)
+                .setAlpha(opacity);
+	        
+    	renderer.addPoint(minX, maxY, minZ)
+	            .addPoint(maxX, maxY, minZ)
+	            .addPoint(maxX, maxY, maxZ)
+	            .addPoint(minX, maxY, maxZ);
+        
+    	renderer.addPoint(minX, minY, minZ)
+	            .addPoint(maxX, minY, minZ)
+	            .addPoint(maxX, minY, maxZ)
+	            .addPoint(minX, minY, maxZ);
+        
+		renderer.addPoint(minX, minY, minZ)
+	            .addPoint(minX, maxY, minZ)
+	            .addPoint(maxX, maxY, minZ)
+	            .addPoint(maxX, minY, minZ);
+        
+		renderer.addPoint(minX, minY, maxZ)
+	            .addPoint(minX, maxY, maxZ)
+	            .addPoint(maxX, maxY, maxZ)
+	            .addPoint(maxX, minY, maxZ);
+        
+    	renderer.addPoint(maxX, minY, minZ)
+	            .addPoint(maxX, minY, maxZ)
+	            .addPoint(maxX, maxY, maxZ)
+	            .addPoint(maxX, maxY, minZ);
+        
+		renderer.addPoint(minX, minY, minZ)
+	            .addPoint(minX, minY, maxZ)
+	            .addPoint(minX, maxY, maxZ)
+	            .addPoint(minX, maxY, minZ);
+    
+        renderer.render();       
         
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
