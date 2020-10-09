@@ -154,13 +154,13 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 					}
             	}
              	
-             	// Don't go "forward" if looking down ladder - let it naturally go down
-             	// We're stricter 
-             	if (player.isOnLadder()) {             		
+             	// Don't go "forward" if looking down ladder - let it naturally go down 
+             	if (player.isOnLadder()) {
     				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
     				// ladder okay.
-    				if ((player.onGround && player.rotationPitch > 20) ||
-    				    (!player.onGround && player.rotationPitch > 0)) {    					
+    				if ((player.onGround && player.rotationPitch > 30) ||
+    				    (!player.onGround && player.rotationPitch > 0)) {    	
+    	            	ownMovementInput.setWalkOverride(false, 0.0f);            	
     					return;
             		}
              	}
@@ -343,6 +343,10 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 			KeyBinding.setKeyBindState(kbLeft.getKey(), false);
 			KeyBinding.setKeyBindState(kbRight.getKey(), false);
 		}
+	}
+	
+	public static boolean isWalking() {
+		return mDoingAutoWalk;
 	}
 
 	@SubscribeEvent

@@ -223,13 +223,6 @@ public class ModUtils {
 		}
 	}
 	
-	@SuppressWarnings("unused")
-	private boolean isLadder(BlockPos pos) {
-		World world = Minecraft.getInstance().world;
-		Block block = world.getBlockState(pos).getBlock();
-		return (block != null && block instanceof LadderBlock);
-	}
-	
 	// Check if there's a block at the given position which
 	// blocks movement.
 	@SuppressWarnings("unused")
