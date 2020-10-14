@@ -49,6 +49,8 @@ public class EyeMineConfig {
 
 	public static ForgeConfigSpec.BooleanValue mSlowdownOnCorners;
 	public static ForgeConfigSpec.BooleanValue mSlowdownOnAttack;
+	
+	public static ForgeConfigSpec.BooleanValue allowLadderDescent;
 
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
@@ -180,6 +182,9 @@ public class EyeMineConfig {
 
     flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode").defineInRange("flyHeightAuto", 6, 1, 10);
 
+    allowLadderDescent = CLIENT_BUILDER.comment(
+            "Descend ladders by looking down while moving. \n Experimental; may cause problems getting on/off ladders.")
+            .define("allowLadderDescent", false);
 	}
 
 	private static void setupDwellConfig() {

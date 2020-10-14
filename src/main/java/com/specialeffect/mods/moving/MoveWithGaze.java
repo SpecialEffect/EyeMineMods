@@ -155,7 +155,9 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
             	}
              	
              	// Don't go "forward" if looking down ladder - let it naturally go down 
-             	if (player.isOnLadder()) {
+             	// This may interfere in funny ways with the vanilla logic for whether or not you're on a ladder
+             	// Consider it experimental (it's not turned on by default)
+             	if (EyeMineConfig.allowLadderDescent.get() && player.isOnLadder()) {
     				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
     				// ladder okay.
     				if ((player.onGround && player.rotationPitch > 30) ||
