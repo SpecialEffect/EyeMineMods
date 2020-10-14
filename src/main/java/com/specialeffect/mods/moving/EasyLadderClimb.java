@@ -110,16 +110,21 @@ public class EasyLadderClimb extends ChildMod {
 	@SubscribeEvent
 	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
 	{
-				
-		if (Minecraft.getInstance().currentScreen != null) {			
-			return;
-		}
-						
-		if (MoveWithGaze.isWalking()) {
-			Color color = new Color(0.75f, 0.25f, 0.0f);
-			int opacity = 255;
-			double size = 0.05;
-			AbstractRenderer.renderCubeAtPosition(renderPos, color, opacity, size);			
+		// Turn this on to debug the positional logic - it will render block positions for you 
+		boolean debugRender = false;
+		
+		if (debugRender) {
+					
+			if (Minecraft.getInstance().currentScreen != null) {			
+				return;
+			}
+							
+			if (MoveWithGaze.isWalking()) {
+				Color color = new Color(0.75f, 0.25f, 0.0f);
+				int opacity = 255;
+				double size = 0.05;
+				AbstractRenderer.renderCubeAtPosition(renderPos, color, opacity, size);			
+			}
 		}
 	}
 	
