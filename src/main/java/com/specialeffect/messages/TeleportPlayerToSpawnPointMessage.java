@@ -12,13 +12,11 @@ package com.specialeffect.messages;
 
 import java.util.function.Supplier;
 
-import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class TeleportPlayerToSpawnPointMessage {

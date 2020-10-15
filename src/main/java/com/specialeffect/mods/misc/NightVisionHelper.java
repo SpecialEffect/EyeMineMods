@@ -13,12 +13,8 @@ package com.specialeffect.mods.misc;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 
-import io.netty.handler.codec.http2.DefaultHttp2WindowUpdateFrame;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;

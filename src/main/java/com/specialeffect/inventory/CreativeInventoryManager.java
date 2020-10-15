@@ -1,6 +1,5 @@
 package com.specialeffect.inventory;
 
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +10,6 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.CreativeScreen.CreativeContainer;
-import net.minecraft.inventory.container.Slot;
 
 /**
  * Manages a Inventory GUI Inventory.

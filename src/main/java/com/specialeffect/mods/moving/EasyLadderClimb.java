@@ -10,15 +10,10 @@
 
 package com.specialeffect.mods.moving;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.awt.Color;
-import java.util.Map;
 
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 import com.specialeffect.mods.ChildMod;
-import com.specialeffect.mods.EyeMineConfig;
-import com.specialeffect.mods.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.block.Block;
@@ -29,13 +24,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
