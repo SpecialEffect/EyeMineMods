@@ -118,7 +118,7 @@ public class NightVisionHelper extends ChildMod {
 			// If message is visible, keep alive for minimum time
 			if (mShowMessage) {
 				mShowMessageTicksAccum++;
-				if (mDisabled && mShowMessageTicksAccum > 20*20) {
+				if (mDisabled && mShowMessageTicksAccum > 5*20) {
 					mShowMessage = false;
 				}				
 			}
