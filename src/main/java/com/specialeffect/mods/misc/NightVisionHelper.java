@@ -21,7 +21,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -94,11 +95,10 @@ public class NightVisionHelper extends ChildMod {
     }
 
 	@SubscribeEvent
-	public void onLiving(LivingUpdateEvent event) {			
+    public void onClientTick(ClientTickEvent event) {
+    	PlayerEntity player = Minecraft.getInstance().player;    	
+    	if (null != player && event.phase == TickEvent.Phase.START) {
 	
-		if (ModUtils.entityIsMe(event.getEntityLiving())) {
-			
-			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			World world = Minecraft.getInstance().world;
 			
 			// We'll reduce (make stricter) the threshold for showing a warning message once the world
@@ -114,7 +114,7 @@ public class NightVisionHelper extends ChildMod {
 				// We won't worry about survival players, they know what they're doing
 				return;
 			}
-            
+	        
 			// If message is visible, keep alive for minimum time
 			if (mShowMessage) {
 				mShowMessageTicksAccum++;
@@ -127,12 +127,12 @@ public class NightVisionHelper extends ChildMod {
 				return;
 			}
 			
-            	                  		            
-            BlockRayTraceResult result = ModUtils.getMouseOverBlock();
-            if (result != null) {
-            	
-            	// Get lightness of block(s) we're looking at	            	
-            	BlockPos pos = result.getPos().offset(result.getFace());	            		            			          
+	        	                  		            
+	        BlockRayTraceResult result = ModUtils.getMouseOverBlock();
+	        if (result != null) {
+	        	
+	        	// Get lightness of block(s) we're looking at	            	
+	        	BlockPos pos = result.getPos().offset(result.getFace());	            		            			          
 	            float lightnessBlock = world.getBrightness(pos);		   
 	            
 	            // Get lightness where player is
@@ -155,8 +155,8 @@ public class NightVisionHelper extends ChildMod {
 	            if (mDarkTicksAccum >= mTicksThreshold) { 
 	            	mShowMessage = true;
 	            }	            
-            }
-		}
+	        }		
+    	}
 	}
 	
 

@@ -24,7 +24,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -60,23 +61,23 @@ public class AutoJump  extends ChildMod implements ChildModWithConfig {
 	}
 	
 	@SubscribeEvent
-    public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-    		PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-    		
-    		// We can't rely solely on the vanilla autojump implementation,
+    public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player && event.phase == TickEvent.Phase.START) {
+
+			// We can't rely solely on the vanilla autojump implementation,
 			// since there are a few scenarios where it doesn't work correctly, see
 			// https://bugs.mojang.com/browse/MC-102043
 			// 
 			// We'll keep it in sync though so that keyboard-play is consistent
 			// with our autojump state (if you're moving with the keyboard you
 			// get visually-nicer autojump behaviour).
-    		if (mDoingAutoJump) {
-    			player.stepHeight = 1.0f;
-    		}
-    		else {
-    			player.stepHeight = 0.6f;
-    		}	    	
+			if (mDoingAutoJump) {
+				player.stepHeight = 1.0f;
+			}
+			else {
+				player.stepHeight = 0.6f;
+			}	    		
     	}
     }
     

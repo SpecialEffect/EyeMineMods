@@ -27,9 +27,11 @@ import com.specialeffect.utils.ModUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -85,52 +87,53 @@ implements ChildModWithConfig
     private int ticksBackward=0; 
     
     @SubscribeEvent
-    public void onLiving(LivingUpdateEvent event) {
-    	if (ModUtils.entityIsMe(event.getEntityLiving())) {
-
-    		if (mDoingAutoWalk && 
-            		null == Minecraft.getInstance().currentScreen && // no gui visible
-            		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
-    			
-    			MovementInputFromOptionsOverride ownMovementInput = EyeGaze.ownMovementOverride;
-    			
-    			MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
-    			double lastMouseY = helper.lastYVelocity;
-    			
-    			// Y gives distance to walk forward/back.
-    			float walkForwardAmount = 0.0f;
-    			float h = (float)Minecraft.getInstance().mainWindow.getScaledHeight();    			    		
-    			float h6 = h/6.0f;
-    			
-    			if (lastMouseY < -h6) {
-    				// top of screen: forward!
-    				if (ticksForward > mTicksToLockOn) {    				
-    					walkForwardAmount = (float) (mMaxForward*(-lastMouseY-h6)/h6);
-    					ticksBackward = 0;
-    				}
-    				else {
-    					ticksForward++;	    					
-    				}
-    			}
-    			else if (lastMouseY > h6) {
-    				// backward
-    				
-    				if (ticksBackward > mTicksToLockOn) {    				
-    					// backward!
-    					walkForwardAmount = (float) (-mMaxBackward*(lastMouseY - h6)/h6);
-    					ticksForward = 0;
-    				}
-    				else {
-    					ticksBackward++;
-    				}
-    			}
-    			
-    			// scaled by mCustomSpeedFactor 
-    			walkForwardAmount *= 0.15;
-    			walkForwardAmount *= mCustomSpeedFactor;
+    public void onClientTick(ClientTickEvent event) {
+		PlayerEntity player = Minecraft.getInstance().player;
+    	if (null != player && event.phase == TickEvent.Phase.START) {
+	
+			if (mDoingAutoWalk && 
+	    		null == Minecraft.getInstance().currentScreen && // no gui visible
+	    		(mMoveWhenMouseStationary || MouseHandler.hasPendingEvent()) ) {
+				
+				MovementInputFromOptionsOverride ownMovementInput = EyeGaze.ownMovementOverride;
+				
+				MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
+				double lastMouseY = helper.lastYVelocity;
+				
+				// Y gives distance to walk forward/back.
+				float walkForwardAmount = 0.0f;
+				float h = (float)Minecraft.getInstance().mainWindow.getScaledHeight();    			    		
+				float h6 = h/6.0f;
+				
+				if (lastMouseY < -h6) {
+					// top of screen: forward!
+					if (ticksForward > mTicksToLockOn) {    				
+						walkForwardAmount = (float) (mMaxForward*(-lastMouseY-h6)/h6);
+						ticksBackward = 0;
+					}
+					else {
+						ticksForward++;	    					
+					}
+				}
+				else if (lastMouseY > h6) {
+					// backward
+					
+					if (ticksBackward > mTicksToLockOn) {    				
+						// backward!
+						walkForwardAmount = (float) (-mMaxBackward*(lastMouseY - h6)/h6);
+						ticksForward = 0;
+					}
+					else {
+						ticksBackward++;
+					}
+				}
+				
+				// scaled by mCustomSpeedFactor 
+				walkForwardAmount *= 0.15;
+				walkForwardAmount *= mCustomSpeedFactor;
 				ownMovementInput.setWalkOverride(true, walkForwardAmount);			
-
-    		}
+	
+			}	
     	}
     }
     
