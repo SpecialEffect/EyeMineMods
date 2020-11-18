@@ -19,6 +19,7 @@ displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 logoFile="eyemine_logo.png"
 credits = "Written in collaboration with SpecialEffect"
+license="GPLv3"
 description='''
 EyeMine by SpecialEffect allows you to play Minecraft using eye gaze.
 
