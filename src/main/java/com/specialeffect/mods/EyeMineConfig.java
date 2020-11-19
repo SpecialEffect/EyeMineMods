@@ -140,33 +140,32 @@ public class EyeMineConfig {
 
 	private static void setupAdvancedConfig() {
 
-
 		// This is limited to 6 blocks since the gui doesn't appear if block is too far
 		// away
 		mRadiusChests = CLIENT_BUILDER
 				.comment("How far away a player needs to be from a chest/table to be able to open it")
 				.defineInRange("radiusChests", 5, 1, 6);
 
-    mRadiusDoors = CLIENT_BUILDER.comment(
-        "How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
-        .defineInRange("radiusDoors", 2, 0, 10);
-
-		mTicksBetweenMining = CLIENT_BUILDER
-				.comment("How many ticks to wait before mining again\nOnly affects creative mode")
-				.defineInRange("ticksBetweenMining", 15, 0, 50);
-
-    // Ironsights
-    ironsightsFovReduction = CLIENT_BUILDER
-        .comment("How much to reduce field of view (degrees) when using ironsights")
-        .defineInRange("ironsightsFovReduction", 20, 0, 40);
-
-    ironsightsSensitivityReduction = CLIENT_BUILDER
-        .comment("How much to reduce sensitivity (%) when using ironsights")
-        .defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
-
-    // Bow-firing
-    bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
-        .defineInRange("bowDrawTime", 1.0, 0.5, 5.0);
+	    mRadiusDoors = CLIENT_BUILDER.comment(
+	        "How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
+	        .defineInRange("radiusDoors", 2, 0, 10);
+	
+			mTicksBetweenMining = CLIENT_BUILDER
+					.comment("How many ticks to wait before mining again\nOnly affects creative mode")
+					.defineInRange("ticksBetweenMining", 15, 0, 50);
+	
+	    // Ironsights
+	    ironsightsFovReduction = CLIENT_BUILDER
+	        .comment("How much to reduce field of view (degrees) when using ironsights")
+	        .defineInRange("ironsightsFovReduction", 20, 0, 40);
+	
+	    ironsightsSensitivityReduction = CLIENT_BUILDER
+	        .comment("How much to reduce sensitivity (%) when using ironsights")
+	        .defineInRange("ironsightsSensitivityReduction", 13.0, 0.0, 30.0);
+	
+	    // Bow-firing
+	    bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
+	        .defineInRange("bowDrawTime", 1.0, 0.5, 5.0);	        
 
 	}
 
