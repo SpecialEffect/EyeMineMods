@@ -142,8 +142,5 @@ public class InventoryConfig {
         	// the configspec values are updated for us, but we may want to hook into here too?
     	}
     }
-    
-    //     * Standard Return Key if there is a problem reading the config.
-    private static final int retDefKey = -1;
-    
+       
 }
