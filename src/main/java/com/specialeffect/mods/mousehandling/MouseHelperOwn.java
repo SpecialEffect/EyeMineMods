@@ -416,21 +416,17 @@ extends MouseHelper
         if (this.minecraft.isGameFocused()) {
            double d4 = 0.1*this.minecraft.gameSettings.mouseSensitivity * (double)0.6F + (double)0.2F;           
            double d5 = 0.5d* d4 * d4 * d4 * 8.0D;
-           double d2;
-           double d3;
+           double d2;           
            if (this.minecraft.gameSettings.smoothCamera) {
-              double d6 = this.xSmoother.smooth(this.xVelocity * d5, d1 * d5);
-              double d7 = this.ySmoother.smooth(this.yVelocity * d5, d1 * d5);
-              d2 = d6;
-              d3 = d7;
+              double d6 = this.xSmoother.smooth(this.xVelocity * d5, d1 * d5);              
+              d2 = d6;              
            } else {
               this.xSmoother.reset();
               this.ySmoother.reset();
               
               // quadratic fit near centre
               double w = Minecraft.getInstance().mainWindow.getScaledWidth();
-              double h = Minecraft.getInstance().mainWindow.getScaledHeight();
-              double w2 = w/2;
+              double h = Minecraft.getInstance().mainWindow.getScaledHeight();              
               double d = h/8;
               double p = 2; // quadratic near centre
               double k = 2; // magnitude at inflection point
