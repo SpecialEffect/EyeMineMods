@@ -80,7 +80,7 @@ public class CustomCreateWorldScreen extends Screen {
       this.addButton(btnInventory.getButton());
       
       // More options -> back to the usual minecraft screens
-      this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, I18n.format("More Minecraft Options"), (p_214321_1_) -> {
+      this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, I18n.format("Advanced Minecraft Options"), (p_214321_1_) -> {
           EyeGaze.allowMoreOptions = true;
           DefaultConfigForNewWorld.setNewWorldOptions(btnDaytime.getValue(), btnSunny.getValue(), btnInventory.getValue());
           Minecraft.getInstance().displayGuiScreen(new CreateWorldScreen(this));
