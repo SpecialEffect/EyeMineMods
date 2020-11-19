@@ -85,10 +85,9 @@ public class EyeGaze {
 	 * In v1.11.2, this mod was a wrapper that contained user-exposed config, and
 	 * acted as the 'parent' mod to all other mods This allowed us to expose config
 	 * UI in one place, and not clutter up the Mods List (while simultaneously
-	 * letting us have small self- contained mods for different features). In v1.14,
-	 * the parent->child relationship doesn't exist any more, so this is a bit of a
-	 * ghost town. We might consider updating it as our own uber-mod, with other
-	 * mods registered to it.
+	 * letting us have small self- contained mods for different features). 
+	 * In v1.14, the parent->child relationship doesn't exist any more, so this is an
+	 * attempt to replicate it, being an uber-mod to which child classes are registered
 	 * 
 	 */
 
@@ -102,8 +101,7 @@ public class EyeGaze {
 	private StateOverlay mStateOverlay;		
 	private static boolean setupComplete;		
 
-	// Category names for clustering config options in different UIs
-	private static List<ChildModWithConfig> childrenWithConfig = new ArrayList<ChildModWithConfig>();
+	// Category names for clustering config options in different UIs	
 	private static List<ChildMod> children = new ArrayList<ChildMod>();
 	
 	public EyeGaze() {
