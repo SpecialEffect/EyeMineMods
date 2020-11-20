@@ -63,6 +63,10 @@ public class EyeMineConfig {
 	
 	public static ForgeConfigSpec.BooleanValue allowLadderDescent;
 
+	// Boats
+	public static ForgeConfigSpec.DoubleValue boatSlowdown;
+	public static ForgeConfigSpec.IntValue boatMaxTurnAtSpeed;
+	
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
 
@@ -203,6 +207,17 @@ public class EyeMineConfig {
     allowLadderDescent = CLIENT_BUILDER.comment(
             "Descend ladders by looking down while moving. \n Experimental; may cause problems getting on/off ladders.")
             .define("allowLadderDescent", false);
+    
+    // Boats
+    boatSlowdown = CLIENT_BUILDER
+            .comment("Slowdown applied to forward motion of boats (lower is slower)")
+            .defineInRange("boatSlowdown", 0.5, 0.01, 1.0);
+
+    boatMaxTurnAtSpeed = CLIENT_BUILDER
+            .comment("Maximum angle (degrees) at which boat will still travel forwards while turning")
+            .defineInRange("boatMaxTurnAtSpeed", 30, 1, 90);
+
+    
 	}
 
 	private static void setupDwellConfig() {

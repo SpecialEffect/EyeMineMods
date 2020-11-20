@@ -239,15 +239,17 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 							
 								// downscale the forward motion if we've got lots of turning to do first
 								float yawErrorAbs = Math.abs(yawError);
-								if (yawErrorAbs > 5) {
-									forward *= 0.5*(180 - yawErrorAbs)/180;									
+								float maxYawForward = EyeMineConfig.boatMaxTurnAtSpeed.get();
+								if (yawErrorAbs > maxYawForward*0.2f) {
+									forward *= (maxYawForward - yawErrorAbs)/maxYawForward;									
 								}
-								else if (yawErrorAbs > 45) {
+								else if (yawErrorAbs > maxYawForward) {
 									forward = 0.0;
 								}
 								
 								// slower in general since boats are quite hard to control
-								forward *= 0.5;
+								forward *= EyeMineConfig.boatSlowdown.get();  								
+								
 							}
 						}
 						else if (riddenEntity instanceof MinecartEntity) {
@@ -269,8 +271,9 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				else {
 					boatController.releaseKeys();
 				}
+            	System.out.println(forward);
+        		ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);
             	
-				ownMovementInput.setWalkOverride(mDoingAutoWalk, (float) forward);
 			}
             else {
             	boatController.releaseKeys();
