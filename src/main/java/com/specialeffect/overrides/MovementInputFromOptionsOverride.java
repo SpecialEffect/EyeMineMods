@@ -37,8 +37,13 @@ public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
    }
    
    public void setWalkOverride(boolean b, float walkSpeed) {
-	   mWalkForwardOverride.set(b);
-	   mOverrideWalkSpeed = walkSpeed; // TODO: is concurrency an issue?
+	   if (walkSpeed > 0.0f) {
+		   mWalkForwardOverride.set(b);
+		   mOverrideWalkSpeed = walkSpeed; // TODO: is concurrency an issue?
+	   }
+	   else {
+		   mWalkForwardOverride.set(false);
+	   }
    }
    
    public void tick(boolean slow, boolean noDampening) {
