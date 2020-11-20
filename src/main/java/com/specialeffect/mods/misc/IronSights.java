@@ -52,7 +52,7 @@ extends ChildMod implements ChildModWithConfig
 		mIcon = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/ironsights.png");
 		mIcon.setPosition(0.5f,  0.5f, 0.6f, 1.0f);
 		mIcon.fadeTime = 0;
-		mIcon.setAlpha(0.2f);
+		mIcon.setAlpha(EyeMineConfig.fullscreenOverlayAlpha.get().floatValue());
 		mIcon.setVisible(false);		
 		
 		MinecraftForge.EVENT_BUS.register(mIcon);

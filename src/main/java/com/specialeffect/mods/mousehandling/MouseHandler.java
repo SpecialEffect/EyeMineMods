@@ -72,7 +72,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/eye.png");
 		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
-		mIconEye.setAlpha(0.2f);
+		mIconEye.setAlpha(EyeMineConfig.fullscreenOverlayAlpha.get().floatValue());
 		mIconEye.setVisible(false);								
 
 		// Register key bindings
@@ -194,6 +194,8 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 			// wait until we're on GL thread before making changes...
 			this.hasPendingConfigChange = true;
 		}
+		// this is safe to change at any point
+		mIconEye.setAlpha(EyeMineConfig.fullscreenOverlayAlpha.get().floatValue());
 	}
 
 	private void syncConfigImpl() {

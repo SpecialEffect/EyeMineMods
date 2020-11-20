@@ -60,6 +60,10 @@ public class IconOverlay
 	}
 	
 	public void setAlpha(float alpha) {
+		// Minecraft clips alpha at 0.1, so we add 0.1 back in to get reasonable user-facing behaviour
+		if (alpha > 0.0f && alpha < 0.9f) {
+			alpha += 0.1f;
+		}
 		mAlpha = alpha;
 	}
 	
@@ -89,7 +93,7 @@ public class IconOverlay
 			return;
 		}
 		
-		if (mVisible || fadeCountdown > 0) {	
+		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {	
 			
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);

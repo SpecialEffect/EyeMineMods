@@ -59,6 +59,8 @@ implements ChildModWithConfig
         
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/legacy-mode.png");
+		
+		syncConfig();
     }
     
     private static int mIconIndex;
@@ -76,6 +78,8 @@ implements ChildModWithConfig
 	public void syncConfig() {
         mMoveWhenMouseStationary = EyeMineConfig.moveWhenMouseStationary.get();
         mCustomSpeedFactor = EyeMineConfig.customSpeedFactor.get().floatValue();
+        // We need to scale the alpha since the texture here gets stretched a lot so it's quite soft already
+        mOverlay.setAlpha(2.5f*EyeMineConfig.fullscreenOverlayAlpha.get().floatValue());
 	}
 	
 	// Some hard-coded fudge factors for maximums.

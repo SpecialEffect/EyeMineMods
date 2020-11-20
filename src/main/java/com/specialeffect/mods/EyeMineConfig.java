@@ -94,6 +94,9 @@ public class EyeMineConfig {
 
 	// Bow and arrow
 	public static ForgeConfigSpec.DoubleValue bowDrawTime;
+	
+	// Graphics
+	public static ForgeConfigSpec.DoubleValue fullscreenOverlayAlpha;
 
 	static {
 
@@ -166,6 +169,11 @@ public class EyeMineConfig {
 	    // Bow-firing
 	    bowDrawTime = CLIENT_BUILDER.comment("How long (seconds) to keep bow drawn for when firing with 'Use Item'")
 	        .defineInRange("bowDrawTime", 1.0, 0.5, 5.0);	        
+	    
+	    fullscreenOverlayAlpha = CLIENT_BUILDER
+	            .comment("Opacity of full-screen overlays (look, careful walk)")
+	            .defineInRange("fullscreenOverlayAlpha", 0.1, 0.0, 0.2);
+
 
 	}
 

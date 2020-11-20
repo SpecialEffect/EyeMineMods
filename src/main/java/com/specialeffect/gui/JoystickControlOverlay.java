@@ -32,11 +32,20 @@ public class JoystickControlOverlay {
 	ResourceLocation mResource;
 
 	private boolean mVisible = false;
+	
+	private float mAlpha = 0.3f;
 
 	public void setVisible(boolean bVisible) {
 		mVisible = bVisible;
 	}
 	
+	public void setAlpha(float alpha) {
+		// Minecraft clips alpha at 0.1, so we add 0.1 back in to get reasonable user-facing behaviour
+		if (alpha > 0.0f && alpha < 0.9f) {
+			alpha += 0.1f;
+		}
+		mAlpha = alpha;
+	}
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
 
@@ -45,16 +54,15 @@ public class JoystickControlOverlay {
 			return;
 		}
 		
-		if (mVisible) {	
+		if (mVisible && mAlpha > 0.0f) {	
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 	        
 			int w = event.getWindow().getScaledWidth();
-			int h = event.getWindow().getScaledHeight();
-			float alpha = 0.5f;
+			int h = event.getWindow().getScaledHeight();			
 			
 			Minecraft.getInstance().getTextureManager().bindTexture(mResource);			
-			ModUtils.drawTexQuad(0, 0, w, h, alpha);
+			ModUtils.drawTexQuad(0, 0, w, h, mAlpha);
 			
 	        GL11.glDisable(GL11.GL_BLEND);	        
 
