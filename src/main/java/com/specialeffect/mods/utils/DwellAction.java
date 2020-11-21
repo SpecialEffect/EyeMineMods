@@ -52,11 +52,13 @@ extends ChildMod implements ChildModWithConfig {
 	}
 
 	protected boolean mDwelling = false;
+	protected boolean showLabel = true;
 	
 	private long lastTime = 0;
 	private int dwellTimeInit = 200; // ms
 	private int dwellTimeComplete = 1000; // ms
 	private int dwellTimeDecay = 200;
+	private boolean oneShot = false;
 	
 	public String actionName = "DWELL"; 
 	private int labelOffset = 0;
@@ -68,6 +70,12 @@ extends ChildMod implements ChildModWithConfig {
 		if (!isDwelling) {
 			this.liveTargets.clear();
 		}		
+	}
+	
+	protected void dwellOnce() {
+		oneShot = true;
+		setDwelling(true);	
+		showLabel = false;
 	}
 		
 	// Subclasses define action to be performed on dwell.
@@ -111,8 +119,12 @@ extends ChildMod implements ChildModWithConfig {
 					
 					// Place block if dwell complete	
 					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {			
-						this.performAction(currentTarget);						
+						this.performAction(currentTarget);												
 						liveTargets.remove(currentTarget);		
+						if (oneShot) {
+							setDwelling(false);
+							showLabel = true;
+						}
 					}
 					// TODO: what if can't use item ? Currently this results in flashing again and again
 					// Add this to dwell state?
@@ -200,7 +212,7 @@ extends ChildMod implements ChildModWithConfig {
 		}
 		
 		// If dwell is on, show a warning message		
-		if (mDwelling) {
+		if (mDwelling && showLabel) {
 			String msg = actionName;
 		
 			Minecraft mc = Minecraft.getInstance();
