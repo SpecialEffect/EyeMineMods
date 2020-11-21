@@ -35,15 +35,15 @@ extends DwellAction {
 
 	public final String MODID = "dwellbuild";
 		
-	private static KeyBinding mDwellBuildKB;
+	private static KeyBinding mDwellMineKB;
 	
 	
 	public void setup(final FMLCommonSetupEvent event) {
 
 		// Register key bindings
-		mDwellBuildKB = new KeyBinding("Dwell mining", GLFW.GLFW_KEY_KP_6,
+		mDwellMineKB = new KeyBinding("Dwell mining", GLFW.GLFW_KEY_KP_6,
 				CommonStrings.EYEGAZE_EXTRA);
-		ClientRegistry.registerKeyBinding(mDwellBuildKB);
+		ClientRegistry.registerKeyBinding(mDwellMineKB);
 
 		this.syncConfig();
 	}
@@ -64,7 +64,7 @@ extends DwellAction {
 
 	    if (KeyWatcher.f3Pressed) { return; }
 				
-		if (event.getKey() == mDwellBuildKB.getKey().getKeyCode()) {
+		if (event.getKey() == mDwellMineKB.getKey().getKeyCode()) {
 			if (mDwelling) {				
 				// Turn off dwell build
 				this.setDwelling(false);
