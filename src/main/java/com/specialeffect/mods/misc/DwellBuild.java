@@ -39,14 +39,18 @@ extends DwellAction {
 	public final String MODID = "dwellbuild";
 		
 	private static KeyBinding mDwellBuildKB;
-	
+	private static KeyBinding mDwellBuildOnceKB;	
 	
 	public void setup(final FMLCommonSetupEvent event) {
 
 		// Register key bindings
-		mDwellBuildKB = new KeyBinding("Dwell build", GLFW.GLFW_KEY_KP_3,
+		mDwellBuildKB = new KeyBinding("Dwell build (toggle)", GLFW.GLFW_KEY_KP_3,
 				CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mDwellBuildKB);
+		
+		mDwellBuildOnceKB = new KeyBinding("Dwell build (once)", GLFW.GLFW_KEY_KP_7,
+				CommonStrings.EYEGAZE_EXTRA);
+		ClientRegistry.registerKeyBinding(mDwellBuildOnceKB);
 
 		this.syncConfig();
 	}
@@ -85,6 +89,18 @@ extends DwellAction {
 				this.setDwelling(true);															
 				ModUtils.sendPlayerMessage("Dwell building: ON");					      
 			}
+		} 
+		if (event.getKey() == mDwellBuildOnceKB.getKey().getKeyCode()) {
+			PlayerEntity player = Minecraft.getInstance().player;	
+			
+			// Turn on dwell once 						
+			ItemStack itemStack = player.inventory.getCurrentItem();
+			if (itemStack == null || itemStack.getItem() == null) {
+		        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
+		        return;
+			}
+	        						
+			this.dwellOnce();
 		} 
 	}	
 }
