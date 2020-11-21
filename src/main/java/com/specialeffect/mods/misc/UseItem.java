@@ -13,10 +13,10 @@ package com.specialeffect.mods.misc;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.utils.ChildModWithConfig;
-import com.specialeffect.mods.ChildMod;
 import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.utils.DwellAction;
 import com.specialeffect.mods.utils.KeyWatcher;
+import com.specialeffect.mods.utils.TargetBlock;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -38,7 +38,12 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class UseItem 
-extends ChildMod implements ChildModWithConfig {
+extends DwellAction {
+	
+	public UseItem() {
+		super("Use item");
+	}
+
 	public final String MODID = "useitem";
 
 	public void setup(final FMLCommonSetupEvent event) {
@@ -57,7 +62,7 @@ extends ChildMod implements ChildModWithConfig {
 		mNextItemKB = new KeyBinding("Select next item", GLFW.GLFW_KEY_KP_5, CommonStrings.EYEGAZE_EXTRA);
 		ClientRegistry.registerKeyBinding(mNextItemKB);
 
-		this.syncConfig();
+		this.syncConfig();		
 	}
 
 	private static KeyBinding mUseItemOnceKB;
@@ -75,11 +80,13 @@ extends ChildMod implements ChildModWithConfig {
 	private boolean needBowFire = false;	
 
 	public void syncConfig() {
-        this.bowTime = (int) (1000*EyeMineConfig.bowDrawTime.get());
+		super.syncConfig();
+        this.bowTime = (int) (1000*EyeMineConfig.bowDrawTime.get());        
 	}
 	
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
+		super.onClientTick(event);
 		if (event.phase == Phase.START) {
 			long time = System.currentTimeMillis();
 			long dt = time - this.lastTime;
@@ -172,7 +179,11 @@ extends ChildMod implements ChildModWithConfig {
 				this.bowCountdown = this.bowTime;							
 			}
 			else {
-				KeyBinding.onTick(useItemKeyBinding.getKey());	
+				boolean useDwelling = false;
+				if (useDwelling)
+					this.dwellOnce();
+				else
+					this.performAction(null);
 			}			
 			
 		} else if (mPrevItemKB.getKey().getKeyCode() == event.getKey()) {
@@ -184,6 +195,8 @@ extends ChildMod implements ChildModWithConfig {
 	
 	@SubscribeEvent
 	public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
+		super.onRenderGameOverlayEvent(event);
+		
 		if(event.getType() != ElementType.EXPERIENCE)
 		{      
 			return;
@@ -201,5 +214,11 @@ extends ChildMod implements ChildModWithConfig {
 		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20, 0xffFFFFFF);		    		    
 		}
 		
+	}
+
+	@Override
+	public void performAction(TargetBlock block) {
+		final KeyBinding useItemKeyBinding = Minecraft.getInstance().gameSettings.keyBindUseItem;
+		KeyBinding.onTick(useItemKeyBinding.getKey());			
 	}
 }
