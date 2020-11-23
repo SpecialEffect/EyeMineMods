@@ -97,23 +97,31 @@ public class NightVisionHelper extends ChildMod {
 
 	@SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
+		
+		// Don't apply logic while in loading screen / other UIs
+		if (Minecraft.getInstance().currentScreen == null) {
+			return;
+		}
+		
     	PlayerEntity player = Minecraft.getInstance().player;    	
     	if (null != player && event.phase == TickEvent.Phase.START) {
-	
+
+    		if (!player.isCreative()) {
+				// We won't worry about survival players, they know what they're doing
+				return;
+			}
+			
 			World world = Minecraft.getInstance().world;
 			
 			// We'll reduce (make stricter) the threshold for showing a warning message once the world
 			// has been loaded a while. We're mainly trying to catch the "reloaded into pitch black and
 			// don't know what's going on" failure mode.
-			mTicksLoaded++;
 			if (mTicksLoaded > 20*20) {
 				mLightnessThreshold = 0.13f;
 				mTicksThreshold = 10*20;
 			}
-		
-			if (!player.isCreative()) {
-				// We won't worry about survival players, they know what they're doing
-				return;
+			else {
+				mTicksLoaded++;
 			}
 	        
 			// If message is visible, keep alive for minimum time
@@ -126,8 +134,7 @@ public class NightVisionHelper extends ChildMod {
 			
 			if (mDisabled || mTemporarilyDisabled) {
 				return;
-			}
-			
+			}			
 	        	                  		            
 	        BlockRayTraceResult result = ModUtils.getMouseOverBlock();
 	        if (result != null) {
