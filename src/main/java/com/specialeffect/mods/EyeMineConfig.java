@@ -58,8 +58,8 @@ public class EyeMineConfig {
 	public static ForgeConfigSpec.BooleanValue moveWhenMouseStationary;
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
 
-	public static ForgeConfigSpec.BooleanValue mSlowdownOnCorners;
-	public static ForgeConfigSpec.BooleanValue mSlowdownOnAttack;
+	public static ForgeConfigSpec.BooleanValue slowdownOnCorners;
+	public static ForgeConfigSpec.BooleanValue slowdownOnAttack;
 	
 	public static ForgeConfigSpec.BooleanValue allowLadderDescent;
 
@@ -74,17 +74,17 @@ public class EyeMineConfig {
 	public static ForgeConfigSpec.BooleanValue usingMouseEmulation;
 
 	// Mining
-	public static ForgeConfigSpec.BooleanValue mAutoSelectTool;
-	public static ForgeConfigSpec.IntValue mTicksBetweenMining;
+	public static ForgeConfigSpec.BooleanValue autoSelectTool;
+	public static ForgeConfigSpec.IntValue ticksBetweenMining;
 
 	// AutoOpenDoors
-	public static ForgeConfigSpec.IntValue mRadiusDoors;
+	public static ForgeConfigSpec.IntValue radiusDoors;
 
 	// OpenTablesChests
-	public static ForgeConfigSpec.IntValue mRadiusChests;
+	public static ForgeConfigSpec.IntValue radiusChests;
 
 	// ContinuouslyAttack
-	public static ForgeConfigSpec.BooleanValue mAutoSelectSword;
+	public static ForgeConfigSpec.BooleanValue autoSelectSword;
 
 	// Dwelling options
 	public static ForgeConfigSpec.DoubleValue dwellTimeSeconds;
@@ -134,11 +134,11 @@ public class EyeMineConfig {
 				"Enable mouse-emulation compatibility mode?.\nTurn this on if you're using mouse position as an input to EyeMine")
 				.define("usingMouseEmulation", false);
 
-		mAutoSelectSword = CLIENT_BUILDER.comment(
+		autoSelectSword = CLIENT_BUILDER.comment(
 				"When attacking, do you want a sword selected automatically?\nThis only applies in Creative Mode.")
 				.define("autoSelectSword", true);
 
-		mAutoSelectTool = CLIENT_BUILDER
+		autoSelectTool = CLIENT_BUILDER
 				.comment(
 						"When mining, do you want pickaxe selected automatically?\nThis only applies in Creative Mode.")
 				.define("autoSelectTool", true);
@@ -149,15 +149,15 @@ public class EyeMineConfig {
 
 		// This is limited to 6 blocks since the gui doesn't appear if block is too far
 		// away
-		mRadiusChests = CLIENT_BUILDER
+		radiusChests = CLIENT_BUILDER
 				.comment("How far away a player needs to be from a chest/table to be able to open it")
 				.defineInRange("radiusChests", 5, 1, 6);
 
-	    mRadiusDoors = CLIENT_BUILDER.comment(
+	    radiusDoors = CLIENT_BUILDER.comment(
 	        "How far away a player needs to be from a door to automatically open/close.\nSet to zero to turn off automatic door-opening")
 	        .defineInRange("radiusDoors", 2, 0, 10);
 	
-			mTicksBetweenMining = CLIENT_BUILDER
+			ticksBetweenMining = CLIENT_BUILDER
 					.comment("How many ticks to wait before mining again\nOnly affects creative mode")
 					.defineInRange("ticksBetweenMining", 15, 0, 50);
 	
@@ -183,7 +183,7 @@ public class EyeMineConfig {
 
 	private static void setupMovingConfig() {
 
-    mSlowdownOnCorners = CLIENT_BUILDER
+    slowdownOnCorners = CLIENT_BUILDER
         .comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
         .define("slowdownOnCorners", true);
 
@@ -195,7 +195,7 @@ public class EyeMineConfig {
         "Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
         .define("moveWhenMouseStationary", false);
 
-    mSlowdownOnAttack = CLIENT_BUILDER.comment(
+    slowdownOnAttack = CLIENT_BUILDER.comment(
         "Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")
         .define("slowdownOnAttack", true);
         

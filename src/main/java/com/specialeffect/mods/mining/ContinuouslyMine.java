@@ -77,8 +77,8 @@ public class ContinuouslyMine extends ChildMod implements ChildModWithConfig
 	}
 	
 	public void syncConfig() {
-		mAutoSelectTool = EyeMineConfig.mAutoSelectTool.get();
-		miningCooldown = EyeMineConfig.mTicksBetweenMining.get();
+		mAutoSelectTool = EyeMineConfig.autoSelectTool.get();
+		miningCooldown = EyeMineConfig.ticksBetweenMining.get();
 	}
 	
 	public static void stop() {

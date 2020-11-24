@@ -143,7 +143,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
             	double forward = (double)mCustomSpeedFactor; 
             	
         		// Slow down when you're looking really far up/down, or turning round quickly
-             	if (EyeMineConfig.mSlowdownOnCorners.get()) {
+             	if (EyeMineConfig.slowdownOnCorners.get()) {
 	            	double slowDownPitch = slowdownFactorPitch(player);
 	            
 	            	// Slow down when you've been turning a corner
@@ -170,7 +170,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 						            	
             	// Slow down if you're facing an animal/mob while attacking
 				// (without this it's easy to run past)
-            	if (EyeMineConfig.mSlowdownOnAttack.get()) {
+            	if (EyeMineConfig.slowdownOnAttack.get()) {
             		if (ContinuouslyAttack.mIsAttacking) { 
             			forward *= slowdownFactorEntity(player);
             		}	

@@ -49,7 +49,7 @@ extends ChildMod implements ChildModWithConfig
 	}
 	
 	public void syncConfig() {
-        mDoorRadius = EyeMineConfig.mRadiusDoors.get();
+        mDoorRadius = EyeMineConfig.radiusDoors.get();
 	}
 	
 	// A list of the position of any doors we've opened that haven't yet been closed
