@@ -91,6 +91,8 @@ public class EyeMineConfig {
 	public static ForgeConfigSpec.DoubleValue dwellLockonTimeSeconds;
 	public static ForgeConfigSpec.BooleanValue dwellShowExpanding;
 	public static ForgeConfigSpec.BooleanValue dwellShowWithTransparency;
+	public static ForgeConfigSpec.BooleanValue useDwellForSingleMine;
+	public static ForgeConfigSpec.BooleanValue useDwellForSingleUseItem;
 
 	// Ironsights
 	public static ForgeConfigSpec.DoubleValue ironsightsSensitivityReduction;
@@ -235,6 +237,12 @@ public class EyeMineConfig {
 		dwellShowWithTransparency = CLIENT_BUILDER.comment(
 				"Show dwell by changing transparency instead of growing/shrinking\nThis option overrides dwellShowExpanding")
 				.define("dwellShowWithTransparency", false);
+		
+		useDwellForSingleMine = CLIENT_BUILDER.comment("Use dwell for 'mine once' (creative only)")
+				.define("useDwellForSingleMine", false);
+		
+		useDwellForSingleUseItem = CLIENT_BUILDER.comment("Use dwell for single 'use item'")
+				.define("useDwellForSingleUseItem", false);			
 
 	}
 

@@ -13,8 +13,10 @@ package com.specialeffect.mods.mining;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.EyeMineConfig;
+import com.specialeffect.mods.utils.DwellAction;
 import com.specialeffect.mods.utils.KeyWatcher;
+import com.specialeffect.mods.utils.TargetBlock;
 import com.specialeffect.utils.CommonStrings;
 import com.specialeffect.utils.ModUtils;
 
@@ -37,8 +39,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 
 public class MineOne 
- extends ChildMod
+extends DwellAction 
 {
+	public MineOne() {
+		super("Mine one"); 
+	}
+
 	public final String MODID = "autodestroy";
 
 	private boolean mDestroying = false;
@@ -46,16 +52,19 @@ public class MineOne
 	private static KeyBinding mDestroyKB;
 	
 	public void setup(final FMLCommonSetupEvent event) {
-
+		super.setup(event);
+		
 		// Register key bindings	
 		mDestroyKB = new KeyBinding("Mine one block", GLFW.GLFW_KEY_N, CommonStrings.EYEGAZE_COMMON);
 		ClientRegistry.registerKeyBinding(mDestroyKB);
-				
+						
 	}
 		
 	@SubscribeEvent
 	public void onClientTick(ClientTickEvent event) {
-    PlayerEntity player = Minecraft.getInstance().player;
+		super.onClientTick(event);
+		
+		PlayerEntity player = Minecraft.getInstance().player;
     	if (null != player && event.phase == TickEvent.Phase.START) {
 			if (mDestroying) {
 				// Select the best tool from the inventory
@@ -127,16 +136,30 @@ public class MineOne
 			// turn off continuous mining
 			ContinuouslyMine.stop();
 			
-			// mine the block you're facing
-			mBlockToDestroy = this.getMouseOverBlockPos();
-			if (mBlockToDestroy == null) {
-				LOGGER.debug("Nothing to attack");
-				return;
+			// start dwell if appropriate
+			PlayerEntity player = Minecraft.getInstance().player;
+			boolean useDwelling = player.isCreative() && EyeMineConfig.useDwellForSingleUseItem.get();
+			if (useDwelling) {
+				this.dwellOnce();
 			}
 			else {
-				this.startDestroying();
+				// start mining the block you're facing
+				mBlockToDestroy = this.getMouseOverBlockPos();
+				if (mBlockToDestroy == null) {
+					LOGGER.debug("Nothing to attack");
+					return;
+				}
+				else {
+					this.startDestroying();
+				}
 			}
 		}
 	}
-	
+
+	@Override
+	public void performAction(TargetBlock block) {
+		final KeyBinding attackBinding = 
+				Minecraft.getInstance().gameSettings.keyBindAttack;
+		KeyBinding.onTick(attackBinding.getKey());	
+	}
 }

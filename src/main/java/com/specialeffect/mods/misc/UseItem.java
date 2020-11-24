@@ -179,10 +179,10 @@ extends DwellAction {
 				this.bowCountdown = this.bowTime;							
 			}
 			else {
-				boolean useDwelling = false;
+				boolean useDwelling = EyeMineConfig.useDwellForSingleUseItem.get();
 				if (useDwelling)
 					this.dwellOnce();
-				else
+				else // shortcut the dwell and act immediately
 					this.performAction(null);
 			}			
 			
