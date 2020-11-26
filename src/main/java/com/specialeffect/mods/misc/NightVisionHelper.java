@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -139,18 +140,23 @@ public class NightVisionHelper extends ChildMod {
 	        BlockRayTraceResult result = ModUtils.getMouseOverBlock();
 	        if (result != null) {
 	        	
-	        	// Get lightness of block(s) we're looking at	            	
-	        	BlockPos pos = result.getPos().offset(result.getFace());	            		            			          
-	            float lightnessBlock = world.getBrightness(pos);		   
-	            
-	            // Get lightness where player is
+	        	BlockPos pos = result.getPos().offset(result.getFace());	
 	            BlockPos posPlayer = player.getPosition();
-	            float lightnessPlayer = world.getBrightness(posPlayer);		   
+
+	        	// This occurs when chunks are loaded on server but not yet propagated - in this case the brightness info can't be trusted
+	        	if (world.getChunk(posPlayer) instanceof EmptyChunk) {
+	        		resetState();
+	        		return;
+	        	}	        	
+	        	
+	        	// Get lightness of block(s) we're looking at and where player is	            	
+	            float lightnessBlock = world.getBrightness(pos);		   
+	            float lightnessPlayer = world.getBrightness(posPlayer);		   	            
+	            float lightness = Math.max(lightnessBlock, lightnessPlayer);	            
 	            
-	            float lightness = Math.max(lightnessBlock, lightnessPlayer);
 	            
-	            // If it's really dark, put message up to remind of night vision
 	            
+	            // If it's really dark, put message up to remind of night vision	            
 	            float gamma = (float) Minecraft.getInstance().gameSettings.gamma;
 	            float threshold = mLightnessThreshold - gamma/10f; // i.e. 0.03f for max brightness
 	            if (lightness < threshold) {
