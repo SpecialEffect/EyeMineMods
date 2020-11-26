@@ -99,7 +99,7 @@ public class NightVisionHelper extends ChildMod {
     public void onClientTick(ClientTickEvent event) {
 		
 		// Don't apply logic while in loading screen / other UIs
-		if (Minecraft.getInstance().currentScreen == null) {
+		if (Minecraft.getInstance().currentScreen != null) {
 			return;
 		}
 		
