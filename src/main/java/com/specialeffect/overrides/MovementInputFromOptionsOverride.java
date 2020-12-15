@@ -37,7 +37,9 @@ public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
    }
    
    public void setWalkOverride(boolean b, float walkSpeed) {
-	   if (walkSpeed > 0.0f) {
+	   // Setting a speed of zero doesn't *always* result in no movement - e.g. boat will still move forward
+	   // so we want a request of ~0.0 to be equivalent to turning off the override.  
+	   if (Math.abs(walkSpeed) > 1e-5) {
 		   mWalkForwardOverride.set(b);
 		   mOverrideWalkSpeed = walkSpeed; // TODO: is concurrency an issue?
 	   }
