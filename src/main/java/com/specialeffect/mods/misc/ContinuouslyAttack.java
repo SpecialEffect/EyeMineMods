@@ -141,19 +141,7 @@ extends ChildMod {
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
 		}
-	}
-	
-	/*public void onRenderGameOverlayEvent(final RenderGameOverlayEvent.Post event) {
-		if (event.isCancelable() && event.isCanceled()) {
-            return;
-        }
-		
-		//TODO: check event type? HOTBAR CROSSHAIRS BOSSHEALTH EXPERIENCE TEXT POTION_ICONS SUBTITLES CHAT ALL VIGNETTE HELMET PORTAL
-		if (event.getType() == ElementType.HOTBAR) {
-			Minecraft mc = Minecraft.getInstance();
-			mc.fontRenderer.drawString("Some HUD text", 10, 10, 0xffffff);
-		}
-	}*/	
+	}	
 		
 	//returns true if successful
 	private boolean chooseWeapon(PlayerInventory inventory) {
