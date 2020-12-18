@@ -17,6 +17,7 @@ import com.specialeffect.messages.AddItemToHotbar;
 import com.specialeffect.messages.AttackEntityMessage;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.mods.ChildMod;
+import com.specialeffect.mods.EyeMineConfig;
 import com.specialeffect.mods.mining.ContinuouslyMine;
 import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.utils.CommonStrings;
@@ -105,8 +106,17 @@ extends ChildMod {
 					
 					// Attack locally and on server
 					if (player.getCooledAttackStrength(0) > 0.95) {
-						player.attackTargetEntityWithCurrentItem(entity);
-						channel.sendToServer(new AttackEntityMessage(entity));
+						// Server message won't work unless EyeMine is installed remotely 
+						// Fallback to pressing the attack key				
+						// FIXME: it's possible this is sufficient and simpler than the previous strategy - 
+						// but haven't tested enough to replace wholesale at this point
+						if (EyeMineConfig.serverCompatibilityMode.get()) {
+							KeyBinding.onTick(Minecraft.getInstance().gameSettings.keyBindAttack.getKey());
+						}
+						else {
+							player.attackTargetEntityWithCurrentItem(entity);
+							channel.sendToServer(new AttackEntityMessage(entity));
+						}
 					}
 					else {
 						recharging = true;

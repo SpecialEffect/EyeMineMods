@@ -76,6 +76,7 @@ public class EyeMineConfig {
 	// Mining
 	public static ForgeConfigSpec.BooleanValue autoSelectTool;
 	public static ForgeConfigSpec.IntValue ticksBetweenMining;
+	public static ForgeConfigSpec.BooleanValue serverCompatibilityMode;
 
 	// AutoOpenDoors
 	public static ForgeConfigSpec.IntValue radiusDoors;
@@ -180,6 +181,9 @@ public class EyeMineConfig {
 	            .comment("Opacity of full-screen overlays (look, careful walk)")
 	            .defineInRange("fullscreenOverlayAlpha", 0.1, 0.0, 0.2);
 
+	    serverCompatibilityMode = CLIENT_BUILDER
+        .comment("Use simpler mining/placing logic to play on servers without EyeMine installed")
+        .define("serverCompatibilityMode", false);
 
 	}
 
