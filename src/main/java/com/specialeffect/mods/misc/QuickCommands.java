@@ -146,13 +146,8 @@ public class QuickCommands extends BaseClassWithCallbacks {
 			}));			
 		}
 		if (respawnBinding.isPressed()) {		
-			EntityPlayer player = Minecraft.getMinecraft().player;
-			World world = Minecraft.getMinecraft().world;
-			
-			// get world spawn and shift up until on top of solid/liquid
-			BlockPos worldSpawn = world.getTopSolidOrLiquidBlock(world.getSpawnPoint());
-			
-			QuickCommands.network.sendToServer(new TeleportPlayerMessage(worldSpawn));	
+			World world = Minecraft.getMinecraft().world;			
+			QuickCommands.network.sendToServer(new TeleportPlayerMessage(world.getSpawnPoint()));	
 			NightVisionHelper.cancelAndHide();
 		}
 	}

@@ -62,6 +62,7 @@ public class TeleportPlayerMessage implements IMessage {
                 public void run() {
                     EntityPlayer player = ctx.getServerHandler().playerEntity;                    
                     BlockPos pos = message.blockPos;
+        			pos = ctx.getServerHandler().playerEntity.world.getTopSolidOrLiquidBlock(pos);
        			    player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
                 }
             });
