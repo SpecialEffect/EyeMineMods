@@ -134,7 +134,8 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
             if (player instanceof EntityPlayerMP) { // sometimes on local side, brightness flickers to zero, so we only look at server info
             	                  	
 	            RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
-	            if (result != null) {
+	            
+	            if (result != null && result.getBlockPos() != null) {
 	            	
 	            	// Get lightness of block(s) we're looking at
 	            	BlockPos pos = result.getBlockPos().offset(result.sideHit);	            		            			          
