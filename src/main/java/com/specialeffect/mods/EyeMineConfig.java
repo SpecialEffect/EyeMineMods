@@ -128,7 +128,7 @@ public class EyeMineConfig {
 
 	private static void setupBasicConfig() {
 		customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze").defineInRange("walkingSpeed",
-				0.7f, 0.25f, 2.0f);
+				0.6f, 0.25f, 2.0f);
 
 		defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?").define("defaultDoAutoJump",
 				true);
