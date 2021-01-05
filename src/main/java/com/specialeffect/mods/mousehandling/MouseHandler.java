@@ -71,7 +71,7 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "specialeffect:icons/eye.png");
-		mIconEye.setPosition(0.5f,  0.5f, 0.175f, 1.9f);
+		mIconEye.setPosition(0.5f,  0.5f, 0.1f, 1.9f);
 		mIconEye.setAlpha(EyeMineConfig.fullscreenOverlayAlpha.get().floatValue());
 		mIconEye.setVisible(false);								
 
