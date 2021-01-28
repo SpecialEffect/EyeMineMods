@@ -48,6 +48,7 @@ import com.specialeffect.mods.moving.MoveWithGaze;
 import com.specialeffect.mods.moving.MoveWithGaze2;
 import com.specialeffect.mods.moving.Sneak;
 import com.specialeffect.mods.moving.Swim;
+import com.specialeffect.mods.tutorial.BlockObstruction;
 import com.specialeffect.mods.utils.DebugAverageFps;
 import com.specialeffect.mods.utils.KeyWatcher;
 import com.specialeffect.overrides.MovementInputFromOptionsOverride;
@@ -240,6 +241,7 @@ public class EyeGaze {
         this.setupChildMod((ChildMod) new IronSights());
         this.setupChildMod((ChildMod) new MoveWithGaze2());
         this.setupChildMod((ChildMod) new NightVisionHelper());
+        this.setupChildMod((ChildMod) new BlockObstruction());
         
     }
     
