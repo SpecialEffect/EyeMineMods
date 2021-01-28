@@ -55,7 +55,7 @@ public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
       this.rightKeyDown = this.gameSettings.keyBindRight.isKeyDown();
       this.moveForward = this.forwardKeyDown == this.backKeyDown ? 0.0F : (float)(this.forwardKeyDown ? 1 : -1);
       if (this.mWalkForwardOverride.get()) {
-    	  this.moveForward = this.mOverrideWalkSpeed;
+    	  this.moveForward = Math.max(-1, Math.min(1, this.mOverrideWalkSpeed));
     	  // TODO: do we still want as drastic a sneak-slowing-down with eyemine??
       }
       this.moveStrafe = this.leftKeyDown == this.rightKeyDown ? 0.0F : (float)(this.leftKeyDown ? 1 : -1);
