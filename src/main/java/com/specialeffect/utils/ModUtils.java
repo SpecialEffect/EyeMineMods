@@ -15,6 +15,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -38,7 +41,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -142,17 +144,17 @@ public class ModUtils {
 	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, alpha);
         GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();		
 
 		int z = 10;
 		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos(x, y + height, z).tex(0.0, 1.0).endVertex();
-		bufferbuilder.pos(x + width, y + height, z).tex(1.0, 1.0).endVertex();
-		bufferbuilder.pos(x + width, y, z).tex(1.0, 0.0).endVertex();
-		bufferbuilder.pos(x, y, z).tex(0.0, 0.0).endVertex();
+		bufferbuilder.pos(x, y + height, z).tex(0.0f, 1.0f).endVertex();
+		bufferbuilder.pos(x + width, y + height, z).tex(1.0f, 1.0f).endVertex();
+		bufferbuilder.pos(x + width, y, z).tex(1.0f, 0.0f).endVertex();
+		bufferbuilder.pos(x, y, z).tex(0.0f, 0.0f).endVertex();
 
 		tessellator.draw();
 	}
@@ -196,7 +198,7 @@ public class ModUtils {
 	public static void sendPlayerMessage(String msg) {
 		PlayerEntity player = Minecraft.getInstance().player;
 		if (null != player) {			
-			player.sendMessage(new StringTextComponent(msg));
+			player.sendMessage(new StringTextComponent(msg), Util.DUMMY_UUID);
 		}
 	}
 	
@@ -231,7 +233,7 @@ public class ModUtils {
 	}
 	
 	@SuppressWarnings("unused")
-	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3d lookVec) {
+	private boolean isDirectlyFacingSideHit(Direction sideHit, Vector3d lookVec) {
 		double thresh = 0.8;
 		switch (sideHit) {
 		case NORTH:

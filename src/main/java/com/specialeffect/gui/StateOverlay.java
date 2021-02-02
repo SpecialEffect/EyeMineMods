@@ -14,6 +14,7 @@ package com.specialeffect.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GLX;
@@ -40,9 +41,6 @@ public class StateOverlay
 		mResourcesRight = new ArrayList<ResourceLocation>();
 		mFlagsLeft = new ArrayList<Boolean>();
 		mFlagsRight = new ArrayList<Boolean>();
-		
-		
-
 	}
 	
 	private void rescale() {
@@ -142,16 +140,18 @@ public class StateOverlay
 		{      
 			return;
 		}
-		
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);       
+
+		GlStateManager.enableBlend();
+//        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 		
 		// Don't show if the debug screen is open
 		if (Minecraft.getInstance().gameSettings.showDebugInfo) {
 			return;
 		}
-			
+
 		GlStateManager.disableLighting();
 		
 		mDisplayWidth = event.getWindow().getScaledWidth();
@@ -176,8 +176,9 @@ public class StateOverlay
 			}
 			xPos -= (mIconSize + mIconPadding);
 		}
-		
-        GL11.glDisable(GL11.GL_BLEND);
+
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
 
 	}
 

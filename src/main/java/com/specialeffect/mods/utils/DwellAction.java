@@ -26,8 +26,8 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -158,7 +158,7 @@ extends ChildMod implements ChildModWithConfig {
 	}
 	
 	@SubscribeEvent
-	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
+	public void onBlockOutlineRender(DrawHighlightEvent e)
 	{
 				
 		if (Minecraft.getInstance().currentScreen != null) {
@@ -216,12 +216,12 @@ extends ChildMod implements ChildModWithConfig {
 			String msg = actionName;
 		
 			Minecraft mc = Minecraft.getInstance();
-			int w = mc.mainWindow.getScaledWidth();
-			int h = mc.mainWindow.getScaledHeight();
+			int w = mc.getMainWindow().getScaledWidth();
+			int h = mc.getMainWindow().getScaledHeight();
 						
 			int msgWidth = mc.fontRenderer.getStringWidth(msg);
 		    
-		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20 - labelOffset, 0xffFFFFFF);		    
+		    mc.fontRenderer.drawStringWithShadow(event.getMatrixStack(), msg, w/2 - msgWidth/2, h/2 - 20 - labelOffset, 0xffFFFFFF);
 		    
 		}
 		

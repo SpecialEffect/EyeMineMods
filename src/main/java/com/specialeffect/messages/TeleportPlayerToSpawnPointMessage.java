@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class TeleportPlayerToSpawnPointMessage {
@@ -39,13 +39,17 @@ public class TeleportPlayerToSpawnPointMessage {
 	            return;
 	        }       
 
-            World world = player.getEntityWorld();
-            
-            BlockPos pos = player.getBedLocation(player.dimension);
+            ServerWorld world = (ServerWorld)player.getEntityWorld();
+
+            BlockPos pos = player.getBedPosition().get(); //TODO: Find out if there's a replacement for the dimension sensitive getBedLocation since it's gone
             if (null == pos) {
             	pos = world.getSpawnPoint();
             }
-            
+//            BlockPos pos = player.getBedLocation(player.dimension);
+//            if (null == pos) {
+//            	pos = world.getSpawnPoint();
+//            }
+
             player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
        }
 	}       

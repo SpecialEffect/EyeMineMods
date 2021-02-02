@@ -11,6 +11,7 @@
 
 package com.specialeffect.mods.misc;
 
+import net.minecraft.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.SendCommandMessage;
@@ -101,7 +102,8 @@ public class QuickCommands extends ChildMod {
 			// an item while the inventory is open. The inventory keybinding needs to be a key not used
 			// for typing.
 			PlayerEntity player = Minecraft.getInstance().player;
-			player.dropItem(true);
+			ItemStack stack = player.inventory.getCurrentItem();
+			player.dropItem(stack, true); //TODO: see if this still dropps all?
 		}
 		
 		if (mDayNightKB.getKey().getKeyCode() == event.getKey()) {

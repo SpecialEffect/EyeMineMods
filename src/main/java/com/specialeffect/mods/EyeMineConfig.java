@@ -265,7 +265,7 @@ public class EyeMineConfig {
 	}
 
 	@SubscribeEvent
-	public static void onReload(final ModConfig.ConfigReloading configEvent) {
+	public static void onReload(final ModConfig.Reloading configEvent) {
 		// the configspec values are updated for us, but we may want to hook into
 		// here to notify other mods?
 		LOGGER.debug("ModConfig onReload");

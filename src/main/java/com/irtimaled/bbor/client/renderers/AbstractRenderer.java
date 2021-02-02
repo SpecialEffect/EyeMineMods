@@ -1,15 +1,16 @@
 package com.irtimaled.bbor.client.renderers;
 
-import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,10 +19,12 @@ public abstract class AbstractRenderer {
     private static double PI = TAU / 2D;
 
     public static void renderBlockFace(BlockPos pos, Direction facing, Color color, int alpha) {
-
-    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        GL11.glEnable(GL11.GL_BLEND);
-        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+//        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
+//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
         {
 			OffsetPoint min = new OffsetPoint(pos.getX(), pos.getY(), pos.getZ());
@@ -88,22 +91,26 @@ public abstract class AbstractRenderer {
         
 	        renderer.render();
         }
-        
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-        GL11.glPolygonOffset(-1.f, -1.f);
-    }
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enablePolygonOffset();
+//        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+		GlStateManager.polygonOffset(-1.f, -1.f);
+//        GL11.glPolygonOffset(-1.f, -1.f);
+	}
 
 
-    public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink, int opacity) {    
-    	
+    public static void renderBlockFaceCentralisedDwell(BlockPos pos, Direction facing, Color color, double shrink, int opacity) {
+
     	shrink = Math.min(shrink, 1.0f);
     	shrink = Math.max(shrink, 0.0f);
-    	
-    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        GL11.glEnable(GL11.GL_BLEND);
-        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
+//    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+//        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
+//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         {
 			OffsetPoint min = new OffsetPoint(pos.getX(), pos.getY(), pos.getZ());
 			OffsetPoint max = new OffsetPoint(pos.getX()+1, pos.getY()+1, pos.getZ()+1);
@@ -216,18 +223,24 @@ public abstract class AbstractRenderer {
         
 	        renderer.render();
         }
-        
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-        GL11.glPolygonOffset(-1.f, -1.f);
+
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enablePolygonOffset();
+//        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+		GlStateManager.polygonOffset(-1.f, -1.f);
+//        GL11.glPolygonOffset(-1.f, -1.f);
     }
     
     
-    public static void renderCubeAtPosition(Vec3d pos, Color color, int opacity, double size) {        	    	
-    	
-    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        GL11.glEnable(GL11.GL_BLEND);
-        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+    public static void renderCubeAtPosition(Vector3d pos, Color color, int opacity, double size) {
+		
+		//    	GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+//        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.enableBlend();
+//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
         // Set up bounding cube corners 
 		OffsetPoint min = new OffsetPoint(pos.getX()-size, pos.getY()-size, pos.getZ()-size);
@@ -277,10 +290,13 @@ public abstract class AbstractRenderer {
 	            .addPoint(minX, maxY, minZ);
     
         renderer.render();       
-        
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-        GL11.glPolygonOffset(-1.f, -1.f);
+
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enablePolygonOffset();
+//        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+		GlStateManager.polygonOffset(-1.f, -1.f);
+//        GL11.glPolygonOffset(-1.f, -1.f);
     }
 
     
@@ -341,7 +357,9 @@ public abstract class AbstractRenderer {
     }
 
     void renderLine(OffsetPoint startPoint, OffsetPoint endPoint, Color color) {
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+//        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+
         Renderer.startLines()
                 .setColor(color)
                 .addPoint(startPoint)
@@ -350,46 +368,79 @@ public abstract class AbstractRenderer {
     }
 
     void renderFilledFaces(OffsetPoint min, OffsetPoint max, Color color, int alpha) {
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GlStateManager.enableBlend();
+//        GL11.glEnable(GL11.GL_BLEND);
+
         renderFaces(min, max, color, alpha);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
-        GL11.glPolygonOffset(-1.f, -1.f);
+        
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
+		GlStateManager.enablePolygonOffset();
+//        GL11.glEnable(GL11.GL_POLYGON_OFFSET_LINE);
+		GlStateManager.polygonOffset(-1.f, -1.f);
+//        GL11.glPolygonOffset(-1.f, -1.f);
     }
 
-    void renderText(OffsetPoint offsetPoint, String... texts) {
+    void renderText(MatrixStack matrixStack, OffsetPoint offsetPoint, String... texts) {
         FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
-        GL11.glPushMatrix();
-        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-        GL11.glTranslated(offsetPoint.getX(), offsetPoint.getY() + 0.002D, offsetPoint.getZ());
-        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(0.0F, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-        GL11.glScalef(-0.0175F, -0.0175F, 0.0175F);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GlStateManager.pushMatrix();
+//        GL11.glPushMatrix();
+		GlStateManager.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+//        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+		GlStateManager.translated(offsetPoint.getX(), offsetPoint.getY() + 0.002D, offsetPoint.getZ());
+//        GL11.glTranslated(offsetPoint.getX(), offsetPoint.getY() + 0.002D, offsetPoint.getZ());
+		GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+//		GlStateManager.normal3f(0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef(0.0F, 0.0F, 1.0F, 0.0F);
+//        GL11.glRotatef(0.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+//        GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.scalef(-0.0175F, -0.0175F, 0.0175F);
+//        GL11.glScalef(-0.0175F, -0.0175F, 0.0175F);
+		GlStateManager.enableTexture();
+//        GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GlStateManager.enableBlend();
+//        GL11.glEnable(GL11.GL_BLEND);
+		GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDepthMask(true);
+		GlStateManager.disableDepthTest();
+//        GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GlStateManager.enableDepthTest();
+//        GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GlStateManager.depthMask(true);
+//        GL11.glDepthMask(true);
         float top = -(fontRenderer.FONT_HEIGHT * texts.length) / 2f;
         for (String text : texts) {
             float left = fontRenderer.getStringWidth(text) / 2f;
-            fontRenderer.drawString(text, -left, top, -1);
+            fontRenderer.drawString(matrixStack, text, -left, top, -1);
             top += fontRenderer.FONT_HEIGHT;
         }
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
+		GlStateManager.disableTexture();
+//        GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+//        GL11.glDisable(GL11.GL_BLEND);
     }
 
+	private static void enablePointSmooth() {
+		RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+	}
+
+	private static void pointSize(float dotSize) {
+		RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+		GL11.glPointSize(dotSize);
+	}
+
     void renderSphere(OffsetPoint center, double radius, Color color, int density, int dotSize) {
-        GL11.glEnable(GL11.GL_POINT_SMOOTH);
-        GL11.glPointSize(dotSize);
+		enablePointSmooth();
+//		GL11.glEnable(GL11.GL_POINT_SMOOTH);
+		pointSize(dotSize);
+//		GL11.glPointSize(dotSize);
         Renderer renderer = Renderer.startPoints()
                 .setColor(color);
         buildPoints(center, radius, density)

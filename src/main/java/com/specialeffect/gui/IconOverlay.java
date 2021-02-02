@@ -11,6 +11,7 @@
 
 package com.specialeffect.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GLX;
@@ -93,10 +94,12 @@ public class IconOverlay
 			return;
 		}
 		
-		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {	
-			
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {
+
+			GlStateManager.enableBlend();
+//	        GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 	        
 			// Update fading ticks
 			float fade = 1.0f;

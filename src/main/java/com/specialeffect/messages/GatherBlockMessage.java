@@ -47,7 +47,7 @@ public class GatherBlockMessage {
             Entity target = world.getEntityByID(pkt.entityId);
             if(target != null && target instanceof ItemEntity) {
             	// Move item next to player to be picked up automatically
-                target.setPosition(player.posX,player.posY+0.5,player.posZ);
+                target.setPosition(player.getPosX(),player.getPosY()+0.5,player.getPosZ());
             }
 			
 			ctx.get().setPacketHandled(true);

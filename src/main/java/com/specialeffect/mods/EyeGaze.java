@@ -152,13 +152,13 @@ public class EyeGaze {
 		if (event.getGui() instanceof MainMenuScreen && !(event.getGui() instanceof CustomMainMenu)) {
 			event.setGui(new CustomMainMenu());
 		}
-		if (event.getGui() instanceof CreateWorldScreen && !(event.getGui() instanceof CustomCreateWorldScreen)) {
-			if (!allowMoreOptions) {
-				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
-			}
-			allowMoreOptions = false;
-		}
+//		if (event.getGui() instanceof CreateWorldScreen && !(event.getGui() instanceof CustomCreateWorldScreen)) { TODO: Actually port the Custom Create World Screen
+//			if (!allowMoreOptions) {
+//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+//				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
+//			}
+//			allowMoreOptions = false;
+//		}
 		if (event.getGui() instanceof CreativeScreen) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
 			CreativeScreen gui = (CreativeScreen)event.getGui() ;
@@ -244,7 +244,7 @@ public class EyeGaze {
     private void setupChildMod(ChildMod mod) {
         MinecraftForge.EVENT_BUS.register(mod);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(mod::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().register(this); // for @SubscribeEvent annotations ??
+//		FMLJavaModLoadingContext.get().getModEventBus().register(this); // for @SubscribeEvent annotations ??
 
         children.add(mod);        
     }

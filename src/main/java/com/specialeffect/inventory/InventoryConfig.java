@@ -134,7 +134,7 @@ public class InventoryConfig {
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.ConfigReloading configEvent) {
+    public static void onReload(final ModConfig.Reloading configEvent) {
     	LOGGER.debug("InventoryConfig onReload");   
     	
     	ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();

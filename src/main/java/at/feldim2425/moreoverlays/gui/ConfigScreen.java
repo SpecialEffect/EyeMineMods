@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import at.feldim2425.moreoverlays.gui.config.ConfigOptionList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.client.config.GuiUnicodeGlyphButton;
+import net.minecraftforge.fml.client.gui.widget.UnicodeGlyphButton;
 
 
 public class ConfigScreen extends Screen {
@@ -59,7 +62,7 @@ public class ConfigScreen extends Screen {
     	// Lower buttons layout with padding will be:
     	// 2*p | button | p | button | p | button | p | button | 2*p
         int pad = 5;
-        int buttonWidth = (Minecraft.getInstance().mainWindow.getScaledWidth() - 7*pad)/4; 
+        int buttonWidth = (Minecraft.getInstance().getMainWindow().getScaledWidth() - 7*pad)/4;
         final int buttonHeight = 20;
         
         // Button positions
@@ -68,15 +71,15 @@ public class ConfigScreen extends Screen {
         final int xDefaultAll = this.width - buttonWidth - pad*2;        
         final int xUndoAll = xDefaultAll - buttonWidth - pad;
                         
-        this.btnReset = new GuiUnicodeGlyphButton(xDefaultAll, buttonY, buttonWidth, buttonHeight, 
-        		" " + this.txtReset, ConfigOptionList.RESET_CHAR, 1.0f, 
+        this.btnReset = new UnicodeGlyphButton(xDefaultAll, buttonY, buttonWidth, buttonHeight,
+                new StringTextComponent(" " + this.txtReset), ConfigOptionList.RESET_CHAR, 1.0f,
             (btn) -> this.optionList.reset());
         
-        this.btnUndo = new GuiUnicodeGlyphButton(xUndoAll, buttonY, buttonWidth, buttonHeight, 
-        		" " + this.txtUndo, ConfigOptionList.UNDO_CHAR, 1.0f,
+        this.btnUndo = new UnicodeGlyphButton(xUndoAll, buttonY, buttonWidth, buttonHeight,
+                new StringTextComponent(" " + this.txtUndo), ConfigOptionList.UNDO_CHAR, 1.0f,
         		(btn) -> this.optionList.undo());
         
-        this.btnBack = new Button(xBack, buttonY, buttonWidth, buttonHeight, this.txtDone,
+        this.btnBack = new Button(xBack, buttonY, buttonWidth, buttonHeight,  new StringTextComponent(this.txtDone),
                 (btn) -> this.back());
         
         this.children.add(this.optionList);
@@ -100,18 +103,18 @@ public class ConfigScreen extends Screen {
         }
 	}
 
-	@Override
-    public void render(int mouseX, int mouseY, float partialTick) {
-        this.renderBackground();
-        this.optionList.render(mouseX, mouseY, partialTick);
-        this.btnReset.render(mouseX, mouseY, partialTick);
-        this.btnUndo.render(mouseX, mouseY, partialTick); 
-        this.btnBack.render(mouseX, mouseY, partialTick);
-        this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 8, 16777215);
+    @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(matrixStack);
+        this.optionList.render(matrixStack, mouseX, mouseY, partialTick);
+        this.btnReset.render(matrixStack, mouseX, mouseY, partialTick);
+        this.btnUndo.render(matrixStack, mouseX, mouseY, partialTick);
+        this.btnBack.render(matrixStack, mouseX, mouseY, partialTick);
+        this.drawCenteredString(matrixStack, this.font, this.title.getString(), this.width / 2, 8, 16777215);
         if(this.categoryTitle != null){
-            this.drawCenteredString(this.font, this.categoryTitle, this.width / 2, 24, 16777215);
+            this.drawCenteredString(matrixStack, this.font, this.categoryTitle, this.width / 2, 24, 16777215);
         }
-        super.render(mouseX, mouseY, partialTick);
+        super.render(matrixStack, mouseX, mouseY, partialTick);
     }
 
     private void save(){
@@ -158,5 +161,9 @@ public class ConfigScreen extends Screen {
         else {
             return super.keyPressed(key, p_keyPressed_2_, p_keyPressed_3_);
         }
+    }
+
+    public void drawRightAlignedString(MatrixStack matrixStack, FontRenderer fontRenderer, String font, int text, int x, int y) {
+        fontRenderer.drawStringWithShadow(matrixStack, font, (float)(text - fontRenderer.getStringWidth(font)), (float)x, y);
     }
 }

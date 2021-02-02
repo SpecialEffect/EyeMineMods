@@ -26,6 +26,12 @@ import net.minecraft.client.util.NativeUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFWDropCallback;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 // Based on the vanilla MouseHelper in forge, but also:
 // - allows normal mouse control with an ungrabbed mouse
@@ -107,8 +113,8 @@ extends MouseHelper
     /** public entry points for automated cursor actions **/
    
     public void moveCursor(double xpos, double ypos) {
-    	long handle = Minecraft.getInstance().mainWindow.getHandle();
-    	GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xpos, ypos);
+    	long handle = Minecraft.getInstance().getMainWindow().getHandle();
+    	GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), xpos, ypos);
     	this.cursorPosCallbackOwn(handle, xpos, ypos);
     }
     
@@ -125,7 +131,7 @@ extends MouseHelper
     }  
     
     public void scroll(double amount) {
-    	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	long handle = Minecraft.getInstance().getMainWindow().getHandle();
     	this.scrollCallbackOwn(handle, 0, amount);
     }
     
@@ -138,7 +144,7 @@ extends MouseHelper
      * mods: GLFW.GLFW_MOD_[SHIFT/CONTROL/ALT/SUPER]
      */     
     public void mouseButton(int button, int action, int mods) {    	
-    	long handle = Minecraft.getInstance().mainWindow.getHandle();
+    	long handle = Minecraft.getInstance().getMainWindow().getHandle();
     	this.mouseButtonCallbackOwn(handle, button, action, mods);
     }       
     
@@ -146,10 +152,10 @@ extends MouseHelper
     /**
      * Will be called when a mouse button is pressed or released.
      *  
-     * @see GLFWMouseButtonCallbackI
+     * @see org.lwjgl.glfw.GLFWMouseButtonCallbackI
      */
     private void mouseButtonCallbackOwn(long handle, int button, int action, int mods) {
-       if (handle == this.minecraft.mainWindow.getHandle()) {
+       if (handle == this.minecraft.getMainWindow().getHandle()) {
           boolean flag = action == 1;
           if (Minecraft.IS_RUNNING_ON_MAC && button == 0) {
              if (flag) {
@@ -169,7 +175,7 @@ extends MouseHelper
              }
 
              this.activeButton = button;
-             this.eventTime = NativeUtil.func_216394_b();
+             this.eventTime = NativeUtil.getTime();
           } else if (this.activeButton != -1) {
              if (this.minecraft.gameSettings.touchscreen && --this.touchScreenCounter > 0) {
                 return;
@@ -185,8 +191,8 @@ extends MouseHelper
                    this.grabMouse();
                 }
              } else {
-                double d0 = this.mouseX * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-                double d1 = this.mouseY * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+                double d0 = this.mouseX * (double)this.minecraft.getMainWindow().getScaledWidth() / (double)this.minecraft.getMainWindow().getWidth();
+                double d1 = this.mouseY * (double)this.minecraft.getMainWindow().getScaledHeight() / (double)this.minecraft.getMainWindow().getHeight();
                 int p_198023_3_f = button;
                 if (flag) {
                    Screen.wrapScreenError(() -> {
@@ -229,15 +235,15 @@ extends MouseHelper
     /**
      * Will be called when a scrolling device is used, such as a mouse wheel or scrolling area of a touchpad.
      *  
-     * @see GLFWScrollCallbackI
+     * @see org.lwjgl.glfw.GLFWMouseButtonCallbackI
      */
     private void scrollCallbackOwn(long handle, double xoffset, double yoffset) {
-       if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
+       if (handle == Minecraft.getInstance().getMainWindow().getHandle()) {
           double d0 = (this.minecraft.gameSettings.discreteMouseScroll ? Math.signum(yoffset) : yoffset) * this.minecraft.gameSettings.mouseWheelSensitivity;
           if (this.minecraft.loadingGui == null) {
              if (this.minecraft.currentScreen != null) {
-                double d1 = this.mouseX * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-                double d2 = this.mouseY * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+                double d1 = this.mouseX * (double)this.minecraft.getMainWindow().getScaledWidth() / (double)this.minecraft.getMainWindow().getWidth();
+                double d2 = this.mouseY * (double)this.minecraft.getMainWindow().getScaledHeight() / (double)this.minecraft.getMainWindow().getHeight();
                 if (net.minecraftforge.client.ForgeHooksClient.onGuiMouseScrollPre(this, this.minecraft.currentScreen, d0)) return;
                 if (this.minecraft.currentScreen.mouseScrolled(d1, d2, d0)) return;
                 net.minecraftforge.client.ForgeHooksClient.onGuiMouseScrollPost(this, this.minecraft.currentScreen, d0);
@@ -271,17 +277,34 @@ extends MouseHelper
     }
 
     public void registerCallbacks(long handle) {
-       InputMappings.func_216503_a(handle, this::cursorPosCallbackOwn, this::mouseButtonCallbackOwn, this::scrollCallbackOwn);
+       InputMappings.setMouseCallbacks(handle, this::cursorPosCallbackOwn, this::mouseButtonCallbackOwn,
+       this::scrollCallbackOwn, (window, callbackCount, names) -> { //drop callback was added in a later version
+           Path[] apath = new Path[callbackCount];
+
+           for(int i = 0; i < callbackCount; ++i) {
+               apath[i] = Paths.get(GLFWDropCallback.getName(names, i));
+           }
+
+           this.minecraft.execute(() -> {
+               this.addPacksToScreen(window, Arrays.asList(apath));
+           });
+       });
+    }
+
+    private void addPacksToScreen(long window, List<Path> paths) {
+        if (this.minecraft.currentScreen != null) {
+            this.minecraft.currentScreen.addPacks(paths);
+        }
     }
     
     @SuppressWarnings("unused")
 	private void debugLogging() {
 
-        long cursorMode = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR);
+        long cursorMode = GLFW.glfwGetInputMode(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_CURSOR);
         LOGGER.debug("***");
         if (cursorMode == GLFW.GLFW_CURSOR_DISABLED) {
       	  LOGGER.debug("cursor disabled");
-      	  long raw = GLFW.glfwGetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_RAW_MOUSE_MOTION);
+      	  long raw = GLFW.glfwGetInputMode(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_RAW_MOUSE_MOTION);
       	  if (raw == GLFW.GLFW_TRUE) {
       		  LOGGER.debug("using raw motion");
       	  }
@@ -290,7 +313,7 @@ extends MouseHelper
       	  LOGGER.debug("normal cursor");
         }
         
-        if (GLFW.GLFW_TRUE == GLFW.glfwGetWindowAttrib(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_HOVERED))
+        if (GLFW.GLFW_TRUE == GLFW.glfwGetWindowAttrib(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_HOVERED))
         {
       	  LOGGER.debug("hovered");
         }
@@ -303,11 +326,11 @@ extends MouseHelper
      * corner of the window client area. On platforms that provide it, the full sub-pixel cursor position is passed
      * on.</p>
      *  
-     * @see GLFWCursorPosCallbackI
+     * @see org.lwjgl.glfw.GLFWMouseButtonCallbackI
      */
     private void cursorPosCallbackOwn(long handle, double xpos, double ypos) {
     	
-        if (handle == Minecraft.getInstance().mainWindow.getHandle()) {
+        if (handle == Minecraft.getInstance().getMainWindow().getHandle()) {
 
             if (this.ignoreFirstMove) {
                this.mouseX = xpos;
@@ -318,15 +341,15 @@ extends MouseHelper
            
             IGuiEventListener iguieventlistener = this.minecraft.currentScreen;
             if (iguieventlistener != null && this.minecraft.loadingGui == null) {
-               GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
-               double d0 = xpos * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-               double d1 = ypos * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+               GLFW.glfwSetInputMode(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+               double d0 = xpos * (double)this.minecraft.getMainWindow().getScaledWidth() / (double)this.minecraft.getMainWindow().getWidth();
+               double d1 = ypos * (double)this.minecraft.getMainWindow().getScaledHeight() / (double)this.minecraft.getMainWindow().getHeight();
                Screen.wrapScreenError(() -> {
                   iguieventlistener.mouseMoved(d0, d1);
                }, "mouseMoved event handler", iguieventlistener.getClass().getCanonicalName());
                if (this.activeButton != -1 && this.eventTime > 0.0D) {
-                  double d2 = (xpos - this.mouseX) * (double)this.minecraft.mainWindow.getScaledWidth() / (double)this.minecraft.mainWindow.getWidth();
-                  double d3 = (ypos - this.mouseY) * (double)this.minecraft.mainWindow.getScaledHeight() / (double)this.minecraft.mainWindow.getHeight();
+                  double d2 = (xpos - this.mouseX) * (double)this.minecraft.getMainWindow().getScaledWidth() / (double)this.minecraft.getMainWindow().getWidth();
+                  double d3 = (ypos - this.mouseY) * (double)this.minecraft.getMainWindow().getScaledHeight() / (double)this.minecraft.getMainWindow().getHeight();
                   Screen.wrapScreenError(() -> {
                   if (net.minecraftforge.client.ForgeHooksClient.onGuiMouseDragPre(this.minecraft.currentScreen, d0, d1, this.activeButton, d2, d3)) return;
                   if (iguieventlistener.mouseDragged(d0, d1, this.activeButton, d2, d3)) return;
@@ -355,7 +378,7 @@ extends MouseHelper
                               
                 // Reset to centre
     	        if (!this.ungrabbedMouseMode) {
-    	        	GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), 0, 0);
+    	        	GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), 0, 0);
     	        	this.mouseX = 0;
     	        	this.mouseY = 0;
     	        }                
@@ -368,8 +391,8 @@ extends MouseHelper
 
     private void processMousePosition(double x, double y) {
 		
-		double w_half = this.minecraft.mainWindow.getWidth() / 2;
-		double h_half = this.minecraft.mainWindow.getHeight() / 2;
+		double w_half = this.minecraft.getMainWindow().getWidth() / 2;
+		double h_half = this.minecraft.getMainWindow().getHeight() / 2;
 		
 		// adjust coordinates to centralised when ungrabbed
 		if (this.ungrabbedMouseMode) {
@@ -410,7 +433,7 @@ extends MouseHelper
     
     public void updatePlayerLookLegacy() {
     	// Rotate the player (yaw) according to x position only
-    	double d0 = NativeUtil.func_216394_b();
+    	double d0 = NativeUtil.getTime();
         double d1 = d0 - this.lastLookTime;
         this.lastLookTime = d0;
         if (this.minecraft.isGameFocused()) {
@@ -425,8 +448,8 @@ extends MouseHelper
               this.ySmoother.reset();
               
               // quadratic fit near centre
-              double w = Minecraft.getInstance().mainWindow.getScaledWidth();
-              double h = Minecraft.getInstance().mainWindow.getScaledHeight();              
+              double w = Minecraft.getInstance().getMainWindow().getScaledWidth();
+              double h = Minecraft.getInstance().getMainWindow().getScaledHeight();              
               double d = h/8;
               double p = 2; // quadratic near centre
               double k = 2; // magnitude at inflection point
@@ -445,7 +468,7 @@ extends MouseHelper
                
               // When going backward, reduce the yaw effect
               // TODO: ideally we'd have some smoother modulation here
-              double h6 = (double)Minecraft.getInstance().mainWindow.getScaledHeight()/6;
+              double h6 = (double)Minecraft.getInstance().getMainWindow().getScaledHeight()/6;
               if (this.yVelocity>h6) {
             	  d2 *= 0.5;
               }
@@ -475,7 +498,7 @@ extends MouseHelper
     }
     
     public void updatePlayerLookVanilla() {
-       double d0 = NativeUtil.func_216394_b();
+       double d0 = NativeUtil.getTime();
        double d1 = d0 - this.lastLookTime;
        this.lastLookTime = d0;
        if (this.minecraft.isGameFocused()) {
@@ -494,8 +517,8 @@ extends MouseHelper
              this.ySmoother.reset();
              
              // quadratic fit near centre
-             double w = Minecraft.getInstance().mainWindow.getScaledWidth();
-             double h = Minecraft.getInstance().mainWindow.getScaledHeight();             
+             double w = Minecraft.getInstance().getMainWindow().getScaledWidth();
+             double h = Minecraft.getInstance().getMainWindow().getScaledHeight();             
              double d = h/8;
              
              double p = 2; // quadratic near centre
@@ -553,7 +576,7 @@ extends MouseHelper
 			break;
 		case NONE:
 			// keep track of last time
-			double d0 = NativeUtil.func_216394_b();	        
+			double d0 = NativeUtil.getTime();
 	        this.lastLookTime = d0;
 			break;	    		
     	}
@@ -614,11 +637,11 @@ extends MouseHelper
              }
 
              this.mouseGrabbed = true;
-             this.mouseX = (double)(this.minecraft.mainWindow.getWidth() / 2);
-             this.mouseY = (double)(this.minecraft.mainWindow.getHeight() / 2);
+             this.mouseX = (double)(this.minecraft.getMainWindow().getWidth() / 2);
+             this.mouseY = (double)(this.minecraft.getMainWindow().getHeight() / 2);
              
              if (!ungrabbedMouseMode) {
-            	 InputMappings.func_216504_a(this.minecraft.mainWindow.getHandle(), 212995, this.mouseX, this.mouseY);
+            	 InputMappings.setCursorPosAndMode(this.minecraft.getMainWindow().getHandle(), 212995, this.mouseX, this.mouseY);
              }
              
              this.minecraft.displayGuiScreen((Screen)null);             
@@ -648,9 +671,9 @@ extends MouseHelper
     	if (!this.hasGLcontext()) { return; }
        if (this.mouseGrabbed) {
           this.mouseGrabbed = false;
-          this.mouseX = (double)(this.minecraft.mainWindow.getWidth() / 2);
-          this.mouseY = (double)(this.minecraft.mainWindow.getHeight() / 2);
-          InputMappings.func_216504_a(this.minecraft.mainWindow.getHandle(), 212993, this.mouseX, this.mouseY);
+          this.mouseX = (double)(this.minecraft.getMainWindow().getWidth() / 2);
+          this.mouseY = (double)(this.minecraft.getMainWindow().getHeight() / 2);
+          InputMappings.setCursorPosAndMode(this.minecraft.getMainWindow().getHandle(), 212993, this.mouseX, this.mouseY);
        }
     }
 }

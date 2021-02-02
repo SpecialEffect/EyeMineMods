@@ -20,9 +20,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -67,7 +68,7 @@ public class UseItemAtPositionMessage {
 			{
 				int oldCount = item.getCount();
 								
-				Vec3d hitVec = new Vec3d((double)pkt.blockPos.getX(),
+				Vector3d hitVec = new Vector3d((double)pkt.blockPos.getX(),
 						(double)pkt.blockPos.getY(),
 						(double)pkt.blockPos.getZ());
 				
@@ -80,7 +81,7 @@ public class UseItemAtPositionMessage {
                 if (actionResult != ActionResultType.SUCCESS)
                 {
                 	player.sendMessage(new StringTextComponent(
-                			"Cannot place " + item.getDisplayName().getString() + " here"));
+                			"Cannot place " + item.getDisplayName().getString() + " here"), Util.DUMMY_UUID);
                 }
 
                 if (player.isCreative()) {

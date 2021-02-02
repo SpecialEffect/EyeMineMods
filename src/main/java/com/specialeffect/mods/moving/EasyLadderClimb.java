@@ -25,9 +25,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -57,11 +57,11 @@ public class EasyLadderClimb extends ChildMod {
 					if (block instanceof LadderBlock) {
 						
 						BlockState state = world.getBlockState(blockPos);						
-						Direction facing = (Direction) state.get(LadderBlock.FACING);																		
-						Vec3d playerPos = player.getPositionVector();
+						Direction facing = (Direction) state.get(LadderBlock.FACING);
+						Vector3d playerPos = player.getPositionVec();
 						
 						// What yaw would point the player at the middle of the ladder?						
-						Vec3d midPos = getMidPointOfFace(blockPos,  facing);
+						Vector3d midPos = getMidPointOfFace(blockPos,  facing);
 						renderPos = midPos;				
 						player.rotationYaw = player.rotationYaw % 360;
 						
@@ -80,27 +80,27 @@ public class EasyLadderClimb extends ChildMod {
 		}
 	}
 	
-	private Vec3d getMidPointOfFace(BlockPos pos, Direction facing) {	
+	private Vector3d getMidPointOfFace(BlockPos pos, Direction facing) {	
 		// It's possible this logic is ladder-specific, since a ladder is a block which is mainly
 		// 
 		switch (facing) {
 		case NORTH:
-			return new Vec3d(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
+			return new Vector3d(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
 		case EAST:
-			return new Vec3d(pos.getX()       , pos.getY() + 0.5f, pos.getZ() + 0.5f);
+			return new Vector3d(pos.getX()       , pos.getY() + 0.5f, pos.getZ() + 0.5f);
 		case SOUTH:
-			return new Vec3d(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ()       );
+			return new Vector3d(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ()       );
 		case WEST:
-			return new Vec3d(pos.getX() + 1.0f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+			return new Vector3d(pos.getX() + 1.0f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
 		default:
-			return new Vec3d(pos.getX(), pos.getY(), pos.getZ());
+			return new Vector3d(pos.getX(), pos.getY(), pos.getZ());
 		}
 	}
 	
-	private Vec3d renderPos;
+	private Vector3d renderPos;
 		
 	@SubscribeEvent
-	public void onBlockOutlineRender(DrawBlockHighlightEvent e)
+	public void onBlockOutlineRender(DrawHighlightEvent e)
 	{
 		// Turn this on to debug the positional logic - it will render block positions for you 
 		boolean debugRender = false;

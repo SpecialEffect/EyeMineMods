@@ -4,10 +4,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+
+import javax.annotation.Nullable;
 
 public class OptionGeneric<V>
         extends OptionValueEntry<V> {
@@ -18,15 +22,15 @@ public class OptionGeneric<V>
 		super(list, valSpec, spec);
         this.showValidity = true;
         
-        this.tfConfigEntry = new TextFieldWidget(Minecraft.getInstance().fontRenderer, OptionValueEntry.TITLE_WIDTH + 5, 2, this.getConfigOptionList().getRowWidth() - OptionValueEntry.TITLE_WIDTH - 5 - OptionValueEntry.CONTROL_WIDTH_VALIDATOR, 16,"");
+        this.tfConfigEntry = new TextFieldWidget(Minecraft.getInstance().fontRenderer, OptionValueEntry.TITLE_WIDTH + 5, 2, this.getConfigOptionList().getRowWidth() - OptionValueEntry.TITLE_WIDTH - 5 - OptionValueEntry.CONTROL_WIDTH_VALIDATOR, 16,new StringTextComponent(""));
         this.overrideUnsaved(this.value.get());
 	}
 
 	@Override
-    protected void renderControls(int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
-            boolean mouseOver, float partialTick) {
-        super.renderControls(rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
-        this.tfConfigEntry.render(mouseX, mouseY, 0);
+    protected void renderControls(MatrixStack matrixStack, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
+                                  boolean mouseOver, float partialTick) {
+        super.renderControls(matrixStack, rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
+        this.tfConfigEntry.render(matrixStack, mouseX, mouseY, 0);
     }
 
     @Override
@@ -41,14 +45,14 @@ public class OptionGeneric<V>
     }
 
     @Override
-    public List<? extends IGuiEventListener> children() {
-        List<IGuiEventListener> childs = new ArrayList<>(super.children());
+    public List<? extends IGuiEventListener> getEventListeners() {
+        List<IGuiEventListener> childs = new ArrayList<>(super.getEventListeners());
         childs.add(this.tfConfigEntry);
         return childs;
     }
 
     @Override
-    public void setFocused(IGuiEventListener focused) {
+    public void setListener(@Nullable IGuiEventListener focused) {
         if(focused == null){
             this.tfConfigEntry.setFocused2(false);
         }
@@ -80,12 +84,12 @@ public class OptionGeneric<V>
         return flag;
     }
 
-    @Override
-    public IGuiEventListener getFocused() {
-        if(this.tfConfigEntry.isFocused()){
-            return this.tfConfigEntry;
-        }
-        return null;
-    }
+//    @Override TODO: Check why this is even here? And why it isn't returning a boolean
+//    public IGuiEventListener getFocused() {
+//        if(this.tfConfigEntry.isFocused()){
+//            return this.tfConfigEntry;
+//        }
+//        return null;
+//    }
     
 }
