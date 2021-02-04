@@ -145,7 +145,7 @@ public class ConfigScreen extends Screen {
         		if (categoryComment != null) {
         			this.categoryTitle = categoryComment;
         		}
-        	}        	
+        	}
         }
 
         pathCache.clear();

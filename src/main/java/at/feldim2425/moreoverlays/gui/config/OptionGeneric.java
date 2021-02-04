@@ -1,9 +1,5 @@
 package at.feldim2425.moreoverlays.gui.config;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
@@ -12,6 +8,9 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OptionGeneric<V>
         extends OptionValueEntry<V> {
@@ -60,9 +59,9 @@ public class OptionGeneric<V>
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean keyReleased(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        final boolean flag = super.keyReleased(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-        
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        final boolean flag = super.keyReleased(keyCode, scanCode, modifiers);
+
         try {
             if(this.spec.getClazz() == String.class){
                 this.updateValue((V)this.tfConfigEntry.getText());
@@ -80,16 +79,16 @@ public class OptionGeneric<V>
         catch(NumberFormatException e){
             this.updateValue(null);
         }
-    
+
         return flag;
     }
 
-//    @Override TODO: Check why this is even here? And why it isn't returning a boolean
-//    public IGuiEventListener getFocused() {
-//        if(this.tfConfigEntry.isFocused()){
-//            return this.tfConfigEntry;
-//        }
-//        return null;
-//    }
-    
+    @Nullable
+    @Override
+    public IGuiEventListener getListener() {
+        if(this.tfConfigEntry.isFocused()){
+            return this.tfConfigEntry;
+        }
+        return null;
+    }
 }
