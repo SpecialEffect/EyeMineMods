@@ -128,12 +128,14 @@ public class EyeGaze {
 			// (this way the children will be fully set up before any config gets loaded)
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	        
-			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
-			
+			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
+					() -> "Everyone is valid", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
+					(remoteversionstring, networkbool) -> networkbool // i accept anything from the server, by returning true if it's asking about the server
+					));
+
             // Hook up config gui
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> this::openSettings);
-
 		});
 	}
 	
