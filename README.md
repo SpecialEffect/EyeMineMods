@@ -11,13 +11,18 @@ EyeMine is designed for eye-gaze control, and also supports head-pointer control
 The **official** release of EyeMine currently supports Minecraft Forge **v1.14.4**, and the whole bundle (keyboards, mod and installer) are available for download from [**The EyeMine wiki**](https://github.com/SpecialEffect/EyeMine/wiki). If you don't already play Minecraft then you should get started with this one. 
 
 ### Other versions
-The original "classic" version of EyeMine works with Minecraft Forge **v1.11.2** and can be downloaded as a bundle from the [EyeMine wiki: Classic installation](https://github.com/SpecialEffect/EyeMine/wiki/%5BClassic%5D-Installation).
+- The original "classic" version of EyeMine works with Minecraft Forge **v1.11.2** and can be downloaded as a bundle from the [EyeMine wiki: Classic installation](https://github.com/SpecialEffect/EyeMine/wiki/%5BClassic%5D-Installation).
 
-A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **v1.16.5** and can be downloaded from ... 
+- A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **v1.16.5** and can be downloaded from ... To use this you should install the latest version of EyeMineV2 from [**the EyeMine wiki**](https://github.com/SpecialEffect/EyeMine/wiki) to get the keyboards, and then manually set up Forge 1.16.5 with the 1.16.5 EyeMine mod.
+
+If you're looking for a different version, contact eyemine@specialeffect.org.uk to register your interest, or if you're a developer please feel free to fork and modify! 
 
 ## Information for developers
 
-These EyeMine mods currently support Minecraft Forge v1.11.2 (via the [eyemineClassic_mc1_11_2 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineClassic_mc1_11_2)) and Minecraft Forge v1.14.4 (via the [eyemineV2_mc1_14_4 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_14_4)).
+Each Forge version is on a different branch:
+- Minecraft Forge v1.11.2 via the [eyemineClassic_mc1_11_2 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineClassic_mc1_11_2) works with the "EyeMine Classic" keyboards
+- Minecraft Forge v1.14.4 via the [eyemineV2_mc1_14_4 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_14_4) works with the "EyeMine V2" keyboards
+- Minecraft Forge v1.16.5 via the [eyemineV2_mc1_16_5 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_16_5) works with the "EyeMine V2" keyboards (this port is not as well tested/maintained as the official versions)
 
 All the code comprising EyeMine is GPL3 licensed. We would love contributions to port to other versions of Minecraft. If you're interested in doing this, please email eyemine@specialeffect.org.uk to let us know what you're working on!
 
