@@ -1,13 +1,16 @@
 package at.feldim2425.moreoverlays.gui.config;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+
+import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OptionGeneric<V>
         extends OptionValueEntry<V> {
@@ -18,15 +21,15 @@ public class OptionGeneric<V>
 		super(list, valSpec, spec);
         this.showValidity = true;
         
-        this.tfConfigEntry = new TextFieldWidget(Minecraft.getInstance().fontRenderer, OptionValueEntry.TITLE_WIDTH + 5, 2, this.getConfigOptionList().getRowWidth() - OptionValueEntry.TITLE_WIDTH - 5 - OptionValueEntry.CONTROL_WIDTH_VALIDATOR, 16,"");
+        this.tfConfigEntry = new TextFieldWidget(Minecraft.getInstance().fontRenderer, OptionValueEntry.TITLE_WIDTH + 5, 2, this.getConfigOptionList().getRowWidth() - OptionValueEntry.TITLE_WIDTH - 5 - OptionValueEntry.CONTROL_WIDTH_VALIDATOR, 16,new StringTextComponent(""));
         this.overrideUnsaved(this.value.get());
 	}
 
 	@Override
-    protected void renderControls(int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
-            boolean mouseOver, float partialTick) {
-        super.renderControls(rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
-        this.tfConfigEntry.render(mouseX, mouseY, 0);
+    protected void renderControls(MatrixStack matrixStack, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
+                                  boolean mouseOver, float partialTick) {
+        super.renderControls(matrixStack, rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
+        this.tfConfigEntry.render(matrixStack, mouseX, mouseY, 0);
     }
 
     @Override
@@ -41,14 +44,14 @@ public class OptionGeneric<V>
     }
 
     @Override
-    public List<? extends IGuiEventListener> children() {
-        List<IGuiEventListener> childs = new ArrayList<>(super.children());
+    public List<? extends IGuiEventListener> getEventListeners() {
+        List<IGuiEventListener> childs = new ArrayList<>(super.getEventListeners());
         childs.add(this.tfConfigEntry);
         return childs;
     }
 
     @Override
-    public void setFocused(IGuiEventListener focused) {
+    public void setListener(@Nullable IGuiEventListener focused) {
         if(focused == null){
             this.tfConfigEntry.setFocused2(false);
         }
@@ -56,9 +59,9 @@ public class OptionGeneric<V>
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean keyReleased(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        final boolean flag = super.keyReleased(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-        
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        final boolean flag = super.keyReleased(keyCode, scanCode, modifiers);
+
         try {
             if(this.spec.getClazz() == String.class){
                 this.updateValue((V)this.tfConfigEntry.getText());
@@ -76,16 +79,16 @@ public class OptionGeneric<V>
         catch(NumberFormatException e){
             this.updateValue(null);
         }
-    
+
         return flag;
     }
 
+    @Nullable
     @Override
-    public IGuiEventListener getFocused() {
+    public IGuiEventListener getListener() {
         if(this.tfConfigEntry.isFocused()){
             return this.tfConfigEntry;
         }
         return null;
     }
-    
 }

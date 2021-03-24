@@ -128,7 +128,7 @@ public class EyeMineConfig {
 
 	private static void setupBasicConfig() {
 		customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze").defineInRange("walkingSpeed",
-				0.6f, 0.25f, 2.0f);
+				0.6, 0.25, 2.0);
 
 		defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?").define("defaultDoAutoJump",
 				true);
@@ -265,7 +265,7 @@ public class EyeMineConfig {
 	}
 
 	@SubscribeEvent
-	public static void onReload(final ModConfig.ConfigReloading configEvent) {
+	public static void onReload(final ModConfig.Reloading configEvent) {
 		// the configspec values are updated for us, but we may want to hook into
 		// here to notify other mods?
 		LOGGER.debug("ModConfig onReload");

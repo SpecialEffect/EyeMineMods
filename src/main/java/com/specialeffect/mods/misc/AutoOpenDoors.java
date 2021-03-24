@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -81,7 +81,7 @@ extends ChildMod implements ChildModWithConfig
 
 								// For symmetry with door closing, we actually want to test a circular
 								// area, not a square.
-								if (playerPos.distanceSq(new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()))
+								if (playerPos.distanceSq(new Vector3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()))
 										<= mDoorRadius*mDoorRadius) {
 
 									// Check if block is door, if so, activate it.
@@ -108,7 +108,7 @@ extends ChildMod implements ChildModWithConfig
 						BlockPos pos = iterator.next();
 
 						double closeRadius = mDoorRadius + 0.1; // avoids any jumpiness between states 
-						if (playerPos.distanceSq(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > closeRadius*closeRadius) {
+						if (playerPos.distanceSq(new Vector3i(pos.getX(), pos.getY(), pos.getZ())) > closeRadius*closeRadius) {
 							Block block = world.getBlockState(pos).getBlock();
 
 							OpenableBlock.close(world, block, pos);

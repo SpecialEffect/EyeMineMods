@@ -48,7 +48,7 @@ public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
 	   }
    }
    
-   public void tick(boolean slow, boolean noDampening) {
+   public void tickMovement(boolean slow) {
       this.forwardKeyDown = this.gameSettings.keyBindForward.isKeyDown() || this.mWalkForwardOverride.get();
       this.backKeyDown = this.gameSettings.keyBindBack.isKeyDown();
       this.leftKeyDown = this.gameSettings.keyBindLeft.isKeyDown();
@@ -60,8 +60,8 @@ public class MovementInputFromOptionsOverride extends MovementInputFromOptions {
       }
       this.moveStrafe = this.leftKeyDown == this.rightKeyDown ? 0.0F : (float)(this.leftKeyDown ? 1 : -1);
       this.jump = this.gameSettings.keyBindJump.isKeyDown();
-      this.sneak = this.gameSettings.keyBindSneak.isKeyDown() || this.mSneakOverride.get();
-      if (!noDampening && (this.sneak || slow)) {
+      this.sneaking = this.gameSettings.keyBindSneak.isKeyDown() || this.mSneakOverride.get();
+      if (slow) {
          this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
          this.moveForward = (float)((double)this.moveForward * 0.3D);
       }

@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MovePlayerMessage {
@@ -24,7 +24,7 @@ public class MovePlayerMessage {
 	private double y;
 	private double z;
 	
-    public MovePlayerMessage(Vec3d newMotion) { 
+    public MovePlayerMessage(Vector3d newMotion) {
     	x = newMotion.x;
     	y = newMotion.y;
     	z = newMotion.z;
@@ -34,7 +34,7 @@ public class MovePlayerMessage {
 		double x = buf.readDouble();
 		double y = buf.readDouble();
 		double z = buf.readDouble();
-        return new MovePlayerMessage(new Vec3d(x, y, z));
+        return new MovePlayerMessage(new Vector3d(x, y, z));
     }
 
     public static void encode(MovePlayerMessage pkt, PacketBuffer buf) {
@@ -50,7 +50,7 @@ public class MovePlayerMessage {
 	            return;
 	        }       
 	        	        
-	        player.setMotion(new Vec3d(pkt.x, pkt.y, pkt.z));
+	        player.setMotion(new Vector3d(pkt.x, pkt.y, pkt.z));
 		}
 	}       
 }

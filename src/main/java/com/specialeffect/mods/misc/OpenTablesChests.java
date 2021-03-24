@@ -11,6 +11,8 @@
 
 package com.specialeffect.mods.misc;
 
+import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.Vector3i;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.ActivateBlockAtPosition;
@@ -27,7 +29,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -90,7 +91,7 @@ extends ChildMod implements ChildModWithConfig
 	    				// Check if block is appropriate class
 	    				Block block = world.getBlockState(blockPos).getBlock();
 	    				if (classType.isInstance(block)) {
-	    					double distSq = playerPos.distanceSq(new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+	    					double distSq = playerPos.distanceSq(new Vector3i(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
 	    					if (distSq < closestDistanceSq) {
 	    						closestBlockPos = blockPos;
 	    						closestDistanceSq = distSq;
@@ -123,7 +124,7 @@ extends ChildMod implements ChildModWithConfig
 			// Ask server to open 
 			if (null == closestBlockPos) {
 				player.sendMessage(new StringTextComponent(
-						"No chests found in range"));
+						"No chests found in range"), Util.DUMMY_UUID);
 			}
 			else {
                 channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));
@@ -139,7 +140,7 @@ extends ChildMod implements ChildModWithConfig
 			// Ask server to open 
 			if (null == closestBlockPos) {
 				player.sendMessage(new StringTextComponent(
-						"No crafting tables found in range"));
+						"No crafting tables found in range"), Util.DUMMY_UUID);
 			}
 			else {
 				channel.sendToServer(new ActivateBlockAtPosition(closestBlockPos));

@@ -154,9 +154,9 @@ public class AutoPillar extends ChildMod {
 					// Also look down, purely for effect.
 
 					double jumpHeight = 1.5;
-					double x = Math.floor(player.posX) + 0.4;
-					double y = Math.floor(player.posY);
-					double z = Math.floor(player.posZ) + 0.4;
+					double x = Math.floor(player.getPosX()) + 0.4;
+					double y = Math.floor(player.getPosY());
+					double z = Math.floor(player.getPosZ()) + 0.4;
 
 					channel.sendToServer(new SetPositionAndRotationMessage(player.getName().toString(), x,
 							y + jumpHeight, z, player.rotationYaw, pillarPitch));
@@ -178,8 +178,8 @@ public class AutoPillar extends ChildMod {
 					public void onClientTick(ClientTickEvent event) {
 						PlayerEntity player = Minecraft.getInstance().player;
 
-						channel.sendToServer(new SetPositionAndRotationMessage(player.getName().toString(), player.posX,
-								player.posY, player.posZ, player.rotationYaw, pillarPitch - deltaPitch * j));
+						channel.sendToServer(new SetPositionAndRotationMessage(player.getName().toString(), player.getPosX(),
+								player.getPosY(), player.getPosZ(), player.rotationYaw, pillarPitch - deltaPitch * j));
 					}
 				}, 1 + 2 * j));
 			}

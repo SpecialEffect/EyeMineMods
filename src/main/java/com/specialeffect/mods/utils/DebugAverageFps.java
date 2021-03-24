@@ -41,7 +41,7 @@ public class DebugAverageFps extends ChildMod
     	if (null != player && event.phase == TickEvent.Phase.START) {
 			mTickCount++;
 			
-			int currFps = Minecraft.getDebugFPS();
+			int currFps = Minecraft.debugFPS; //getDebugFPS() is gone. AT-ed to make debugFPS accessible
 			mPrevFps.add(currFps);
 			
 			if (mPrevFps.size() > mAveragingPeriod) {

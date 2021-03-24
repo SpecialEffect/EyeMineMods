@@ -42,7 +42,7 @@ public class DismountPlayerMessage {
 				
 				if (null != riddenEntity) {
 					player.stopRiding();
-					player.dismountEntity(riddenEntity);			
+					player.func_233628_a_(riddenEntity); //dismountEntity became the private func_233628_a_? AT-ed it public
 					player.jump();
 				}
 			}

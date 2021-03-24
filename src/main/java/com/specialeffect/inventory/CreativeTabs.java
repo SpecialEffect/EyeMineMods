@@ -12,6 +12,8 @@
 package com.specialeffect.inventory;
 
 
+import net.minecraftforge.fml.ExtensionPoint;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -48,7 +50,13 @@ public class CreativeTabs
 		InventoryConfig.loadConfig(InventoryConfig.CLIENT_CONFIG,
 				FMLPaths.CONFIGDIR.get().resolve("eyemine-inventory-config.toml"));
 				
-		MinecraftForge.EVENT_BUS.register(this);					
+		MinecraftForge.EVENT_BUS.register(this);
+
+		//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()-> Pair.of(
+				() -> "Everyone is valid", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
+				(remoteversionstring, networkbool) -> networkbool // i accept anything from the server, by returning true if it's asking about the server
+		));
 	}
 
 

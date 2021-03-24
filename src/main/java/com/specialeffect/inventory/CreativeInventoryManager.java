@@ -35,7 +35,7 @@ public class CreativeInventoryManager {
 	/**
 	 * Creates a new Inventory Manager with the given container.
 	 *
-	 * @param container The container from a crafting GUI
+	 * @param /container The container from a crafting GUI
 	 */
 	private CreativeInventoryManager() {
 	}
@@ -44,7 +44,7 @@ public class CreativeInventoryManager {
 	 * Returns a Inventory Manager Instance operating on the given container
 	 * @param creativeContainer 
 	 *
-	 * @param container A container from a GUI
+	 * @param creativeContainer A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static CreativeInventoryManager getInstance(int left, int top, 
@@ -130,8 +130,8 @@ public class CreativeInventoryManager {
 		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
-		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
+		this.xScale = (float) (mc.getMainWindow().getWidth())/(float)mc.getMainWindow().getScaledWidth();
+		this.yScale = (float) (mc.getMainWindow().getHeight())/(float)mc.getMainWindow().getScaledHeight();
 	}
 	
 	private void updateItemPos() {
@@ -242,7 +242,7 @@ public class CreativeInventoryManager {
 		int yPos = containerTop + itemRow*itemWidth;
 		int xPos = containerLeft + itemCol*itemWidth;
 		
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), xPos*this.xScale, yPos*this.yScale);
 	}
 	
 	private void switchToTab(int iTab) {
@@ -320,7 +320,7 @@ public class CreativeInventoryManager {
 			// the same tab again (otherwise this gets missed)
 			this.onTabChanged();
 			
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), xPos*this.xScale, yPos*this.yScale);
 		}	
 	}
 		

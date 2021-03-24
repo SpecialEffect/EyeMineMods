@@ -13,6 +13,7 @@ package com.specialeffect.mods.mining;
 
 import java.util.ArrayList;
 
+import net.minecraft.util.math.vector.Vector3i;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.messages.GatherBlockMessage;
@@ -27,7 +28,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -81,8 +81,8 @@ public class GatherDrops  extends ChildMod
 		double dx, dy, dz;
 		dx = dy = dz = 5;
 
-		AxisAlignedBB aaBb = new AxisAlignedBB(playerPos.subtract(new Vec3i(dx, dy, dz)), 
-				playerPos.add(new Vec3i(dx, dy, dz)));
+		AxisAlignedBB aaBb = new AxisAlignedBB(playerPos.subtract(new Vector3i(dx, dy, dz)),
+				playerPos.add(new Vector3i(dx, dy, dz)));
 		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)world.getEntitiesWithinAABB(ItemEntity.class,aaBb);
 
 		if(items != null && !items.isEmpty()) {

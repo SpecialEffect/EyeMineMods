@@ -11,6 +11,7 @@
 
 package com.specialeffect.mods.misc;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.specialeffect.mods.ChildMod;
 import com.specialeffect.utils.ModUtils;
 
@@ -178,10 +179,11 @@ public class NightVisionHelper extends ChildMod {
 	public void onRenderExperienceBar(RenderGameOverlayEvent event)
 	{		
 		if (mShowMessage) {
+			MatrixStack matrixStack = event.getMatrixStack();
 			Minecraft mc = Minecraft.getInstance();
 			
-			int w = mc.mainWindow.getScaledWidth();
-			int h = mc.mainWindow.getScaledHeight();
+			int w = mc.getMainWindow().getScaledWidth();
+			int h = mc.getMainWindow().getScaledHeight();
 			
 			String msg1 = "You are in the dark!";
 			String msg2 = "To turn on night vision, use the EyeMine keyboard or press F12";
@@ -190,15 +192,15 @@ public class NightVisionHelper extends ChildMod {
 			FontRenderer font = mc.fontRenderer;
 			
 			int y = h/5;
-			drawCenteredString(font, msg1, w/2,      y, 0xffffff);
-			drawCenteredString(font, msg2, w/2, y + 20, 0xffffff);
-			drawCenteredString(font, msg3, w/2, y + 40, 0xffffff);
+			drawCenteredString(matrixStack, font, msg1, w/2,      y, 0xffffff);
+			drawCenteredString(matrixStack, font, msg2, w/2, y + 20, 0xffffff);
+			drawCenteredString(matrixStack, font, msg3, w/2, y + 40, 0xffffff);
 		}
 	}
 	
-	private void drawCenteredString(FontRenderer font, String msg, int x, int y, int c) {
+	private void drawCenteredString(MatrixStack matrixStack, FontRenderer font, String msg, int x, int y, int c) {
 		int stringWidth = font.getStringWidth(msg);		
-        font.drawStringWithShadow(msg, x - stringWidth/2, y, c);        
+        font.drawStringWithShadow(matrixStack, msg, x - stringWidth/2, y, c);
 	}
 
 	@SubscribeEvent

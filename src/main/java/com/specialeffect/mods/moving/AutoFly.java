@@ -11,6 +11,8 @@
 
 package com.specialeffect.mods.moving;
 
+import net.minecraft.util.Util;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.StateOverlay;
@@ -27,7 +29,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
@@ -92,7 +93,7 @@ extends ChildMod implements ChildModWithConfig
 			// If auto flying, and about to bump into something, fly more!
 			if (mIsFlyingAuto && player.abilities.allowFlying && player.abilities.isFlying) {
 				BlockPos playerPos = player.getPosition();
-				Vec3d lookVec = player.getLookVec();
+				Vector3d lookVec = player.getLookVec();
 
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {
@@ -104,8 +105,8 @@ extends ChildMod implements ChildModWithConfig
 									
 					// If there's a block in your way, and you're not already jumping over it...
 					
-					Vec3d motion = player.getMotion();
-					Vec3d addMotion = new Vec3d(0.0, Math.max(mFlyHeightAuto / 4, 1), 0.0);
+					Vector3d motion = player.getMotion();
+					Vector3d addMotion = new Vector3d(0.0, Math.max(mFlyHeightAuto / 4, 1), 0.0);
 					if (world.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMovement() &&
 							motion.y == 0) {
 	    				player.setMotion(motion.add(addMotion));
@@ -167,7 +168,7 @@ extends ChildMod implements ChildModWithConfig
 				
 		if (!player.abilities.allowFlying) {
 			player.sendMessage(new StringTextComponent(
-					"Player unable to fly"));
+					"Player unable to fly"), Util.DUMMY_UUID);
 			return;
 		}		
 	
@@ -181,7 +182,7 @@ extends ChildMod implements ChildModWithConfig
 			if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
 			if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
 			
-			player.move(MoverType.SELF, new Vec3d(0, flyHeight, 0));
+			player.move(MoverType.SELF, new Vector3d(0, flyHeight, 0));
 		}
 		
 		channel.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
@@ -195,12 +196,12 @@ extends ChildMod implements ChildModWithConfig
 				
 		if (!player.abilities.allowFlying) {
 			player.sendMessage(new StringTextComponent(
-					"Player unable to fly"));
+					"Player unable to fly"), Util.DUMMY_UUID);
 			return;
 		}		
 		if (!mIsFlyingAuto && !mIsFlyingManual) {
 			player.sendMessage(new StringTextComponent(
-					"Player not flying"));
+					"Player not flying"), Util.DUMMY_UUID);
 			return;
 		}	
 
@@ -209,7 +210,7 @@ extends ChildMod implements ChildModWithConfig
 		if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
 		if (mIsFlyingManual) { flyHeight = mFlyHeightManual; }
 				
-		player.move(MoverType.SELF, new Vec3d(0, -flyHeight, 0));	 
+		player.move(MoverType.SELF, new Vector3d(0, -flyHeight, 0));	 
 
 	}
 

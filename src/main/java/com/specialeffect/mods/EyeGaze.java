@@ -128,12 +128,14 @@ public class EyeGaze {
 			// (this way the children will be fully set up before any config gets loaded)
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 	        
-			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible				
-			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
-			
+			//Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+			ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
+					() -> "Everyone is valid", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
+					(remoteversionstring, networkbool) -> networkbool // i accept anything from the server, by returning true if it's asking about the server
+					));
+
             // Hook up config gui
             ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> this::openSettings);
-
 		});
 	}
 	
@@ -152,13 +154,13 @@ public class EyeGaze {
 		if (event.getGui() instanceof MainMenuScreen && !(event.getGui() instanceof CustomMainMenu)) {
 			event.setGui(new CustomMainMenu());
 		}
-		if (event.getGui() instanceof CreateWorldScreen && !(event.getGui() instanceof CustomCreateWorldScreen)) {
-			if (!allowMoreOptions) {
-				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
-			}
-			allowMoreOptions = false;
-		}
+//		if (event.getGui() instanceof CreateWorldScreen && !(event.getGui() instanceof CustomCreateWorldScreen)) { TODO: Actually port the Custom Create World Screen
+//			if (!allowMoreOptions) {
+//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+//				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
+//			}
+//			allowMoreOptions = false;
+//		}
 		if (event.getGui() instanceof CreativeScreen) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
 			CreativeScreen gui = (CreativeScreen)event.getGui() ;
@@ -244,7 +246,7 @@ public class EyeGaze {
     private void setupChildMod(ChildMod mod) {
         MinecraftForge.EVENT_BUS.register(mod);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(mod::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().register(this); // for @SubscribeEvent annotations ??
+//		FMLJavaModLoadingContext.get().getModEventBus().register(this); // for @SubscribeEvent annotations ??
 
         children.add(mod);        
     }

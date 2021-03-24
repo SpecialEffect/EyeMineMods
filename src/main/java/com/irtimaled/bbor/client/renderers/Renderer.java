@@ -68,7 +68,7 @@ public class Renderer {
         return this;
     }
 
-    public Renderer addPoint(double x, double y, double z, double u, double v) {
+    public Renderer addPoint(double x, double y, double z, float u, float v) {
         pos(x, y, z);
         tex(u, v);
         color();
@@ -84,7 +84,7 @@ public class Renderer {
         bufferBuilder.pos(x, y, z);
     }
 
-    private void tex(double u, double v) {
+    private void tex(float u, float v) {
         bufferBuilder.tex(u, v);
     }
 

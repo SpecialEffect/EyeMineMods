@@ -107,7 +107,7 @@ implements ChildModWithConfig
 				
 				// Y gives distance to walk forward/back.
 				float walkForwardAmount = 0.0f;
-				float h = (float)Minecraft.getInstance().mainWindow.getScaledHeight();    			    		
+				float h = (float)Minecraft.getInstance().getMainWindow().getScaledHeight();
 				float h6 = h/6.0f;
 				
 				if (lastMouseY < -h6) {

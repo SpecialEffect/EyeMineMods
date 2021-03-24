@@ -1,21 +1,10 @@
 package at.feldim2425.moreoverlays.gui.config;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-
-import at.feldim2425.moreoverlays.gui.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.INestedGuiEventHandler;
@@ -23,6 +12,16 @@ import net.minecraft.client.gui.widget.list.AbstractOptionList;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // TODO: As I wrote this system I noticed, that the way AbstractOptionList renders items and passes events is not optimal for this purpose
 // Rendering is done in one pass therefore Tooltips will usually be rendered below other items further down and events are only passed
@@ -74,16 +73,15 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
     	this.updateSize(this.parent.width, this.parent.height, 43, this.parent.height - 32);
     }
 
-
     @Override
-    protected void renderDecorations(int p_renderDecorations_1_, int p_renderDecorations_2_) {
+    protected void renderDecorations(MatrixStack matrixStack, int p_renderDecorations_1_, int p_renderDecorations_2_) {
         int i = this.getItemCount();
         for(int j = 0; j < i; ++j) {
             int k = this.getRowTop(j);
             int l = this.getRowTop(j) + ITEM_HEIGHT;
             if (l >= this.y0 && k <= this.y1) {
                 ConfigOptionList.OptionEntry e = this.getEntry(j);
-                e.runRenderTooltip();
+                e.runRenderTooltip(matrixStack);
             }
         }
     }
@@ -180,9 +178,9 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         boolean flag = super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
         OptionEntry selected = this.getEntryAtPosition(p_mouseClicked_1_, p_mouseClicked_3_);
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             if(entry != selected){
-                entry.setFocused(null);
+                entry.setListener(null);
             }
         }
         
@@ -216,7 +214,7 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
                 this.addEntry(new OptionGeneric<>(this, (ForgeConfigSpec.ConfigValue<?>)cEntry.getValue(), (ForgeConfigSpec.ValueSpec)rootConfig.getSpec().get(fullPath)));
             }
         }
-        this.setFocused(null);
+        this.setListener(null);
     }
 
     public List<String> getCurrentPath() {
@@ -233,7 +231,7 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
 
     public boolean isSaveable(){
         boolean hasChanges = false;
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             if(!entry.isValid()){
                 return false;
             }
@@ -244,7 +242,7 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
 
     public boolean isResettable(){
         boolean resettable = false;
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             resettable = resettable || entry.isResettable();
         }
         return resettable;
@@ -252,26 +250,26 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
 
     public boolean isUndoable(){
         boolean hasChanges = false;
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             hasChanges = hasChanges || entry.hasChanges();
         }
         return hasChanges;
     }
 
     public void reset(){
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             entry.reset();
         }
     }
 
     public void undo(){
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
             entry.undo();
         }
     }
 
     public void save() {
-        for(final OptionEntry entry : this.children()){
+        for(final OptionEntry entry : this.getEventListeners()){
         	if (entry.isValid()) {
         		entry.save();
         	}
@@ -291,7 +289,7 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
         }
 
         @Override
-        public void render(int itemindex, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
+        public void render(MatrixStack matrixStack, int itemindex, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
                 boolean mouseOver, float partialTick) {
             this.rowTop = rowTop;
             this.rowLeft = rowLeft;
@@ -304,12 +302,12 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
             mouseX -= rowLeft;
             mouseY -= rowTop;
             GlStateManager.translatef(rowLeft, rowTop, 0);
-            renderControls(rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
+            renderControls(matrixStack, rowTop, rowLeft, rowWidth, itemHeight, mouseX, mouseY, mouseOver, partialTick);
             
             GlStateManager.translatef(-rowLeft, -rowTop, 0);
         }
 
-        protected abstract void renderControls(int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
+        protected abstract void renderControls(MatrixStack matrixStack, int rowTop, int rowLeft, int rowWidth, int itemHeight, int mouseX, int mouseY,
         boolean mouseOver, float partialTick);
 
         /*
@@ -319,19 +317,19 @@ public class ConfigOptionList extends AbstractOptionList<ConfigOptionList.Option
          * Not the best way but AbstractOptionList doesn't seem to have any better hooks to do that.
          * A custom Implementation would be better but I'm too lazy to do that
          */
-        public void runRenderTooltip(){
+        public void runRenderTooltip(MatrixStack matrixStack){
             if(this.mouseOver){
-                this.renderTooltip(this.rowTop, this.rowLeft, this.rowWidth, this.itemHeight, this.mouseX, this.mouseY);
+                this.renderTooltip(matrixStack, this.rowTop, this.rowLeft, this.rowWidth, this.itemHeight, this.mouseX, this.mouseY);
                 RenderHelper.disableStandardItemLighting();
                 GlStateManager.disableLighting();
             }
         }
 
-        protected void renderTooltip(int rowTop, int rowLeft, int rowWidth, int itemHeight,int mouseX, int mouseY){
+        protected void renderTooltip(MatrixStack stack, int rowTop, int rowLeft, int rowWidth, int itemHeight,int mouseX, int mouseY){
         }
 
         @Override
-        public List<? extends IGuiEventListener> children() {
+        public List<? extends IGuiEventListener> getEventListeners() {
             return Collections.emptyList();
         }
 
