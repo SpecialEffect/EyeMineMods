@@ -11,6 +11,7 @@
 
 package com.specialeffect.mods.mining;
 
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.EyeMineConfig;
@@ -73,7 +74,7 @@ extends DwellAction
     			// Swords can't destroy blocks: warn user
     			if (player.getHeldItemMainhand().getItem() instanceof SwordItem) {
     				String message = "Can't destroy blocks with a sword, please select another item";
-			        player.sendMessage(new StringTextComponent(message));
+			        player.sendMessage(new StringTextComponent(message), Util.DUMMY_UUID);
 			        
     				this.stopDestroying();
     				return;

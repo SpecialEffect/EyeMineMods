@@ -11,13 +11,14 @@
 
 package com.specialeffect.mods;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.function.Predicate;
 
 public class ChildMod {
 	
@@ -32,13 +33,13 @@ public class ChildMod {
 	
 	protected void setupChannel(String modid, int protocolVersion) {
 		String PROTOCOL_VERSION = Integer.toString(protocolVersion);
+		Predicate<String> validator = v -> PROTOCOL_VERSION.equals(v) || NetworkRegistry.ABSENT.equals(v) || NetworkRegistry.ACCEPTVANILLA.equals(v);
 
-		channel = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation("specialeffect", modid)
-                ,() -> PROTOCOL_VERSION
-                , PROTOCOL_VERSION::equals
-                , PROTOCOL_VERSION::equals);
-
+		channel = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("specialeffect", modid))
+				.clientAcceptedVersions(validator)
+				.serverAcceptedVersions(validator)
+				.networkProtocolVersion(() -> PROTOCOL_VERSION)
+				.simpleChannel();
 	}
 	
 //	public void onKeyInput(KeyInputEvent event);    	

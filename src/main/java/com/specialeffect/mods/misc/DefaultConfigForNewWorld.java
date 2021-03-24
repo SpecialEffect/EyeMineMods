@@ -30,7 +30,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameType;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -117,26 +118,29 @@ public class DefaultConfigForNewWorld extends ChildMod {
         
     	LOGGER.debug("onWorldLoad: " + alwaysDayTimeSetting + ", " + alwaysSunnySetting + ", " + keepInventorySetting);
     	     
-        IWorld world = event.getWorld();
-        MinecraftServer server = world.getWorld().getServer();
-        WorldInfo info = world.getWorldInfo();
-        GameRules rules = info.getGameRulesInstance();
-		 	   
-        if (info.getGameTime() < 60) {
-        	// First time loading, set rules according to user preference		
-        	if (info.getGameType() == GameType.CREATIVE) {
-				rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(!alwaysDayTimeSetting, server);		
-				rules.get(GameRules.DO_WEATHER_CYCLE).set(!alwaysSunnySetting, server);				
-				rules.get(GameRules.KEEP_INVENTORY).set(keepInventorySetting, server);
-			
-				// Extra settings as a result of the above
-				if (alwaysDayTimeSetting) {
-				    // we've just turned off daylightcycle while time = morning... 
-			        // we prefer full daylight!
-					info.setDayTime(2000);
-				}
-        	}
-        }	         
+        IWorld eventWorld = event.getWorld();
+        if(eventWorld instanceof World) {
+            World world = (World)eventWorld;
+            MinecraftServer server = world.getServer();
+            IWorldInfo info = world.getWorldInfo();
+            GameRules rules = info.getGameRulesInstance();
+
+            if (info.getGameTime() < 60) {
+                // First time loading, set rules according to user preference
+                if (server != null && server.getGameType() == GameType.CREATIVE) {
+                    rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(!alwaysDayTimeSetting, server);
+                    rules.get(GameRules.DO_WEATHER_CYCLE).set(!alwaysSunnySetting, server);
+                    rules.get(GameRules.KEEP_INVENTORY).set(keepInventorySetting, server);
+
+                    // Extra settings as a result of the above
+                    if (alwaysDayTimeSetting) {
+                        // we've just turned off daylightcycle while time = morning...
+                        // we prefer full daylight!
+                        server.getServerConfiguration().getServerWorldInfo().setDayTime(2000);
+                    }
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unused")

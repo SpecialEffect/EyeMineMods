@@ -11,6 +11,7 @@
 
 package com.specialeffect.mods.misc;
 
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.utils.DwellAction;
@@ -82,7 +83,7 @@ extends DwellAction {
 				// Turn on dwell build 						
 				ItemStack itemStack = player.inventory.getCurrentItem();
 				if (itemStack == null || itemStack.getItem() == null) {
-			        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
+			        player.sendMessage(new StringTextComponent("Nothing in hand to use"), Util.DUMMY_UUID);
 			        return;
 				}
 		        						
@@ -96,7 +97,7 @@ extends DwellAction {
 			// Turn on dwell once 						
 			ItemStack itemStack = player.inventory.getCurrentItem();
 			if (itemStack == null || itemStack.getItem() == null) {
-		        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
+		        player.sendMessage(new StringTextComponent("Nothing in hand to use"), Util.DUMMY_UUID);
 		        return;
 			}
 	        						

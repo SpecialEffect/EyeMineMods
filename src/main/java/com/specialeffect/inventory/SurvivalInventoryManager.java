@@ -39,7 +39,7 @@ public class SurvivalInventoryManager {
 	/**
 	 * Creates a new Inventory Manager with the given container.
 	 *
-	 * @param container The container from a crafting GUI
+	 * @param /container The container from a crafting GUI
 	 */
 	private SurvivalInventoryManager() {
 	}
@@ -48,7 +48,7 @@ public class SurvivalInventoryManager {
 	 * Returns a Inventory Manager Instance operating on the given container
 	 * @param playerContainer 
 	 *
-	 * @param container A container from a GUI
+	 * @param playerContainer A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static SurvivalInventoryManager getInstance(int left, int top, 
@@ -101,37 +101,37 @@ public class SurvivalInventoryManager {
 		int inventoryWidth = width;
 		this.left = left;
 		this.top = top;
-		
-		this.playerContainer = playerContainer;				
-		
+
+		this.playerContainer = playerContainer;
+
 		this.tabHeight = (int) (inventoryWidth/6.9);
-		this.itemWidth = (int) (inventoryWidth/9.5);		
+		this.itemWidth = (int) (inventoryWidth/9.5);
 		this.topTapYPos = top + tabHeight/2;
 		this.tabXPos = left-inventoryWidth;
-		
+
 		this.topItemYPos = (int) (top + itemWidth*1.5);
 		this.leftItemXPos = (int) (left + itemWidth*0.9);
-		
+
 		this.recipeX = (int) (inventoryWidth*0.65);
 		this.recipeY = (int) (inventoryWidth*0.4);
-		
+
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
-		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();		
-		
+		this.xScale = (float) (mc.getMainWindow().getWidth())/(float)mc.getMainWindow().getScaledWidth();
+		this.yScale = (float) (mc.getMainWindow().getHeight())/(float)mc.getMainWindow().getScaledHeight();
+
 
 		List<Slot> slots = playerContainer.inventorySlots;
 		int iSlotOutput = playerContainer.getOutputSlot();
-		
+
 		for (Slot slot : slots) {
-	
+
 			LOGGER.debug(slot.xPos+ ", "+ slot.yPos);
 		}
 		this.processSlots();
-		
+
 		int a = 2;
-		
+
 	}
 	
 	private void processSlots() {
@@ -278,7 +278,7 @@ public class SurvivalInventoryManager {
 		int yPos = topItemYPos + itemRow*itemWidth;
 		int xPos = leftItemXPos + itemCol*itemWidth;
 		
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), xPos*this.xScale, yPos*this.yScale);
 	}
 	
 	private void switchToTab(int iTab) {

@@ -92,10 +92,10 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 		
 		// Set up mouse helper to handle view control
 		ownMouseHelper = new MouseHelperOwn(Minecraft.getInstance());
-		Minecraft.getInstance().mouseHelper = (MouseHelper)ownMouseHelper;
+		Minecraft.getInstance().mouseHelper = (MouseHelper)ownMouseHelper; //mouseHelper became final. Removed final using AT
 		
 		// Re-bind GLFW callbacks to new helper		
-		long window = Minecraft.getInstance().mainWindow.getHandle();
+		long window = Minecraft.getInstance().getMainWindow().getHandle();
 		ownMouseHelper.registerCallbacks(window);
 		
 		// Turn off raw mouse input: this wreaks havoc with gaze-provided cursor movements! 
@@ -288,13 +288,13 @@ public class MouseHandler  extends ChildMod implements ChildModWithConfig {
 	}
 	
 	private void setEmptyCursor() {
-		GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), 
+		GLFW.glfwSetInputMode(Minecraft.getInstance().getMainWindow().getHandle(),
 								GLFW.GLFW_CURSOR, 
 								GLFW.GLFW_CURSOR_HIDDEN);
 	}
 	
 	private void setNativeCursor() {
-		GLFW.glfwSetInputMode(Minecraft.getInstance().mainWindow.getHandle(), 
+		GLFW.glfwSetInputMode(Minecraft.getInstance().getMainWindow().getHandle(),
 								GLFW.GLFW_CURSOR, 
 								GLFW.GLFW_CURSOR_NORMAL);
 	}	

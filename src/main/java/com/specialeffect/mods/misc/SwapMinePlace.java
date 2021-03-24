@@ -11,6 +11,7 @@
 
 package com.specialeffect.mods.misc;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.ChildMod;
@@ -87,8 +88,9 @@ public class SwapMinePlace  extends ChildMod {
 			if (attackBinding.getKey().getKeyCode() == useDefault.getKeyCode() &&
 					useBinding.getKey().getKeyCode() == attackDefault.getKeyCode()) {
 				Minecraft mc = Minecraft.getInstance();
-				int w = mc.mainWindow.getScaledWidth();
-				int h = mc.mainWindow.getScaledHeight();
+				int w = mc.getMainWindow().getScaledWidth();
+				int h = mc.getMainWindow().getScaledHeight();
+				MatrixStack matrixStack = event.getMatrixStack();
 				
 				
 				String msg1 = "Mine / place";
@@ -98,8 +100,8 @@ public class SwapMinePlace  extends ChildMod {
 				
 				int delta = (msg1width - msg2width)/2;
 			    
-			    mc.fontRenderer.drawStringWithShadow(msg1, w - msg2width - delta - 10 , h - 22, 0xffFFFFFF);
-			    mc.fontRenderer.drawStringWithShadow(msg2, w - msg2width - 10 , h - 12, 0xffFFFFFF);
+			    mc.fontRenderer.drawStringWithShadow(matrixStack, msg1, w - msg2width - delta - 10 , h - 22, 0xffFFFFFF);
+			    mc.fontRenderer.drawStringWithShadow(matrixStack, msg2, w - msg2width - 10 , h - 12, 0xffFFFFFF);
 			    
 			}			
 		}

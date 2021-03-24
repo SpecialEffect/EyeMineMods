@@ -38,7 +38,7 @@ public class ChestInventoryManager {
 	/**
 	 * Creates a new Inventory Manager with the given container.
 	 *
-	 * @param container The container from a crafting GUI
+	 * @param //container The container from a crafting GUI
 	 */
 	private ChestInventoryManager() {
 	}
@@ -47,7 +47,7 @@ public class ChestInventoryManager {
 	 * Returns a Inventory Manager Instance operating on the given container
 	 * @param chestContainer 
 	 *
-	 * @param container A container from a GUI
+	 * @param chestContainer A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static ChestInventoryManager getInstance(int left, int top, 
@@ -101,8 +101,8 @@ public class ChestInventoryManager {
 		
 		// Sizes need scaling before turning into click locations
 		Minecraft mc = Minecraft.getInstance();
-		this.xScale = (float) (mc.mainWindow.getWidth())/(float)mc.mainWindow.getScaledWidth();
-		this.yScale = (float) (mc.mainWindow.getHeight())/(float)mc.mainWindow.getScaledHeight();						
+		this.xScale = (float) (mc.getMainWindow().getWidth())/(float)mc.getMainWindow().getScaledWidth();
+		this.yScale = (float) (mc.getMainWindow().getHeight())/(float)mc.getMainWindow().getScaledHeight();
 	}
 	
 		
@@ -112,7 +112,6 @@ public class ChestInventoryManager {
 		
 		MouseHelperOwn helper = (MouseHelperOwn)Minecraft.getInstance().mouseHelper;
 		helper.leftMouseClickAtPosition(xPos*this.xScale, yPos*this.yScale);
-				
 	}
 	
 	public void shiftClickItem() {
@@ -171,6 +170,6 @@ public class ChestInventoryManager {
 		int yPos = containerTop + itemRow*itemWidth;
 		int xPos = containerLeft + itemCol*itemWidth;
 		
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().mainWindow.getHandle(), xPos*this.xScale, yPos*this.yScale);		
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().getMainWindow().getHandle(), xPos*this.xScale, yPos*this.yScale);
 	}
 }

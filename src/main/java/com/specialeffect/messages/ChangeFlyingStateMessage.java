@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class ChangeFlyingStateMessage {
@@ -54,10 +54,10 @@ public class ChangeFlyingStateMessage {
     		if (player.abilities.allowFlying) {
     			if (pkt.shouldBeFlying) {
     				player.abilities.isFlying = true;    				
-    				Vec3d motion = player.getMotion();
-    				Vec3d addMotion = new Vec3d(0, pkt.flyHeight, 0);    				
+    				Vector3d motion = player.getMotion();
+    				Vector3d addMotion = new Vector3d(0, pkt.flyHeight, 0);
     				player.setMotion(motion.add(addMotion));
-					player.move(MoverType.SELF, new Vec3d(0, pkt.flyHeight, 0));
+					player.move(MoverType.SELF, new Vector3d(0, pkt.flyHeight, 0));
     			}
     			else {
     				player.abilities.isFlying = false;

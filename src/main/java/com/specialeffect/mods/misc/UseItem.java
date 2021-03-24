@@ -11,6 +11,8 @@
 
 package com.specialeffect.mods.misc;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.mods.EyeMineConfig;
@@ -143,7 +145,7 @@ extends DwellAction {
 						
 				ItemStack itemStack = player.inventory.getCurrentItem();
 				if (itemStack == null || itemStack.getItem() == null) {
-			        player.sendMessage(new StringTextComponent("Nothing in hand to use"));
+			        player.sendMessage(new StringTextComponent("Nothing in hand to use"), Util.DUMMY_UUID);
 			        return;
 				}
 
@@ -204,14 +206,15 @@ extends DwellAction {
 		
 		// If use-item is on, show a warning message
 		if (mUsingItem) {
+			MatrixStack matrixStack = event.getMatrixStack();
 			String msg = "USING";
 			Minecraft mc = Minecraft.getInstance();
-			int w = mc.mainWindow.getScaledWidth();
-			int h = mc.mainWindow.getScaledHeight();
+			int w = mc.getMainWindow().getScaledWidth();
+			int h = mc.getMainWindow().getScaledHeight();
 						
 			int msgWidth = mc.fontRenderer.getStringWidth(msg);
 		    
-		    mc.fontRenderer.drawStringWithShadow(msg, w/2 - msgWidth/2, h/2 - 20, 0xffFFFFFF);		    		    
+		    mc.fontRenderer.drawStringWithShadow(matrixStack, msg, w/2 - msgWidth/2, h/2 - 20, 0xffFFFFFF);
 		}
 		
 	}

@@ -99,7 +99,7 @@ public class Swim extends ChildMod {
 				}
 				
 				// Switch off when on land
-				else if ((player.onGround || isPlayerInAir(player)) &&
+				else if ((player.isOnGround() || isPlayerInAir(player)) &&
 						  swimBinding.isKeyDown()) {
 
 					if (mJumpKeyOverridden) {

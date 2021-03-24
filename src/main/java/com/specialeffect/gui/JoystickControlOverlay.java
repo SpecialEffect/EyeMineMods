@@ -11,6 +11,7 @@
 
 package com.specialeffect.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GLX;
@@ -54,18 +55,20 @@ public class JoystickControlOverlay {
 			return;
 		}
 		
-		if (mVisible && mAlpha > 0.0f) {	
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		if (mVisible && mAlpha > 0.0f) {
+			GlStateManager.enableBlend();
+//	        GL11.glEnable(GL11.GL_BLEND);
+			GlStateManager.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+//	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 	        
 			int w = event.getWindow().getScaledWidth();
 			int h = event.getWindow().getScaledHeight();			
 			
 			Minecraft.getInstance().getTextureManager().bindTexture(mResource);			
 			ModUtils.drawTexQuad(0, 0, w, h, mAlpha);
-			
-	        GL11.glDisable(GL11.GL_BLEND);	        
 
+			GlStateManager.disableBlend();
+//	        GL11.glDisable(GL11.GL_BLEND);
 		}
 	}
 }

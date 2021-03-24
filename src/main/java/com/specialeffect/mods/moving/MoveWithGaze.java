@@ -16,8 +16,9 @@ import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import javax.vecmath.Vector2d;
+//import javax.vecmath.Vector2d;
 
+import net.minecraft.util.math.vector.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.gui.StateOverlay;
@@ -49,7 +50,7 @@ import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -98,7 +99,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 				CommonStrings.EYEGAZE_SETTINGS);
 		ClientRegistry.registerKeyBinding(mDecreaseWalkSpeedKB);
 
-		mPrevLookDirs = new LinkedBlockingQueue<Vec3d>();
+		mPrevLookDirs = new LinkedBlockingQueue<Vector3d>();
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("specialeffect:icons/walk.png");
@@ -161,8 +162,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
              	if (EyeMineConfig.allowLadderDescent.get() && player.isOnLadder()) {
     				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
     				// ladder okay.
-    				if ((player.onGround && player.rotationPitch > 30) ||
-    				    (!player.onGround && player.rotationPitch > 0)) {    	
+    				if ((player.isOnGround() && player.rotationPitch > 30) ||
+    				    (!player.isOnGround() && player.rotationPitch > 0)) {
     	            	ownMovementInput.setWalkOverride(false, 0.0f);            	
     					return;
             		}
@@ -182,12 +183,13 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 					// Check the blocks around the player
 			    	World world = Minecraft.getInstance().world;
 
-					Vec3d posVec = player.getPositionVector();
-					Vec3d forwardVec = player.getForward();
-					
-					Vector2d forward2d = new Vector2d(forwardVec.x, forwardVec.z);
-					forward2d.normalize();
-					
+					Vector3d posVec = player.getPositionVec();
+					Vector3d forwardVec = player.getForward();
+
+					//javax.vecmath.Vector2d is not available... let's use Vector2f and manually normalize the same way javax.vecmath.Vector2d did
+					double norm = (double) (1.0/Math.sqrt(forwardVec.x*forwardVec.x + forwardVec.y*forwardVec.y));
+					Vector2f forward2d = new Vector2f((float)(forwardVec.x * norm), (float)(forwardVec.y * norm));
+
 					BlockPos blockInFrontPos = new BlockPos(
 							posVec.x + forward2d.x,
 							posVec.y , //y is UP
@@ -253,8 +255,8 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 							}
 						}
 						else if (riddenEntity instanceof MinecartEntity) {
-							Vec3d motion3d = player.getLookVec();
-							Vec3d motionAligned = motion3d.mul(1.0, 0, 1.0);
+							Vector3d motion3d = player.getLookVec();
+							Vector3d motionAligned = motion3d.mul(1.0, 0, 1.0);
 							motionAligned.normalize();
 							
 							// Our movement override isn't enough to get cart moving
@@ -317,11 +319,11 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 		// - smooth out effect over time (e.g. keep slow-ish for a couple of ticks after
 		// movement).
 		double scalarLength = mPrevLookDirs.size();
-		Vec3d vectorSum = new Vec3d(0, 0, 0);
+		Vector3d vectorSum = new Vector3d(0, 0, 0);
 
 		// TODO: Sums could be done incrementally rather than looping over everything
 		// each time.
-		Iterator<Vec3d> iter = mPrevLookDirs.iterator();
+		Iterator<Vector3d> iter = mPrevLookDirs.iterator();
 		while (iter.hasNext()) {
 			vectorSum = vectorSum.add(iter.next());
 		}
@@ -336,7 +338,7 @@ public class MoveWithGaze  extends ChildMod implements ChildModWithConfig {
 	}
 
 	private static boolean mDoingAutoWalk = false;
-	private Queue<Vec3d> mPrevLookDirs;
+	private Queue<Vector3d> mPrevLookDirs;
 
 	public static void stop() {
 		if (mDoingAutoWalk) {
