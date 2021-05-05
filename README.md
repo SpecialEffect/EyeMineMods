@@ -1,6 +1,8 @@
 # EyeMineMods
 This repository contains the Minecraft mods used with [EyeMine](https://github.com/SpecialEffect/EyeMine), which provides a gaze-controlled keyboard for in-game actions.
 
+:warning: If you're a user of EyeMine you shouldn't need to view or use this repo, since everything is bundled into an installer at https://github.com/SpecialEffect/EyeMine/releases. This is only intended for developers or expert Minecraft users who are searching for alternate mod versions to manage themselves. 
+
 ## Information for users
 
 [**The EyeMine wiki**](https://github.com/SpecialEffect/EyeMine/wiki) contains full information on how to get started, system requirements, a user guide, demo videos, a troubleshooting page, and more.
