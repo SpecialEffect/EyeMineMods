@@ -19,7 +19,10 @@ A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **
 
 ## Information for developers
 
-These EyeMine mods currently support Minecraft Forge v1.11.2 (via the [eyemineClassic_mc1_11_2 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineClassic_mc1_11_2)) and Minecraft Forge v1.14.4 (via the [eyemineV2_mc1_14_4 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_14_4)).
+Code for different versions of Minecraft Forge can be found on different branches:
+- Minecraft Forge v1.11.2 (via the [eyemineClassic_mc1_11_2 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineClassic_mc1_11_2)) 
+- Minecraft Forge v1.14.4 (via the [eyemineV2_mc1_14_4 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_14_4)).
+- Minecraft Forge v1.16.5 (via the [eyemineV2_mc1_16_5 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_16_5)).
 
 All the code comprising EyeMine is GPL3 licensed. We would love contributions to port to other versions of Minecraft. If you're interested in doing this, please email eyemine@specialeffect.org.uk to let us know what you're working on!
 
