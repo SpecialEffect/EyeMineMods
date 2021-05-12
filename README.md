@@ -15,7 +15,7 @@ The **official** release of EyeMine currently supports Minecraft Forge **v1.14.4
 ### Other versions
 The original "classic" version of EyeMine works with Minecraft Forge **v1.11.2** and can be downloaded as a bundle from the [EyeMine wiki: Classic installation](https://github.com/SpecialEffect/EyeMine/wiki/%5BClassic%5D-Installation).
 
-A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **v1.16.5** and can be downloaded from ... 
+A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **v1.16.5** and can be downloaded from https://github.com/SpecialEffect/EyeMineMods/releases
 
 ## Information for developers
 
