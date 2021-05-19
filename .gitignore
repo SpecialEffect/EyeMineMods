@@ -10,3 +10,4 @@ run/**
 .classpath
 /.gradle/
 /build/
+logs
