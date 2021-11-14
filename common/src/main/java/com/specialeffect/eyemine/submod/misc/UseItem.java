@@ -19,12 +19,11 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -73,7 +72,7 @@ public class UseItem extends DwellAction {
 		));
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 		
 		this.syncConfig();		
 	}
@@ -129,10 +128,10 @@ public class UseItem extends DwellAction {
 		}
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
 		Player player = Minecraft.getInstance().player;
@@ -150,7 +149,7 @@ public class UseItem extends DwellAction {
 				ItemStack itemStack = player.inventory.getSelected();
 				if (itemStack.isEmpty()) {
 					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-					return InteractionResult.FAIL;
+					return InteractionResult.PASS;
 				}
 
 				mUsingItem = true;
@@ -197,7 +196,7 @@ public class UseItem extends DwellAction {
 		} else if (mNextItemKB.consumeClick()) {
 			player.inventory.swapPaint(-1);
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {

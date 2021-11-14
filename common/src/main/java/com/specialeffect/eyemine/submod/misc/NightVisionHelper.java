@@ -17,11 +17,10 @@ import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.EntityEvent;
 import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -59,7 +58,7 @@ public class NightVisionHelper extends SubMod {
 		EntityEvent.LIVING_DEATH.register(this::onDeath);
 		EntityEvent.ADD.register(this::onSpawn);
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 		GuiEvent.RENDER_HUD.register(this::onRenderExperienceBar);
 	}
 
@@ -89,7 +88,7 @@ public class NightVisionHelper extends SubMod {
 			this.resetState();
 			mTemporarilyDisabled = true;			
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
     }
 
 	private InteractionResult onSpawn(Entity entity, Level level) {
@@ -97,7 +96,7 @@ public class NightVisionHelper extends SubMod {
 			this.resetState();
 			mTemporarilyDisabled = false;
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
     }
 
     public void onClientTick(Minecraft event) {
@@ -200,11 +199,11 @@ public class NightVisionHelper extends SubMod {
         font.draw(matrixStack, msg, x - stringWidth/2, y, c);
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
 		// Any key dismisses the message (eventually, after minimum time)
 		if (mShowMessage) {
 			mDisabled = true;
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 }

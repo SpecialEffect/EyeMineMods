@@ -11,10 +11,11 @@
 
 package com.specialeffect.eyemine.utils;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.specialeffect.eyemine.mixin.MouseHandlerAccessor;
-import com.specialeffect.eyemine.platform.GLContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.screens.Overlay;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseHelper {
@@ -43,7 +44,7 @@ public class MouseHelper {
 	}
 
 	public static boolean hasGLcontext() {
-		return GLContext.hasGLcontext();
+		return RenderSystem.isOnGameThread() && !(Minecraft.getInstance().getOverlay() instanceof Overlay);
 	}
 
 	public static void setUngrabbedMode(boolean ungrabbed) {

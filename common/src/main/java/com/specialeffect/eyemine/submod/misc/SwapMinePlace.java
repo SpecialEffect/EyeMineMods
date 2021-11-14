@@ -19,10 +19,9 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionResult;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,16 +35,16 @@ public class SwapMinePlace extends SubMod {
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
 
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 		GuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 	}
 
 	private static KeyMapping mSwapKB;
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mSwapKB.consumeClick()) {
 			
@@ -62,7 +61,7 @@ public class SwapMinePlace extends SubMod {
 			ModUtils.sendPlayerMessage("Swapping mine and place keys");			
 			
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {

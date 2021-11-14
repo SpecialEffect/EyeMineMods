@@ -18,11 +18,11 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -54,6 +54,7 @@ public class MineOne extends DwellAction {
 		));
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	@Override
@@ -119,10 +120,10 @@ public class MineOne extends DwellAction {
 		return pos;
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int i, int i1, int i2) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mDestroyKB.consumeClick()) {
 			// turn off continuous mining
@@ -139,14 +140,14 @@ public class MineOne extends DwellAction {
 				mBlockToDestroy = this.getMouseOverBlockPos();
 				if (mBlockToDestroy == null) {
 					LOGGER.debug("Nothing to attack");
-					return InteractionResult.FAIL;
+					return InteractionResult.PASS;
 				}
 				else {
 					this.startDestroying();
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	@Override

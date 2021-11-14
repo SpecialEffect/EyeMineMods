@@ -21,11 +21,10 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.world.InteractionHand;
@@ -61,7 +60,7 @@ public class ContinuouslyAttack extends SubMod {
 		mIconIndex = StateOverlay.registerTextureRight("eyemine:textures/icons/attack.png");
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	public static void stop() {
@@ -121,10 +120,10 @@ public class ContinuouslyAttack extends SubMod {
 		}
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mAttackKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
@@ -133,7 +132,7 @@ public class ContinuouslyAttack extends SubMod {
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	//returns true if successful

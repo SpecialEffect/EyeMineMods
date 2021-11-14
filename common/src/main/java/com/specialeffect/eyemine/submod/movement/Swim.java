@@ -17,11 +17,10 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -52,7 +51,7 @@ public class Swim extends SubMod {
 		StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 	
 	public static void stopActivelySwimming() {
@@ -114,10 +113,10 @@ public class Swim extends SubMod {
 		}
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int i, int i1, int i2) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
 		if(mSwimKB.consumeClick()) {
 			final KeyMapping swimBinding = minecraft.options.keyJump;
@@ -132,6 +131,6 @@ public class Swim extends SubMod {
 			
 			ModUtils.sendPlayerMessage("Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF"));				
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 }

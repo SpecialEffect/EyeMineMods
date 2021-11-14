@@ -17,12 +17,11 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +55,7 @@ public class DwellBuild extends DwellAction {
 		));
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 
 		this.syncConfig();
 	}
@@ -67,10 +66,10 @@ public class DwellBuild extends DwellAction {
 		KeyMapping.click(useItemKeyBinding.getDefaultKey());
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mDwellBuildKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
@@ -84,7 +83,7 @@ public class DwellBuild extends DwellAction {
 				ItemStack itemStack = player.inventory.getSelected();
 				if (itemStack.isEmpty()) {
 					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-					return InteractionResult.FAIL;
+					return InteractionResult.PASS;
 				}
 
 				setDwelling(true);
@@ -98,11 +97,11 @@ public class DwellBuild extends DwellAction {
 			ItemStack itemStack = player.inventory.getSelected();
 			if (itemStack.isEmpty()) {
 				player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-				return InteractionResult.FAIL;
+				return InteractionResult.PASS;
 			}
 
 			dwellOnce();
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 }

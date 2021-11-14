@@ -26,7 +26,7 @@ import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -96,7 +96,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		));
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientScreenInputEvent.KEY_PRESSED_POST.register(this::onKeyInput);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 		GuiEvent.SET_SCREEN.register(this::onGuiOpen);
 
 
@@ -218,10 +218,10 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		}
 	}
 
-	public InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
 		if (mSensitivityUpKB.consumeClick()) {
 			increaseSens();
@@ -243,7 +243,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				}				
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 	
 	private float getSensitivityIncrement(float reference) {

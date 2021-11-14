@@ -106,7 +106,7 @@ public class EasyLadderClimb extends SubMod {
 		
 		if (debugRender) {
 			if (minecraft.screen != null) {
-				return InteractionResult.FAIL;
+				return InteractionResult.PASS;
 			}
 
 			if (MoveWithGaze.isWalking()) {
@@ -119,7 +119,7 @@ public class EasyLadderClimb extends SubMod {
 				poseStack.popPose();
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 	
 

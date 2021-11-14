@@ -29,7 +29,7 @@ public class EyeMineClientFabric implements ClientModInitializer {
                     ((IConfigListener) subMod).syncConfig();
                 }
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.PASS;
         });
     }
 }

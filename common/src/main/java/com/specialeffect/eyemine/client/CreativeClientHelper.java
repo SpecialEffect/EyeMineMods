@@ -27,9 +27,9 @@ import net.minecraft.world.InteractionResult;
 
 public class CreativeClientHelper {
 	public static InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.FAIL; }
+		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.FAIL; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		int key = keyCode;
 		EyeMine.LOGGER.debug(key);
@@ -45,7 +45,7 @@ public class CreativeClientHelper {
 						gui.getMenu());
 				boolean handled = con.acceptKey(key);
 				if (handled) {
-					return InteractionResult.FAIL;
+					return InteractionResult.PASS;
 				}
 			}
 			else if (currentScreen instanceof ContainerScreen) {
@@ -67,6 +67,6 @@ public class CreativeClientHelper {
 				con.acceptKey(key);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 }

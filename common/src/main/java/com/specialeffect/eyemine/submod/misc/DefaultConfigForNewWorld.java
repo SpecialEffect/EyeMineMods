@@ -69,7 +69,7 @@ public class DefaultConfigForNewWorld extends SubMod {
 				haveEquippedPlayer = false;
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	private void onLiving(Player player) {

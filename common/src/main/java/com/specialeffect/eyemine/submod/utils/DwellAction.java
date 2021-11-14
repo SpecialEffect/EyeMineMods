@@ -182,7 +182,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (minecraft.screen != null) {
 			liveTargets.clear();
-			return InteractionResult.FAIL;
+			return InteractionResult.PASS;
 		}
 
 		if (mDwelling) {
@@ -190,7 +190,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			// (we only want to add from within this method, so we avoid un-buildable surfaces,
 			// a.k.a. "MISS" ray trace results)
 			if (minecraft.hitResult != null && minecraft.hitResult.getType() == Type.MISS) {
-				return InteractionResult.FAIL;
+				return InteractionResult.PASS;
 			}
 
 			BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
@@ -222,7 +222,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 				}
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.PASS;
 	}
 
 	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
