@@ -1,0 +1,43 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods"
+license="GPL-3.0"
+
+[[mods]]
+modId="eyemine"
+version="${version}"
+displayName="EyeMine"
+displayURL="https://www.specialeffect.org.uk/eyemine"
+authors="Kirsty McNaught"
+logoFile="eyemine_logo.png"
+credits = "Written in collaboration with SpecialEffect"
+license="GPLv3"
+description='''
+EyeMine by SpecialEffect allows you to play Minecraft using eye gaze.
+
+It is designed to work alongside the EyeMine gaze-controlled keyboard. 
+
+For questions or support, contact eyemine@specialeffect.org.uk
+'''
+
+[[dependencies.eyemine]]
+	modId="forge"
+	mandatory=true
+	versionRange="[36,)"
+	ordering="NONE"
+	side="CLIENT"
+[[dependencies.eyemine]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.16.5,1.17]"
+	ordering="NONE"
+	side="CLIENT"
+
+
+
+[[dependencies.eyemine]]
+modId = "architectury"
+mandatory = true
+versionRange = "[1.23.33,)"
+ordering = "AFTER"
+side = "BOTH"

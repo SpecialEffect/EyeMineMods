@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.specialeffect.eyemine.mixin",
+  "target": "@env(DEFAULT)",
+  "mixins": [
+
+  ],
+  "client": [
+	"AbstractContainerScreenAccessor",
+	"KeyboardInputMixin",
+	"MinecraftAccessor",
+	"MouseHandlerAccessor",
+	"MouseHandlerMixin",
+	"TitleScreenMixin"
+  ],
+  "injectors": {
+	"defaultRequire": 1
+  }
+}

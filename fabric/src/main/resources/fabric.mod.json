@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "eyemine",
+  "version": "${version}",
+
+  "name": "EyeMine",
+  "description": "EyeMine by SpecialEffect allows you to play Minecraft using eye gaze.\nIt is designed to work alongside the EyeMine gaze-controlled keyboard. \nFor questions or support, contact eyemine@specialeffect.org.uk",
+  "authors": [
+    "Kirsty McNaught"
+  ],
+  "contact": {
+    "homepage": "https://www.specialeffect.org.uk/eyemine",
+    "sources": "https://github.com/SpecialEffect/SpecialEffectMinecraftMods"
+  },
+
+  "license": "GPL-3.0",
+  "icon": "eyemine_logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.specialeffect.eyemine.EyeMineFabric"
+    ],
+    "client": [
+      "com.specialeffect.eyemine.EyeMineClientFabric"
+    ],
+    "modmenu": [
+      "com.specialeffect.eyemine.config.EyeMineModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "eyemine-common.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": ">=1.16.5",
+    "architectury": ">=1.23.33"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

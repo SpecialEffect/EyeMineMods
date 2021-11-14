@@ -1,0 +1,13 @@
+﻿{
+    "_comment": "Config Stuff",
+    "craftingkeys.config.title": "Crafting Keys Config",
+    "craftingkeys.config.description": "Configure your keys here. Click \"Save\" when finished!",
+    "craftingkeys.config.button.save": "Save",
+    "craftingkeys.config.button.abort": "Abort",
+    "craftingkeys.config.stack": "Stack key",
+    "craftingkeys.config.drop": "Drop key",
+
+    "_comment": "Key Bindings",
+    "craftingkeys.binding.opengui": "Open config-gui",
+    "craftingkeys.binding.cat": "Crafting Keys"
+}
