@@ -84,18 +84,18 @@ public class Swim extends SubMod {
 			if (jumpkeyTimer > 0) {
 				jumpkeyTimer -= 1;
 			}
-			
+
 			if (mSwimmingTurnedOn) {
 				final KeyMapping swimBinding = minecraft.options.keyJump;
 
 				// Switch on swim key when in water
-				if ((player.isInWater() || player.isInLava()) && 						
+				if ((player.isInWater() || player.isInLava()) &&
 						!swimBinding.isDown() &&
 						jumpkeyTimer == 0) {
 					KeyMapping.set(swimBinding.getDefaultKey(), true);
 					mJumpKeyOverridden = true;
 				}
-				
+
 				// Switch off when on land
 				else if ((player.isOnGround() || isPlayerInAir(player)) &&
 						  swimBinding.isDown()) {
@@ -108,8 +108,6 @@ public class Swim extends SubMod {
 					}
 				}
 			}
-			
-			
 		}
 	}
 
@@ -118,7 +116,7 @@ public class Swim extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
-		if(mSwimKB.consumeClick()) {
+		if(mSwimKB.matches(keyCode, scanCode) && mSwimKB.consumeClick()) {
 			final KeyMapping swimBinding = minecraft.options.keyJump;
 			
 			mSwimmingTurnedOn = !mSwimmingTurnedOn;

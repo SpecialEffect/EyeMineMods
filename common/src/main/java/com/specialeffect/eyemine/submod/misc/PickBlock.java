@@ -44,7 +44,7 @@ public class PickBlock extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
-		if (mPickBlockKB.consumeClick()) {
+		if (mPickBlockKB.matches(keyCode, scanCode) && mPickBlockKB.consumeClick()) {
 			KeyMapping.click(minecraft.options.keyPickItem.getDefaultKey());
 		}
 		return InteractionResult.PASS;

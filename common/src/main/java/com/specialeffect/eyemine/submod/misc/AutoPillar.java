@@ -107,7 +107,7 @@ public class AutoPillar extends SubMod {
 		// - next few ticks, gradually reset view
 		// Technically there is no need to change player's view, but the user experience
 		// is weird if you don't (you don't really know what just happened).
-		if (autoPlaceKeyBinding.consumeClick()) {
+		if (autoPlaceKeyBinding.matches(keyCode, scanCode) && autoPlaceKeyBinding.consumeClick()) {
 			float origPitchTemp;
 			synchronized (mOnLivingQueue) {
 				origPitchTemp = lastPlayerPitch;

@@ -44,7 +44,7 @@ public class OpenChat extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mOpenChatKB.consumeClick()) {
+		if (mOpenChatKB.matches(keyCode, scanCode) && mOpenChatKB.consumeClick()) {
 			final InputConstants.Key chatKeyCode = minecraft.options.keyChat.getDefaultKey();
 			KeyMapping.click(chatKeyCode);
 		}

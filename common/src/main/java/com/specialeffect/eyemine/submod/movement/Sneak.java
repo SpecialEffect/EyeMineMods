@@ -89,7 +89,7 @@ public class Sneak extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if(mSneakKB.consumeClick()) {
+		if(mSneakKB.matches(keyCode, scanCode) && mSneakKB.consumeClick()) {
 			updateSneak(!mIsSneaking);
 		}
 		return InteractionResult.PASS;

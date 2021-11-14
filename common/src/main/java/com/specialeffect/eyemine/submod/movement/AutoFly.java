@@ -78,8 +78,8 @@ public class AutoFly extends SubMod implements IConfigListener {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 
 		// Register an icon for the overlay
-		mIconIndexAuto = StateOverlay.registerTextureLeft("eyemine:icons/fly-auto.png");
-		mIconIndexManual = StateOverlay.registerTextureLeft("eyemine:icons/fly.png");
+		mIconIndexAuto = StateOverlay.registerTextureLeft("eyemine:textures/icons/fly-auto.png");
+		mIconIndexManual = StateOverlay.registerTextureLeft("eyemine:textures/icons/fly.png");
 	}
 
 	public void syncConfig() {
@@ -217,7 +217,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mFlyManualKB.consumeClick()) {			
+		if (mFlyManualKB.matches(keyCode, scanCode) && mFlyManualKB.consumeClick()) {
 			if (mIsFlyingManual) {
 				ModUtils.sendPlayerMessage("Fly manual: OFF");
 				this.stopFlying();
@@ -227,7 +227,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 				boolean doFlyUp = !mIsFlyingAuto;
 				this.setFlying(doFlyUp, false);
 			}			
-		} else if (mFlyAutoKB.consumeClick()) {
+		} else if (mFlyAutoKB.matches(keyCode, scanCode) && mFlyAutoKB.consumeClick()) {
 			if (mIsFlyingAuto) {
 				ModUtils.sendPlayerMessage("Fly auto: OFF");
 				this.stopFlying();
@@ -238,10 +238,10 @@ public class AutoFly extends SubMod implements IConfigListener {
 				this.setFlying(doFlyUp, true);
 			}
 		}
-		else if (mFlyUpKB.consumeClick()) {
+		else if (mFlyUpKB.matches(keyCode, scanCode) && mFlyUpKB.consumeClick()) {
 			this.setFlying(true, mIsFlyingAuto);
 		}
-		else if (mFlyDownKB.consumeClick()) {
+		else if (mFlyDownKB.matches(keyCode, scanCode) && mFlyDownKB.consumeClick()) {
 			flyDown();
 		}
 		AutoFly.updateIcons();

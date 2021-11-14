@@ -142,7 +142,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-        if(mToggleAutoWalkKB.consumeClick()) {
+        if(mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
         	mDoingAutoWalk = !mDoingAutoWalk;        	
         	MouseHandlerMod.setLegacyWalking(mDoingAutoWalk);
         	

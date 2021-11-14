@@ -60,7 +60,7 @@ public class Dismount extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if(mDismountKB.consumeClick()) {
+		if(mDismountKB.matches(keyCode, scanCode) && mDismountKB.consumeClick()) {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player.isPassenger()) {
 				// Dismount player locally

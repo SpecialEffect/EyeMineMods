@@ -223,13 +223,13 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
-		if (mSensitivityUpKB.consumeClick()) {
+		if (mSensitivityUpKB.matches(keyCode, scanCode) && mSensitivityUpKB.consumeClick()) {
 			increaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f* minecraft.options.sensitivity));
-		} else if (mSensitivityDownKB.consumeClick()) {
+		} else if (mSensitivityDownKB.matches(keyCode, scanCode) && mSensitivityDownKB.consumeClick()) {
 			decreaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f* minecraft.options.sensitivity));
-		} else if (mToggleMouseViewControlKB.consumeClick()) {
+		} else if (mToggleMouseViewControlKB.matches(keyCode, scanCode) && mToggleMouseViewControlKB.consumeClick()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				LOGGER.debug("this key doesn't do anything in eyetracker mode");
 				ModUtils.sendPlayerMessage("Warning: Minecraft expects eye tracker input, not mouse");

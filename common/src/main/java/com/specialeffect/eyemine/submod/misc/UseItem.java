@@ -136,7 +136,7 @@ public class UseItem extends DwellAction {
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
 		Player player = Minecraft.getInstance().player;
 
-		if (mUseItemContinuouslyKB.consumeClick()) {
+		if (mUseItemContinuouslyKB.matches(keyCode, scanCode) && mUseItemContinuouslyKB.consumeClick()) {
 			if (mUsingItem) {
 				// Turn off
 				mUsingItem = false;
@@ -157,7 +157,7 @@ public class UseItem extends DwellAction {
 
 				ModUtils.sendPlayerMessage("Using item: ON");
 			}
-		} else if (mUseItemOnceKB.consumeClick()) {
+		} else if (mUseItemOnceKB.matches(keyCode, scanCode) && mUseItemOnceKB.consumeClick()) {
 
 			ItemStack stack = player.inventory.getSelected();
 			Item item = stack.getItem();
@@ -191,9 +191,9 @@ public class UseItem extends DwellAction {
 					this.performAction(null);
 			}
 
-		} else if (mPrevItemKB.consumeClick()) {
+		} else if (mPrevItemKB.matches(keyCode, scanCode) && mPrevItemKB.consumeClick()) {
 			player.inventory.swapPaint(1);
-		} else if (mNextItemKB.consumeClick()) {
+		} else if (mNextItemKB.matches(keyCode, scanCode) && mNextItemKB.consumeClick()) {
 			player.inventory.swapPaint(-1);
 		}
 		return InteractionResult.PASS;

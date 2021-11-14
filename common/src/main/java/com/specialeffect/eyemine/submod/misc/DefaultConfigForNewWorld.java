@@ -117,8 +117,8 @@ public class DefaultConfigForNewWorld extends SubMod {
 				if (alwaysDayTimeSetting) {
 					// we've just turned off daylightcycle while time = morning...
 					// we prefer full daylight!
-					for(ServerLevel serverworld : server.getAllLevels()) {
-						serverworld.setDayTime(serverworld.getDayTime() + (long)2000);
+					for(ServerLevel level : server.getAllLevels()) {
+						level.setDayTime(level.getDayTime() + (long)2000);
 					}
 				}
 			}

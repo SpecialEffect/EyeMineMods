@@ -125,7 +125,7 @@ public class ContinuouslyAttack extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mAttackKB.consumeClick()) {
+		if (mAttackKB.matches(keyCode, scanCode) && mAttackKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 

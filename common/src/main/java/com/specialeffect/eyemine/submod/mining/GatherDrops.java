@@ -58,7 +58,7 @@ public class GatherDrops extends SubMod {
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 
-		if (mGatherKB.consumeClick()) {
+		if (mGatherKB.matches(keyCode, scanCode) && mGatherKB.consumeClick()) {
 			LocalPlayer player = minecraft.player;
 			gatherBlocks(player);
 		}

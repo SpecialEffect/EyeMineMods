@@ -119,7 +119,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
-		if(mOpenChestKB.consumeClick()) {
+		if(mOpenChestKB.matches(keyCode, scanCode) && mOpenChestKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof AbstractChestBlock), player, level, mRadius);
 
 			// Ask server to open
@@ -136,7 +136,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				}
 			}
 		}
-		else if(mOpenCraftingTableKB.consumeClick()) {
+		else if(mOpenCraftingTableKB.matches(keyCode, scanCode) && mOpenCraftingTableKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof CraftingTableBlock), player, level, mRadius);
 
 			// Ask server to open

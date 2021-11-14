@@ -341,7 +341,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mToggleAutoWalkKB.consumeClick()) {
+		if (mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
 			mDoingAutoWalk = !mDoingAutoWalk;
 			MouseHandlerMod.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
@@ -350,12 +350,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			}
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
-		if (mDecreaseWalkSpeedKB.consumeClick()) {
+		if (mDecreaseWalkSpeedKB.matches(keyCode, scanCode) && mDecreaseWalkSpeedKB.consumeClick()) {
 			float newSpeed = (float) Math.max(0.1f, 0.9f * EyeMineConfig.getCustomSpeedFactor());
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
-		if (mIncreaseWalkSpeedKB.consumeClick()) {
+		if (mIncreaseWalkSpeedKB.matches(keyCode, scanCode) && mIncreaseWalkSpeedKB.consumeClick()) {
 			float newSpeed = (float) Math.min(2.0f, EyeMineConfig.getCustomSpeedFactor() * 1.1f);
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();

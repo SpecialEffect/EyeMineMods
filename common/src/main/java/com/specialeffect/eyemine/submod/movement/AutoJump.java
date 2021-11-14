@@ -92,7 +92,7 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (autoJumpKeyBinding.consumeClick()) {
+		if (autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			this.updateSettings(mDoingAutoJump);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			

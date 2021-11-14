@@ -125,7 +125,7 @@ public class MineOne extends DwellAction {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mDestroyKB.consumeClick()) {
+		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			// turn off continuous mining
 			ContinuouslyMine.stop();
 

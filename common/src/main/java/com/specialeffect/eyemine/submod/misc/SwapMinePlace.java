@@ -46,7 +46,7 @@ public class SwapMinePlace extends SubMod {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mSwapKB.consumeClick()) {
+		if (mSwapKB.matches(keyCode, scanCode) && mSwapKB.consumeClick()) {
 			
 			Key attackInput = Minecraft.getInstance().options.keyAttack.getDefaultKey();
 			Key useInput = Minecraft.getInstance().options.keyUse.getDefaultKey();

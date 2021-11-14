@@ -71,7 +71,7 @@ public class DwellBuild extends DwellAction {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mDwellBuildKB.consumeClick()) {
+		if (mDwellBuildKB.matches(keyCode, scanCode) && mDwellBuildKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
 			if (mDwelling) {
 				// Turn off dwell build
@@ -90,7 +90,7 @@ public class DwellBuild extends DwellAction {
 				ModUtils.sendPlayerMessage("Dwell building: ON");
 			}
 		}
-		if (mDwellBuildOnceKB.consumeClick()) {
+		if (mDwellBuildOnceKB.matches(keyCode, scanCode) && mDwellBuildOnceKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
 
 			// Turn on dwell once

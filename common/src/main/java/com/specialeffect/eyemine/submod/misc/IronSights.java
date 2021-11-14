@@ -48,7 +48,7 @@ public class IronSights extends SubMod implements IConfigListener {
 		));
 		
 		// Set up icon rendering		
-		mIcon = new IconOverlay(Minecraft.getInstance(), "eyemine:icons/ironsights.png");
+		mIcon = new IconOverlay(Minecraft.getInstance(), "eyemine:textures/icons/ironsights.png");
 		mIcon.setPosition(0.5f,  0.5f, 0.6f, 1.0f);
 		mIcon.fadeTime = 0;
 		mIcon.setAlpha(EyeMineConfig.getFullscreenOverlayAlpha());
@@ -62,21 +62,20 @@ public class IronSights extends SubMod implements IConfigListener {
 		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
-	    
-		if (mToggleIronsight.consumeClick()) {
-			System.out.println(Minecraft.getInstance().options.fov);
-			
+
+		if (mToggleIronsight.matches(keyCode, scanCode) && mToggleIronsight.consumeClick()) {
 			ironsightsOn = !ironsightsOn;
-			if (ironsightsOn) {				
-				Minecraft.getInstance().options.fov -= fovReduction;				
-				Minecraft.getInstance().options.sensitivity -= sensitivityReduction;
+			if (ironsightsOn) {
+				minecraft.options.fov -= fovReduction;
+				minecraft.options.sensitivity -= sensitivityReduction;
 			}
 			else {
-				Minecraft.getInstance().options.fov += fovReduction;
-				Minecraft.getInstance().options.sensitivity += sensitivityReduction;
+				minecraft.options.fov += fovReduction;
+				minecraft.options.sensitivity += sensitivityReduction;
 			}
-			mIcon.setVisible(ironsightsOn);	
+			mIcon.setVisible(ironsightsOn);
 		}
+
 		return InteractionResult.PASS;
 	}
 

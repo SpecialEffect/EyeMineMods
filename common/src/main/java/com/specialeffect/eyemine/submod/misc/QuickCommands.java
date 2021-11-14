@@ -81,7 +81,7 @@ public class QuickCommands extends SubMod {
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
-		if (mNightVisionKB.consumeClick()) {
+		if (mNightVisionKB.matches(keyCode, scanCode) && mNightVisionKB.consumeClick()) {
 			// Toggle night vision effect
 			MobEffect nightVision = MobEffects.NIGHT_VISION;
 			
@@ -96,7 +96,7 @@ public class QuickCommands extends SubMod {
 		
 		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
-		if (mDropItemKB.consumeClick()) {
+		if (mDropItemKB.matches(keyCode, scanCode) && mDropItemKB.consumeClick()) {
 			// Drop item 
 			// This is a duplicate key binding to the built-in one, so we can use the same for discarding
 			// an item while the inventory is open. The inventory keybinding needs to be a key not used
@@ -105,7 +105,7 @@ public class QuickCommands extends SubMod {
 			player.drop(stack, true); //TODO: see if this still dropps all?
 		}
 		
-		if (mDayNightKB.consumeClick()) {
+		if (mDayNightKB.matches(keyCode, scanCode) && mDayNightKB.consumeClick()) {
 			GameRules rules = level.getGameRules();
 
 			GameRules.Key<BooleanValue> gameRule = GameRules.RULE_DAYLIGHT;
@@ -115,7 +115,7 @@ public class QuickCommands extends SubMod {
 			PacketHandler.CHANNEL.sendToServer(new SendCommandMessage(cmd));
 		}
 		
-		if (mRespawnKB.consumeClick()) {
+		if (mRespawnKB.matches(keyCode, scanCode) && mRespawnKB.consumeClick()) {
             PacketHandler.CHANNEL.sendToServer(new TeleportPlayerToSpawnPointMessage());
             NightVisionHelper.cancelAndHide();
         }

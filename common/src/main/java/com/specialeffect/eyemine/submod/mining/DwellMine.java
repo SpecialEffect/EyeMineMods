@@ -66,14 +66,14 @@ public class DwellMine extends DwellAction {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mDwellMineKB.consumeClick()) {
+		if (mDwellMineKB.matches(keyCode, scanCode) && mDwellMineKB.consumeClick()) {
 			// Turn off dwell mine
 			// Turn on dwell mine
 			this.setDwelling(!mDwelling);
 			return InteractionResult.PASS;
 		}
 
-		if (mDwellMineOnceKB.consumeClick()) {
+		if (mDwellMineOnceKB.matches(keyCode, scanCode) && mDwellMineOnceKB.consumeClick()) {
 			this.dwellOnce();
 			return InteractionResult.PASS;
 		}

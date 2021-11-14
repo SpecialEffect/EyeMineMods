@@ -158,7 +158,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (mDestroyKB.consumeClick()) {
+		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
