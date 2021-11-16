@@ -14,23 +14,15 @@ package com.specialeffect.eyemine.utils;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KeyboardInputHelper {
-	private static KeyboardInputHelper INSTANCE;
+	public static AtomicBoolean mSneakOverride = new AtomicBoolean(false);
+	public static AtomicBoolean mWalkForwardOverride = new AtomicBoolean(false);
+	public static float mOverrideWalkSpeed = 1.0f;
 
-	public static KeyboardInputHelper instance() {
-		if (INSTANCE == null)
-			INSTANCE = new KeyboardInputHelper();
-		return INSTANCE;
-	}
-
-	public AtomicBoolean mSneakOverride =  new AtomicBoolean(false);
-	public AtomicBoolean mWalkForwardOverride =  new AtomicBoolean(false);
-	public float mOverrideWalkSpeed = 1.0f;
-
-	public void setSneakOverride(boolean b) {
+	public static void setSneakOverride(boolean b) {
 		mSneakOverride.set(b);
 	}
 
-	public void setWalkOverride(boolean b, float walkSpeed) {
+	public static void setWalkOverride(boolean b, float walkSpeed) {
 		// Setting a speed of zero doesn't *always* result in no movement - e.g. boat will still move forward
 		// so we want a request of ~0.0 to be equivalent to turning off the override.
 		if (Math.abs(walkSpeed) > 1e-5) {

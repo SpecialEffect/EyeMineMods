@@ -22,7 +22,6 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
@@ -70,21 +69,15 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		//Initialize variables from Config
 		this.syncConfig();
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		GuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 		BlockOutlineEvent.OUTLINE.register(this::onBlockOutlineRender);
 	}
 
 	protected void setDwelling(boolean isDwelling) {
 		mDwelling = isDwelling;
-		if(oneShot) {
-			ModUtils.sendPlayerMessage("Dwell mining once");
-		} else {
-			ModUtils.sendPlayerMessage("Dwell mining: " + (isDwelling ? "ON" : "OFF"));
-		}
 		if (!isDwelling) {
 			this.liveTargets.clear();
-		}		
+		}
 	}
 	
 	protected void dwellOnce() {
@@ -121,6 +114,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
 					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
 
+					System.out.println(currentTarget);
 					// If it's not in the hashmap yet, it means we hit here before the render event - just wait until next tick
 					if (!liveTargets.containsKey(currentTarget)) {
 						return;
@@ -137,6 +131,8 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					// Remove all that have decayed fully
 					liveTargets.entrySet().removeIf(e -> e.getValue().shouldDiscard());
 
+					System.out.println(currentTarget);
+					System.out.println(liveTargets.get(currentTarget).hasCompleted());
 					// Place block if dwell complete
 					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {
 						System.out.println("Performing");

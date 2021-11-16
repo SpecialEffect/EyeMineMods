@@ -58,7 +58,7 @@ public class Sneak extends SubMod {
 		LocalPlayer player = minecraft.player;
     	if (player != null) {
     		// Sneaking is handled by the MovementInput class these days
-       		KeyboardInputHelper.instance().setSneakOverride(mIsSneaking);
+       		KeyboardInputHelper.setSneakOverride(mIsSneaking);
        		
 			// Make sure icon up to date
 			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);

@@ -88,9 +88,9 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	private float mMaxForward = 1.5f;
 	private float mMaxBackward = 0.5f;
 	
-	private int mTicksToLockOn=5; // wait this # of ticks before acting in a new region
-    private int ticksForward=0; 
-    private int ticksBackward=0; 
+	private int mTicksToLockOn = 5; // wait this # of ticks before acting in a new region
+    private int ticksForward = 0;
+    private int ticksBackward = 0;
 
     public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = Minecraft.getInstance().player;
@@ -99,7 +99,6 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	    		null == minecraft.screen && // no gui visible
 	    		(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent()) ) {
 
-				KeyboardInputHelper inputHelper = KeyboardInputHelper.instance();
 				double lastMouseY = MouseHelper.lastYVelocity;
 				
 				// Y gives distance to walk forward/back.
@@ -130,7 +129,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 				// scaled by mCustomSpeedFactor 
 				walkForwardAmount *= 0.15;
 				walkForwardAmount *= mCustomSpeedFactor;
-				inputHelper.setWalkOverride(true, walkForwardAmount);
+				KeyboardInputHelper.setWalkOverride(true, walkForwardAmount);
 			}	
     	}
     }

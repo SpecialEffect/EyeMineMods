@@ -75,6 +75,11 @@ public class EyeMine {
                 }
             }
         });
+
+        ClientLifecycleEvent.CLIENT_WORLD_LOAD.register((state) -> {
+            setupComplete = true;
+            refresh();
+        });
     }
 
     private static void instantiateSubMods() {
@@ -105,16 +110,10 @@ public class EyeMine {
         setupSubMod(new DefaultConfigForNewWorld());
         setupSubMod(new IronSights());
         setupSubMod(new NightVisionHelper());
-
-        ClientLifecycleEvent.CLIENT_STARTED.register((state) -> {
-            setupComplete = true;
-            refresh();
-        });
     }
 
     private static void setupSubMod(SubMod mod) {
         mod.onInitializeClient();
-
         subModList.add(mod);
     }
 

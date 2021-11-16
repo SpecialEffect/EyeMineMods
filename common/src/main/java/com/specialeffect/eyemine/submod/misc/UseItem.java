@@ -74,8 +74,9 @@ public class UseItem extends DwellAction {
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		
-		this.syncConfig();		
+
+		//Initialize variables
+		super.onInitializeClient();
 	}
 
 	private static KeyMapping mUseItemOnceKB;

@@ -135,11 +135,11 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
         		// Slow down when you're looking really far up/down, or turning round quickly
              	if (EyeMineConfig.getSlowdownOnCorners()) {
 	            	double slowDownPitch = slowdownFactorPitch(player);
-	            
+
 	            	// Slow down when you've been turning a corner
 	            	double slowDownCorners = slowdownFactorViewDirs();
 //	            	System.out.println("slowdown corners: "+ slowDownCorners);
-	            			            	
+
 					if (!player.onClimbable()) {
 						forward *= Math.min(slowDownCorners, slowDownPitch);
 					}
@@ -153,7 +153,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
     				// ladder okay.
     				if ((player.isOnGround() && player.xRot > 30) ||
     				    (!player.isOnGround() && player.xRot > 0)) {
-						KeyboardInputHelper.instance().setWalkOverride(false, 0.0f);
+						KeyboardInputHelper.setWalkOverride(false, 0.0f);
     					return;
             		}
              	}
@@ -257,12 +257,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 					boatController.releaseKeys();
 				}
 				LOGGER.debug(forward);
-        		KeyboardInputHelper.instance().setWalkOverride(mDoingAutoWalk, (float) forward);
-            	
+        		KeyboardInputHelper.setWalkOverride(mDoingAutoWalk, (float) forward);
+
 			}
             else {
             	boatController.releaseKeys();
-				KeyboardInputHelper.instance().setWalkOverride(false, 0.0f);
+				KeyboardInputHelper.setWalkOverride(false, 0.0f);
             }
     	}
     }

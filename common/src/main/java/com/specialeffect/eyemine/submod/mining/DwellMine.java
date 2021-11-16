@@ -19,6 +19,7 @@ import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
+import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
@@ -50,10 +51,11 @@ public class DwellMine extends DwellAction {
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
 
+		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 
 		//Initialize variables
-		this.syncConfig();
+		super.onInitializeClient();
 	}
 
 	@Override
@@ -68,9 +70,16 @@ public class DwellMine extends DwellAction {
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mDwellMineKB.matches(keyCode, scanCode) && mDwellMineKB.consumeClick()) {
-			// Turn off dwell mine
-			// Turn on dwell mine
-			this.setDwelling(!mDwelling);
+			if (mDwelling) {
+				// Turn off dwell mine
+				this.setDwelling(false);
+				ModUtils.sendPlayerMessage("Dwell mining: OFF");
+			}
+			else {
+				// Turn on dwell mine
+				this.setDwelling(true);
+				ModUtils.sendPlayerMessage("Dwell mining: ON");
+			}
 			return InteractionResult.PASS;
 		}
 

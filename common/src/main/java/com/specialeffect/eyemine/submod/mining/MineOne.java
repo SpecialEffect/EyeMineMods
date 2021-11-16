@@ -55,6 +55,9 @@ public class MineOne extends DwellAction {
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+
+		//Initialize variables
+		super.onInitializeClient();
 	}
 
 	@Override

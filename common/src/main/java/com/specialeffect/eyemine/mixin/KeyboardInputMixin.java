@@ -17,35 +17,37 @@ import net.minecraft.client.player.Input;
 import net.minecraft.client.player.KeyboardInput;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(KeyboardInput.class)
 public class KeyboardInputMixin extends Input {
 	@Shadow @Final private Options options;
 
-	/**
-	 * @author Mrbysco
-	 * @reason No other feasible way
-	 */
-	@Overwrite
-	public void tick(boolean slow) {
-		KeyboardInputHelper keyboardHelper = KeyboardInputHelper.instance();
-		this.up = this.options.keyUp.isDown() || keyboardHelper.mWalkForwardOverride.get();
-		this.down = this.options.keyDown.isDown();
-		this.left = this.options.keyLeft.isDown();
-		this.right = this.options.keyRight.isDown();
-		this.forwardImpulse = this.up == this.down ? 0.0F : (this.up ? 1.0F : -1.0F);
-		if (keyboardHelper.mWalkForwardOverride.get()) {
-			this.forwardImpulse = Math.max(-1, Math.min(1, keyboardHelper.mOverrideWalkSpeed));
+	@Inject(method = "tick(Z)V",
+			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
+			value = "FIELD",
+			target = "Lnet/minecraft/client/player/KeyboardInput;up:Z",
+			shift = Shift.AFTER,
+			ordinal = 0))
+	public void EyeMineTickSetUp(boolean bl, CallbackInfo ci) {
+		this.up = this.options.keyUp.isDown() || KeyboardInputHelper.mWalkForwardOverride.get();
+	}
+
+	@Inject(method = "tick(Z)V",
+			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
+			value = "FIELD",
+			target = "Lnet/minecraft/client/player/KeyboardInput;forwardImpulse:F",
+			shift = Shift.AFTER,
+			ordinal = 0))
+	public void EyeMineTick(boolean bl, CallbackInfo ci) {
+		if (KeyboardInputHelper.mWalkForwardOverride.get()) {
+			this.forwardImpulse = Math.max(-1, Math.min(1, KeyboardInputHelper.mOverrideWalkSpeed));
 			// TODO: do we still want as drastic a sneak-slowing-down with eyemine??
-		}
-		this.leftImpulse = this.left == this.right ? 0.0F : (this.left ? 1.0F : -1.0F);
-		this.jumping = this.options.keyJump.isDown();
-		this.shiftKeyDown = this.options.keyShift.isDown();
-		if (slow) {
-			this.leftImpulse = (float)((double)this.leftImpulse * 0.3D);
-			this.forwardImpulse = (float)((double)this.forwardImpulse * 0.3D);
 		}
 	}
 }
