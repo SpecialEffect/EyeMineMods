@@ -136,7 +136,6 @@ public class MineOne extends DwellAction {
 			else {
 				// start mining the block you're facing
 				mBlockToDestroy = this.getMouseOverBlockPos();
-				System.out.println(mBlockToDestroy);
 				if (mBlockToDestroy == null) {
 					LOGGER.debug("Nothing to attack");
 					return InteractionResult.PASS;
