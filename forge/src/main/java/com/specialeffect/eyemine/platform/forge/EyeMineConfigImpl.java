@@ -98,4 +98,8 @@ public class EyeMineConfigImpl {
     public static boolean getDwellShowExpanding() {
         return EyeMineConfig.dwellShowExpanding.get();
     }
+
+    public static boolean getSlowdownOnAttack() {
+        return EyeMineConfig.slowdownOnAttack.get();
+    }
 }

@@ -115,7 +115,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 			}
 			
 			// Check flying wasn't forcefully stopped from elsewhere
-			if ((mIsFlyingAuto || mIsFlyingManual) &&
+			if ((flying()) &&
 					!player.abilities.flying) {
 				updateAfterStopFlying();
 			}		

@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
@@ -96,8 +97,8 @@ public class UseItem extends DwellAction {
         this.bowTime = (int) (1000 * EyeMineConfig.getBowDrawTime());
 	}
 
-	public void onClientTick(Minecraft event) {
-		super.onClientTick(event);
+	public void onClientTick(Minecraft minecraft) {
+		super.onClientTick(minecraft);
 		long time = System.currentTimeMillis();
 		long dt = time - lastTime;
 		lastTime = time;
@@ -108,7 +109,7 @@ public class UseItem extends DwellAction {
 			if (bowCountdown < 1) {
 				// Release bow if count-down complete
 				final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-				KeyMapping.set(useItemKeyBinding.getDefaultKey(), false);
+				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), false);
 
 				// If it was a crossbow we'll need to re-click to actually fire it
 				Player player = Minecraft.getInstance().player;
@@ -122,7 +123,7 @@ public class UseItem extends DwellAction {
 		else {
 			if (needBowFire) {
 				final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-				KeyMapping.click(useItemKeyBinding.getDefaultKey());
+				KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
 				needBowFire = false;
 			}
 		}
@@ -141,7 +142,7 @@ public class UseItem extends DwellAction {
 				// Turn off
 				mUsingItem = false;
 				ModUtils.sendPlayerMessage("Using item: OFF");
-				KeyMapping.set(useItemKeyBinding.getDefaultKey(), mUsingItem);
+				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), mUsingItem);
 			}
 			else {
 				// Turn on continuous-building
@@ -153,7 +154,7 @@ public class UseItem extends DwellAction {
 				}
 
 				mUsingItem = true;
-				KeyMapping.set(useItemKeyBinding.getDefaultKey(), mUsingItem);
+				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), mUsingItem);
 
 				ModUtils.sendPlayerMessage("Using item: ON");
 			}
@@ -167,12 +168,12 @@ public class UseItem extends DwellAction {
 				// Crossbows need charging separately to firing. If already charged, shoot it.
 				// Otherwise start chargin.
 				if (CrossbowItem.isCharged(stack)) {
-					KeyMapping.click(useItemKeyBinding.getDefaultKey());
+					KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
 				}
 				else {
 					int crossbowTime = 1500;
 					ModUtils.sendPlayerMessage("Firing bow");
-					KeyMapping.set(useItemKeyBinding.getDefaultKey(), true);
+					KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), true);
 					bowCountdown = Math.max(crossbowTime, bowTime);
 				}
 			}
@@ -180,7 +181,7 @@ public class UseItem extends DwellAction {
 				// Bows need charging + firing all in one go
 				bowTime = 1500;
 				ModUtils.sendPlayerMessage("Firing bow");
-				KeyMapping.set(useItemKeyBinding.getDefaultKey(), true);
+				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), true);
 				bowCountdown = bowTime;
 			}
 			else {
@@ -219,6 +220,6 @@ public class UseItem extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-		KeyMapping.click(useItemKeyBinding.getDefaultKey());
+		KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
 	}
 }

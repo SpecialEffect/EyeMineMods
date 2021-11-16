@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
@@ -68,8 +69,8 @@ public class ContinuouslyAttack extends SubMod {
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
 
-	public void onClientTick(Minecraft event) {
-		LocalPlayer player = Minecraft.getInstance().player;
+	public void onClientTick(Minecraft minecraft) {
+		LocalPlayer player = minecraft.player;
 		if (player != null) {
 			if (mIsAttacking) {
 				if (player.isCreative() &&
@@ -88,7 +89,6 @@ public class ContinuouslyAttack extends SubMod {
 				EntityHitResult entityResult = ModUtils.getMouseOverEntity();
 				boolean recharging = false;
 				if (null != entityResult) {
-					Minecraft minecraft = Minecraft.getInstance();
 					Entity entity = entityResult.getEntity();
 
 					// Attack locally and on server
@@ -98,7 +98,8 @@ public class ContinuouslyAttack extends SubMod {
 						// FIXME: it's possible this is sufficient and simpler than the previous strategy -
 						// but haven't tested enough to replace wholesale at this point
 						if (EyeMineConfig.getServerCompatibilityMode()) {
-							KeyMapping.click(minecraft.options.keyAttack.getDefaultKey());
+							final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
+							KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
 						}
 						else {
 							player.attack(entity);

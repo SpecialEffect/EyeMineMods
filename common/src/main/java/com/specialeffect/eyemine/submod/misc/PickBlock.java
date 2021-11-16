@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
@@ -45,7 +46,7 @@ public class PickBlock extends SubMod {
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
 		if (mPickBlockKB.matches(keyCode, scanCode) && mPickBlockKB.consumeClick()) {
-			KeyMapping.click(minecraft.options.keyPickItem.getDefaultKey());
+			KeyMapping.click(((KeyMappingAccessor)minecraft.options.keyPickItem).getActualKey());
 		}
 		return InteractionResult.PASS;
     }

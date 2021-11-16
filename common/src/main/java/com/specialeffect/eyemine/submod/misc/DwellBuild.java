@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
@@ -63,7 +64,7 @@ public class DwellBuild extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-		KeyMapping.click(useItemKeyBinding.getDefaultKey());
+		KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
 	}
 
 	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {

@@ -146,7 +146,7 @@ public class AutoPillar extends SubMod {
 						if(mc.hitResult instanceof BlockHitResult) {
 							BlockHitResult blockHitResult = (BlockHitResult) mc.hitResult;
 							if(blockHitResult.getBlockPos().getY() < player.getY()) {
-								InteractionResult result = mc.gameMode.useItemOn(player, level, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
+								mc.gameMode.useItemOn(player, level, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
 								// Make sure we get the animation
 								player.swing(InteractionHand.MAIN_HAND);
 							}

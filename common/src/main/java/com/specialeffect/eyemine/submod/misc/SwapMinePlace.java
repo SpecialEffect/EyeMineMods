@@ -16,6 +16,7 @@ import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.GuiEvent;
@@ -48,8 +49,8 @@ public class SwapMinePlace extends SubMod {
 
 		if (mSwapKB.matches(keyCode, scanCode) && mSwapKB.consumeClick()) {
 			
-			Key attackInput = Minecraft.getInstance().options.keyAttack.getDefaultKey();
-			Key useInput = Minecraft.getInstance().options.keyUse.getDefaultKey();
+			Key attackInput = ((KeyMappingAccessor)Minecraft.getInstance().options.keyAttack).getActualKey();
+			Key useInput = ((KeyMappingAccessor)Minecraft.getInstance().options.keyUse).getActualKey();
 			
 			Minecraft.getInstance().options.setKey(Minecraft.getInstance().options.keyAttack, useInput);
 			Minecraft.getInstance().options.setKey(Minecraft.getInstance().options.keyUse, attackInput);
@@ -77,8 +78,8 @@ public class SwapMinePlace extends SubMod {
 			Key useDefault = useBinding.getDefaultKey();
 		
 			// if there's a straight-up swap, show message
-			if (attackBinding.getDefaultKey().getValue() == useDefault.getValue() &&
-					useBinding.getDefaultKey().getValue() == attackDefault.getValue()) {
+			if (((KeyMappingAccessor)attackBinding).getActualKey().getValue() == useDefault.getValue() &&
+					((KeyMappingAccessor)useBinding).getActualKey().getValue() == attackDefault.getValue()) {
 				Minecraft mc = Minecraft.getInstance();
 				int w = mc.getWindow().getGuiScaledWidth();
 				int h = mc.getWindow().getGuiScaledHeight();

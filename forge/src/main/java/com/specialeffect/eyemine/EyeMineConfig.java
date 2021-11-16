@@ -268,8 +268,7 @@ public class EyeMineConfig {
 		// here to notify other mods?
 		LOGGER.debug("ModConfig onReload");
 
-		ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
-		if (loadSpec == CLIENT_CONFIG) {
+		if (configEvent.getConfig().getModId().equals(EyeMine.MOD_ID)) {
 			EyeMine.refresh();
 		}
 	}

@@ -246,11 +246,10 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		return InteractionResult.PASS;
 	}
 	
-	private float getSensitivityIncrement(float reference) {
+	private float getSensitivityIncrement(float sens) {
 		// Get a roughly-proportional increment
 		// bearing in mind offset means we don't just take a linear scale
-		float sens = (float) Minecraft.getInstance().options.sensitivity;
-		float inc = 0.05f;		
+		float inc = 0.05f;
 		if (sens < 0.2f) {
 			inc = 0.01f;
 		}

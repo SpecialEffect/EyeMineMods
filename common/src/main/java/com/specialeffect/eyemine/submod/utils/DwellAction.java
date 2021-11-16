@@ -108,8 +108,8 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 	// Subclasses define action to be performed on dwell.
 	public abstract void performAction(TargetBlock block);
 
-	public void onClientTick(Minecraft event) {
-		LocalPlayer player = Minecraft.getInstance().player;
+	public void onClientTick(Minecraft minecraft) {
+		LocalPlayer player = minecraft.player;
 		if (player != null) {
 			long time = System.currentTimeMillis();
 			long dt = time - lastTime;

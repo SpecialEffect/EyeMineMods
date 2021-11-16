@@ -13,7 +13,8 @@
 	"MinecraftAccessor",
 	"MouseHandlerAccessor",
 	"MouseHandlerMixin",
-	"TitleScreenMixin"
+	"TitleScreenMixin",
+	"KeyMappingAccessor"
   ],
   "injectors": {
 	"defaultRequire": 1

@@ -123,4 +123,9 @@ public class EyeMineConfigImpl {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         return config.dwell.dwellShowExpanding;
     }
+
+    public static boolean getSlowdownOnAttack() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.movement.slowdownOnAttack;
+    }
 }

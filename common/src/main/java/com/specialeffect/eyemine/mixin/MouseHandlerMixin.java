@@ -315,9 +315,9 @@ public abstract class MouseHandlerMixin {
 		}
 
 		if(MouseHelper.movementState == PlayerMovement.VANILLA) {
-			this.updatePlayerLookVanilla();
+			updatePlayerLookVanilla();
 		} else if(MouseHelper.movementState == PlayerMovement.LEGACY) {
-			this.updatePlayerLookLegacy();
+			updatePlayerLookLegacy();
 		} else {
 			// keep track of last time
 			double d0 = Blaze3D.getTime();
@@ -336,7 +336,7 @@ public abstract class MouseHandlerMixin {
 		// occur, so we have to lie a little.
 		boolean flag = this.mouseGrabbed;
 		boolean flag2 = (this.minecraft.isWindowActive() && MouseHelper.ungrabbedMouseMode);
-		cir.setReturnValue(flag && flag2);
+		cir.setReturnValue(flag || flag2);
 	}
 
 	@Inject(method = "grabMouse()V", at = @At(value = "HEAD"), cancellable = true)

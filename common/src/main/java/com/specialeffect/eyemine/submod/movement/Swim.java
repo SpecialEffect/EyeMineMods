@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
@@ -57,7 +58,7 @@ public class Swim extends SubMod {
 	public static void stopActivelySwimming() {
 		final KeyMapping swimBinding = 
 				Minecraft.getInstance().options.keyJump;
-		KeyMapping.set(swimBinding.getDefaultKey(), false);
+		KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
 		jumpkeyTimer = jumpkeyCooldown; 
 	}
 	
@@ -85,14 +86,14 @@ public class Swim extends SubMod {
 				jumpkeyTimer -= 1;
 			}
 
-			if (mSwimmingTurnedOn) {
+			if (isSwimmingOn()) {
 				final KeyMapping swimBinding = minecraft.options.keyJump;
 
 				// Switch on swim key when in water
 				if ((player.isInWater() || player.isInLava()) &&
 						!swimBinding.isDown() &&
 						jumpkeyTimer == 0) {
-					KeyMapping.set(swimBinding.getDefaultKey(), true);
+					KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), true);
 					mJumpKeyOverridden = true;
 				}
 
@@ -101,7 +102,7 @@ public class Swim extends SubMod {
 						  swimBinding.isDown()) {
 
 					if (mJumpKeyOverridden) {
-						KeyMapping.set(swimBinding.getDefaultKey(), false);
+						KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
 						mJumpKeyOverridden = false;
 						// don't turn back on until timer finished - otherwise we can trigger 'fly'.
 						jumpkeyTimer = jumpkeyCooldown;
@@ -124,7 +125,7 @@ public class Swim extends SubMod {
 			StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 			
 			if (!mSwimmingTurnedOn) {
-				KeyMapping.set(swimBinding.getDefaultKey(), false);
+				KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
 			}
 			
 			ModUtils.sendPlayerMessage("Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF"));				

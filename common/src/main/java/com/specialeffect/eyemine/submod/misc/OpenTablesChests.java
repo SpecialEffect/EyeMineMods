@@ -68,7 +68,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 	}
 
 	public void syncConfig() {
-        
+        //Unused
 	}
 
 	// Search for closest block of a certain class, within maximum radius

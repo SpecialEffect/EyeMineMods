@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.submod.mining;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
@@ -29,7 +30,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.glfw.GLFW;
@@ -58,11 +58,10 @@ public class MineOne extends DwellAction {
 	}
 
 	@Override
-	public void onClientTick(Minecraft event) {
-		Minecraft minecraft = Minecraft.getInstance();
-		super.onClientTick(event);
+	public void onClientTick(Minecraft minecraft) {
+		super.onClientTick(minecraft);
 
-		LocalPlayer player = Minecraft.getInstance().player;
+		LocalPlayer player = minecraft.player;
 		if (player != null) {
 			if (mDestroying) {
 				// Select the best tool from the inventory
@@ -77,11 +76,10 @@ public class MineOne extends DwellAction {
     				return;
     			}
 
-
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				HitResult mov = minecraft.hitResult;
-				boolean blockDestroyed = (level.getBlockState(mBlockToDestroy).getBlock() instanceof AirBlock);
+				boolean blockDestroyed = level != null && mBlockToDestroy != null && (level.getBlockState(mBlockToDestroy).isAir());
 				boolean movedAway =  false;
 				BlockPos pos = this.getMouseOverBlockPos();
 				if (pos != null) {
@@ -99,12 +97,12 @@ public class MineOne extends DwellAction {
 		mDestroying = true;
 
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(attackBinding.getDefaultKey(), true);
+		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), true);
 	}
 
 	private void stopDestroying() {
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(attackBinding.getDefaultKey(), false);
+		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
 
 		mDestroying = false;
 	}
@@ -138,6 +136,7 @@ public class MineOne extends DwellAction {
 			else {
 				// start mining the block you're facing
 				mBlockToDestroy = this.getMouseOverBlockPos();
+				System.out.println(mBlockToDestroy);
 				if (mBlockToDestroy == null) {
 					LOGGER.debug("Nothing to attack");
 					return InteractionResult.PASS;
@@ -153,6 +152,6 @@ public class MineOne extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.click(attackBinding.getDefaultKey());
+		KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
 	}
 }

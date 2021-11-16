@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.utils.ModUtils;
@@ -78,7 +79,7 @@ public class Sneak extends SubMod {
 		// we both hold down the key here (helps with mod tooltips) *and*
 		// override the movementInput each tick (more robust to lost focus etc)
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyShift;
-		KeyMapping.set(useItemKeyBinding.getDefaultKey(), bSneak);
+		KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), bSneak);
 
 		// Make sure icon up to date?
 		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);

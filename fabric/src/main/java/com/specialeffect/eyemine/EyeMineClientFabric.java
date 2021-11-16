@@ -2,8 +2,6 @@ package com.specialeffect.eyemine;
 
 import com.specialeffect.eyemine.config.EyeMineConfig;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
-import com.specialeffect.eyemine.submod.IConfigListener;
-import com.specialeffect.eyemine.submod.SubMod;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -24,11 +22,7 @@ public class EyeMineClientFabric implements ClientModInitializer {
         });
 
         AutoConfig.getConfigHolder(EyeMineConfig.class).registerSaveListener((manager, data) -> {
-            for(SubMod subMod : EyeMine.subModList) {
-                if(subMod instanceof IConfigListener) {
-                    ((IConfigListener) subMod).syncConfig();
-                }
-            }
+            EyeMine.refresh();
             return InteractionResult.PASS;
         });
     }

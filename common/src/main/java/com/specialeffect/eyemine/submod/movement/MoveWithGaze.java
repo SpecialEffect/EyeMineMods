@@ -16,9 +16,11 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.utils.ModUtils;
@@ -158,11 +160,11 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 						            	
             	// Slow down if you're facing an animal/mob while attacking
 				// (without this it's easy to run past)
-//            	if (config.movement.slowdownOnAttack) {
-//            		if (ContinuouslyAttack.mIsAttacking) {  TODO: RE-implement once ContinuouslyAttack is back
-//            			forward *= slowdownFactorEntity(player);
-//            		}
-//            	}
+            	if (EyeMineConfig.getSlowdownOnAttack()) {
+            		if (ContinuouslyAttack.mIsAttacking) {
+            			forward *= slowdownFactorEntity(player);
+            		}
+            	}
 
             	// The built-in autojump doesn't work when you're underwater, so we do our own implementation here 
 				if (player.isInWater()) {
@@ -327,8 +329,8 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			// Make sure any overridden key bindings are removed
 			final KeyMapping kbLeft = Minecraft.getInstance().options.keyLeft;
 			final KeyMapping kbRight = Minecraft.getInstance().options.keyRight;
-			KeyMapping.set(kbLeft.getDefaultKey(), false);
-			KeyMapping.set(kbRight.getDefaultKey(), false);
+			KeyMapping.set(((KeyMappingAccessor)kbLeft).getActualKey(), false);
+			KeyMapping.set(((KeyMappingAccessor)kbRight).getActualKey(), false);
 		}
 	}
 	

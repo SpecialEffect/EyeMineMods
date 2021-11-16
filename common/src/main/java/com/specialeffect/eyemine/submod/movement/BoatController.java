@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -44,11 +45,11 @@ public class BoatController {
 		final KeyMapping kbRight = Minecraft.getInstance().options.keyRight;
 		
 		if (haveOverriddenLeft) {
-			KeyMapping.set(kbLeft.getDefaultKey(), false);
+			KeyMapping.set(((KeyMappingAccessor)kbLeft).getActualKey(), false);
 			haveOverriddenLeft = false;
 		}
 		if (haveOverriddenRight) {
-			KeyMapping.set(kbRight.getDefaultKey(), false);
+			KeyMapping.set(((KeyMappingAccessor)kbRight).getActualKey(), false);
 			haveOverriddenRight = false;
 		}
 	}
@@ -63,11 +64,11 @@ public class BoatController {
 
 		if (Math.random() < Math.abs(speed)) {
 			if (speed > 0) {				
-				KeyMapping.set(kbLeft.getDefaultKey(), true);
+				KeyMapping.set(((KeyMappingAccessor)kbLeft).getActualKey(), true);
 				haveOverriddenLeft = true;
 			}
 			else {
-				KeyMapping.set(kbRight.getDefaultKey(), true);
+				KeyMapping.set(((KeyMappingAccessor)kbRight).getActualKey(), true);
 				haveOverriddenRight = true;
 			}
 		}

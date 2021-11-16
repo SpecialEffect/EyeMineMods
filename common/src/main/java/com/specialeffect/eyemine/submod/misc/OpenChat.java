@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
@@ -45,8 +46,7 @@ public class OpenChat extends SubMod {
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		if (mOpenChatKB.matches(keyCode, scanCode) && mOpenChatKB.consumeClick()) {
-			final InputConstants.Key chatKeyCode = minecraft.options.keyChat.getDefaultKey();
-			KeyMapping.click(chatKeyCode);
+			KeyMapping.click(((KeyMappingAccessor)minecraft.options.keyChat).getActualKey());
 		}
 		return InteractionResult.PASS;
 	}

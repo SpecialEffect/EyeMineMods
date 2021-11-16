@@ -15,6 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
@@ -84,7 +85,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 		mIsAttacking = false;
 
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(attackBinding.getDefaultKey(), false);
+		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
 
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
@@ -92,8 +93,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 	public void onClientTick(Minecraft event) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
-			final KeyMapping attackBinding =
-					Minecraft.getInstance().options.keyAttack;
+			final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 
 			if (mIsAttacking) {
 				if (player.isCreative()) {
@@ -122,7 +122,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					if (MouseHandlerMod.hasPendingEvent() || mMouseEventLastTick) {
 						if (miningTimer == 0) {
 							System.out.println("attack");
-							KeyMapping.click(attackBinding.getDefaultKey());
+							KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
 							if (player.isCreative()) {
 								miningTimer = miningCooldown;
 							}
@@ -139,10 +139,10 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					// Set mouse in correct state - shouldn't attack unless there's an
 					// accompanying mouse movement.
 					if (MouseHandlerMod.hasPendingEvent() || mMouseEventLastTick) {
-						KeyMapping.set(attackBinding.getDefaultKey(), true);
+						KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), true);
 					}
 					else {
-						KeyMapping.set(attackBinding.getDefaultKey(), false);
+						KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
 					}
 				}
 			}
@@ -164,13 +164,12 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player != null) {
-				final KeyMapping attackBinding =
-						Minecraft.getInstance().options.keyAttack;
+				final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 
 				// In creative mode we handle throttled attacking in onClientTick
 				if (!player.isCreative()) {
 					// In survival, we hold down the attack binding for continuous mining
-					KeyMapping.set(attackBinding.getDefaultKey(), mIsAttacking);
+					KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), mIsAttacking);
 				}
 			}
 

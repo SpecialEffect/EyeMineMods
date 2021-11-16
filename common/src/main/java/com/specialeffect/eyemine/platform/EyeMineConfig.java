@@ -146,4 +146,10 @@ public class EyeMineConfig {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static boolean getSlowdownOnAttack() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
 }
