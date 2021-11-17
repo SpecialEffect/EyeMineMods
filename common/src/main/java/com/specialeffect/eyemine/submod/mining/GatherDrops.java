@@ -14,6 +14,8 @@ package com.specialeffect.eyemine.submod.mining;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.packets.PacketHandler;
+import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
@@ -68,17 +70,16 @@ public class GatherDrops extends SubMod {
 	public static void gatherBlocks(LocalPlayer player) {
 		ClientLevel level = Minecraft.getInstance().level;
 		BlockPos playerPos = player.blockPosition();
-		AABB aaBb = new AABB(playerPos.subtract(new Vec3i(5, 5, 5)),
+		AABB AaBb = new AABB(playerPos.subtract(new Vec3i(5, 5, 5)),
 				playerPos.offset(new Vec3i(5, 5, 5)));
-		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)level.getEntitiesOfClass(ItemEntity.class, aaBb);
+		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)level.getEntitiesOfClass(ItemEntity.class, AaBb);
 
 		if(items != null && !items.isEmpty()) {
 			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (ItemEntity itemEntity : items) {
-//                instance.channel.sendToServer(new GatherBlockMessage(items.get(i).getEntityId())); TODO: Figure out what's the best way to do this more friendly
+                PacketHandler.CHANNEL.sendToServer(new GatherBlockMessage(itemEntity.getId()));
 			}
 		}
 	}
-
 }

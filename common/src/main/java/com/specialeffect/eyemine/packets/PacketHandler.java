@@ -15,6 +15,7 @@ import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.packets.messages.ActivateBlockAtPosition;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.packets.messages.ChangeFlyingStateMessage;
+import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.packets.messages.SendCommandMessage;
 import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
 import me.shedaniel.architectury.networking.NetworkChannel;
@@ -41,6 +42,9 @@ public class PacketHandler {
 
 		CHANNEL.register(TeleportPlayerToSpawnPointMessage.class, TeleportPlayerToSpawnPointMessage::encode,
 				TeleportPlayerToSpawnPointMessage::decode, TeleportPlayerToSpawnPointMessage.Handler::handle);
+
+		CHANNEL.register(GatherBlockMessage.class, GatherBlockMessage::encode,
+				GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);
 
 		CHANNEL.register(ActivateBlockAtPosition.class, ActivateBlockAtPosition::encode,
 				ActivateBlockAtPosition::decode, ActivateBlockAtPosition.Handler::handle);

@@ -14,9 +14,17 @@ package com.specialeffect.eyemine.packets.messages;
 import me.shedaniel.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TeleportPlayerToSpawnPointMessage {
@@ -39,20 +47,34 @@ public class TeleportPlayerToSpawnPointMessage {
 					return;
 				}
 
-				ServerLevel world = (ServerLevel)player.level;
+				if(!player.level.isClientSide) {
+					MinecraftServer server = player.getServer();
+					ServerPlayer serverPlayer = (ServerPlayer) player;
+					ServerLevel respawnDimension = server.getLevel(serverPlayer.getRespawnDimension());
+					BlockPos respawnPos = serverPlayer.getRespawnPosition();
+					float respawnAngle = serverPlayer.getRespawnAngle();
+					Optional<Vec3> optional;
+					if (serverPlayer != null && respawnPos != null) {
+						optional = Player.findRespawnPositionAndUseSpawnBlock(respawnDimension, respawnPos, respawnAngle, false, false);
+					} else {
+						optional = Optional.empty();
+					}
 
-				BlockPos pos; //TODO: Find out if there's a replacement for the dimension sensitive getBedLocation since it's gone
-				if (player.getSleepingPos().isPresent()) {
-					pos = player.getSleepingPos().get();
-				} else {
-					pos = world.getSharedSpawnPos();
+					if (optional.isPresent()) {
+						BlockState state = respawnDimension.getBlockState(respawnPos);
+						boolean blockIsRespawnAnchor = state.is(Blocks.RESPAWN_ANCHOR);
+						Vec3 vector3d = optional.get();
+						float f1;
+						if (!state.is(BlockTags.BEDS) && !blockIsRespawnAnchor) {
+							f1 = respawnAngle;
+						} else {
+							Vec3 vector3d1 = Vec3.atBottomCenterOf(respawnPos).subtract(vector3d).normalize();
+							f1 = (float) Mth.wrapDegrees(Mth.atan2(vector3d1.z, vector3d1.x) * (double) (180F / (float) Math.PI) - 90.0D);
+						}
+						serverPlayer.moveTo(vector3d.x, vector3d.y, vector3d.z, f1, 0.0F);
+						serverPlayer.setRespawnPosition(respawnDimension.dimension(), new BlockPos(vector3d), respawnAngle, false, false);
+					}
 				}
-//            BlockPos pos = player.getBedLocation(player.dimension);
-//            if (null == pos) {
-//            	pos = world.getSpawnPoint();
-//            }
-
-				player.setPos(pos.getX(), pos.getY(), pos.getZ());
 			});
        }
 	}       

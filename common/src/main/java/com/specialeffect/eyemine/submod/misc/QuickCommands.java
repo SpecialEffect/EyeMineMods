@@ -102,7 +102,7 @@ public class QuickCommands extends SubMod {
 			// an item while the inventory is open. The inventory keybinding needs to be a key not used
 			// for typing.
 			ItemStack stack = player.inventory.getSelected();
-			player.drop(stack, true); //TODO: see if this still dropps all?
+			player.drop(stack, true); //TODO: see if this still drops all?
 		}
 		
 		if (mDayNightKB.matches(keyCode, scanCode) && mDayNightKB.consumeClick()) {
@@ -111,7 +111,7 @@ public class QuickCommands extends SubMod {
 			GameRules.Key<BooleanValue> gameRule = GameRules.RULE_DAYLIGHT;
 			boolean newBool = !rules.getBoolean(gameRule);
 			
-			String cmd = "/gamerule " + gameRule + " " + Boolean.toString(newBool);			
+			String cmd = "/gamerule " + gameRule + " " + newBool;
 			PacketHandler.CHANNEL.sendToServer(new SendCommandMessage(cmd));
 		}
 		
