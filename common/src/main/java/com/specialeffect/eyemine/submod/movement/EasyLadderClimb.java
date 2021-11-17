@@ -115,12 +115,13 @@ public class EasyLadderClimb extends SubMod {
 				Color color = new Color(0.75f, 0.25f, 0.0f);
 				int opacity = 255;
 				double size = 0.05;
+
 				final RenderType cubeType = EyeMineRenderType.cubeRenderType();
 				VertexConsumer vertexConsumer = bufferSource.getBuffer(cubeType);
 				AbstractRenderer.renderCubeAtPosition(poseStack, vertexConsumer, renderPos, color, opacity, size);
 
 				if (bufferSource instanceof MultiBufferSource.BufferSource) {
-					((MultiBufferSource.BufferSource) vertexConsumer).endBatch();
+					((MultiBufferSource.BufferSource) bufferSource).endBatch(cubeType);
 				}
 
 				poseStack.popPose();

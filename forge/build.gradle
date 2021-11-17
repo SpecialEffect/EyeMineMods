@@ -32,6 +32,9 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) {
         transitive = false
     }
+
+    modCompileOnly("curse.maven:configured-457570:3523091")
+    modRuntimeOnly("curse.maven:configured-457570:3523091")
 }
 
 processResources {

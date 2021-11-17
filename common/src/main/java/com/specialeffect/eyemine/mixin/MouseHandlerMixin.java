@@ -92,17 +92,6 @@ public abstract class MouseHandlerMixin {
 	@Inject(method = "onMove(JDD)V",
 			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
 			value = "INVOKE",
-			target = "Lnet/minecraft/client/gui/screens/Screen;wrapScreenError(Ljava/lang/Runnable;Ljava/lang/String;Ljava/lang/String;)V",
-			shift = Shift.AFTER,
-			ordinal = 0))
-	public void EyeMineSetPosOnMove(long handle, double xpos, double ypos, CallbackInfo ci) {
-		this.xpos = xpos;
-		this.ypos = ypos;
-	}
-
-	@Inject(method = "onMove(JDD)V",
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
-			value = "INVOKE",
 			target = "Lnet/minecraft/client/Minecraft;getProfiler()Lnet/minecraft/util/profiling/ProfilerFiller;",
 			shift = Shift.BEFORE,
 			ordinal = 0), cancellable = true)
@@ -110,10 +99,9 @@ public abstract class MouseHandlerMixin {
 		GuiEventListener guiEventListener = this.minecraft.screen;
 		if(guiEventListener != null && this.minecraft.overlay == null) {
 			//The if from earlier just so we can turn it into an if/else
-		} else {
 			this.xpos = xpos;
 			this.ypos = ypos;
-
+		} else {
 			// If mouse should be grabbed but isn't - this can happen if we alt-tab
 			// away while world is loading, with pauseOnLostFocus=false
 			if (!MouseHelper.ungrabbedMouseMode && this.minecraft.isWindowActive() && !this.mouseGrabbed) {
@@ -357,7 +345,7 @@ public abstract class MouseHandlerMixin {
 		}
 
 		this.minecraft.setScreen((Screen)null);
-//		this.minecraft.missTime = 10000;
+		//FIXME: this.minecraft.missTime = 10000;
 		this.ignoreFirstMove = true;
 		ci.cancel();
 	}

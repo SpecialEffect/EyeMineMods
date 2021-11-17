@@ -29,7 +29,7 @@ public class EyeMineForge {
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             // Hook up config gui
-            ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> ClientHandler::openSettings);
+//            ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> ClientHandler::openSettings);
 
             // Config setup
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG, "eyemine-config.toml");

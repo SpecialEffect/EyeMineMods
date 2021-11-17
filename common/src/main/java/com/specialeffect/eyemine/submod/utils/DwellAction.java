@@ -215,7 +215,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					}
 
 					if (bufferSource instanceof MultiBufferSource.BufferSource) {
-						((MultiBufferSource.BufferSource) vertexConsumer).endBatch();
+						((MultiBufferSource.BufferSource) bufferSource).endBatch(dwellType);
 					}
 					poseStack.popPose();
 				}
