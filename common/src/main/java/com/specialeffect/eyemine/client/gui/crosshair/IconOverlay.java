@@ -80,9 +80,7 @@ public class IconOverlay implements ICrosshairOverlay {
 	public void renderOverlay(PoseStack poseStack, Minecraft minecraft) {
 		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {
 			RenderSystem.enableBlend();
-//	        GL11.glEnable(GL11.GL_BLEND);
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-//	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 			// Update fading ticks
 			float fade = 1.0f;

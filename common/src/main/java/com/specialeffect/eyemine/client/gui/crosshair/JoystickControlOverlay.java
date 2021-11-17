@@ -46,9 +46,7 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 	public void renderOverlay(PoseStack poseStack, Minecraft minecraft) {
 		if (mVisible && mAlpha > 0.0f) {
 			RenderSystem.enableBlend();
-//	        GL11.glEnable(GL11.GL_BLEND);
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-//	        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 			int w = minecraft.getWindow().getGuiScaledWidth();
 			int h = minecraft.getWindow().getGuiScaledHeight();
@@ -57,7 +55,6 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 			ModUtils.drawTexQuad(0, 0, w, h, mAlpha);
 
 			RenderSystem.disableBlend();
-//	        GL11.glDisable(GL11.GL_BLEND);
 		}
 	}
 }

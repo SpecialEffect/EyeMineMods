@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -203,7 +204,8 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 					poseStack.pushPose();
 
-					VertexConsumer vertexConsumer = bufferSource.getBuffer(EyeMineRenderType.dwellRenderType());
+					RenderType dwellType = EyeMineRenderType.dwellRenderType();
+					VertexConsumer vertexConsumer = bufferSource.getBuffer(dwellType);
 
 					if (doCentralised) {
 						this.renderCentralisedDwell(poseStack, vertexConsumer, target, dwellState, expanding);
@@ -211,7 +213,8 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					else {
 						this.renderOpacityDwell(poseStack, vertexConsumer, target, dwellState);
 					}
-					if (vertexConsumer instanceof MultiBufferSource.BufferSource) {
+
+					if (bufferSource instanceof MultiBufferSource.BufferSource) {
 						((MultiBufferSource.BufferSource) vertexConsumer).endBatch();
 					}
 					poseStack.popPose();

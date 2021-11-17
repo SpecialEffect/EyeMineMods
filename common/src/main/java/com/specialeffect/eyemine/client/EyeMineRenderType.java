@@ -22,7 +22,7 @@ public class EyeMineRenderType extends RenderType {
 	}
 
 	public static RenderType dwellRenderType() {
-		return RenderType.create("eyemine:dwell", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, true, false, getDwellState());
+		return RenderType.create("eyemine:dwell", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, false, false, getDwellState());
 	}
 
 	private static CompositeState getDwellState() {
@@ -30,11 +30,14 @@ public class EyeMineRenderType extends RenderType {
 				.setLightmapState(LIGHTMAP)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setOutputState(TRANSLUCENT_TARGET)
-				.createCompositeState(false);
+				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+				.setCullState(NO_CULL)
+				.setDepthTestState(NO_DEPTH_TEST)
+				.createCompositeState(true);
 	}
 
 	public static RenderType cubeRenderType() {
-		return RenderType.create("eyemine:cube", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, true, false, getCubeState());
+		return RenderType.create("eyemine:cube", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, false, false, getCubeState());
 	}
 
 	private static CompositeState getCubeState() {
@@ -42,6 +45,9 @@ public class EyeMineRenderType extends RenderType {
 				.setLightmapState(LIGHTMAP)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setOutputState(TRANSLUCENT_TARGET)
-				.createCompositeState(false);
+				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+				.setCullState(NO_CULL)
+				.setDepthTestState(NO_DEPTH_TEST)
+				.createCompositeState(true);
 	}
 }

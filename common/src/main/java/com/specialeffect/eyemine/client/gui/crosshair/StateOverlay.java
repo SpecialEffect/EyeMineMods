@@ -76,10 +76,8 @@ public class StateOverlay implements ICrosshairOverlay {
 
 	// A helper function to draw a texture scaled to fit.
 	private void drawScaledTextureWithGlow(Minecraft minecraft, ResourceLocation res, int x, int y, int width, int height) {
-//		RenderSystem.pushTextureAttributes();
 		minecraft.getTextureManager().bind(res);
-//		minecraft.getTextureManager().bindForSetup(res);
-		
+
 		// First draw enlarged and blurred, for glow.
 		RenderSystem.texParameter(GL11.GL_TEXTURE_2D,
 				GL11.GL_TEXTURE_MIN_FILTER, 
@@ -89,7 +87,7 @@ public class StateOverlay implements ICrosshairOverlay {
 				GL11.GL_LINEAR);
 
 //		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV,
-//				GL11.GL_TEXTURE_ENV_MODE, TODO: figure out what this was
+//				GL11.GL_TEXTURE_ENV_MODE, //TODO: figure out what this was
 //				GL11.GL_ADD );
 		
 		// We draw the texture larger, in white, at progressive levels of alpha 
@@ -106,7 +104,7 @@ public class StateOverlay implements ICrosshairOverlay {
 								1.0f/blurSteps);
 				}
 
-//		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE ); TODO: figure out what this was
+//		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
 
 		// TODO: it would be nice if we could modulate the alpha of these overlays, but that doesn't
 		// work naively with the GL_REPLACE strategy we're using here. Will have to brush up my
@@ -126,16 +124,14 @@ public class StateOverlay implements ICrosshairOverlay {
 	@Override
 	public void renderOverlay(PoseStack poseStack, Minecraft minecraft) {
 		RenderSystem.enableBlend();
-//        GL11.glEnable(GL11.GL_BLEND);
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-//        GLX.glBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		// Don't show if the debug screen is open
 		if (minecraft.options.renderDebug) {
 			return;
 		}
 
-//		RenderSystem.disableLighting();
+		RenderSystem.disableLighting();
 
 		mDisplayWidth = minecraft.getWindow().getGuiScaledWidth();
 		mDisplayHeight = minecraft.getWindow().getGuiScaledHeight();
@@ -161,6 +157,5 @@ public class StateOverlay implements ICrosshairOverlay {
 		}
 
 		RenderSystem.disableBlend();
-//        GL11.glDisable(GL11.GL_BLEND);
 	}
 }

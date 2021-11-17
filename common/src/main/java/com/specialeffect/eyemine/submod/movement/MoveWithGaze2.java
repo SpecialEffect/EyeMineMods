@@ -47,7 +47,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 
     	// Register key bindings	
 		Keybindings.keybindings.add(mToggleAutoWalkKB = new KeyMapping(
-				"key.eyemine.toggle_walking",
+				"key.eyemine.toggle_walking", //Careful walk
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_B,
 				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
@@ -95,8 +95,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
     public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = Minecraft.getInstance().player;
     	if (player != null) {
-			if (mDoingAutoWalk && 
-	    		null == minecraft.screen && // no gui visible
+			if (mDoingAutoWalk && minecraft.screen == null && // no gui visible
 	    		(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent()) ) {
 
 				double lastMouseY = MouseHelper.lastYVelocity;

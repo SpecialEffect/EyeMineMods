@@ -22,6 +22,7 @@ import me.shedaniel.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -114,8 +115,14 @@ public class EasyLadderClimb extends SubMod {
 				Color color = new Color(0.75f, 0.25f, 0.0f);
 				int opacity = 255;
 				double size = 0.05;
-				VertexConsumer vertexConsumer = bufferSource.getBuffer(EyeMineRenderType.cubeRenderType());
+				final RenderType cubeType = EyeMineRenderType.cubeRenderType();
+				VertexConsumer vertexConsumer = bufferSource.getBuffer(cubeType);
 				AbstractRenderer.renderCubeAtPosition(poseStack, vertexConsumer, renderPos, color, opacity, size);
+
+				if (bufferSource instanceof MultiBufferSource.BufferSource) {
+					((MultiBufferSource.BufferSource) vertexConsumer).endBatch();
+				}
+
 				poseStack.popPose();
 			}
 		}
