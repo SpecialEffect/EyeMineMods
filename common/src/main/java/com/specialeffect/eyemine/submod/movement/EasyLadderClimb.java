@@ -51,32 +51,33 @@ public class EasyLadderClimb extends SubMod {
     	if (player != null) {
 			Level world = minecraft.level;
 
+			System.out.println(MoveWithGaze.isWalking());
 			if (player.onClimbable() && MoveWithGaze.isWalking()) {
 				BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
-				
-				if (rayTraceBlock != null) { 
+
+				if (rayTraceBlock != null) {
 					BlockPos blockPos = rayTraceBlock.getBlockPos();
 					Block block = world.getBlockState(blockPos).getBlock();
 					if (block instanceof LadderBlock) {
 						BlockState state = world.getBlockState(blockPos);
 						Direction facing = (Direction) state.getValue(LadderBlock.FACING);
 						Vec3 playerPos = player.position();
-						
-						// What yaw would point the player at the middle of the ladder?						
+
+						// What yaw would point the player at the middle of the ladder?
 						Vec3 midPos = getMidPointOfFace(blockPos,  facing);
-						renderPos = midPos;				
+						renderPos = midPos;
 						player.yRot = player.yRot % 360;
-						
+
 						double dx = midPos.x - playerPos.x;
 						double dz = midPos.z - playerPos.z;
 						double yawToMidPoint = -(180/Math.PI)*Math.atan2(dx,  dz);
-						
+
 						// Rotate player slightly towards the ideal yaw slightly
 						double gain = 0.03f;
-						double newYaw = safeInterpolate(player.getY(), yawToMidPoint, gain);
+						double newYaw = safeInterpolate(player.yRot, yawToMidPoint, gain);
 						player.yRot = (float) newYaw;
 					}
-					
+
 				}
 			}
 		}
@@ -88,7 +89,7 @@ public class EasyLadderClimb extends SubMod {
 		case NORTH:
 			return new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
 		case EAST:
-			return new Vec3(pos.getX()       , pos.getY() + 0.5f, pos.getZ() + 0.5f);
+			return new Vec3(pos.getX(), pos.getY() + 0.5f, pos.getZ() + 0.5f);
 		case SOUTH:
 			return new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ());
 		case WEST:

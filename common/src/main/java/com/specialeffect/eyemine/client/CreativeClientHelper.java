@@ -26,14 +26,14 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.world.InteractionResult;
 
 public class CreativeClientHelper {
-	public static InteractionResult onKeyInput(Minecraft minecraft, Screen screen, int keyCode, int scanCode, int modifiers) {
+	public static InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
 		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
 		int key = keyCode;
 		EyeMine.LOGGER.debug(key);
-		Screen currentScreen = Minecraft.getInstance().screen;
+		Screen currentScreen = minecraft.screen;
 		if (currentScreen != null) {
 			if (currentScreen instanceof CreativeModeInventoryScreen) {
 				CreativeModeInventoryScreen gui = (CreativeModeInventoryScreen)currentScreen;

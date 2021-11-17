@@ -35,6 +35,7 @@ import com.specialeffect.eyemine.submod.movement.Swim;
 import com.specialeffect.eyemine.submod.utils.DebugAverageFps;
 import me.shedaniel.architectury.event.events.GuiEvent;
 import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
+import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.event.events.client.ClientScreenInputEvent;
 import me.shedaniel.architectury.registry.KeyBindings;
 import net.minecraft.client.KeyMapping;
@@ -65,8 +66,7 @@ public class EyeMine {
 
         GuiEvent.SET_SCREEN.register(MainClientHandler::onGuiOpen);
         GuiEvent.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
-        ClientScreenInputEvent.KEY_RELEASED_POST.register(CreativeClientHelper::onKeyInput);
-
+        ClientRawInputEvent.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
 
         ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
             if(!Keybindings.keybindings.isEmpty()) {
