@@ -115,7 +115,6 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
 					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);
 
-					System.out.println(currentTarget);
 					// If it's not in the hashmap yet, it means we hit here before the render event - just wait until next tick
 					if (!liveTargets.containsKey(currentTarget)) {
 						return;
@@ -132,8 +131,6 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					// Remove all that have decayed fully
 					liveTargets.entrySet().removeIf(e -> e.getValue().shouldDiscard());
 
-					System.out.println(currentTarget);
-					System.out.println(liveTargets.get(currentTarget).hasCompleted());
 					// Place block if dwell complete
 					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {
 						System.out.println("Performing");

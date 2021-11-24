@@ -51,7 +51,6 @@ public class EasyLadderClimb extends SubMod {
     	if (player != null) {
 			Level world = minecraft.level;
 
-			System.out.println(MoveWithGaze.isWalking());
 			if (player.onClimbable() && MoveWithGaze.isWalking()) {
 				BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
 
