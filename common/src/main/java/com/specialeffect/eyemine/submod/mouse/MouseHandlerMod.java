@@ -63,6 +63,14 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	private boolean hasPendingConfigChange = false;
 
 	public void onInitializeClient() {
+		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
+		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		GuiEvent.SET_SCREEN.register(MouseHandlerMod::onGuiOpen);
+
+		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
+			setupInitialState();
+		});
+
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "eyemine:textures/icons/eye.png");
 		mIconEye.setPosition(0.5f,  0.5f, 0.1f, 1.9f);
@@ -94,15 +102,6 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				GLFW.GLFW_KEY_Y,
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
-
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		GuiEvent.SET_SCREEN.register(this::onGuiOpen);
-
-
-		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
-			setupInitialState();
-		});
 	}
 
 	public static void setWalking(boolean doWalk) {
@@ -274,13 +273,13 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		Minecraft.getInstance().options.sensitivity = sens;
 	}
 	
-	private void setEmptyCursor() {
+	private static void setEmptyCursor() {
 		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
 								GLFW.GLFW_CURSOR, 
 								GLFW.GLFW_CURSOR_HIDDEN);
 	}
-	
-	private void setNativeCursor() {
+
+	private static void setNativeCursor() {
 		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
 								GLFW.GLFW_CURSOR, 
 								GLFW.GLFW_CURSOR_NORMAL);
@@ -295,18 +294,18 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		return mTicksSinceMouseEvent < 2;
 	}
 
-	private InteractionResultHolder<Screen> onGuiOpen(Screen screen) {
+	public static InteractionResultHolder<Screen> onGuiOpen(Screen screen) {
 		// For any open event, make sure cursor not overridden
 		if (screen != null) {
-			this.setNativeCursor();
+			setNativeCursor();
 		} else {
 			// For any close event, make sure we're in the right 'grabbed' state.
 			// (also sets cursor if applicable)
 			if (mInputSource == InputSource.Mouse) {
-				this.setEmptyCursor();
+				setEmptyCursor();
 			}
 		}
-		return InteractionResultHolder.success(screen);
+		return InteractionResultHolder.pass(screen);
 	}
 
 	// This is the constant offset applied in MC source, corresponding

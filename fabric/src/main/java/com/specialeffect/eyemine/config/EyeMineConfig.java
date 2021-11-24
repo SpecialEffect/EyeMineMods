@@ -38,6 +38,9 @@ public class EyeMineConfig implements ConfigData {
 	public Advanced advanced = new Advanced();
 
 	public static class Advanced {
+		@Comment("Disable the custom new world screen and the defaults it applies to every world")
+		public boolean disableCustomNewWorld = false;
+
 		@Comment("How far away a player needs to be from a chest/table to be able to open it")
 		@BoundedDiscrete(min = 1, max = 6)
 		public int radiusChests = 5;

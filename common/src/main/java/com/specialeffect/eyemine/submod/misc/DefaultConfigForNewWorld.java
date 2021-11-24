@@ -11,8 +11,11 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import me.shedaniel.architectury.event.events.EntityEvent;
@@ -37,7 +40,7 @@ import net.minecraft.world.level.storage.LevelData;
 
 import java.lang.reflect.Field;
 
-public class DefaultConfigForNewWorld extends SubMod {
+public class DefaultConfigForNewWorld extends SubMod implements IConfigListener {
     public final String MODID = "specialeffect.defaultconfigworld";
     
     private boolean firstOnLivingTick = true;
@@ -61,19 +64,26 @@ public class DefaultConfigForNewWorld extends SubMod {
 		LifecycleEvent.SERVER_WORLD_LOAD.register(this::onWorldLoad);
     }
 
+	@Override
+	public void syncConfig() {
+		EyeMineClient.disableCustomNewWorld = EyeMineConfig.getDisableCustomNewWorld();
+	}
+
 	private InteractionResult onSpawn(Entity entity, Level level) {
-		if (entity != null && entity instanceof Player) {
-			Player player = (Player)entity;
-			if (ModUtils.entityIsMe(player)) {
-				firstOnLivingTick = true;
-				haveEquippedPlayer = false;
+		if(!EyeMineClient.disableCustomNewWorld) {
+			if (entity != null && entity instanceof Player) {
+				Player player = (Player)entity;
+				if (ModUtils.entityIsMe(player)) {
+					firstOnLivingTick = true;
+					haveEquippedPlayer = false;
+				}
 			}
 		}
 		return InteractionResult.PASS;
 	}
 
 	private void onLiving(Player player) {
-		if (ModUtils.entityIsMe(player) && player instanceof LocalPlayer) {
+		if (!EyeMineClient.disableCustomNewWorld && ModUtils.entityIsMe(player) && player instanceof LocalPlayer) {
 			// First onliving tick, we check inventory and fill it with default set
 			// of items if it's empty
 			if (firstOnLivingTick && !haveEquippedPlayer) {
@@ -100,25 +110,27 @@ public class DefaultConfigForNewWorld extends SubMod {
 
 
 	private void onWorldLoad(ServerLevel serverLevel) {
-		LOGGER.debug("onWorldLoad: " + alwaysDayTimeSetting + ", " + alwaysSunnySetting + ", " + keepInventorySetting);
+		if(!EyeMineClient.disableCustomNewWorld) {
+			LOGGER.debug("onWorldLoad: " + alwaysDayTimeSetting + ", " + alwaysSunnySetting + ", " + keepInventorySetting);
 
-		MinecraftServer server = serverLevel.getServer();
-		LevelData info = serverLevel.getLevelData();
-		GameRules rules = info.getGameRules();
+			MinecraftServer server = serverLevel.getServer();
+			LevelData info = serverLevel.getLevelData();
+			GameRules rules = info.getGameRules();
 
-		if (info.getGameTime() < 60) {
-			// First time loading, set rules according to user preference
-			if (server != null && server.getDefaultGameType() == GameType.CREATIVE) {
-				rules.getRule(GameRules.RULE_DAYLIGHT).set(!alwaysDayTimeSetting, server);
-				rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(!alwaysSunnySetting, server);
-				rules.getRule(GameRules.RULE_KEEPINVENTORY).set(keepInventorySetting, server);
+			if (info.getGameTime() < 60) {
+				// First time loading, set rules according to user preference
+				if (server != null && server.getDefaultGameType() == GameType.CREATIVE) {
+					rules.getRule(GameRules.RULE_DAYLIGHT).set(!alwaysDayTimeSetting, server);
+					rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(!alwaysSunnySetting, server);
+					rules.getRule(GameRules.RULE_KEEPINVENTORY).set(keepInventorySetting, server);
 
-				// Extra settings as a result of the above
-				if (alwaysDayTimeSetting) {
-					// we've just turned off daylightcycle while time = morning...
-					// we prefer full daylight!
-					for(ServerLevel level : server.getAllLevels()) {
-						level.setDayTime(level.getDayTime() + (long)2000);
+					// Extra settings as a result of the above
+					if (alwaysDayTimeSetting) {
+						// we've just turned off daylightcycle while time = morning...
+						// we prefer full daylight!
+						for(ServerLevel level : server.getAllLevels()) {
+							level.setDayTime(level.getDayTime() + (long)2000);
+						}
 					}
 				}
 			}

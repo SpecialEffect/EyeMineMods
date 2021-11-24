@@ -4,6 +4,12 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 
 public class EyeMineConfig {
     @ExpectPlatform
+    public static boolean getDisableCustomNewWorld() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static void setCustomSpeedFactor(float speed) {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();

@@ -33,8 +33,8 @@ dependencies {
         transitive = false
     }
 
-    modCompileOnly("curse.maven:configured-457570:3523091")
-    modRuntimeOnly("curse.maven:configured-457570:3523091")
+    modCompileOnly("curse.maven:configured-457570:3533860")
+    modRuntimeOnly("curse.maven:configured-457570:3533860")
 }
 
 processResources {

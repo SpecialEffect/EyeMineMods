@@ -4,6 +4,11 @@ import com.specialeffect.eyemine.config.EyeMineConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 
 public class EyeMineConfigImpl {
+    public static boolean getDisableCustomNewWorld() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.advanced.disableCustomNewWorld;
+    }
+
     public static void setCustomSpeedFactor(float speed) {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         config.general.customSpeedFactor = speed;

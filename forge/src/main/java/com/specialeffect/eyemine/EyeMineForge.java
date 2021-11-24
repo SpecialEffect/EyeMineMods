@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,11 +34,15 @@ public class EyeMineForge {
 
             // Config setup
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG, "eyemine-config.toml");
+            eventBus.register(EyeMineConfig.class);
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG, "eyemine-inventory-config.toml");
+            eventBus.register(InventoryConfig.class);
+
+            // Register this setup method *after* children have registered theirs
+            // (this way the children will be fully set up before any config gets loaded)
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::setup);
 
             MinecraftForge.EVENT_BUS.addListener(ClientHandler::onOutlineRender);
-
-            EyeMine.clientInit();
         });
     }
 }

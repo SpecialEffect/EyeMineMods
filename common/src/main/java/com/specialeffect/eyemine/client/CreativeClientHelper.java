@@ -17,7 +17,6 @@ import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.inventory.manager.ChestInventoryManager;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import com.specialeffect.inventory.manager.SurvivalInventoryManager;
-import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;

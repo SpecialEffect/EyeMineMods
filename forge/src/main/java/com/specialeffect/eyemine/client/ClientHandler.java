@@ -11,17 +11,15 @@
 
 package com.specialeffect.eyemine.client;
 
-import at.feldim2425.moreoverlays.gui.ConfigScreen;
-import com.specialeffect.eyemine.EyeMine;
-import com.specialeffect.eyemine.EyeMineConfig;
+import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ClientHandler {
-	public static Screen openSettings(Minecraft mc, Screen modlist){
-		return new ConfigScreen(modlist, EyeMineConfig.CLIENT_CONFIG, EyeMine.MOD_ID);
+	public static void setup(final FMLCommonSetupEvent event) {
+		EyeMineClient.setupComplete = true;
+		EyeMineClient.refresh();
 	}
 
 	public static void onOutlineRender(DrawHighlightEvent.HighlightBlock event) {

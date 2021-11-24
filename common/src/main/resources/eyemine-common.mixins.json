@@ -14,7 +14,8 @@
 	"MouseHandlerAccessor",
 	"MouseHandlerMixin",
 	"TitleScreenMixin",
-	"KeyMappingAccessor"
+	"KeyMappingAccessor",
+	"WorldGenSettingsComponentAccessor"
   ],
   "injectors": {
 	"defaultRequire": 1

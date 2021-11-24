@@ -12,7 +12,8 @@
 package com.specialeffect.eyemine.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.specialeffect.eyemine.EyeMine;
+import com.specialeffect.eyemine.EyeMineClient;
+import com.specialeffect.eyemine.client.gui.CustomCreateWorldScreen;
 import com.specialeffect.eyemine.client.gui.crosshair.ICrosshairOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
@@ -21,6 +22,7 @@ import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.world.InteractionResultHolder;
 
 import java.util.ArrayList;
@@ -42,13 +44,15 @@ public class MainClientHandler {
 	// Replace / augment some GUIs
 	public static InteractionResultHolder<Screen> onGuiOpen(Screen screen) {
 		System.out.println(screen);
-//		if (screen instanceof CreateWorldScreen && !(screen instanceof CustomCreateWorldScreen)) { TODO: Actually port the Custom Create World Screen
-//			if (!allowMoreOptions) {
-//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-//				event.setGui(new CustomCreateWorldScreen(Minecraft.getInstance().currentScreen));
-//			}
-//			allowMoreOptions = false;
-//		}
+		Screen currentScreen = Minecraft.getInstance().screen;
+		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
+			CreateWorldScreen createWorldScreen = (CreateWorldScreen)screen;
+			if (!EyeMineClient.allowMoreOptions) {
+				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+				return InteractionResultHolder.success(CustomCreateWorldScreen.create(screen));
+			}
+			EyeMineClient.allowMoreOptions = false;
+		}
 		if (screen instanceof CreativeModeInventoryScreen) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
 			CreativeModeInventoryScreen gui = (CreativeModeInventoryScreen)screen ;
@@ -60,7 +64,7 @@ public class MainClientHandler {
 					gui.getMenu());
 			con.resetMouse();
 		}
-		return InteractionResultHolder.success(screen);
+		return InteractionResultHolder.pass(screen);
 	}
 
 	public static void initialize() {
@@ -74,6 +78,6 @@ public class MainClientHandler {
 
 	public static void saveWalkingSpeed(float speed) {
 		EyeMineConfig.setCustomSpeedFactor(speed);
-		EyeMine.refresh();
+		EyeMineClient.refresh();
 	}
 }

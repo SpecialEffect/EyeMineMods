@@ -3,6 +3,10 @@ package com.specialeffect.eyemine.platform.forge;
 import com.specialeffect.eyemine.EyeMineConfig;
 
 public class EyeMineConfigImpl {
+    public static boolean getDisableCustomNewWorld() {
+        return EyeMineConfig.disableCustomNewWorld.get();
+    }
+
     public static void setCustomSpeedFactor(float speed) {
         EyeMineConfig.customSpeedFactor.set((double)speed);
     }

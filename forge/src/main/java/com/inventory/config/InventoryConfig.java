@@ -13,12 +13,9 @@ package com.inventory.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +23,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.nio.file.Path;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class InventoryConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
@@ -38,7 +34,6 @@ public class InventoryConfig {
     
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-    public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     public static ConfigValue<Integer> key0, key1, key2, key3, key4,
@@ -64,7 +59,6 @@ public class InventoryConfig {
         setupSurvivalKeys();
         CLIENT_BUILDER.pop();
 
-        COMMON_CONFIG = CLIENT_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
@@ -127,15 +121,14 @@ public class InventoryConfig {
 
     @SubscribeEvent
     public static void onLoad(final ModConfig.Loading configEvent) {    	
-    	LOGGER.debug("InventoryConfig onLoad");
+    	LOGGER.info("Inventory config onLoad");
     }
 
     @SubscribeEvent
     public static void onReload(final ModConfig.Reloading configEvent) {
-    	LOGGER.debug("InventoryConfig onReload");   
+    	LOGGER.info("Inventory config onReload");
     	
-    	ForgeConfigSpec loadSpec = configEvent.getConfig().getSpec();
-    	if (loadSpec == CLIENT_CONFIG || loadSpec == COMMON_CONFIG) {
+		if (configEvent.getConfig() != null && configEvent.getConfig().getSpec() == CLIENT_CONFIG) {
         	// the configspec values are updated for us, but we may want to hook into here too?
     	}
     }

@@ -14,22 +14,13 @@ package com.specialeffect.eyemine;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingMode;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public class EyeMineConfig {
-	// Directly reference a log4j logger.
-	private static final Logger LOGGER = LogManager.getLogger();
-
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
 	// https://github.com/McJty/YouTubeModding14/blob/master/LICENSE
 
@@ -103,8 +94,10 @@ public class EyeMineConfig {
 	// Graphics
 	public static ForgeConfigSpec.DoubleValue fullscreenOverlayAlpha;
 
-	static {
+	// Create World
+	public static ForgeConfigSpec.BooleanValue disableCustomNewWorld;
 
+	static {
 		CLIENT_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
 		setupBasicConfig();
 		CLIENT_BUILDER.pop();
@@ -148,6 +141,10 @@ public class EyeMineConfig {
 
 	private static void setupAdvancedConfig() {
 
+		disableCustomNewWorld = CLIENT_BUILDER
+				.comment("Disable the custom new world screen and the defaults it applies to every world")
+				.define("disableCustomNewWorld", false);
+
 		// This is limited to 6 blocks since the gui doesn't appear if block is too far
 		// away
 		radiusChests = CLIENT_BUILDER
@@ -180,8 +177,8 @@ public class EyeMineConfig {
 	            .defineInRange("fullscreenOverlayAlpha", 0.1, 0.0, 0.2);
 
 	    serverCompatibilityMode = CLIENT_BUILDER
-        .comment("Use simpler mining/placing logic to play on servers without EyeMine installed")
-        .define("serverCompatibilityMode", false);
+			.comment("Use simpler mining/placing logic to play on servers without EyeMine installed")
+			.define("serverCompatibilityMode", false);
 
 	}
 
@@ -220,8 +217,6 @@ public class EyeMineConfig {
     boatMaxTurnAtSpeed = CLIENT_BUILDER
             .comment("Maximum angle (degrees) at which boat will still travel forwards while turning")
             .defineInRange("boatMaxTurnAtSpeed", 30, 1, 90);
-
-    
 	}
 
 	private static void setupDwellConfig() {
@@ -249,7 +244,6 @@ public class EyeMineConfig {
 	}
 
 	public static void loadConfig(ForgeConfigSpec spec, Path path) {
-
 		final CommentedFileConfig configData = CommentedFileConfig.builder(path).preserveInsertionOrder().sync()
 				.autosave().writingMode(WritingMode.REPLACE).parsingMode(ParsingMode.ADD).concurrent().build();
 
@@ -259,18 +253,16 @@ public class EyeMineConfig {
 
 	@SubscribeEvent
 	public static void onLoad(final ModConfig.Loading configEvent) {
-		LOGGER.debug("ModConfig onLoad");
+		EyeMine.LOGGER.debug("EyeMine config onLoad");
 	}
 
 	@SubscribeEvent
 	public static void onReload(final ModConfig.Reloading configEvent) {
 		// the configspec values are updated for us, but we may want to hook into
 		// here to notify other mods?
-		LOGGER.debug("ModConfig onReload");
+		EyeMine.LOGGER.info("EyeMine config onReload");
 
-		if (configEvent.getConfig().getModId().equals(EyeMine.MOD_ID)) {
-			EyeMine.refresh();
-		}
+		EyeMineClient.refresh();
 	}
 
 }
