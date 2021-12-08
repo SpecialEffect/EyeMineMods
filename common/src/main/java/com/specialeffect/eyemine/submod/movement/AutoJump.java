@@ -33,6 +33,7 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 	public static KeyMapping autoJumpKeyBinding;
 
+	private boolean mAutoJumpDisabled = false;
 	private boolean mDoingAutoJump = true;
 	private int mIconIndex;
 
@@ -63,7 +64,8 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 	@Override
 	public void syncConfig() {
-		mDoingAutoJump = EyeMineConfig.getDefaultDoAutoJump();
+		this.mAutoJumpDisabled = EyeMineConfig.getDisableAutoJumpFixes();
+		this.mDoingAutoJump = EyeMineConfig.getDefaultDoAutoJump();
 		this.updateSettings(mDoingAutoJump);
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
@@ -78,12 +80,14 @@ public class AutoJump extends SubMod implements IConfigListener {
 			// We'll keep it in sync though so that keyboard-play is consistent
 			// with our autojump state (if you're moving with the keyboard you
 			// get visually-nicer autojump behaviour).
-			if (mDoingAutoJump) {
-				player.maxUpStep = 1.0f;
+			if(!mAutoJumpDisabled) {
+				if (mDoingAutoJump) {
+					player.maxUpStep = 1.0f;
+				}
+				else {
+					player.maxUpStep = 0.6f;
+				}
 			}
-			else {
-				player.maxUpStep = 0.6f;
-			}	    		
     	}
     }
 
@@ -92,7 +96,7 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 
-		if (autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
+		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			this.updateSettings(mDoingAutoJump);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			

@@ -19,6 +19,7 @@ import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
 import com.specialeffect.utils.ModUtils;
@@ -38,7 +39,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.EntityHitResult;
 import org.lwjgl.glfw.GLFW;
 
-public class ContinuouslyAttack extends SubMod {
+public class ContinuouslyAttack extends SubMod implements IConfigListener {
 	public final String MODID = "continuouslyattack";
 
 	private boolean mAutoSelectSword = true;
@@ -62,6 +63,11 @@ public class ContinuouslyAttack extends SubMod {
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+	}
+
+	@Override
+	public void syncConfig() {
+		mAutoSelectSword = EyeMineConfig.getAutoSelectSword();
 	}
 
 	public static void stop() {

@@ -28,7 +28,19 @@ public class EyeMineConfig {
     }
 
     @ExpectPlatform
+    public static boolean getAutoSelectSword() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static int getTicksBetweenMining() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static int getRadiusChests() {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();
     }
@@ -64,6 +76,12 @@ public class EyeMineConfig {
     }
 
     @ExpectPlatform
+    public static boolean getUseDwellForSingleMine() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static boolean getServerCompatibilityMode() {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();
@@ -94,6 +112,12 @@ public class EyeMineConfig {
     }
 
     @ExpectPlatform
+    public static boolean getDisableAutoJumpFixes() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static boolean getMoveWhenMouseStationary() {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();
@@ -101,6 +125,12 @@ public class EyeMineConfig {
 
     @ExpectPlatform
     public static boolean getSlowdownOnCorners() {
+        // Just throw an error, the content should get replaced at runtime.
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static int getWalkingSlowdownFilter() {
         // Just throw an error, the content should get replaced at runtime.
         throw new AssertionError();
     }

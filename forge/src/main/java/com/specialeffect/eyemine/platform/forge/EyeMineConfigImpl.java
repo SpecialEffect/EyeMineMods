@@ -19,6 +19,14 @@ public class EyeMineConfigImpl {
         return EyeMineConfig.autoSelectTool.get();
     }
 
+    public static boolean getAutoSelectSword() {
+        return EyeMineConfig.autoSelectSword.get();
+    }
+
+    public static int getRadiusChests() {
+        return EyeMineConfig.radiusChests.get();
+    }
+
     public static int getTicksBetweenMining() {
         return EyeMineConfig.ticksBetweenMining.get();
     }
@@ -43,6 +51,10 @@ public class EyeMineConfigImpl {
         return EyeMineConfig.useDwellForSingleUseItem.get();
     }
 
+    public static boolean getUseDwellForSingleMine() {
+        return EyeMineConfig.useDwellForSingleMine.get();
+    }
+
     public static int getRadiusDoors() {
         return EyeMineConfig.radiusDoors.get();
     }
@@ -63,12 +75,20 @@ public class EyeMineConfigImpl {
         return EyeMineConfig.defaultDoAutoJump.get();
     }
 
+    public static boolean getDisableAutoJumpFixes() {
+        return EyeMineConfig.disableAutoJumpFixes.get();
+    }
+
     public static boolean getMoveWhenMouseStationary() {
         return EyeMineConfig.moveWhenMouseStationary.get();
     }
 
     public static boolean getSlowdownOnCorners() {
         return EyeMineConfig.slowdownOnCorners.get();
+    }
+
+    public static int getWalkingSlowdownFilter() {
+        return EyeMineConfig.walkingSlowdownFilter.get();
     }
 
     public static boolean getAllowLadderDescent() {

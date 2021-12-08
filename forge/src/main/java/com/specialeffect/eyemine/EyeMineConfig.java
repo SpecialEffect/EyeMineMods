@@ -43,7 +43,7 @@ public class EyeMineConfig {
 	public static ForgeConfigSpec.IntValue flyHeightAuto;
 
 	// Walking options -> walk with gaze
-	public static ForgeConfigSpec.IntValue filterLength;
+	public static ForgeConfigSpec.IntValue walkingSlowdownFilter;
 	public static ForgeConfigSpec.BooleanValue moveWhenMouseStationary;
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
 
@@ -58,6 +58,7 @@ public class EyeMineConfig {
 	
 	// AutoJump
 	public static ForgeConfigSpec.BooleanValue defaultDoAutoJump;
+	public static ForgeConfigSpec.BooleanValue disableAutoJumpFixes;
 
 	// MouseHandler options	
 	public static ForgeConfigSpec.BooleanValue usingMouseEmulation;
@@ -121,8 +122,13 @@ public class EyeMineConfig {
 		customSpeedFactor = CLIENT_BUILDER.comment("Walking speed for walk-with-gaze").defineInRange("walkingSpeed",
 				0.6, 0.25, 2.0);
 
-		defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?").define("defaultDoAutoJump",
-				true);
+		defaultDoAutoJump = CLIENT_BUILDER.comment("Auto-jump switched on by default?")
+				.define("defaultDoAutoJump", true);
+
+		disableAutoJumpFixes = CLIENT_BUILDER.comment("Disable Auto-Jump Fixes" +
+						"(EyeMine's extra Auto-Jump fixes can cause problems on servers, " +
+						"if you notice yourself being teleported back enable this option)")
+				.define("disableAutoJumpFixes", false);
 
 		usingMouseEmulation = CLIENT_BUILDER.comment(
 				"Enable mouse-emulation compatibility mode?.\nTurn this on if you're using mouse position as an input to EyeMine")
@@ -188,9 +194,9 @@ public class EyeMineConfig {
         .comment("Slow down auto-walk when going round a corner\nYou may want to turn this off for survival")
         .define("slowdownOnCorners", true);
 
-		filterLength = CLIENT_BUILDER.comment(
-				"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
-				.defineInRange("walkingSlowdownFilter", 30, 1, 200);
+	walkingSlowdownFilter = CLIENT_BUILDER.comment(
+		"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
+		.defineInRange("walkingSlowdownFilter", 10, 1, 200);
 
     moveWhenMouseStationary = CLIENT_BUILDER.comment(
         "Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
@@ -206,8 +212,8 @@ public class EyeMineConfig {
     flyHeightAuto = CLIENT_BUILDER.comment("How high to fly in auto mode").defineInRange("flyHeightAuto", 6, 1, 10);
 
     allowLadderDescent = CLIENT_BUILDER.comment(
-            "Descend ladders by looking down while moving. \n Experimental; may cause problems getting on/off ladders.")
-            .define("allowLadderDescent", false);
+		"Descend ladders by looking down while moving. \n Experimental; may cause problems getting on/off ladders.")
+		.define("allowLadderDescent", false);
     
     // Boats
     boatSlowdown = CLIENT_BUILDER

@@ -24,6 +24,16 @@ public class EyeMineConfigImpl {
         return config.general.autoSelectTool;
     }
 
+    public static boolean getAutoSelectSword() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.general.autoSelectSword;
+    }
+
+    public static int getRadiusChests() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.advanced.radiusChests;
+    }
+
     public static int getTicksBetweenMining() {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         return config.advanced.ticksBetweenMining;
@@ -54,6 +64,11 @@ public class EyeMineConfigImpl {
         return config.dwell.useDwellForSingleUseItem;
     }
 
+    public static boolean getUseDwellForSingleMine() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.dwell.useDwellForSingleMine;
+    }
+
     public static int getRadiusDoors() {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         return config.advanced.radiusDoors;
@@ -79,6 +94,11 @@ public class EyeMineConfigImpl {
         return config.general.defaultDoAutoJump;
     }
 
+    public static boolean getDisableAutoJumpFixes() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.general.disableAutoJumpFixes;
+    }
+
     public static boolean getMoveWhenMouseStationary() {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         return config.movement.moveWhenMouseStationary;
@@ -87,6 +107,11 @@ public class EyeMineConfigImpl {
     public static boolean getSlowdownOnCorners() {
         EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
         return config.movement.slowdownOnCorners;
+    }
+
+    public static int getWalkingSlowdownFilter() {
+        EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+        return config.movement.walkingSlowdownFilter;
     }
 
     public static boolean getAllowLadderDescent() {

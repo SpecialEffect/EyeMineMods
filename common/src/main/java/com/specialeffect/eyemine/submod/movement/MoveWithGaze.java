@@ -101,7 +101,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 	@Override
 	public void syncConfig() {
-		mQueueLength =10;
+		mQueueLength = EyeMineConfig.getWalkingSlowdownFilter();
 		mMoveWhenMouseStationary = EyeMineConfig.getMoveWhenMouseStationary();
 		mCustomSpeedFactor = EyeMineConfig.getCustomSpeedFactor();
 	}

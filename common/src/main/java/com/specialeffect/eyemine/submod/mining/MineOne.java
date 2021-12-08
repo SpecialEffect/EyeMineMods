@@ -132,7 +132,7 @@ public class MineOne extends DwellAction {
 
 			// start dwell if appropriate
 			LocalPlayer player = Minecraft.getInstance().player;
-			boolean useDwelling = player.isCreative() && EyeMineConfig.getUseDwellForSingleUseItem();
+			boolean useDwelling = player.isCreative() && EyeMineConfig.getUseDwellForSingleMine();
 			if (useDwelling) {
 				this.dwellOnce();
 			}

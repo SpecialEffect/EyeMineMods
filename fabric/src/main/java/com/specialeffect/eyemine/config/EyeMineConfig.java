@@ -21,6 +21,11 @@ public class EyeMineConfig implements ConfigData {
 		@Comment("Auto-jump switched on by default")
 		public boolean defaultDoAutoJump = true;
 
+		@Comment("Disable Auto-Jump Fixes" +
+				"(EyeMine's extra Auto-Jump fixes can cause problems on servers, " +
+				"if you notice yourself being teleported back enable this option)")
+		public boolean disableAutoJumpFixes = false;
+
 		@Comment("Enable mouse-emulation compatibility mode?." +
 				" Turn this on if you're using mouse position as an input to EyeMine")
 		public boolean usingMouseEmulation = false;
@@ -85,7 +90,7 @@ public class EyeMineConfig implements ConfigData {
 		@Comment("How many ticks to take into account for slowing down while looking around / turning corners. " +
 				" (smaller number = faster)")
 		@BoundedDiscrete(min = 1, max = 200)
-		public int walkingSlowdownFilter = 30;
+		public int walkingSlowdownFilter = 10;
 
 		@Comment("Continue walking forward when the mouse is stationary?" +
 				" Recommended to be turned off for eye gaze control, or turned on for joysticks.")

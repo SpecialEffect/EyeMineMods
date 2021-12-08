@@ -153,6 +153,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 		// size of square proportional to dwell progress
 		double dDwell = dwellState.getDwellProportionSinceLockon();
+		if (expanding) { dDwell = 1.0f - dDwell; }
 
 		// opacity proportional to decay progress
 		int usualOpacity = 125;

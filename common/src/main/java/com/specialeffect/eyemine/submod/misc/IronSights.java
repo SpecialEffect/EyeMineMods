@@ -37,7 +37,6 @@ public class IronSights extends SubMod implements IConfigListener {
 	private int fovReduction = 20;
 	private float sensitivityReduction = 0.2f;
 
-
 	public void onInitializeClient() {
 		// Register key bindings
 		Keybindings.keybindings.add(mToggleIronsight = new KeyMapping(
@@ -56,6 +55,12 @@ public class IronSights extends SubMod implements IConfigListener {
 		MainClientHandler.addOverlayToRender(mIcon);
 
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+	}
+
+	@Override
+	public void syncConfig() {
+		this.fovReduction = EyeMineConfig.getIronsightsFovReduction();
+		this.sensitivityReduction = ((float) EyeMineConfig.getIronsightsSensitivityReduction()) / 100.0f;
 	}
 
 	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
@@ -78,11 +83,4 @@ public class IronSights extends SubMod implements IConfigListener {
 
 		return InteractionResult.PASS;
 	}
-
-
-	@Override
-	public void syncConfig() {
-		this.fovReduction = EyeMineConfig.getIronsightsFovReduction();
-		this.sensitivityReduction = ((float) EyeMineConfig.getIronsightsSensitivityReduction()) / 100.0f;
-	}	
 }

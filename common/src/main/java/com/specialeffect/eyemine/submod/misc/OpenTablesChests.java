@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
@@ -47,7 +48,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 	private static KeyMapping mOpenChestKB;
 	private static KeyMapping mOpenCraftingTableKB;
 	
-    private static int mRadius = 5;
+    private int mRadius = 5;
 
 	public void onInitializeClient() {
 		// Register key bindings
@@ -68,7 +69,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 	}
 
 	public void syncConfig() {
-        //Unused
+		this.mRadius = EyeMineConfig.getRadiusChests();
 	}
 
 	// Search for closest block of a certain class, within maximum radius
