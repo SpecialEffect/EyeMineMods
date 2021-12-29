@@ -11,7 +11,6 @@ import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -43,6 +42,8 @@ public class EyeMineForge {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::setup);
 
             MinecraftForge.EVENT_BUS.addListener(ClientHandler::onOutlineRender);
+
+            EyeMineClient.init();
         });
     }
 }

@@ -1,8 +1,6 @@
 package com.specialeffect.eyemine;
 
 import com.specialeffect.eyemine.packets.PacketHandler;
-import me.shedaniel.architectury.utils.Env;
-import me.shedaniel.architectury.utils.EnvExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,9 +11,5 @@ public class EyeMine {
 
     public static void init() {
         PacketHandler.init();
-
-        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-            EyeMineClient.init();
-        });
     }
 }

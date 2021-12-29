@@ -22,5 +22,6 @@ public class EyeMineClientFabric implements ClientModInitializer {
             EyeMineClient.refresh();
             return InteractionResult.PASS;
         });
+        EyeMineClient.init();
     }
 }
