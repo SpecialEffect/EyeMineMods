@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -71,7 +72,9 @@ public class IconOverlay implements ICrosshairOverlay {
 
 		// render the texture
 		// TODO:white? black? drop shadow?
-		minecraft.getTextureManager().bind(mResource);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, mResource);
 		ModUtils.drawTexQuad(centreX - width/2, centreY - height/2,
 				width, height, mAlpha*fade);
 	}

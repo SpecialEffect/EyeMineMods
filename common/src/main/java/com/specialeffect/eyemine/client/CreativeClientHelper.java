@@ -17,25 +17,24 @@ import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.inventory.manager.ChestInventoryManager;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import com.specialeffect.inventory.manager.SurvivalInventoryManager;
+import dev.architectury.event.EventResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.world.InteractionResult;
 import org.lwjgl.glfw.GLFW;
 
 public class CreativeClientHelper {
-	public static InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+	public static EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if(action == GLFW.GLFW_RELEASE) {
 			int key = keyCode;
 			EyeMine.LOGGER.debug(key);
 			Screen currentScreen = minecraft.screen;
 			if (currentScreen != null) {
-				if (currentScreen instanceof CreativeModeInventoryScreen) {
-					CreativeModeInventoryScreen gui = (CreativeModeInventoryScreen)currentScreen;
+				if (currentScreen instanceof CreativeModeInventoryScreen gui) {
 					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
@@ -44,11 +43,10 @@ public class CreativeClientHelper {
 							gui.getMenu());
 					boolean handled = con.acceptKey(key);
 					if (handled) {
-						return InteractionResult.PASS;
+						return EventResult.pass();
 					}
 				}
-				else if (currentScreen instanceof ContainerScreen) {
-					ContainerScreen gui = (ContainerScreen)currentScreen;
+				else if (currentScreen instanceof ContainerScreen gui) {
 					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
 					ChestInventoryManager con = ChestInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
@@ -56,8 +54,7 @@ public class CreativeClientHelper {
 							gui.getMenu());
 					con.acceptKey(key);
 				}
-				else if (currentScreen instanceof InventoryScreen) {
-					InventoryScreen gui = (InventoryScreen)currentScreen;
+				else if (currentScreen instanceof InventoryScreen gui) {
 					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
 					SurvivalInventoryManager con = SurvivalInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
@@ -67,6 +64,6 @@ public class CreativeClientHelper {
 				}
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 }

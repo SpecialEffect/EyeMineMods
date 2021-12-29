@@ -1,19 +1,21 @@
-package com.specialeffect.eyemine;
+package com.specialeffect.eyemine.forge;
 
 import com.inventory.config.InventoryConfig;
-import com.specialeffect.eyemine.client.ClientHandler;
-import me.shedaniel.architectury.platform.forge.EventBuses;
+import com.specialeffect.eyemine.EyeMine;
+import com.specialeffect.eyemine.EyeMineClient;
+import com.specialeffect.eyemine.client.forge.ClientHandler;
+import com.specialeffect.eyemine.config.EyeMineConfig;
+import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint.DisplayTest;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Mod(EyeMine.MOD_ID)
 public class EyeMineForge {
@@ -23,10 +25,10 @@ public class EyeMineForge {
         EventBuses.registerModEventBus(EyeMine.MOD_ID, eventBus);
         EyeMine.init();
 
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()-> Pair.of(
-                () -> "Everyone is valid", // if I'm actually on the server, this string is sent, but I'm a client only mod, so it won't be
-                (removeVersion, networkBool) -> networkBool // I accept anything from the server, by returning true if it's asking about the server
-        ));
+        //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
+        ModLoadingContext.get().registerExtensionPoint(DisplayTest.class,()->
+                new IExtensionPoint.DisplayTest(() -> "Everyone is valid",
+                        (remoteVersionString,networkBool) -> networkBool));
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             // Hook up config gui
@@ -43,6 +45,7 @@ public class EyeMineForge {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientHandler::setup);
 
             MinecraftForge.EVENT_BUS.addListener(ClientHandler::onOutlineRender);
+            EyeMineClient.init();
         });
     }
 }

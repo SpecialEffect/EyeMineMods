@@ -13,20 +13,22 @@ package com.specialeffect.eyemine.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import org.lwjgl.opengl.GL11;
 
 public class EyeMineRenderType extends RenderType {
-	public EyeMineRenderType(String nameIn, VertexFormat formatIn, int drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
+	public EyeMineRenderType(String nameIn, VertexFormat formatIn, Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
 		super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
 	}
 
 	public static RenderType dwellRenderType() {
-		return RenderType.create("eyemine:dwell", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, false, false, getDwellState());
+		return RenderType.create("eyemine:dwell", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 2097152, false, false, getDwellState());
 	}
 
 	private static CompositeState getDwellState() {
 		return CompositeState.builder()
+				.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
 				.setLightmapState(LIGHTMAP)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setOutputState(TRANSLUCENT_TARGET)
@@ -37,11 +39,12 @@ public class EyeMineRenderType extends RenderType {
 	}
 
 	public static RenderType cubeRenderType() {
-		return RenderType.create("eyemine:cube", DefaultVertexFormat.POSITION_COLOR, GL11.GL_QUADS, 2097152, false, false, getCubeState());
+		return RenderType.create("eyemine:cube", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 2097152, false, false, getCubeState());
 	}
 
 	private static CompositeState getCubeState() {
 		return CompositeState.builder()
+				.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
 				.setLightmapState(LIGHTMAP)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setOutputState(TRANSLUCENT_TARGET)

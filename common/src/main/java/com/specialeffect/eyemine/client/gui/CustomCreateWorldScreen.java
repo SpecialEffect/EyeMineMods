@@ -23,7 +23,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldGenSettingsComponent;
 import net.minecraft.client.gui.screens.worldselection.WorldPreset;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistryAccess.RegistryHolder;
 import net.minecraft.network.chat.Component;
@@ -68,7 +67,7 @@ public class CustomCreateWorldScreen extends Screen {
 			return new CustomCreateWorldScreen(screen, ((CreateWorldScreen)screen).worldGenSettingsComponent);
 		}
 		RegistryHolder registryHolder = RegistryAccess.builtin();
-		return new CustomCreateWorldScreen(screen, new WorldGenSettingsComponent(registryHolder, WorldGenSettings.makeDefault(registryHolder.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY), registryHolder.registryOrThrow(Registry.BIOME_REGISTRY), registryHolder.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY)), Optional.of(WorldPreset.NORMAL), OptionalLong.empty()));
+		return new CustomCreateWorldScreen(screen, new WorldGenSettingsComponent(registryHolder, WorldGenSettings.makeDefault(registryHolder), Optional.of(WorldPreset.NORMAL), OptionalLong.empty()));
 	}
 
 	public void tick() {
@@ -84,9 +83,9 @@ public class CustomCreateWorldScreen extends Screen {
 			this.btnCreateWorld.active = !this.worldNameField.getValue().isEmpty();
 			this.calcSaveDirName();
 		});
-		this.children.add(this.worldNameField);
+		this.addWidget(this.worldNameField);
 
-		this.btnCreateWorld = this.addButton(new Button(this.width / 2 - 155, this.height - 28, 150, 20, new TranslatableComponent("selectWorld.create"), (p_214318_1_) -> {
+		this.btnCreateWorld = this.addRenderableWidget(new Button(this.width / 2 - 155, this.height - 28, 150, 20, new TranslatableComponent("selectWorld.create"), (p_214318_1_) -> {
 			this.onCreate();
 		}));
 
@@ -101,25 +100,25 @@ public class CustomCreateWorldScreen extends Screen {
 		btnSunny = new BooleanButton(sSunny, true, this.width / 2, 130, w);
 		btnInventory = new BooleanButton(sInventory, true, this.width / 2, 150, w);
 
-		this.addButton(btnDaytime.getButton());
-		this.addButton(btnSunny.getButton());
-		this.addButton(btnInventory.getButton());
+		this.addRenderableWidget(btnDaytime.getButton());
+		this.addRenderableWidget(btnSunny.getButton());
+		this.addRenderableWidget(btnInventory.getButton());
 
 		// More options -> back to the usual minecraft screens
-		this.addButton(new Button(this.width / 2 - 75, 177, 150, 20, new TranslatableComponent("Advanced Minecraft Options"), (p_214321_1_) -> {
+		this.addRenderableWidget(new Button(this.width / 2 - 75, 177, 150, 20, new TranslatableComponent("Advanced Minecraft Options"), (p_214321_1_) -> {
 			EyeMineClient.allowMoreOptions = true;
 			DefaultConfigForNewWorld.setNewWorldOptions(btnDaytime.getValue(), btnSunny.getValue(), btnInventory.getValue());
 			this.minecraft.setScreen(CreateWorldScreen.create(this));
 		}));
 
-		this.addButton(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableComponent("gui.cancel"), (p_214317_1_) -> {
+		this.addRenderableWidget(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableComponent("gui.cancel"), (p_214317_1_) -> {
 			this.minecraft.setScreen(this.parentScreen);
 		}));
 		this.setInitialFocus(this.worldNameField);
 		this.calcSaveDirName();
 	}
 
-	class BooleanButton {
+	static class BooleanButton {
 		private int x = 0;
 		private int y = 0;
 		private int w = 0;

@@ -20,15 +20,15 @@ import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -73,7 +73,7 @@ public class AutoPillar extends SubMod {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (null != player) {
 			synchronized (mOnLivingQueue) {
-				lastPlayerPitch = player.xRot;
+				lastPlayerPitch = player.getXRot();
 			}
 
 			// Process any events which were queued by key events
@@ -96,10 +96,10 @@ public class AutoPillar extends SubMod {
 		}
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on your own)
@@ -125,7 +125,7 @@ public class AutoPillar extends SubMod {
 				player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, true, player.input.shiftKeyDown));
 				player.jumpFromGround();
 
-				player.xRot = 90;
+				player.setXRot(90);
 			}, 1));
 
 			for(int i = 3; i <= 6; i++) {
@@ -141,10 +141,9 @@ public class AutoPillar extends SubMod {
 					// alternating between 2 blocks)
 					// Also look down, purely for effect.
 
-					player.xRot = 90;
-					if(!player.isOnGround() && player.xRot == 90) {
-						if(mc.hitResult instanceof BlockHitResult) {
-							BlockHitResult blockHitResult = (BlockHitResult) mc.hitResult;
+					player.setXRot(90);
+					if(!player.isOnGround() && player.getXRot() == 90) {
+						if(mc.hitResult instanceof BlockHitResult blockHitResult) {
 							if(blockHitResult.getBlockPos().getY() < player.getY()) {
 								mc.gameMode.useItemOn(player, level, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
 								// Make sure we get the animation
@@ -162,11 +161,11 @@ public class AutoPillar extends SubMod {
 					Minecraft mc = Minecraft.getInstance();
 					LocalPlayer player = mc.player;
 
-					player.xRot = pillarPitch - deltaPitch * j;
+					player.setXRot(pillarPitch - deltaPitch * j);
 				}, 10 + 2 * j));
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	//Currently goes unused

@@ -21,13 +21,13 @@ import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.GuiEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
@@ -70,7 +70,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		//Initialize variables from Config
 		this.syncConfig();
 
-		GuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
+		ClientGuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 		BlockOutlineEvent.OUTLINE.register(this::onBlockOutlineRender);
 	}
 
@@ -173,11 +173,11 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		AbstractRenderer.renderBlockFace(poseStack, vertexConsumer, target.pos, target.direction, color, iAlpha);
 	}
 
-	public InteractionResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
+	public EventResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
 		Minecraft minecraft = Minecraft.getInstance();
 		if (minecraft.screen != null) {
 			liveTargets.clear();
-			return InteractionResult.PASS;
+			return EventResult.pass();
 		}
 
 		if (mDwelling) {
@@ -185,7 +185,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			// (we only want to add from within this method, so we avoid un-buildable surfaces,
 			// a.k.a. "MISS" ray trace results)
 			if (minecraft.hitResult != null && minecraft.hitResult.getType() == Type.MISS) {
-				return InteractionResult.PASS;
+				return EventResult.pass();
 			}
 
 			BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
@@ -219,7 +219,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 				}
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {

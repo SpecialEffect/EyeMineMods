@@ -14,18 +14,18 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.EntityEvent;
-import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientGuiEvent;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.events.common.EntityEvent;
+import dev.architectury.event.events.common.LifecycleEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,12 +54,12 @@ public class NightVisionHelper extends SubMod {
 	}
 
 	public void onInitializeClient() {
-		LifecycleEvent.SERVER_WORLD_LOAD.register(this::onWorldLoad);
+		LifecycleEvent.SERVER_LEVEL_LOAD.register(this::onWorldLoad);
 		EntityEvent.LIVING_DEATH.register(this::onDeath);
 		EntityEvent.ADD.register(this::onSpawn);
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		GuiEvent.RENDER_HUD.register(this::onRenderExperienceBar);
+		ClientGuiEvent.RENDER_HUD.register(this::onRenderExperienceBar);
 	}
 
 	private void onWorldLoad(ServerLevel serverLevel) {
@@ -83,20 +83,20 @@ public class NightVisionHelper extends SubMod {
 		mTicksThreshold = 2*20;
     }
 
-	private InteractionResult onDeath(LivingEntity entity, DamageSource damageSource) {
+	private EventResult onDeath(LivingEntity entity, DamageSource damageSource) {
 		if (ModUtils.entityIsMe(entity)) {
 			this.resetState();
 			mTemporarilyDisabled = true;			
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
     }
 
-	private InteractionResult onSpawn(Entity entity, Level level) {
+	private EventResult onSpawn(Entity entity, Level level) {
 		if (ModUtils.entityIsMe(entity)) {
 			this.resetState();
 			mTemporarilyDisabled = false;
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
     }
 
     public void onClientTick(Minecraft event) {
@@ -199,11 +199,11 @@ public class NightVisionHelper extends SubMod {
         font.draw(matrixStack, msg, x - stringWidth/2, y, c);
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
 		// Any key dismisses the message (eventually, after minimum time)
 		if (mShowMessage) {
 			mDisabled = true;
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 }

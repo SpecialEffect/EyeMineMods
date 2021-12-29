@@ -9,10 +9,11 @@
  * of the License, or (at your option) any later version.
  */
 
-package com.specialeffect.eyemine.client;
+package com.specialeffect.eyemine.client.forge;
 
+import com.specialeffect.eyemine.client.Keybindings;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ForgeKeybindings {

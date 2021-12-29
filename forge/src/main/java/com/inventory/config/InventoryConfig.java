@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -120,12 +121,12 @@ public class InventoryConfig {
     }
 
     @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {    	
+    public static void onLoad(final ModConfigEvent.Loading configEvent) {
     	LOGGER.info("Inventory config onLoad");
     }
 
     @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent) {
+    public static void onReload(final ModConfigEvent.Reloading configEvent) {
     	LOGGER.info("Inventory config onReload");
     	
 		if (configEvent.getConfig() != null && configEvent.getConfig().getSpec() == CLIENT_CONFIG) {

@@ -97,7 +97,7 @@ public abstract class MouseHandlerMixin {
 			ordinal = 0), cancellable = true)
 	public void EyeMineGrabMouseOnMove(long handle, double xpos, double ypos, CallbackInfo ci) {
 		GuiEventListener guiEventListener = this.minecraft.screen;
-		if(guiEventListener != null && this.minecraft.overlay == null) {
+		if(guiEventListener != null && this.minecraft.getOverlay() == null) {
 			//The if from earlier just so we can turn it into an if/else
 			this.xpos = xpos;
 			this.ypos = ypos;

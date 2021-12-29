@@ -11,7 +11,7 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
-import me.shedaniel.architectury.networking.NetworkManager;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
@@ -52,16 +52,16 @@ public class ChangeFlyingStateMessage {
 					return;
 				}
 
-				if (player.abilities.flying) {
+				if (player.getAbilities().flying) {
 					if (pkt.shouldBeFlying) {
-						player.abilities.flying = true;
+						player.getAbilities().flying = true;
 						Vec3 motion = player.getDeltaMovement();
 						Vec3 addMotion = new Vec3(0, pkt.flyHeight, 0);
 						player.setDeltaMovement(motion.add(addMotion));
 						player.move(MoverType.SELF, new Vec3(0, pkt.flyHeight, 0));
 					}
 					else {
-						player.abilities.flying = false;
+						player.getAbilities().flying = false;
 					}
 				}
 			});

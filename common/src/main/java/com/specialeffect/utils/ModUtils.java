@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -50,8 +51,7 @@ public class ModUtils {
 	// Check if LivingEntity is the current player (and not another
 	// player on the network, for instance)
 	public static boolean entityIsMe(Entity entity) {				
-		if (entity instanceof Player) {
-			Player player = (Player) entity;
+		if (entity instanceof Player player) {
 			UUID playerUUID = player.getUUID();
 			Player myself = Minecraft.getInstance().player;
 			if (null == myself) {
@@ -104,30 +104,14 @@ public class ModUtils {
 		Point p = new Point(0, 0);
 		i = i % 8;
 		switch (i) {
-		case 0:
-			p.setLocation(0, +1);
-			break;
-		case 1:
-			p.setLocation(+1, +1);
-			break;
-		case 2:
-			p.setLocation(+1, 0);
-			break;
-		case 3:
-			p.setLocation(+1, -1);
-			break;
-		case 4:
-			p.setLocation(0, -1);
-			break;
-		case 5:
-			p.setLocation(-1, -1);
-			break;
-		case 6:
-			p.setLocation(-1, 0);
-			break;
-		default:
-			p.setLocation(-1, +1);
-			break;
+			case 0 -> p.setLocation(0, +1);
+			case 1 -> p.setLocation(+1, +1);
+			case 2 -> p.setLocation(+1, 0);
+			case 3 -> p.setLocation(+1, -1);
+			case 4 -> p.setLocation(0, -1);
+			case 5 -> p.setLocation(-1, -1);
+			case 6 -> p.setLocation(-1, 0);
+			default -> p.setLocation(-1, +1);
 		}
 		return p;
 	}
@@ -143,7 +127,7 @@ public class ModUtils {
 	
 	
 	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, alpha);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -151,7 +135,7 @@ public class ModUtils {
 		BufferBuilder bufferbuilder = tessellator.getBuilder();
 
 		int z = 10;
-		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferbuilder.vertex(x, y + height, z).uv(0.0f, 1.0f).endVertex();
 		bufferbuilder.vertex(x + width, y + height, z).uv(1.0f, 1.0f).endVertex();
 		bufferbuilder.vertex(x + width, y, z).uv(1.0f, 0.0f).endVertex();

@@ -4,19 +4,19 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import java.awt.Color;
 
 public class Renderer {
-    private final int glMode;
+    private final Mode glMode;
 
     static Renderer startLines() {
-        return new Renderer(GL11.GL_LINES, DefaultVertexFormat.POSITION_COLOR);
+        return new Renderer(Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
     }
 
     static Renderer startQuads() {
-        return new Renderer(GL11.GL_QUADS, DefaultVertexFormat.POSITION_COLOR);
+        return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
     }
 
 //    static Renderer startPoints() {
@@ -24,7 +24,7 @@ public class Renderer {
 //    }
 
     public static Renderer startTextured() {
-        return new Renderer(GL11.GL_QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
     }
 
     private static final Tesselator tessellator = new Tesselator(2097152);
@@ -35,7 +35,7 @@ public class Renderer {
     private int blue;
     private int alpha;
 
-    private Renderer(int glMode, VertexFormat vertexFormat) {
+    private Renderer(Mode glMode, VertexFormat vertexFormat) {
         bufferBuilder.begin(glMode, vertexFormat);
         this.glMode = glMode;
     }

@@ -287,63 +287,61 @@ public class SurvivalInventoryManager {
 		// Set up (x, y) for specified tab 
 		int xPos = -1;
 		int yPos = -1;
-		switch(iTab) {
-		case -1:
-			// this is proxy for "drop by clicking outside inventory"
-			xPos = tabXPos - tabHeight;
-			yPos = topTapYPos;
-			break;
-		case 0:
-			xPos = tabXPos;
-			yPos = topTapYPos;
-			break;
-		case 1:
-			xPos = tabXPos;
-			yPos = topTapYPos+tabHeight;
-			break;
-		case 2:
-			xPos = tabXPos;
-			yPos = topTapYPos+2*tabHeight;
-			break;
-		case 3:
-			xPos = tabXPos;
-			yPos = topTapYPos+3*tabHeight;
-			break;
-		case 4:
-			xPos = tabXPos;
-			yPos = topTapYPos+4*tabHeight;
-			break;
-		case 5: 
-			xPos = tabXPos;
-			yPos = topTapYPos+6*tabHeight;
-			break;
-		case 6:
-			xPos = tabXPos;
-			yPos = bottomRowYPos;
-			break;
-		case 7:
-			xPos = tabXPos+tabHeight;;
-			yPos = bottomRowYPos;
-			break;
-		case 8:
-			xPos = tabXPos+2*tabHeight;;
-			yPos = bottomRowYPos;
-			break;
-		case 9:
-			xPos = tabXPos+3*tabHeight;;
-			yPos = bottomRowYPos;
-			break;
-		case 10:
-			xPos = tabXPos+4*tabHeight;
-			yPos = bottomRowYPos;
-			break;			
-		case 11:
-			xPos = tabXPos+6*tabHeight;
-			yPos = bottomRowYPos;
-			break;
-		default:
-			LOGGER.debug("Unknown tab requested");
-			break;
+		switch (iTab) {
+			case -1 -> {
+				// this is proxy for "drop by clicking outside inventory"
+				xPos = tabXPos - tabHeight;
+				yPos = topTapYPos;
+			}
+			case 0 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos;
+			}
+			case 1 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos + tabHeight;
+			}
+			case 2 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos + 2 * tabHeight;
+			}
+			case 3 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos + 3 * tabHeight;
+			}
+			case 4 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos + 4 * tabHeight;
+			}
+			case 5 -> {
+				xPos = tabXPos;
+				yPos = topTapYPos + 6 * tabHeight;
+			}
+			case 6 -> {
+				xPos = tabXPos;
+				yPos = bottomRowYPos;
+			}
+			case 7 -> {
+				xPos = tabXPos + tabHeight;
+				yPos = bottomRowYPos;
+			}
+			case 8 -> {
+				xPos = tabXPos + 2 * tabHeight;
+				yPos = bottomRowYPos;
+			}
+			case 9 -> {
+				xPos = tabXPos + 3 * tabHeight;
+				yPos = bottomRowYPos;
+			}
+			case 10 -> {
+				xPos = tabXPos + 4 * tabHeight;
+				yPos = bottomRowYPos;
+			}
+			case 11 -> {
+				xPos = tabXPos + 6 * tabHeight;
+				yPos = bottomRowYPos;
+			}
+			default -> LOGGER.debug("Unknown tab requested");
 		}
 		
 		// Select the tab via a mouse action

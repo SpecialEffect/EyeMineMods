@@ -1,6 +1,6 @@
 package com.specialeffect.eyemine.platform.forge;
 
-import com.specialeffect.eyemine.EyeMineConfig;
+import com.specialeffect.eyemine.config.EyeMineConfig;
 
 public class EyeMineConfigImpl {
     public static boolean getDisableCustomNewWorld() {

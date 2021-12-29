@@ -19,12 +19,12 @@ import com.specialeffect.eyemine.packets.messages.SendCommandMessage;
 import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -74,10 +74,10 @@ public class QuickCommands extends SubMod {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
@@ -94,14 +94,14 @@ public class QuickCommands extends SubMod {
 			}		
 		}
 		
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
 		if (mDropItemKB.matches(keyCode, scanCode) && mDropItemKB.consumeClick()) {
 			// Drop item 
 			// This is a duplicate key binding to the built-in one, so we can use the same for discarding
 			// an item while the inventory is open. The inventory keybinding needs to be a key not used
 			// for typing.
-			ItemStack stack = player.inventory.getSelected();
+			ItemStack stack = player.getInventory().getSelected();
 			player.drop(stack, true); //TODO: see if this still drops all?
 		}
 		
@@ -119,6 +119,6 @@ public class QuickCommands extends SubMod {
             PacketHandler.CHANNEL.sendToServer(new TeleportPlayerToSpawnPointMessage());
             NightVisionHelper.cancelAndHide();
         }
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 }
