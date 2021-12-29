@@ -51,7 +51,7 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.name}"
+    archiveBaseName.set "${rootProject.archives_base_name}-${project.minecraft_version}-${project.name}"
     classifier null
 }
 
@@ -74,7 +74,7 @@ components.java {
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifactId = rootProject.archives_base_name + "-" + project.minecraft_version + "-" + project.name
             from components.java
         }
     }
