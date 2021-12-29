@@ -18,7 +18,7 @@ import com.specialeffect.eyemine.packets.messages.ChangeFlyingStateMessage;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.packets.messages.SendCommandMessage;
 import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
-import me.shedaniel.architectury.networking.NetworkChannel;
+import dev.architectury.networking.NetworkChannel;
 import net.minecraft.resources.ResourceLocation;
 
 public class PacketHandler {

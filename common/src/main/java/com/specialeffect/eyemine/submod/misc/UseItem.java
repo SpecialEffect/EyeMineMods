@@ -20,13 +20,13 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -114,7 +114,7 @@ public class UseItem extends DwellAction {
 
 				// If it was a crossbow we'll need to re-click to actually fire it
 				Player player = Minecraft.getInstance().player;
-				Item item = player.inventory.getSelected().getItem();
+				Item item = player.getInventory().getSelected().getItem();
 				if (item instanceof CrossbowItem) {
 					// Crossbows don't fire on mouse-release, they need another 'click' on the next tick to be shot
 					needBowFire = true;
@@ -130,10 +130,10 @@ public class UseItem extends DwellAction {
 		}
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
 		Player player = Minecraft.getInstance().player;
@@ -148,10 +148,10 @@ public class UseItem extends DwellAction {
 			else {
 				// Turn on continuous-building
 
-				ItemStack itemStack = player.inventory.getSelected();
+				ItemStack itemStack = player.getInventory().getSelected();
 				if (itemStack.isEmpty()) {
 					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-					return InteractionResult.PASS;
+					return EventResult.pass();
 				}
 
 				mUsingItem = true;
@@ -161,7 +161,7 @@ public class UseItem extends DwellAction {
 			}
 		} else if (mUseItemOnceKB.matches(keyCode, scanCode) && mUseItemOnceKB.consumeClick()) {
 
-			ItemStack stack = player.inventory.getSelected();
+			ItemStack stack = player.getInventory().getSelected();
 			Item item = stack.getItem();
 
 			// Special case for shootable items
@@ -194,11 +194,11 @@ public class UseItem extends DwellAction {
 			}
 
 		} else if (mPrevItemKB.matches(keyCode, scanCode) && mPrevItemKB.consumeClick()) {
-			player.inventory.swapPaint(1);
+			player.getInventory().swapPaint(1);
 		} else if (mNextItemKB.matches(keyCode, scanCode) && mNextItemKB.consumeClick()) {
-			player.inventory.swapPaint(-1);
+			player.getInventory().swapPaint(-1);
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {

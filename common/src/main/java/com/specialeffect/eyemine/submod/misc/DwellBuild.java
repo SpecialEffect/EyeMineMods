@@ -18,13 +18,13 @@ import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
@@ -68,10 +68,10 @@ public class DwellBuild extends DwellAction {
 		KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mDwellBuildKB.matches(keyCode, scanCode) && mDwellBuildKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
@@ -82,10 +82,10 @@ public class DwellBuild extends DwellAction {
 			}
 			else {
 				// Turn on dwell build
-				ItemStack itemStack = player.inventory.getSelected();
+				ItemStack itemStack = player.getInventory().getSelected();
 				if (itemStack.isEmpty()) {
 					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-					return InteractionResult.PASS;
+					return EventResult.pass();
 				}
 
 				setDwelling(true);
@@ -96,14 +96,14 @@ public class DwellBuild extends DwellAction {
 			Player player = Minecraft.getInstance().player;
 
 			// Turn on dwell once
-			ItemStack itemStack = player.inventory.getSelected();
+			ItemStack itemStack = player.getInventory().getSelected();
 			if (itemStack.isEmpty()) {
 				player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
-				return InteractionResult.PASS;
+				return EventResult.pass();
 			}
 
 			dwellOnce();
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 }

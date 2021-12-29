@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -76,14 +77,17 @@ public class StateOverlay implements ICrosshairOverlay {
 
 	// A helper function to draw a texture scaled to fit.
 	private void drawScaledTextureWithGlow(Minecraft minecraft, ResourceLocation res, int x, int y, int width, int height) {
-		minecraft.getTextureManager().bind(res);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.enableTexture();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, res);
 
 		// First draw enlarged and blurred, for glow.
 		RenderSystem.texParameter(GL11.GL_TEXTURE_2D,
-				GL11.GL_TEXTURE_MIN_FILTER, 
+				GL11.GL_TEXTURE_MIN_FILTER,
 				GL11.GL_LINEAR);
 		RenderSystem.texParameter(GL11.GL_TEXTURE_2D,
-				GL11.GL_TEXTURE_MAG_FILTER, 
+				GL11.GL_TEXTURE_MAG_FILTER,
 				GL11.GL_LINEAR);
 
 //		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV,
@@ -109,7 +113,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		// TODO: it would be nice if we could modulate the alpha of these overlays, but that doesn't
 		// work naively with the GL_REPLACE strategy we're using here. Will have to brush up my
 		// OpenGL knowledge to get alpha-icon with drop-shadow
-		minecraft.getTextureManager().bind(res);
+		RenderSystem.setShaderTexture(0, res);
 		ModUtils.drawTexQuad(x, y, width, height, 1.0f);
 	}
 
@@ -131,7 +135,7 @@ public class StateOverlay implements ICrosshairOverlay {
 			return;
 		}
 
-		RenderSystem.disableLighting();
+//		RenderSystem.disableLighting();
 
 		mDisplayWidth = minecraft.getWindow().getGuiScaledWidth();
 		mDisplayHeight = minecraft.getWindow().getGuiScaledHeight();

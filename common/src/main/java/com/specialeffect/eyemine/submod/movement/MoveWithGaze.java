@@ -24,15 +24,15 @@ import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ServerboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -151,8 +151,8 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
              	if (EyeMineConfig.getAllowLadderDescent() && player.onClimbable()) {
     				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
     				// ladder okay.
-    				if ((player.isOnGround() && player.xRot > 30) ||
-    				    (!player.isOnGround() && player.xRot > 0)) {
+    				if ((player.isOnGround() && player.getXRot() > 30) ||
+    				    (!player.isOnGround() && player.getXRot() > 0)) {
 						KeyboardInputHelper.setWalkOverride(false, 0.0f);
     					return;
             		}
@@ -205,14 +205,13 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 					Entity riddenEntity = player.getVehicle();
 
 					if (null != riddenEntity) {
-						if (riddenEntity instanceof Boat) {
+						if (riddenEntity instanceof Boat boat) {
 							// very special case: you can't steer a boat without keys,
 							// so we first steer left/right with keys until the boat
 							// and the player's view are aligned, only then move 
 							// forward 
-							Boat boat = (Boat)riddenEntity;
 							if (boat.isControlledByLocalInstance()) {
-								float yawError = boat.yRot - player.yRot;
+								float yawError = boat.getYRot() - player.getYRot();
 								yawError %= 360;
 								if (yawError < -180) {
 									yawError += 360;
@@ -268,7 +267,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
     }
 
 	private double slowdownFactorPitch(Player player) {
-		float f = player.xRot;
+		float f = player.getXRot();
 		if (f < -75 || f > 75) {
 			return 0.15f;
 		} else if (f < -60 || f > 60) {
@@ -284,8 +283,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 		EntityHitResult entityResult = ModUtils.getMouseOverEntity();
 		if (entityResult != null) {
 			Entity hitEntity = entityResult.getEntity();
-			if (hitEntity instanceof LivingEntity) {
-				LivingEntity liveEntity = (LivingEntity) hitEntity;
+			if (hitEntity instanceof LivingEntity liveEntity) {
 				if (liveEntity != null) {
 					return 0.2f;
 				}
@@ -338,10 +336,10 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 		return mDoingAutoWalk;
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
 			mDoingAutoWalk = !mDoingAutoWalk;
@@ -362,7 +360,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 	
 	private void displayCurrentSpeed() {

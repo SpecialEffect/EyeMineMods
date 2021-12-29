@@ -18,14 +18,14 @@ import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 import org.lwjgl.glfw.GLFW;
@@ -54,17 +54,17 @@ public class GatherDrops extends SubMod {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 
 		if (mGatherKB.matches(keyCode, scanCode) && mGatherKB.consumeClick()) {
 			LocalPlayer player = minecraft.player;
 			gatherBlocks(player);
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	public static void gatherBlocks(LocalPlayer player) {

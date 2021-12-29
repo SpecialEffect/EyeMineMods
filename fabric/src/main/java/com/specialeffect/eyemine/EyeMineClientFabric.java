@@ -2,6 +2,7 @@ package com.specialeffect.eyemine;
 
 import com.specialeffect.eyemine.config.EyeMineConfig;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
+import dev.architectury.event.EventResult;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
@@ -22,5 +23,6 @@ public class EyeMineClientFabric implements ClientModInitializer {
             EyeMineClient.refresh();
             return InteractionResult.PASS;
         });
+        EyeMineClient.init();
     }
 }

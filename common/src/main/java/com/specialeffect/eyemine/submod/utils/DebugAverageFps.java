@@ -13,7 +13,7 @@ package com.specialeffect.eyemine.submod.utils;
 
 import com.specialeffect.eyemine.mixin.MinecraftAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 

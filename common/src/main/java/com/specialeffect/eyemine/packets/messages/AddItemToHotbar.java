@@ -11,7 +11,7 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
-import me.shedaniel.architectury.networking.NetworkManager;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +54,7 @@ public class AddItemToHotbar {
 					return;
 				}
 
-				Inventory inventory = player.inventory;
+				Inventory inventory = player.getInventory();
 
 				if (pkt.slotId < 0) {
 					pkt.slotId = inventory.getSuitableHotbarSlot();

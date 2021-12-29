@@ -24,17 +24,17 @@ import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.CompoundEventResult;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientGuiEvent;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import org.lwjgl.glfw.GLFW;
 
 import java.text.DecimalFormat;
@@ -65,7 +65,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	public void onInitializeClient() {
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		GuiEvent.SET_SCREEN.register(MouseHandlerMod::onGuiOpen);
+		ClientGuiEvent.SET_SCREEN.register(MouseHandlerMod::onGuiOpen);
 
 		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
 			setupInitialState();
@@ -134,19 +134,9 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	
 	private static void updateMouseForState(InteractionState state) {
 		switch (state) {
-		case EYETRACKER_LEGACY:
-		case MOUSE_LEGACY:
-			MouseHelper.setMovementState(PlayerMovement.LEGACY);
-			break;
-		case MOUSE_NOTHING:
-			MouseHelper.setMovementState(PlayerMovement.NONE);
-			break;
-		case EYETRACKER_NORMAL:
-		case EYETRACKER_WALK:	
-		case MOUSE_LOOK:
-		case MOUSE_WALK:
-			MouseHelper.setMovementState(PlayerMovement.VANILLA);
-			break;		
+			case EYETRACKER_LEGACY, MOUSE_LEGACY -> MouseHelper.setMovementState(PlayerMovement.LEGACY);
+			case MOUSE_NOTHING -> MouseHelper.setMovementState(PlayerMovement.NONE);
+			case EYETRACKER_NORMAL, EYETRACKER_WALK, MOUSE_LOOK, MOUSE_WALK -> MouseHelper.setMovementState(PlayerMovement.VANILLA);
 		}
 	}
 	
@@ -217,10 +207,10 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		}
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 		
 		if (mSensitivityUpKB.matches(keyCode, scanCode) && mSensitivityUpKB.consumeClick()) {
 			increaseSens();
@@ -242,7 +232,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				}				
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 	
 	private float getSensitivityIncrement(float reference) {
@@ -294,7 +284,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		return mTicksSinceMouseEvent < 2;
 	}
 
-	public static InteractionResultHolder<Screen> onGuiOpen(Screen screen) {
+	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
 		// For any open event, make sure cursor not overridden
 		if (screen != null) {
 			setNativeCursor();
@@ -305,7 +295,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				setEmptyCursor();
 			}
 		}
-		return InteractionResultHolder.pass(screen);
+		return CompoundEventResult.interruptTrue(screen);
 	}
 
 	// This is the constant offset applied in MC source, corresponding

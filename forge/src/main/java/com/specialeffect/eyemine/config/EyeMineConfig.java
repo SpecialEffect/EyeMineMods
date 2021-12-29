@@ -9,14 +9,16 @@
  * of the License, or (at your option) any later version.
  */
 
-package com.specialeffect.eyemine;
+package com.specialeffect.eyemine.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingMode;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import com.specialeffect.eyemine.EyeMine;
+import com.specialeffect.eyemine.EyeMineClient;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.nio.file.Path;
 
@@ -258,12 +260,12 @@ public class EyeMineConfig {
 	}
 
 	@SubscribeEvent
-	public static void onLoad(final ModConfig.Loading configEvent) {
+	public static void onLoad(final ModConfigEvent.Loading configEvent) {
 		EyeMine.LOGGER.debug("EyeMine config onLoad");
 	}
 
 	@SubscribeEvent
-	public static void onReload(final ModConfig.Reloading configEvent) {
+	public static void onReload(final ModConfigEvent.Reloading configEvent) {
 		// the configspec values are updated for us, but we may want to hook into
 		// here to notify other mods?
 		EyeMine.LOGGER.info("EyeMine config onReload");

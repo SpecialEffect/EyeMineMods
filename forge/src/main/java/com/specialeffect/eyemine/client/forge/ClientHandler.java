@@ -9,11 +9,11 @@
  * of the License, or (at your option) any later version.
  */
 
-package com.specialeffect.eyemine.client;
+package com.specialeffect.eyemine.client.forge;
 
 import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
-import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.DrawSelectionEvent.HighlightBlock;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ClientHandler {
@@ -22,7 +22,7 @@ public class ClientHandler {
 		EyeMineClient.refresh();
 	}
 
-	public static void onOutlineRender(DrawHighlightEvent.HighlightBlock event) {
-		 BlockOutlineEvent.OUTLINE.invoker().renderOutline(event.getBuffers(), event.getMatrix());
+	public static void onOutlineRender(HighlightBlock event) {
+		 BlockOutlineEvent.OUTLINE.invoker().renderOutline(event.getMultiBufferSource(), event.getPoseStack());
 	}
 }

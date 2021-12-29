@@ -16,14 +16,14 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Saddleable;
@@ -55,10 +55,10 @@ public class Dismount extends SubMod {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if(mDismountKB.matches(keyCode, scanCode) && mDismountKB.consumeClick()) {
 			LocalPlayer player = Minecraft.getInstance().player;
@@ -123,11 +123,11 @@ public class Dismount extends SubMod {
 					}
 
 					entity.interact(player, hand);
-					player.connection.send(new ServerboundInteractPacket(entity, hand, player.isShiftKeyDown()));
+					player.connection.send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand));
 				}
 			}			
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 }

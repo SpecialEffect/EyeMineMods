@@ -32,10 +32,10 @@ import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
 import com.specialeffect.eyemine.submod.movement.Sneak;
 import com.specialeffect.eyemine.submod.movement.Swim;
 import com.specialeffect.eyemine.submod.utils.DebugAverageFps;
-import me.shedaniel.architectury.event.events.GuiEvent;
-import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.registry.KeyBindings;
+import dev.architectury.event.events.client.ClientGuiEvent;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.minecraft.client.KeyMapping;
 
 import java.util.ArrayList;
@@ -54,14 +54,14 @@ public class EyeMineClient {
         // Setup all other sub mods
         instantiateSubMods();
 
-        GuiEvent.SET_SCREEN.register(MainClientHandler::onGuiOpen);
-        GuiEvent.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
+        ClientGuiEvent.SET_SCREEN.register(MainClientHandler::onGuiOpen);
+        ClientGuiEvent.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
         ClientRawInputEvent.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
 
         ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
             if(!Keybindings.keybindings.isEmpty()) {
                 for(KeyMapping keyBinding : Keybindings.keybindings) {
-                    KeyBindings.registerKeyBinding(keyBinding);
+                    KeyMappingRegistry.register(keyBinding);
                 }
             }
         });
@@ -110,8 +110,7 @@ public class EyeMineClient {
     public static void refresh() {
         if (setupComplete) {
             for (SubMod child : subModList) {
-                if (child instanceof IConfigListener) {
-                    IConfigListener configListener = (IConfigListener)child;
+                if (child instanceof IConfigListener configListener) {
                     configListener.syncConfig();
                 }
             }

@@ -19,11 +19,11 @@ import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
+import dev.architectury.event.CompoundEventResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
-import net.minecraft.world.InteractionResultHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,20 +42,18 @@ public class MainClientHandler {
 	}
 
 	// Replace / augment some GUIs
-	public static InteractionResultHolder<Screen> onGuiOpen(Screen screen) {
+	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
 		System.out.println(screen);
 		Screen currentScreen = Minecraft.getInstance().screen;
-		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
-			CreateWorldScreen createWorldScreen = (CreateWorldScreen)screen;
+		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen createWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
 			if (!EyeMineClient.allowMoreOptions) {
 				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-				return InteractionResultHolder.success(CustomCreateWorldScreen.create(screen));
+				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(screen));
 			}
 			EyeMineClient.allowMoreOptions = false;
 		}
-		if (screen instanceof CreativeModeInventoryScreen) {
+		if (screen instanceof CreativeModeInventoryScreen gui) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
-			CreativeModeInventoryScreen gui = (CreativeModeInventoryScreen)screen ;
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
 			CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 					accessor.getLeftPos(), accessor.getTopPos(),
@@ -64,7 +62,7 @@ public class MainClientHandler {
 					gui.getMenu());
 			con.resetMouse();
 		}
-		return InteractionResultHolder.pass(screen);
+		return CompoundEventResult.pass();
 	}
 
 	public static void initialize() {

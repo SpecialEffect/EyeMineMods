@@ -249,63 +249,61 @@ public class CreativeInventoryManager {
 		// Set up (x, y) for specified tab 
 		int xPos = -1;
 		int yPos = -1;
-		switch(iTab) {
-		case -1:
-			// this is proxy for "drop by clicking outside inventory"
-			xPos = tabsLeft - tabWidth;
-			yPos = tabsTop;
-			break;
-		case 0:
-			xPos = tabsLeft;
-			yPos = tabsTop;
-			break;
-		case 1:
-			xPos = tabsLeft+tabWidth;
-			yPos = tabsTop;
-			break;
-		case 2:
-			xPos = tabsLeft+2*tabWidth;
-			yPos = tabsTop;
-			break;
-		case 3:
-			xPos = tabsLeft+3*tabWidth;
-			yPos = tabsTop;
-			break;
-		case 4:
-			xPos = tabsLeft+5*tabWidth;
-			yPos = tabsTop;
-			break;
-		case 5: 
-			xPos = tabsLeft+6*tabWidth;
-			yPos = tabsTop;
-			break;
-		case 6:
-			xPos = tabsLeft;
-			yPos = tabsBottom;
-			break;
-		case 7:
-			xPos = tabsLeft+tabWidth;;
-			yPos = tabsBottom;
-			break;
-		case 8:
-			xPos = tabsLeft+2*tabWidth;;
-			yPos = tabsBottom;
-			break;
-		case 9:
-			xPos = tabsLeft+3*tabWidth;;
-			yPos = tabsBottom;
-			break;
-		case 10:
-			xPos = tabsLeft+4*tabWidth;
-			yPos = tabsBottom;
-			break;			
-		case 11:
-			xPos = tabsLeft+6*tabWidth;
-			yPos = tabsBottom;
-			break;
-		default:
-			LOGGER.debug("Unknown tab requested");
-			break;
+		switch (iTab) {
+			case -1 -> {
+				// this is proxy for "drop by clicking outside inventory"
+				xPos = tabsLeft - tabWidth;
+				yPos = tabsTop;
+			}
+			case 0 -> {
+				xPos = tabsLeft;
+				yPos = tabsTop;
+			}
+			case 1 -> {
+				xPos = tabsLeft + tabWidth;
+				yPos = tabsTop;
+			}
+			case 2 -> {
+				xPos = tabsLeft + 2 * tabWidth;
+				yPos = tabsTop;
+			}
+			case 3 -> {
+				xPos = tabsLeft + 3 * tabWidth;
+				yPos = tabsTop;
+			}
+			case 4 -> {
+				xPos = tabsLeft + 5 * tabWidth;
+				yPos = tabsTop;
+			}
+			case 5 -> {
+				xPos = tabsLeft + 6 * tabWidth;
+				yPos = tabsTop;
+			}
+			case 6 -> {
+				xPos = tabsLeft;
+				yPos = tabsBottom;
+			}
+			case 7 -> {
+				xPos = tabsLeft + tabWidth;
+				yPos = tabsBottom;
+			}
+			case 8 -> {
+				xPos = tabsLeft + 2 * tabWidth;
+				yPos = tabsBottom;
+			}
+			case 9 -> {
+				xPos = tabsLeft + 3 * tabWidth;
+				yPos = tabsBottom;
+			}
+			case 10 -> {
+				xPos = tabsLeft + 4 * tabWidth;
+				yPos = tabsBottom;
+			}
+			case 11 -> {
+				xPos = tabsLeft + 6 * tabWidth;
+				yPos = tabsBottom;
+			}
+			default -> LOGGER.debug("Unknown tab requested");
 		}
 		
 		// Select the tab via a mouse action

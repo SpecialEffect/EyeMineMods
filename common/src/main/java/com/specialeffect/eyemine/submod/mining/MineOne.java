@@ -19,8 +19,9 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -121,10 +121,10 @@ public class MineOne extends DwellAction {
 		return pos;
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			// turn off continuous mining
@@ -141,14 +141,14 @@ public class MineOne extends DwellAction {
 				mBlockToDestroy = this.getMouseOverBlockPos();
 				if (mBlockToDestroy == null) {
 					LOGGER.debug("Nothing to attack");
-					return InteractionResult.PASS;
+					return EventResult.pass();
 				}
 				else {
 					this.startDestroying();
 				}
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	@Override

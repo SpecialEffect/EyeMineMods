@@ -20,10 +20,10 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionResult;
 import org.lwjgl.glfw.GLFW;
 
 public class IronSights extends SubMod implements IConfigListener {
@@ -63,10 +63,10 @@ public class IronSights extends SubMod implements IConfigListener {
 		this.sensitivityReduction = ((float) EyeMineConfig.getIronsightsSensitivityReduction()) / 100.0f;
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mToggleIronsight.matches(keyCode, scanCode) && mToggleIronsight.consumeClick()) {
 			ironsightsOn = !ironsightsOn;
@@ -81,6 +81,6 @@ public class IronSights extends SubMod implements IConfigListener {
 			mIcon.setVisible(ironsightsOn);
 		}
 
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 }

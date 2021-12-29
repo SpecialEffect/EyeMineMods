@@ -18,14 +18,14 @@ import com.specialeffect.eyemine.client.EyeMineRenderType;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LadderBlock;
@@ -65,7 +65,7 @@ public class EasyLadderClimb extends SubMod {
 						// What yaw would point the player at the middle of the ladder?
 						Vec3 midPos = getMidPointOfFace(blockPos,  facing);
 						renderPos = midPos;
-						player.yRot = player.yRot % 360;
+						player.setYRot(player.getYRot() % 360);
 
 						double dx = midPos.x - playerPos.x;
 						double dz = midPos.z - playerPos.z;
@@ -73,8 +73,8 @@ public class EasyLadderClimb extends SubMod {
 
 						// Rotate player slightly towards the ideal yaw slightly
 						double gain = 0.03f;
-						double newYaw = safeInterpolate(player.yRot, yawToMidPoint, gain);
-						player.yRot = (float) newYaw;
+						double newYaw = safeInterpolate(player.getYRot(), yawToMidPoint, gain);
+						player.setYRot((float) newYaw);
 					}
 
 				}
@@ -84,30 +84,25 @@ public class EasyLadderClimb extends SubMod {
 	
 	private Vec3 getMidPointOfFace(BlockPos pos, Direction facing) {	
 		// It's possible this logic is ladder-specific, since a ladder is a block which is mainly
-		switch (facing) {
-		case NORTH:
-			return new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
-		case EAST:
-			return new Vec3(pos.getX(), pos.getY() + 0.5f, pos.getZ() + 0.5f);
-		case SOUTH:
-			return new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ());
-		case WEST:
-			return new Vec3(pos.getX() + 1.0f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-		default:
-			return new Vec3(pos.getX(), pos.getY(), pos.getZ());
-		}
+		return switch (facing) {
+			case NORTH -> new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
+			case EAST -> new Vec3(pos.getX(), pos.getY() + 0.5f, pos.getZ() + 0.5f);
+			case SOUTH -> new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ());
+			case WEST -> new Vec3(pos.getX() + 1.0f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+			default -> new Vec3(pos.getX(), pos.getY(), pos.getZ());
+		};
 	}
 	
 	private Vec3 renderPos;
 
-	public InteractionResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
+	public EventResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Turn this on to debug the positional logic - it will render block positions for you 
 		boolean debugRender = false;
 		
 		if (debugRender) {
 			if (minecraft.screen != null) {
-				return InteractionResult.PASS;
+				return EventResult.pass();
 			}
 
 			if (MoveWithGaze.isWalking()) {
@@ -127,7 +122,7 @@ public class EasyLadderClimb extends SubMod {
 				poseStack.popPose();
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 	
 

@@ -24,13 +24,13 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -100,7 +100,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					// always select tool - first time we might need to ask server to
 					// create a new one
 					if (mAutoSelectTool) {
-						boolean havePickaxe = choosePickaxe(player.inventory);
+						boolean havePickaxe = choosePickaxe(player.getInventory());
 						if (havePickaxe) {
 							mWaitingForPickaxe = false;
 						}
@@ -153,10 +153,10 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 		}
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
@@ -178,7 +178,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 				ContinuouslyAttack.stop();
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	// returns true if successful

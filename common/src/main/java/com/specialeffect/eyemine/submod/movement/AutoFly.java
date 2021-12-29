@@ -21,14 +21,14 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -92,7 +92,7 @@ public class AutoFly extends SubMod implements IConfigListener {
     	Player player = minecraft.player;
     	if (null != player) {
 			// If auto flying, and about to bump into something, fly more!
-			if (mIsFlyingAuto && player.abilities.mayfly && player.abilities.flying) {
+			if (mIsFlyingAuto && player.getAbilities().mayfly && player.getAbilities().flying) {
 				BlockPos playerPos = player.blockPosition();
 				Vec3 lookVec = player.getLookAngle();
 
@@ -116,12 +116,12 @@ public class AutoFly extends SubMod implements IConfigListener {
 			
 			// Check flying wasn't forcefully stopped from elsewhere
 			if ((flying()) &&
-					!player.abilities.flying) {
+					!player.getAbilities().flying) {
 				updateAfterStopFlying();
 			}		
 			// If flying was turned on elsewhere, make it 'manual'
 			if (!mIsFlyingAuto && !mIsFlyingManual &&
-					player.abilities.flying) {
+					player.getAbilities().flying) {
 				mIsFlyingManual = true;
 				updateIcons();
 			}
@@ -153,7 +153,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		
 		Player player = Minecraft.getInstance().player;
 
-		player.abilities.flying = false;
+		player.getAbilities().flying = false;
 		PacketHandler.CHANNEL.sendToServer(new ChangeFlyingStateMessage(false, 0));
 		updateIcons();
 	}	
@@ -164,7 +164,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		mIsFlyingAuto = isAuto;
 		mIsFlyingManual = !isAuto;
 				
-		if (!player.abilities.mayfly) {
+		if (!player.getAbilities().mayfly) {
 			player.sendMessage(new TextComponent(
 					"Player unable to fly"), Util.NIL_UUID);
 			return;
@@ -174,7 +174,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		Sneak.stop();
 
 		// start flying
-		player.abilities.flying = true;
+		player.getAbilities().flying = true;
 		int flyHeight = 0;
 		if (bFlyUp) {
 			if (mIsFlyingAuto) { flyHeight = mFlyHeightAuto; }
@@ -192,7 +192,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 	private void flyDown() {
 		Player player = Minecraft.getInstance().player;
 				
-		if (!player.abilities.mayfly) {
+		if (!player.getAbilities().mayfly) {
 			player.sendMessage(new TextComponent(
 					"Player unable to fly"), Util.NIL_UUID);
 			return;
@@ -212,10 +212,10 @@ public class AutoFly extends SubMod implements IConfigListener {
 
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mFlyManualKB.matches(keyCode, scanCode) && mFlyManualKB.consumeClick()) {
 			if (mIsFlyingManual) {
@@ -246,7 +246,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		}
 		AutoFly.updateIcons();
 
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 }

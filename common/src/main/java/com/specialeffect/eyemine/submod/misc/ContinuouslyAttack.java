@@ -23,14 +23,14 @@ import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
-import me.shedaniel.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -81,7 +81,7 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 			if (mIsAttacking) {
 				if (player.isCreative() &&
 						mAutoSelectSword) {
-					boolean haveSword = chooseWeapon(player.inventory);
+					boolean haveSword = chooseWeapon(player.getInventory());
 					if (haveSword) {
 						mWaitingForSword = false;
 					}
@@ -110,7 +110,7 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 						else {
 							player.attack(entity);
 //							channel.sendToServer(new AttackEntityMessage(entity));
-							player.connection.send(new ServerboundInteractPacket(entity, player.isShiftKeyDown()));
+							player.connection.send(ServerboundInteractPacket.createAttackPacket(entity, player.isShiftKeyDown()));
 						}
 					}
 					else {
@@ -127,10 +127,10 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 		}
 	}
 
-	private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return InteractionResult.PASS; }
+	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
+		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
 
 		if (mAttackKB.matches(keyCode, scanCode) && mAttackKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
@@ -139,7 +139,7 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 			// Don't allow mining *and* attacking at same time
 			ContinuouslyMine.stop();
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	//returns true if successful

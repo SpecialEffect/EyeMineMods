@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -51,7 +52,9 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 			int w = minecraft.getWindow().getGuiScaledWidth();
 			int h = minecraft.getWindow().getGuiScaledHeight();
 
-			minecraft.getTextureManager().bind(mResource);
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			RenderSystem.setShaderTexture(0, mResource);
 			ModUtils.drawTexQuad(0, 0, w, h, mAlpha);
 
 			RenderSystem.disableBlend();

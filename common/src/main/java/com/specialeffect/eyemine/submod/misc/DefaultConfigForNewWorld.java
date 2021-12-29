@@ -18,14 +18,14 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import me.shedaniel.architectury.event.events.EntityEvent;
-import me.shedaniel.architectury.event.events.LifecycleEvent;
-import me.shedaniel.architectury.event.events.TickEvent;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.EntityEvent;
+import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -61,7 +61,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 	public void onInitializeClient() {
 		EntityEvent.ADD.register(this::onSpawn);
 		TickEvent.PLAYER_POST.register(this::onLiving);
-		LifecycleEvent.SERVER_WORLD_LOAD.register(this::onWorldLoad);
+		LifecycleEvent.SERVER_LEVEL_LOAD.register(this::onWorldLoad);
     }
 
 	@Override
@@ -69,17 +69,16 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 		EyeMineClient.disableCustomNewWorld = EyeMineConfig.getDisableCustomNewWorld();
 	}
 
-	private InteractionResult onSpawn(Entity entity, Level level) {
+	private EventResult onSpawn(Entity entity, Level level) {
 		if(!EyeMineClient.disableCustomNewWorld) {
-			if (entity != null && entity instanceof Player) {
-				Player player = (Player)entity;
+			if (entity != null && entity instanceof Player player) {
 				if (ModUtils.entityIsMe(player)) {
 					firstOnLivingTick = true;
 					haveEquippedPlayer = false;
 				}
 			}
 		}
-		return InteractionResult.PASS;
+		return EventResult.pass();
 	}
 
 	private void onLiving(Player player) {
@@ -90,7 +89,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 				firstOnLivingTick = false;
 
 				if (player.isCreative()) {
-					NonNullList<ItemStack> inventory = player.inventory.items;
+					NonNullList<ItemStack> inventory = player.getInventory().items;
 					boolean hasSomeItems = false;
 					for (ItemStack itemStack : inventory) {
 						if (itemStack != null && !(itemStack.getItem() instanceof AirItem) ) {
@@ -100,7 +99,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 					}
 
 					if (!hasSomeItems) {
-						equipPlayer(player.inventory);
+						equipPlayer(player.getInventory());
 					}
 				}
 				haveEquippedPlayer = true;
@@ -147,9 +146,8 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 			try {
 				Object v = f.get(rules);
 				
-				if (v instanceof GameRules.Key<?>) {
-	        	   GameRules.Key<?> key = (GameRules.Key<?>)v;
-	        	   LOGGER.debug(key + ": " + rules.getRule(key).toString());
+				if (v instanceof GameRules.Key<?> key) {
+					LOGGER.debug(key + ": " + rules.getRule(key).toString());
 		        }    
 			} catch (Exception e) {
 				e.printStackTrace();

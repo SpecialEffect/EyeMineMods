@@ -38,51 +38,50 @@ public abstract class AbstractRenderer {
 		final float b = (float)(colorRGB & 255) / 255.0F;
 
 		switch (facing) {
-		case UP:
-			maxY += 0.01;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case DOWN:
-			minY -= 0.01;
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case NORTH:
-			minZ -= 0.01;
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		case SOUTH:
-			maxZ += 0.01;
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case EAST:
-			maxX += 0.01;
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		case WEST:
-			minX -= 0.01;
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		default:
-			break;
+			case UP -> {
+				maxY += 0.01;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case DOWN -> {
+				minY -= 0.01;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case NORTH -> {
+				minZ -= 0.01;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			case SOUTH -> {
+				maxZ += 0.01;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case EAST -> {
+				maxX += 0.01;
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			case WEST -> {
+				minX -= 0.01;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			default -> {
+			}
 		}
 	}
 
@@ -114,92 +113,74 @@ public abstract class AbstractRenderer {
 		final float b = (float)(colorRGB & 255) / 255.0F;
 
 		switch (facing) {
-		case UP:
-			maxY += 0.01;
-
-			minX += removeX;
-			maxX -= removeX;
-
-			minZ += removeZ;
-			maxZ -= removeZ;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case DOWN:
-			minY -= 0.01;
-
-			minX += removeX;
-			maxX -= removeX;
-
-			minZ += removeZ;
-			maxZ -= removeZ;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case NORTH:
-			minZ -= 0.01;
-
-			minX += removeX;
-			maxX -= removeX;
-
-			minY += removeY;
-			maxY -= removeY;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		case SOUTH:
-			maxZ += 0.01;
-
-			minX += removeX;
-			maxX -= removeX;
-
-			minY += removeY;
-			maxY -= removeY;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			break;
-		case EAST:
-			maxX += 0.01;
-
-			minY += removeY;
-			maxY -= removeY;
-
-			minZ += removeZ;
-			maxZ -= removeZ;
-
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)maxX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		case WEST:
-			minX -= 0.01;
-
-			minY += removeY;
-			maxY -= removeY;
-
-			minZ += removeZ;
-			maxZ -= removeZ;
-
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)minZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)minY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)maxZ).color(r, g, b, opacity).endVertex();
-			vertexConsumer.vertex(matrix4f, (float)minX, (float)maxY, (float)minZ).color(r, g, b, opacity).endVertex();
-			break;
-		default:
-			break;
+			case UP -> {
+				maxY += 0.01;
+				minX += removeX;
+				maxX -= removeX;
+				minZ += removeZ;
+				maxZ -= removeZ;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case DOWN -> {
+				minY -= 0.01;
+				minX += removeX;
+				maxX -= removeX;
+				minZ += removeZ;
+				maxZ -= removeZ;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case NORTH -> {
+				minZ -= 0.01;
+				minX += removeX;
+				maxX -= removeX;
+				minY += removeY;
+				maxY -= removeY;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			case SOUTH -> {
+				maxZ += 0.01;
+				minX += removeX;
+				maxX -= removeX;
+				minY += removeY;
+				maxY -= removeY;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+			}
+			case EAST -> {
+				maxX += 0.01;
+				minY += removeY;
+				maxY -= removeY;
+				minZ += removeZ;
+				maxZ -= removeZ;
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			case WEST -> {
+				minX -= 0.01;
+				minY += removeY;
+				maxY -= removeY;
+				minZ += removeZ;
+				maxZ -= removeZ;
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+			}
+			default -> {
+			}
 		}
     }
 
@@ -366,12 +347,12 @@ public abstract class AbstractRenderer {
     }
 
 	private static void enablePointSmooth() {
-		RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+		RenderSystem.assertOnRenderThread();
 		GL11.glEnable(GL11.GL_POINT_SMOOTH);
 	}
 
 	private static void pointSize(float dotSize) {
-		RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+		RenderSystem.assertOnRenderThread();
 		GL11.glPointSize(dotSize);
 	}
 
