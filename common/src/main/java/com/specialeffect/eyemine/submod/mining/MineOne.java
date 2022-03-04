@@ -86,7 +86,7 @@ public class MineOne extends DwellAction {
 				boolean movedAway =  false;
 				BlockPos pos = this.getMouseOverBlockPos();
 				if (pos != null) {
-					movedAway = mBlockToDestroy.distSqr((double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), false) > 0.5;
+					movedAway = mBlockToDestroy.distToLowCornerSqr((double)pos.getX(), (double)pos.getY(), (double)pos.getZ()) > 0.5;
 				}
 
 				if (mov == null || blockDestroyed || movedAway) {

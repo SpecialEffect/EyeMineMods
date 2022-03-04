@@ -24,7 +24,7 @@ import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 import net.minecraft.client.gui.screens.worldselection.WorldGenSettingsComponent;
 import net.minecraft.client.gui.screens.worldselection.WorldPreset;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.RegistryAccess.RegistryHolder;
+import net.minecraft.core.RegistryAccess.Frozen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -66,8 +66,8 @@ public class CustomCreateWorldScreen extends Screen {
 		if(screen instanceof CreateWorldScreen) {
 			return new CustomCreateWorldScreen(screen, ((CreateWorldScreen)screen).worldGenSettingsComponent);
 		}
-		RegistryHolder registryHolder = RegistryAccess.builtin();
-		return new CustomCreateWorldScreen(screen, new WorldGenSettingsComponent(registryHolder, WorldGenSettings.makeDefault(registryHolder), Optional.of(WorldPreset.NORMAL), OptionalLong.empty()));
+		Frozen registryaccess$frozen = (Frozen)RegistryAccess.BUILTIN.get();
+		return new CustomCreateWorldScreen(screen, new WorldGenSettingsComponent(registryaccess$frozen, WorldGenSettings.makeDefault(registryaccess$frozen), Optional.of(WorldPreset.NORMAL), OptionalLong.empty()));
 	}
 
 	public void tick() {
@@ -108,7 +108,7 @@ public class CustomCreateWorldScreen extends Screen {
 		this.addRenderableWidget(new Button(this.width / 2 - 75, 177, 150, 20, new TranslatableComponent("Advanced Minecraft Options"), (p_214321_1_) -> {
 			EyeMineClient.allowMoreOptions = true;
 			DefaultConfigForNewWorld.setNewWorldOptions(btnDaytime.getValue(), btnSunny.getValue(), btnInventory.getValue());
-			this.minecraft.setScreen(CreateWorldScreen.create(this));
+			this.minecraft.setScreen(CreateWorldScreen.createFresh(this));
 		}));
 
 		this.addRenderableWidget(new Button(this.width / 2 + 5, this.height - 28, 150, 20, new TranslatableComponent("gui.cancel"), (p_214317_1_) -> {
