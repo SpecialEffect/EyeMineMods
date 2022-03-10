@@ -5,7 +5,7 @@ bin
 .metadata
 .classpath
 .project
-.swp
+.vscode
 
 # idea
 out
@@ -17,8 +17,12 @@ out
 # gradle
 build
 .gradle
+classes
+logs
 
 # other
 eclipse
 run
-logs
+output/
+libs/
+*.architectury-transformer
