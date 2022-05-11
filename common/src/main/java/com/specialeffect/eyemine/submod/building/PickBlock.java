@@ -31,10 +31,11 @@ public class PickBlock extends SubMod {
 	public void onInitializeClient() {
         // Register key bindings
 		Keybindings.keybindings.add(mPickBlockKB = new KeyMapping(
-				"key.eyemine.pick_block",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_2,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				"key.eyemine.pick_block",                  // this needs to be a unique name
+				Type.KEYSYM,                               // this is always KEYSYM
+				GLFW.GLFW_KEY_KP_2,                        // this selects the default key. try autocompleting GLFW.GLFW_KEY... to see more options
+				"category.eyemine.category.eyegaze_common" // this sets the translation key for the name of the category in the controls list 
+				                                           // (we use eyegaze_common, eyegaze_extra and eyegaze_settings depending on the mod)
 		));
 
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
@@ -46,6 +47,8 @@ public class PickBlock extends SubMod {
 		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return InteractionResult.PASS; }
 		
 		if (mPickBlockKB.matches(keyCode, scanCode) && mPickBlockKB.consumeClick()) {
+			// When key is pressed, trigger the "pick block" key
+			// (this mod is necessary since the default key binding is a mouse action, but we want a key shortcut)
 			KeyMapping pickBlockKey = minecraft.options.keyPickItem;
 			KeyMapping.click(((KeyMappingAccessor)pickBlockKey).getActualKey());
 		}
