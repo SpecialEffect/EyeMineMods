@@ -11,6 +11,7 @@ import com.specialeffect.eyemine.submod.mining.GatherDrops;
 import com.specialeffect.eyemine.submod.mining.MineOne;
 import com.specialeffect.eyemine.submod.misc.AutoOpenDoors;
 import com.specialeffect.eyemine.submod.building.AutoPillar;
+import com.specialeffect.eyemine.submod.building.CountBlocks;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.misc.DefaultConfigForNewWorld;
 import com.specialeffect.eyemine.submod.building.DwellBuild;
@@ -100,6 +101,7 @@ public class EyeMineClient {
         setupSubMod(new DefaultConfigForNewWorld());
         setupSubMod(new IronSights());
         setupSubMod(new NightVisionHelper());
+        setupSubMod(new CountBlocks());
     }
 
     private static void setupSubMod(SubMod mod) {
