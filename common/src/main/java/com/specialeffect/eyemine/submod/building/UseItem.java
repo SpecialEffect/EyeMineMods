@@ -9,7 +9,7 @@
  * of the License, or (at your option) any later version.
  */
 
-package com.specialeffect.eyemine.submod.misc;
+package com.specialeffect.eyemine.submod.building;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
