@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -23,10 +23,9 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -83,10 +82,10 @@ public class UseItem extends DwellAction {
 	private static KeyMapping mUseItemContinuouslyKB;
 	private static KeyMapping mPrevItemKB;
 	private static KeyMapping mNextItemKB;
-	
+
 	// State for 'continuously use'
 	private boolean mUsingItem = false;
-	
+
 	// State for firing bows
 	private long lastTime = 0;
 	private int bowTime = 2000; //ms
@@ -95,7 +94,7 @@ public class UseItem extends DwellAction {
 
 	public void syncConfig() {
 		super.syncConfig();
-        this.bowTime = (int) (1000 * EyeMineConfig.getBowDrawTime());
+		this.bowTime = (int) (1000 * EyeMineConfig.getBowDrawTime());
 	}
 
 	public void onClientTick(Minecraft minecraft) {
@@ -105,12 +104,12 @@ public class UseItem extends DwellAction {
 		lastTime = time;
 
 		// Behaviour for shootable items (bows)
-		if (bowCountdown > 0 ) {
+		if (bowCountdown > 0) {
 			bowCountdown -= dt;
 			if (bowCountdown < 1) {
 				// Release bow if count-down complete
 				final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), false);
+				KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), false);
 
 				// If it was a crossbow we'll need to re-click to actually fire it
 				Player player = Minecraft.getInstance().player;
@@ -120,20 +119,23 @@ public class UseItem extends DwellAction {
 					needBowFire = true;
 				}
 			}
-		}
-		else {
+		} else {
 			if (needBowFire) {
 				final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-				KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
+				KeyMapping.click(((KeyMappingAccessor) useItemKeyBinding).getActualKey());
 				needBowFire = false;
 			}
 		}
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
 		Player player = Minecraft.getInstance().player;
@@ -143,19 +145,18 @@ public class UseItem extends DwellAction {
 				// Turn off
 				mUsingItem = false;
 				ModUtils.sendPlayerMessage("Using item: OFF");
-				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), mUsingItem);
-			}
-			else {
+				KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), mUsingItem);
+			} else {
 				// Turn on continuous-building
 
 				ItemStack itemStack = player.getInventory().getSelected();
 				if (itemStack.isEmpty()) {
-					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
+					player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 					return EventResult.pass();
 				}
 
 				mUsingItem = true;
-				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), mUsingItem);
+				KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), mUsingItem);
 
 				ModUtils.sendPlayerMessage("Using item: ON");
 			}
@@ -169,23 +170,20 @@ public class UseItem extends DwellAction {
 				// Crossbows need charging separately to firing. If already charged, shoot it.
 				// Otherwise start chargin.
 				if (CrossbowItem.isCharged(stack)) {
-					KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
-				}
-				else {
+					KeyMapping.click(((KeyMappingAccessor) useItemKeyBinding).getActualKey());
+				} else {
 					int crossbowTime = 1500;
 					ModUtils.sendPlayerMessage("Firing bow");
-					KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), true);
+					KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), true);
 					bowCountdown = Math.max(crossbowTime, bowTime);
 				}
-			}
-			else if (item instanceof BowItem) {
+			} else if (item instanceof BowItem) {
 				// Bows need charging + firing all in one go
 				bowTime = 1500;
 				ModUtils.sendPlayerMessage("Firing bow");
-				KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), true);
+				KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), true);
 				bowCountdown = bowTime;
-			}
-			else {
+			} else {
 				boolean useDwelling = EyeMineConfig.getUseDwellForSingleUseItem();
 				if (useDwelling)
 					dwellOnce();
@@ -214,13 +212,13 @@ public class UseItem extends DwellAction {
 
 			int msgWidth = mc.font.width(msg);
 
-			mc.font.drawShadow(matrixStack, msg, (int)(w/2.0) - (int)(msgWidth/2.0), (int)(h/2.0) - 20, 0xffFFFFFF);
+			mc.font.drawShadow(matrixStack, msg, (int) (w / 2.0) - (int) (msgWidth / 2.0), (int) (h / 2.0) - 20, 0xffFFFFFF);
 		}
 	}
 
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-		KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
+		KeyMapping.click(((KeyMappingAccessor) useItemKeyBinding).getActualKey());
 	}
 }

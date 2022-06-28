@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -27,11 +27,11 @@ import org.lwjgl.glfw.GLFW;
 
 public class DwellMine extends DwellAction {
 	public final String MODID = "dwellbuild";
-	
+
 	public DwellMine() {
-		super("DWELL MINING", 15); 
+		super("DWELL MINING", 15);
 	}
-		
+
 	private static KeyMapping mDwellMineKB;
 	private static KeyMapping mDwellMineOnceKB;
 
@@ -61,21 +61,24 @@ public class DwellMine extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
+		KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mDwellMineKB.matches(keyCode, scanCode) && mDwellMineKB.consumeClick()) {
 			if (mDwelling) {
 				// Turn off dwell mine
 				this.setDwelling(false);
 				ModUtils.sendPlayerMessage("Dwell mining: OFF");
-			}
-			else {
+			} else {
 				// Turn on dwell mine
 				this.setDwelling(true);
 				ModUtils.sendPlayerMessage("Dwell mining: ON");

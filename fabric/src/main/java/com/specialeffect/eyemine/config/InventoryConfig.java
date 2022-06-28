@@ -13,17 +13,17 @@ public class InventoryConfig implements ConfigData {
 
 	public static class Survival {
 		@Comment("recipes: prev tab")
-		public int keySurvPrevTab  = GLFW.GLFW_KEY_KP_0;
+		public int keySurvPrevTab = GLFW.GLFW_KEY_KP_0;
 		@Comment("recipes: next tab")
 		public int keySurvNextTab = GLFW.GLFW_KEY_KP_1;
 
 		@Comment("open/close recipe book")
-		public int keySurvRecipes  = GLFW.GLFW_KEY_KP_2;
+		public int keySurvRecipes = GLFW.GLFW_KEY_KP_2;
 		@Comment("toggle all/craftable")
 		public int keySurvCraftable = GLFW.GLFW_KEY_KP_3;
 
 		@Comment("recipes: prev page")
-		public int keySurvPrevPage  = GLFW.GLFW_KEY_KP_4;
+		public int keySurvPrevPage = GLFW.GLFW_KEY_KP_4;
 		@Comment("recipes: next page")
 		public int keySurvNextPage = GLFW.GLFW_KEY_KP_5;
 

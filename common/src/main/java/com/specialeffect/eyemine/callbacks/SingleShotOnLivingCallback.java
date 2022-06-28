@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -18,7 +18,7 @@ public class SingleShotOnLivingCallback implements OnLivingCallback {
 	public SingleShotOnLivingCallback(IOnLiving callback) {
 		mCallback = callback;
 	}
-	
+
 	@Override
 	public void onClientTick(Minecraft event) {
 		mCallback.onClientTick(event);
@@ -29,7 +29,7 @@ public class SingleShotOnLivingCallback implements OnLivingCallback {
 	public boolean hasCompleted() {
 		return mHasCompleted;
 	}
-	
+
 	boolean mHasCompleted = false;
 	IOnLiving mCallback;
 }

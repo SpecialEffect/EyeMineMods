@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -41,16 +41,16 @@ import net.minecraft.world.level.storage.LevelData;
 import java.lang.reflect.Field;
 
 public class DefaultConfigForNewWorld extends SubMod implements IConfigListener {
-    public final String MODID = "specialeffect.defaultconfigworld";
-    
-    private boolean firstOnLivingTick = true;
+	public final String MODID = "specialeffect.defaultconfigworld";
 
-	private boolean haveEquippedPlayer = false;   
-	
+	private boolean firstOnLivingTick = true;
+
+	private boolean haveEquippedPlayer = false;
+
 	private static boolean alwaysDayTimeSetting = false;
 	private static boolean alwaysSunnySetting = false;
 	private static boolean keepInventorySetting = false;
-    
+
 	public static void setNewWorldOptions(boolean daytime, boolean sunny, boolean keepInventory) {
 		// allow "new world" gui to cache user preferences ready for new world creation
 		alwaysDayTimeSetting = daytime;
@@ -62,7 +62,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 		EntityEvent.ADD.register(this::onSpawn);
 		TickEvent.PLAYER_POST.register(this::onLiving);
 		LifecycleEvent.SERVER_LEVEL_LOAD.register(this::onWorldLoad);
-    }
+	}
 
 	@Override
 	public void syncConfig() {
@@ -70,7 +70,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 	}
 
 	private EventResult onSpawn(Entity entity, Level level) {
-		if(!EyeMineClient.disableCustomNewWorld) {
+		if (!EyeMineClient.disableCustomNewWorld) {
 			if (entity != null && entity instanceof Player player) {
 				if (ModUtils.entityIsMe(player)) {
 					firstOnLivingTick = true;
@@ -92,7 +92,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 					NonNullList<ItemStack> inventory = player.getInventory().items;
 					boolean hasSomeItems = false;
 					for (ItemStack itemStack : inventory) {
-						if (itemStack != null && !(itemStack.getItem() instanceof AirItem) ) {
+						if (itemStack != null && !(itemStack.getItem() instanceof AirItem)) {
 							hasSomeItems = true;
 							break;
 						}
@@ -109,7 +109,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 
 
 	private void onWorldLoad(ServerLevel serverLevel) {
-		if(!EyeMineClient.disableCustomNewWorld) {
+		if (!EyeMineClient.disableCustomNewWorld) {
 			LOGGER.debug("onWorldLoad: " + alwaysDayTimeSetting + ", " + alwaysSunnySetting + ", " + keepInventorySetting);
 
 			MinecraftServer server = serverLevel.getServer();
@@ -127,8 +127,8 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 					if (alwaysDayTimeSetting) {
 						// we've just turned off daylightcycle while time = morning...
 						// we prefer full daylight!
-						for(ServerLevel level : server.getAllLevels()) {
-							level.setDayTime(level.getDayTime() + (long)2000);
+						for (ServerLevel level : server.getAllLevels()) {
+							level.setDayTime(level.getDayTime() + (long) 2000);
 						}
 					}
 				}
@@ -136,43 +136,43 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 		}
 	}
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private void printGameRules(GameRules rules) {
-        System.out.println("Game rules:");        
-        
-        // We use reflection to print out any relevant fields 
-        Field[] fields = rules.getClass().getFields();
-        for(Field f : fields){        	           
+		System.out.println("Game rules:");
+
+		// We use reflection to print out any relevant fields
+		Field[] fields = rules.getClass().getFields();
+		for (Field f : fields) {
 			try {
 				Object v = f.get(rules);
-				
+
 				if (v instanceof GameRules.Key<?> key) {
 					LOGGER.debug(key + ": " + rules.getRule(key).toString());
-		        }    
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}        
-        }        
-    }    
-    
-    private void equipPlayer(Inventory inventory) {
-        // Ask server to put new item in hotbar     
-        PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.BRICKS), 0));
+			}
+		}
+	}
+
+	private void equipPlayer(Inventory inventory) {
+		// Ask server to put new item in hotbar
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.SANDSTONE), 1));
+				new ItemStack(Blocks.BRICKS), 0));
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.GLASS_PANE), 2));
+				new ItemStack(Blocks.SANDSTONE), 1));
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.MOSSY_COBBLESTONE), 3));
+				new ItemStack(Blocks.GLASS_PANE), 2));
+		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+				new ItemStack(Blocks.MOSSY_COBBLESTONE), 3));
 
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Blocks.TORCH), 6));
+				new ItemStack(Blocks.TORCH), 6));
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Items.DIAMOND_PICKAXE), 7));
+				new ItemStack(Items.DIAMOND_PICKAXE), 7));
 		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
-                new ItemStack(Items.DIAMOND_SWORD), 8));
-        
-        inventory.selected = 1;
-    }
+				new ItemStack(Items.DIAMOND_SWORD), 8));
+
+		inventory.selected = 1;
+	}
 }

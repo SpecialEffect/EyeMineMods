@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -65,18 +65,18 @@ public class IconOverlay implements ICrosshairOverlay {
 	// A helper function to draw a texture scaled to fit.
 	public void drawTexture(Minecraft minecraft, int screenHeight, int screenWidth, float fade) {
 		// calculate position
-		int height = (int)(screenWidth*mHeight);
-		int width = (int)(height*mAspectRatio);
-		int centreX = (int)(mCentreX*screenWidth);
-		int centreY = (int)(mCentreY*screenHeight);
+		int height = (int) (screenWidth * mHeight);
+		int width = (int) (height * mAspectRatio);
+		int centreX = (int) (mCentreX * screenWidth);
+		int centreY = (int) (mCentreY * screenHeight);
 
 		// render the texture
 		// TODO:white? black? drop shadow?
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, mResource);
-		ModUtils.drawTexQuad(centreX - width/2, centreY - height/2,
-				width, height, mAlpha*fade);
+		ModUtils.drawTexQuad(centreX - width / 2, centreY - height / 2,
+				width, height, mAlpha * fade);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class IconOverlay implements ICrosshairOverlay {
 			float fade = 1.0f;
 			if (fadeCountdown > 0) {
 				fadeCountdown--;
-				fade = fadeCountdown/(float)fadeTime;
+				fade = fadeCountdown / (float) fadeTime;
 				if (mVisible) {
 					fade = 1.0f - fade;
 				}

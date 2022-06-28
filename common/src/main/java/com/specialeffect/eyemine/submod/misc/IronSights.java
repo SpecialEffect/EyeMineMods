@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -32,7 +32,7 @@ public class IronSights extends SubMod implements IConfigListener {
 	private KeyMapping mToggleIronsight;
 	private IconOverlay mIcon;
 	private boolean ironsightsOn = false;
-	
+
 	// options
 	private int fovReduction = 20;
 	private float sensitivityReduction = 0.2f;
@@ -45,12 +45,12 @@ public class IronSights extends SubMod implements IConfigListener {
 				GLFW.GLFW_KEY_P,
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
-		
+
 		// Set up icon rendering		
 		mIcon = new IconOverlay(Minecraft.getInstance(), "eyemine:textures/icons/ironsights.png");
-		mIcon.setPosition(0.5f,  0.5f, 0.6f, 1.0f);
+		mIcon.setPosition(0.5f, 0.5f, 0.6f, 1.0f);
 		mIcon.fadeTime = 0;
-		mIcon.setAlpha(EyeMineConfig.getFullscreenOverlayAlpha());
+		mIcon.setAlpha(0.1f);
 		mIcon.setVisible(false);
 		MainClientHandler.addOverlayToRender(mIcon);
 
@@ -64,19 +64,22 @@ public class IronSights extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mToggleIronsight.matches(keyCode, scanCode) && mToggleIronsight.consumeClick()) {
 			ironsightsOn = !ironsightsOn;
 			if (ironsightsOn) {
-				minecraft.options.fov -= fovReduction;
-				minecraft.options.sensitivity -= sensitivityReduction;
-			}
-			else {
-				minecraft.options.fov += fovReduction;
-				minecraft.options.sensitivity += sensitivityReduction;
+				minecraft.options.fov().set(minecraft.options.fov().get() - fovReduction);
+				minecraft.options.sensitivity().set(minecraft.options.sensitivity().get() - sensitivityReduction);
+			} else {
+				minecraft.options.fov().set(minecraft.options.fov().get() + fovReduction);
+				minecraft.options.sensitivity().set(minecraft.options.sensitivity().get() + sensitivityReduction);
 			}
 			mIcon.setVisible(ironsightsOn);
 		}

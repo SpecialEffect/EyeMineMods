@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -28,13 +28,13 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 	ResourceLocation mResource;
 
 	private boolean mVisible = false;
-	
+
 	private float mAlpha = 0.3f;
 
 	public void setVisible(boolean bVisible) {
 		mVisible = bVisible;
 	}
-	
+
 	public void setAlpha(float alpha) {
 		// Minecraft clips alpha at 0.1, so we add 0.1 back in to get reasonable user-facing behaviour
 		if (alpha > 0.0f && alpha < 0.9f) {

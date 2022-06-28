@@ -33,12 +33,12 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.12",
+    "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.x",
     "java": ">=17",
-    "architectury": ">=3.3.5",
-    "cloth-config": ">=6.0.42"
+    "architectury": ">=5.6",
+    "cloth-config": ">=7.0.67"
   },
   "suggests": {
     "flamingo": "*"

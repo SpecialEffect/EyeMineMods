@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -21,7 +21,7 @@ public class CommonStrings {
 	public static final String EYEGAZE_COMMON = "EyeGaze: Common Actions";
 	public static final String EYEGAZE_EXTRA = "EyeGaze: Extra Actions";
 	public static final String EYEGAZE_ADVANCED = "EyeGaze: Super Advanced Things";
-	
+
 	// Mod config category prefices
 	public static final String BASIC = " ";
 	public static final String PRO = "(advanced) ";

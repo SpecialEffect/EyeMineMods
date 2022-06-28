@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -35,16 +35,29 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerMixin {
-	@Shadow @Final private Minecraft minecraft;
-	@Shadow private double xpos;
-	@Shadow private double ypos;
-	@Shadow private boolean ignoreFirstMove = true;
-	@Shadow @Final private final SmoothDouble smoothTurnX = new SmoothDouble();
-	@Shadow @Final private final SmoothDouble smoothTurnY = new SmoothDouble();
-	@Shadow private double accumulatedDX;
-	@Shadow private double accumulatedDY;
-	@Shadow private double lastMouseEventTime = Double.MIN_VALUE;
-	@Shadow private boolean mouseGrabbed;
+	@Shadow
+	@Final
+	private Minecraft minecraft;
+	@Shadow
+	private double xpos;
+	@Shadow
+	private double ypos;
+	@Shadow
+	private boolean ignoreFirstMove = true;
+	@Shadow
+	@Final
+	private final SmoothDouble smoothTurnX = new SmoothDouble();
+	@Shadow
+	@Final
+	private final SmoothDouble smoothTurnY = new SmoothDouble();
+	@Shadow
+	private double accumulatedDX;
+	@Shadow
+	private double accumulatedDY;
+	@Shadow
+	private double lastMouseEventTime = Double.MIN_VALUE;
+	@Shadow
+	private boolean mouseGrabbed;
 
 	@Unique
 	public float deadBorder = 0.05f;
@@ -69,8 +82,7 @@ public abstract class MouseHandlerMixin {
 			if (raw == GLFW.GLFW_TRUE) {
 				EyeMine.LOGGER.debug("using raw motion");
 			}
-		}
-		else if (cursorMode == GLFW.GLFW_CURSOR_NORMAL) {
+		} else if (cursorMode == GLFW.GLFW_CURSOR_NORMAL) {
 			EyeMine.LOGGER.debug("normal cursor");
 		}
 
@@ -97,7 +109,7 @@ public abstract class MouseHandlerMixin {
 			ordinal = 0), cancellable = true)
 	public void EyeMineGrabMouseOnMove(long handle, double xpos, double ypos, CallbackInfo ci) {
 		GuiEventListener guiEventListener = this.minecraft.screen;
-		if(guiEventListener != null && this.minecraft.getOverlay() == null) {
+		if (guiEventListener != null && this.minecraft.getOverlay() == null) {
 			//The if from earlier just so we can turn it into an if/else
 			this.xpos = xpos;
 			this.ypos = ypos;
@@ -105,7 +117,7 @@ public abstract class MouseHandlerMixin {
 			// If mouse should be grabbed but isn't - this can happen if we alt-tab
 			// away while world is loading, with pauseOnLostFocus=false
 			if (!MouseHelper.ungrabbedMouseMode && this.minecraft.isWindowActive() && !this.mouseGrabbed) {
-				((MouseHandler)(Object) this).grabMouse();
+				((MouseHandler) (Object) this).grabMouse();
 			}
 
 			this.minecraft.getProfiler().push("mouse");
@@ -113,7 +125,7 @@ public abstract class MouseHandlerMixin {
 				this.processMousePosition(xpos, ypos);
 			}
 
-			((MouseHandler)(Object) this).turnPlayer();
+			((MouseHandler) (Object) this).turnPlayer();
 
 			// Reset to centre
 			if (!MouseHelper.ungrabbedMouseMode) {
@@ -147,8 +159,7 @@ public abstract class MouseHandlerMixin {
 				y_abs > h_half * (1 - this.deadBorder)) {
 			// do nothing
 			this.resetVelocity();
-		}
-		else {
+		} else {
 			// If mouse is around edges, clip effect
 			if (x_abs > w_half * (1 - this.clipBorderHorizontal)) {
 				x = (int) (Math.signum(x) * (w_half * (1 - this.clipBorderHorizontal)));
@@ -173,8 +184,8 @@ public abstract class MouseHandlerMixin {
 		double d1 = d0 - this.lastMouseEventTime;
 		this.lastMouseEventTime = d0;
 		if (this.minecraft.isWindowActive()) {
-			double d4 = 0.1*this.minecraft.options.sensitivity * (double)0.6F + (double)0.2F;
-			double d5 = 0.5d* d4 * d4 * d4 * 8.0D;
+			double d4 = 0.1 * this.minecraft.options.sensitivity().get() * (double) 0.6F + (double) 0.2F;
+			double d5 = 0.5d * d4 * d4 * d4 * 8.0D;
 			double d2;
 			if (this.minecraft.options.smoothCamera) {
 				double d6 = this.smoothTurnX.getNewDeltaValue(this.accumulatedDX * d5, d1 * d5);
@@ -186,26 +197,25 @@ public abstract class MouseHandlerMixin {
 				// quadratic fit near centre
 				double w = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 				double h = Minecraft.getInstance().getWindow().getGuiScaledHeight();
-				double d = h/8;
+				double d = h / 8;
 				double p = 2; // quadratic near centre
 				double k = 2; // magnitude at inflection point
-				k = 0.5*(d5*w)/(1+p*(w/(2*d) - 1));    // adjust k so effect at edge is same as with linear version
+				k = 0.5 * (d5 * w) / (1 + p * (w / (2 * d) - 1));    // adjust k so effect at edge is same as with linear version
 
 				// linear further out (but continuous at transition point)
-				double a = k*(1-p);
-				double m = p*k/d;
+				double a = k * (1 - p);
+				double m = p * k / d;
 
 				if (Math.abs(this.accumulatedDX) > d) {
-					d2 = Math.signum(this.accumulatedDX) * (a + m*Math.abs(this.accumulatedDX));
-				}
-				else {
-					d2 = Math.signum(this.accumulatedDX) * k*Math.pow(Math.abs(this.accumulatedDX)/d, p);
+					d2 = Math.signum(this.accumulatedDX) * (a + m * Math.abs(this.accumulatedDX));
+				} else {
+					d2 = Math.signum(this.accumulatedDX) * k * Math.pow(Math.abs(this.accumulatedDX) / d, p);
 				}
 
 				// When going backward, reduce the yaw effect
 				// TODO: ideally we'd have some smoother modulation here
-				double h6 = (double)Minecraft.getInstance().getWindow().getGuiScaledHeight()/6;
-				if (this.accumulatedDY >h6) {
+				double h6 = (double) Minecraft.getInstance().getWindow().getGuiScaledHeight() / 6;
+				if (this.accumulatedDY > h6) {
 					d2 *= 0.5;
 				}
 			}
@@ -237,7 +247,7 @@ public abstract class MouseHandlerMixin {
 		double d1 = d0 - this.lastMouseEventTime;
 		this.lastMouseEventTime = d0;
 		if (this.minecraft.isWindowActive()) {
-			double d4 = this.minecraft.options.sensitivity * 0.6000000238418579D + 0.20000000298023224D;
+			double d4 = this.minecraft.options.sensitivity().get() * 0.6000000238418579D + 0.20000000298023224D;
 			double d5 = d4 * d4 * d4 * 8.0D;
 			double d2;
 			double d3;
@@ -254,40 +264,38 @@ public abstract class MouseHandlerMixin {
 				// quadratic fit near centre
 				double w = Minecraft.getInstance().getWindow().getGuiScaledWidth();
 				double h = Minecraft.getInstance().getWindow().getGuiScaledHeight();
-				double d = h/8;
+				double d = h / 8;
 
 				double p = 2; // quadratic near centre
 				double k = 2; // magnitude at inflection point
-				k = 0.5*(d5*w)/(1+p*(w/(2*d) - 1));
+				k = 0.5 * (d5 * w) / (1 + p * (w / (2 * d) - 1));
 
 				// linear further out (but continuous at transition point)
-				double a = k*(1-p);
-				double m = p*k/d;
+				double a = k * (1 - p);
+				double m = p * k / d;
 
 				if (Math.abs(this.accumulatedDX) > d) {
-					d2 = Math.signum(this.accumulatedDX) * (a + m*Math.abs(this.accumulatedDX));
-				}
-				else {
-					d2 = Math.signum(this.accumulatedDX) * k*Math.pow(Math.abs(this.accumulatedDX)/d, p);
+					d2 = Math.signum(this.accumulatedDX) * (a + m * Math.abs(this.accumulatedDX));
+				} else {
+					d2 = Math.signum(this.accumulatedDX) * k * Math.pow(Math.abs(this.accumulatedDX) / d, p);
 
 				}
 				if (Math.abs(this.accumulatedDY) > d) {
-					d3 = Math.signum(this.accumulatedDY) * (a + m*Math.abs(this.accumulatedDY));
-				}
-				else {
-					d3 = Math.signum(this.accumulatedDY) * k*Math.pow(Math.abs(this.accumulatedDY)/d, p);
+					d3 = Math.signum(this.accumulatedDY) * (a + m * Math.abs(this.accumulatedDY));
+				} else {
+					d3 = Math.signum(this.accumulatedDY) * k * Math.pow(Math.abs(this.accumulatedDY) / d, p);
 				}
 			}
 
 			this.resetVelocity();
 			int i = 1;
-			if (this.minecraft.options.invertYMouse) {
+			if (this.minecraft.options.invertYMouse().get()) {
 				i = -1;
 			}
 
 			this.minecraft.getTutorial().onMouse(d2, d3);
 			if (this.minecraft.player != null) {
-				this.minecraft.player.turn(d2, d3 * (double)i);
+				this.minecraft.player.turn(d2, d3 * (double) i);
 			}
 
 		} else {
@@ -302,9 +310,9 @@ public abstract class MouseHandlerMixin {
 			ci.cancel();
 		}
 
-		if(MouseHelper.movementState == PlayerMovement.VANILLA) {
+		if (MouseHelper.movementState == PlayerMovement.VANILLA) {
 			updatePlayerLookVanilla();
-		} else if(MouseHelper.movementState == PlayerMovement.LEGACY) {
+		} else if (MouseHelper.movementState == PlayerMovement.LEGACY) {
 			updatePlayerLookLegacy();
 		} else {
 			// keep track of last time
@@ -330,7 +338,9 @@ public abstract class MouseHandlerMixin {
 	@Inject(method = "grabMouse()V", at = @At(value = "HEAD"), cancellable = true)
 	public void EyeMineGrabMouse(CallbackInfo ci) {
 		EyeMine.LOGGER.info("grabMouse");
-		if (!MouseHelper.hasGLcontext()) { ci.cancel(); }
+		if (!MouseHelper.hasGLcontext()) {
+			ci.cancel();
+		}
 	}
 
 	@Inject(method = "grabMouse()V",
@@ -344,7 +354,7 @@ public abstract class MouseHandlerMixin {
 			InputConstants.grabOrReleaseMouse(this.minecraft.getWindow().getWindow(), 212995, this.xpos, this.ypos);
 		}
 
-		this.minecraft.setScreen((Screen)null);
+		this.minecraft.setScreen((Screen) null);
 		//FIXME: this.minecraft.missTime = 10000;
 		this.ignoreFirstMove = true;
 		ci.cancel();

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -45,10 +45,10 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	//public static Configuration mConfig;
 
 	public enum InteractionState {
-	    EYETRACKER_NORMAL, EYETRACKER_WALK, EYETRACKER_LEGACY, 
-	    MOUSE_NOTHING, MOUSE_LOOK, MOUSE_WALK, MOUSE_LEGACY 
+		EYETRACKER_NORMAL, EYETRACKER_WALK, EYETRACKER_LEGACY,
+		MOUSE_NOTHING, MOUSE_LOOK, MOUSE_WALK, MOUSE_LEGACY
 	}
-	
+
 	public static InteractionState mInteractionState;
 	private static InputSource mInputSource = InputSource.EyeTracker;
 
@@ -57,9 +57,9 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	private static KeyMapping mToggleMouseViewControlKB;
 
 	private static IconOverlay mIconEye;
-	
+
 	private static int mTicksSinceMouseEvent = 1000;
-	
+
 	private boolean hasPendingConfigChange = false;
 
 	public void onInitializeClient() {
@@ -67,14 +67,12 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 		ClientGuiEvent.SET_SCREEN.register(MouseHandlerMod::onGuiOpen);
 
-		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
-			setupInitialState();
-		});
+		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> setupInitialState());
 
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "eyemine:textures/icons/eye.png");
-		mIconEye.setPosition(0.5f,  0.5f, 0.1f, 1.9f);
-		mIconEye.setAlpha(EyeMineConfig.getFullscreenOverlayAlpha());
+		mIconEye.setPosition(0.5f, 0.5f, 0.1f, 1.9f);
+		mIconEye.setAlpha(0.1f);
 		mIconEye.setVisible(false);
 		MainClientHandler.addOverlayToRender(mIconEye);
 
@@ -105,41 +103,40 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	}
 
 	public static void setWalking(boolean doWalk) {
-		if (mInputSource == InputSource.EyeTracker) {		
+		if (mInputSource == InputSource.EyeTracker) {
 			if (doWalk) updateState(InteractionState.EYETRACKER_WALK);
 			else updateState(InteractionState.EYETRACKER_NORMAL);
-		}
-		else {
+		} else {
 			if (doWalk) updateState(InteractionState.MOUSE_WALK);
 			else updateState(InteractionState.MOUSE_LOOK);
 		}
 	}
-	
+
 	public static void setLegacyWalking(boolean doWalk) {
 		if (mInputSource == InputSource.EyeTracker) {
 			if (doWalk) updateState(InteractionState.EYETRACKER_LEGACY);
 			else updateState(InteractionState.EYETRACKER_NORMAL);
-		}
-		else {
+		} else {
 			if (doWalk) updateState(InteractionState.MOUSE_LEGACY);
 			else updateState(InteractionState.MOUSE_LOOK);
 		}
 	}
-	
+
 	private static void updateIconForState(InteractionState state) {
 		boolean showIcon = (state == InteractionState.MOUSE_LOOK ||
-							state == InteractionState.MOUSE_WALK);
-		mIconEye.setVisible(showIcon);								
+				state == InteractionState.MOUSE_WALK);
+		mIconEye.setVisible(showIcon);
 	}
-	
+
 	private static void updateMouseForState(InteractionState state) {
 		switch (state) {
 			case EYETRACKER_LEGACY, MOUSE_LEGACY -> MouseHelper.setMovementState(PlayerMovement.LEGACY);
 			case MOUSE_NOTHING -> MouseHelper.setMovementState(PlayerMovement.NONE);
-			case EYETRACKER_NORMAL, EYETRACKER_WALK, MOUSE_LOOK, MOUSE_WALK -> MouseHelper.setMovementState(PlayerMovement.VANILLA);
+			case EYETRACKER_NORMAL, EYETRACKER_WALK, MOUSE_LOOK, MOUSE_WALK ->
+					MouseHelper.setMovementState(PlayerMovement.VANILLA);
 		}
 	}
-	
+
 	private static void updateState(InteractionState state) {
 		mInteractionState = state;
 		updateIconForState(state);
@@ -147,11 +144,9 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 
 		if (state == InteractionState.MOUSE_WALK || state == InteractionState.EYETRACKER_WALK) {
 			MoveWithGaze2.stop();
-		}
-		else if (state == InteractionState.MOUSE_LEGACY || state == InteractionState.EYETRACKER_LEGACY) {
+		} else if (state == InteractionState.MOUSE_LEGACY || state == InteractionState.EYETRACKER_LEGACY) {
 			MoveWithGaze.stop();
-		}
-		else {
+		} else {
 			MoveWithGaze.stop();
 			MoveWithGaze2.stop();
 		}
@@ -162,14 +157,13 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 			mInputSource = InputSource.Mouse;
 			updateState(InteractionState.MOUSE_NOTHING);
 			MouseHelper.setUngrabbedMode(true);
-		}
-		else {
+		} else {
 			mInputSource = InputSource.EyeTracker;
 			updateState(InteractionState.EYETRACKER_NORMAL);
 			MouseHelper.setUngrabbedMode(false);
-		}		
+		}
 	}
-	
+
 	@Override
 	public void syncConfig() {
 		// has anything *relevant* changed??
@@ -192,32 +186,35 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = minecraft.player;
-    	if (player != null) {
+		if (player != null) {
 			if (MouseHelper.hasPendingEvent()) {
 				mTicksSinceMouseEvent = 0;
 				MouseHelper.consumePendingEvent();
-			}
-			else {
+			} else {
 				mTicksSinceMouseEvent++;
 			}
 		}
 
-    	if (!(minecraft.screen instanceof OptionsScreen)) {
-    		syncConfigImpl();
+		if (!(minecraft.screen instanceof OptionsScreen)) {
+			syncConfigImpl();
 		}
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
-		
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
+
 		if (mSensitivityUpKB.matches(keyCode, scanCode) && mSensitivityUpKB.consumeClick()) {
 			increaseSens();
-			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f* minecraft.options.sensitivity));
+			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0d * minecraft.options.sensitivity().get()));
 		} else if (mSensitivityDownKB.matches(keyCode, scanCode) && mSensitivityDownKB.consumeClick()) {
 			decreaseSens();
-			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0f* minecraft.options.sensitivity));
+			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0d * minecraft.options.sensitivity().get()));
 		} else if (mToggleMouseViewControlKB.matches(keyCode, scanCode) && mToggleMouseViewControlKB.consumeClick()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				LOGGER.debug("this key doesn't do anything in eyetracker mode");
@@ -226,58 +223,55 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 			} else {
 				if (mInteractionState == InteractionState.MOUSE_NOTHING) {
 					updateState(InteractionState.MOUSE_LOOK);
-				}
-				else {
+				} else {
 					updateState(InteractionState.MOUSE_NOTHING);
-				}				
+				}
 			}
 		}
 		return EventResult.pass();
 	}
-	
-	private float getSensitivityIncrement(float reference) {
+
+	private double getSensitivityIncrement(double sens) {
 		// Get a roughly-proportional increment
 		// bearing in mind offset means we don't just take a linear scale
-		float sens = (float) Minecraft.getInstance().options.sensitivity ;
-		float inc = 0.05f;
-		if (sens < 0.2f) {
-			inc = 0.01f;
-		}
-		else if (sens < 0.0f) {
-			inc = 0.005f;
+		double inc = 0.05D;
+		if (sens < 0.2D) {
+			inc = 0.01D;
+		} else if (sens < 0.0D) {
+			inc = 0.005D;
 		}
 		return inc;
 	}
-	
+
 	private void decreaseSens() {
-		float sens = (float) Minecraft.getInstance().options.sensitivity;
+		double sens = Minecraft.getInstance().options.sensitivity().get();
 		sens -= getSensitivityIncrement(sens);
-		sens = Math.max(sens, MIN_SENS+0.05f);
-		Minecraft.getInstance().options.sensitivity = sens;
+		sens = Math.max(sens, MIN_SENS + 0.05d);
+		Minecraft.getInstance().options.sensitivity().set(sens);
 	}
 
 	private void increaseSens() {
-		float sens = (float) Minecraft.getInstance().options.sensitivity;
+		double sens = Minecraft.getInstance().options.sensitivity().get();
 		sens += getSensitivityIncrement(sens);
-		sens = Math.min(sens, 1.0f);
-		Minecraft.getInstance().options.sensitivity = sens;
+		sens = Math.min(sens, 1.0d);
+		Minecraft.getInstance().options.sensitivity().set(sens);
 	}
-	
+
 	private static void setEmptyCursor() {
 		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
-								GLFW.GLFW_CURSOR, 
-								GLFW.GLFW_CURSOR_HIDDEN);
+				GLFW.GLFW_CURSOR,
+				GLFW.GLFW_CURSOR_HIDDEN);
 	}
 
 	private static void setNativeCursor() {
 		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
-								GLFW.GLFW_CURSOR, 
-								GLFW.GLFW_CURSOR_NORMAL);
-	}	
+				GLFW.GLFW_CURSOR,
+				GLFW.GLFW_CURSOR_NORMAL);
+	}
 
 	public void setMouseNotGrabbed() {
 		MouseHelper.setUngrabbedMode(true);
-		this.setEmptyCursor();
+		setEmptyCursor();
 	}
 
 	public static boolean hasPendingEvent() {
@@ -300,7 +294,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 
 	// This is the constant offset applied in MC source, corresponding
 	// to "mouse does not move"
-	private static float MIN_SENS = -1F / 3F;
+	private static final double MIN_SENS = -1D / 3D;
 
 	private String toPercent(double d) {
 		DecimalFormat myFormatter = new DecimalFormat("#0.0");

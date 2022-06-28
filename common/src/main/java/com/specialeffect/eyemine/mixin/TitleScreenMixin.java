@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +29,7 @@ public class TitleScreenMixin extends Screen {
 	private long firstRenderTime;
 	private float animationTime;
 
-	protected TitleScreenMixin(BaseComponent component) {
+	protected TitleScreenMixin(Component component) {
 		super(component);
 	}
 
@@ -39,7 +39,7 @@ public class TitleScreenMixin extends Screen {
 			this.firstRenderTime = Util.getMillis();
 		}
 
-		animationTime = this.showFadeInAnimation ? (float)(Util.getMillis() - this.firstRenderTime) / 1000.0F : 1.0F;
+		animationTime = this.showFadeInAnimation ? (float) (Util.getMillis() - this.firstRenderTime) / 1000.0F : 1.0F;
 	}
 
 	@Inject(at = @At("TAIL"), method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V")
@@ -50,7 +50,7 @@ public class TitleScreenMixin extends Screen {
 		String subtitle = "EyeMine Edition";
 		if ((l & -67108864) != 0) {
 			poseStack.pushPose();
-			poseStack.translate((float)(this.width / 2), 25.0F, 0.0F);
+			poseStack.translate((float) (this.width / 2), 25.0F, 0.0F);
 			float f2 = 1.5f;
 			poseStack.scale(f2, f2, f2);
 			drawCenteredString(poseStack, this.font, subtitle, 0, -8, 16776960 | l);

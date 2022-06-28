@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -33,12 +33,12 @@ public class StateOverlay implements ICrosshairOverlay {
 		mFlagsLeft = new ArrayList<>();
 		mFlagsRight = new ArrayList<>();
 	}
-	
+
 	private void rescale() {
 		// Scale icon sizes to fit screen		
 
-		int maxSizeByWidth = mDisplayWidth/(mIconsPerRow+mIconPadding);
-		int maxSizeByHeight = 2*mDisplayHeight/(mIconsPerRow+mIconPadding);
+		int maxSizeByWidth = mDisplayWidth / (mIconsPerRow + mIconPadding);
+		int maxSizeByHeight = 2 * mDisplayHeight / (mIconsPerRow + mIconPadding);
 		mIconSize = Math.min(maxSizeByWidth, maxSizeByHeight);
 
 	}
@@ -62,7 +62,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		ResourceLocation res = new ResourceLocation(filepath);
 		mResourcesLeft.add(res);
 		mFlagsLeft.add(false);
-		return mResourcesLeft.size()-1;
+		return mResourcesLeft.size() - 1;
 	}
 
 	// Add texture to list of icons, return position. 
@@ -72,7 +72,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		ResourceLocation res = new ResourceLocation(filepath);
 		mResourcesRight.add(res);
 		mFlagsRight.add(false);
-		return mResourcesRight.size()-1;
+		return mResourcesRight.size() - 1;
 	}
 
 	// A helper function to draw a texture scaled to fit.
@@ -93,20 +93,20 @@ public class StateOverlay implements ICrosshairOverlay {
 //		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV,
 //				GL11.GL_TEXTURE_ENV_MODE, //TODO: figure out what this was
 //				GL11.GL_ADD );
-		
+
 		// We draw the texture larger, in white, at progressive levels of alpha 
 		// for blur effect (the alpha gets added on each layer)
 		int blurSteps = 4; // how many levels of progressive blur
-		double totalBlur = width/12; // in pixels				
+		double totalBlur = width / 12; // in pixels
 
-		for (int i=0; i < blurSteps; i++) {
-			double blurAmount = totalBlur/blurSteps*(i+1);
-			ModUtils.drawTexQuad(x - blurAmount, 
-								y - blurAmount, 
-								width + 2*blurAmount, 
-								height + 2*blurAmount,  
-								1.0f/blurSteps);
-				}
+		for (int i = 0; i < blurSteps; i++) {
+			double blurAmount = totalBlur / blurSteps * (i + 1);
+			ModUtils.drawTexQuad(x - blurAmount,
+					y - blurAmount,
+					width + 2 * blurAmount,
+					height + 2 * blurAmount,
+					1.0f / blurSteps);
+		}
 
 //		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
 
@@ -118,11 +118,11 @@ public class StateOverlay implements ICrosshairOverlay {
 	}
 
 	public static void setStateLeftIcon(int i, boolean b) {
-		mFlagsLeft.set(i, b);	
+		mFlagsLeft.set(i, b);
 	}
 
 	public static void setStateRightIcon(int i, boolean b) {
-		mFlagsRight.set(i, b);	
+		mFlagsRight.set(i, b);
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		// LEFT icons
 		int xPos = mIconPadding;
 		int yPos = mIconPadding;
-		for (int i=0; i < mResourcesLeft.size(); i++) {
+		for (int i = 0; i < mResourcesLeft.size(); i++) {
 			if (mFlagsLeft.get(i)) {
 				drawScaledTextureWithGlow(minecraft, mResourcesLeft.get(i), xPos, yPos, mIconSize, mIconSize);
 			}
@@ -153,7 +153,7 @@ public class StateOverlay implements ICrosshairOverlay {
 
 		// RIGHT ICONS
 		xPos = mDisplayWidth - mIconSize - mIconPadding;
-		for (int i=0; i < mResourcesRight.size(); i++) {
+		for (int i = 0; i < mResourcesRight.size(); i++) {
 			if (mFlagsRight.get(i)) {
 				drawScaledTextureWithGlow(minecraft, mResourcesRight.get(i), xPos, yPos, mIconSize, mIconSize);
 			}

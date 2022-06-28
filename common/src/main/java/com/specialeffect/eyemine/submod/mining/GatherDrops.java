@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -38,7 +38,7 @@ public class GatherDrops extends SubMod {
 	private static KeyMapping mGatherKB;
 
 	private static GatherDrops instance;
-	
+
 	public GatherDrops() {
 		instance = this;
 	}
@@ -55,9 +55,13 @@ public class GatherDrops extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 
 		if (mGatherKB.matches(keyCode, scanCode) && mGatherKB.consumeClick()) {
@@ -72,13 +76,13 @@ public class GatherDrops extends SubMod {
 		BlockPos playerPos = player.blockPosition();
 		AABB AaBb = new AABB(playerPos.subtract(new Vec3i(5, 5, 5)),
 				playerPos.offset(new Vec3i(5, 5, 5)));
-		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>)level.getEntitiesOfClass(ItemEntity.class, AaBb);
+		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>) level.getEntitiesOfClass(ItemEntity.class, AaBb);
 
-		if(items != null && !items.isEmpty()) {
+		if (items != null && !items.isEmpty()) {
 			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (ItemEntity itemEntity : items) {
-                PacketHandler.CHANNEL.sendToServer(new GatherBlockMessage(itemEntity.getId()));
+				PacketHandler.CHANNEL.sendToServer(new GatherBlockMessage(itemEntity.getId()));
 			}
 		}
 	}

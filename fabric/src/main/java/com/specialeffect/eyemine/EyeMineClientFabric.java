@@ -11,18 +11,18 @@ import net.minecraft.world.InteractionResult;
 
 public class EyeMineClientFabric implements ClientModInitializer {
 
-    @Override
-    public void onInitializeClient() {
-        AutoConfig.register(EyeMineConfig.class, Toml4jConfigSerializer::new);
-        WorldRenderEvents.BLOCK_OUTLINE.register((blockOutline, blockOutlineContext) -> {
-            BlockOutlineEvent.OUTLINE.invoker().renderOutline(blockOutline.consumers(), blockOutline.matrixStack());
-            return true;
-        });
+	@Override
+	public void onInitializeClient() {
+		AutoConfig.register(EyeMineConfig.class, Toml4jConfigSerializer::new);
+		WorldRenderEvents.BLOCK_OUTLINE.register((blockOutline, blockOutlineContext) -> {
+			BlockOutlineEvent.OUTLINE.invoker().renderOutline(blockOutline.consumers(), blockOutline.matrixStack());
+			return true;
+		});
 
-        AutoConfig.getConfigHolder(EyeMineConfig.class).registerSaveListener((manager, data) -> {
-            EyeMineClient.refresh();
-            return InteractionResult.PASS;
-        });
-        EyeMineClient.init();
-    }
+		AutoConfig.getConfigHolder(EyeMineConfig.class).registerSaveListener((manager, data) -> {
+			EyeMineClient.refresh();
+			return InteractionResult.PASS;
+		});
+		EyeMineClient.init();
+	}
 }

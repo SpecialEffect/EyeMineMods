@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -20,42 +20,41 @@ import java.util.function.Supplier;
 
 public class SendCommandMessage {
 	private String command;
-	
-    public SendCommandMessage() { }
 
-    public SendCommandMessage(String command) {
-    	this.command = command;
-    } 
-    
+	public SendCommandMessage() {
+	}
+
+	public SendCommandMessage(String command) {
+		this.command = command;
+	}
+
 	public static SendCommandMessage decode(FriendlyByteBuf buf) {
-        String command = buf.readUtf();
-        return new SendCommandMessage(command);
-    }
+		String command = buf.readUtf();
+		return new SendCommandMessage(command);
+	}
 
-    public static void encode(SendCommandMessage pkt, FriendlyByteBuf buf) {
-    	buf.writeUtf(pkt.command);
-    }
-    
-    public static class Handler {
+	public static void encode(SendCommandMessage pkt, FriendlyByteBuf buf) {
+		buf.writeUtf(pkt.command);
+	}
+
+	public static class Handler {
 		public static void handle(final SendCommandMessage pkt, Supplier<NetworkManager.PacketContext> context) {
 			context.get().queue(() -> {
 				MinecraftServer server = context.get().getPlayer().getServer();
 				if (server == null) {
 					System.out.println("Server is null, cannot send command");
 					return;
-				}
-				else {
+				} else {
 					Commands mgr = server.getCommands();
 					if (null == mgr) {
 						System.out.println("CommandManager is null, cannot send command");
 						return;
-					}
-					else {
+					} else {
 						mgr.performCommand(server.createCommandSourceStack(), pkt.command);
 					}
 				}
 			});
 		}
-	}          
+	}
 }
 

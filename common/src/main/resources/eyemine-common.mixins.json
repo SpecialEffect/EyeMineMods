@@ -9,12 +9,13 @@
   ],
   "client": [
 	"AbstractContainerScreenAccessor",
+	"ClientLevelAccessor",
 	"KeyboardInputMixin",
+	"KeyMappingAccessor",
 	"MinecraftAccessor",
 	"MouseHandlerAccessor",
 	"MouseHandlerMixin",
 	"TitleScreenMixin",
-	"KeyMappingAccessor",
 	"WorldGenSettingsComponentAccessor"
   ],
   "injectors": {

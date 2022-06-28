@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -18,16 +18,16 @@ import net.minecraft.world.phys.BlockHitResult;
 public class TargetBlock {
 	final BlockPos pos;
 	final Direction direction;
-	
+
 	public TargetBlock(BlockHitResult res) {
 		this.pos = res.getBlockPos();
 		this.direction = res.getDirection();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;		
+		int result = 1;
 		result = prime * result + ((direction == null) ? 0 : direction.hashCode());
 		result = prime * result + ((pos == null) ? 0 : pos.hashCode());
 		return result;

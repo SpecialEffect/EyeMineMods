@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -38,7 +38,7 @@ import java.awt.Color;
 public class EasyLadderClimb extends SubMod {
 	public final String MODID = "easyladderclimb";
 
-    // This mod adds some logic to help slightly with climbing ladders with eye gaze
+	// This mod adds some logic to help slightly with climbing ladders with eye gaze
 	// You'll get nudged toward the centre of the ladder a little bit.
 
 	public void onInitializeClient() {
@@ -47,8 +47,8 @@ public class EasyLadderClimb extends SubMod {
 	}
 
 	public void onClientTick(Minecraft minecraft) {
-    	LocalPlayer player = minecraft.player;
-    	if (player != null) {
+		LocalPlayer player = minecraft.player;
+		if (player != null) {
 			Level world = minecraft.level;
 
 			if (player.onClimbable() && MoveWithGaze.isWalking()) {
@@ -63,13 +63,13 @@ public class EasyLadderClimb extends SubMod {
 						Vec3 playerPos = player.position();
 
 						// What yaw would point the player at the middle of the ladder?
-						Vec3 midPos = getMidPointOfFace(blockPos,  facing);
+						Vec3 midPos = getMidPointOfFace(blockPos, facing);
 						renderPos = midPos;
 						player.setYRot(player.getYRot() % 360);
 
 						double dx = midPos.x - playerPos.x;
 						double dz = midPos.z - playerPos.z;
-						double yawToMidPoint = -(180/Math.PI)*Math.atan2(dx,  dz);
+						double yawToMidPoint = -(180 / Math.PI) * Math.atan2(dx, dz);
 
 						// Rotate player slightly towards the ideal yaw slightly
 						double gain = 0.03f;
@@ -81,8 +81,8 @@ public class EasyLadderClimb extends SubMod {
 			}
 		}
 	}
-	
-	private Vec3 getMidPointOfFace(BlockPos pos, Direction facing) {	
+
+	private Vec3 getMidPointOfFace(BlockPos pos, Direction facing) {
 		// It's possible this logic is ladder-specific, since a ladder is a block which is mainly
 		return switch (facing) {
 			case NORTH -> new Vec3(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 1.0f);
@@ -92,14 +92,14 @@ public class EasyLadderClimb extends SubMod {
 			default -> new Vec3(pos.getX(), pos.getY(), pos.getZ());
 		};
 	}
-	
+
 	private Vec3 renderPos;
 
 	public EventResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Turn this on to debug the positional logic - it will render block positions for you 
 		boolean debugRender = false;
-		
+
 		if (debugRender) {
 			if (minecraft.screen != null) {
 				return EventResult.pass();
@@ -124,15 +124,15 @@ public class EasyLadderClimb extends SubMod {
 		}
 		return EventResult.pass();
 	}
-	
+
 
 	private void assertInterpolate(double expected, double angle1, double angle2, double amount) {
 		double d = safeInterpolate(angle1, angle2, amount);
-		if (Math.abs(d - expected) > 0.1 ) {
-			d = safeInterpolate(angle1, angle2, amount );
+		if (Math.abs(d - expected) > 0.1) {
+			d = safeInterpolate(angle1, angle2, amount);
 		}
 		double d1 = safeInterpolate(angle2, angle1, 1.0 - amount);
-		if (Math.abs(d1 - expected) > 0.1 ) {
+		if (Math.abs(d1 - expected) > 0.1) {
 			d = safeInterpolate(angle2, angle1, 1.0 - amount);
 		}
 	}
@@ -142,38 +142,38 @@ public class EasyLadderClimb extends SubMod {
 		// In-place unit test for development
 		double a = 0.5;
 		double d = safeInterpolate(100, 200, a);
-		
+
 		assertInterpolate(125, 100, 200, 0.25);
 		assertInterpolate(175, 200, 100, 0.25);
-		
+
 		assertInterpolate(150, 100, 200, a);
 		assertInterpolate(125, 100, 200, 0.25);
 		assertInterpolate(10, 350, 30, a);
 		assertInterpolate(25, -50, 100, a);
-		assertInterpolate(10, 720, 740, a);	
-		
-		assertInterpolate(269, 268, 270, 0.5);			
-		assertInterpolate(269, 270, 268, 0.5);			
+		assertInterpolate(10, 720, 740, a);
+
+		assertInterpolate(269, 268, 270, 0.5);
+		assertInterpolate(269, 270, 268, 0.5);
 	}
-	
+
 	private double safeInterpolate(double angle1, double angle2, double amount) {
 		// Interpolate between two angles by amount [0, 1]
 		// while respecting angle-wrap		
-		
+
 		angle1 = (angle1 + 360) % 360;
 		angle2 = (angle2 + 360) % 360;
-				
+
 		if (angle1 > angle2) {
 			double tmp = angle1;
 			angle1 = angle2;
 			angle2 = tmp;
 			amount = 1.0 - amount;
 		}
-        if (angle2 - angle1 > 180) {
-        	angle2 -= 360;
-        }
-			
-		double d = (angle2 - angle1)*amount;		
+		if (angle2 - angle1 > 180) {
+			angle2 -= 360;
+		}
+
+		double d = (angle2 - angle1) * amount;
 		double new_angle = angle1 + d;
 		return (new_angle % 360);
 	}

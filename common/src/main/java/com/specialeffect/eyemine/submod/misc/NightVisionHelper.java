@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -30,6 +30,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.chunk.EmptyLevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -40,14 +41,14 @@ public class NightVisionHelper extends SubMod {
 	private int mDarkTicksAccum = 0;
 	private int mShowMessageTicksAccum = 0;
 	private int mTicksLoaded = 0;
-	
+
 	private static boolean mShowMessage;
 	private static boolean mDisabled;
 	private static boolean mTemporarilyDisabled;
-	
+
 	private float mLightnessThreshold;
 	private int mTicksThreshold;
-	
+
 	public static void cancelAndHide() {
 		mDisabled = true;
 		mShowMessage = false;
@@ -64,32 +65,32 @@ public class NightVisionHelper extends SubMod {
 
 	private void onWorldLoad(ServerLevel serverLevel) {
 		this.resetState();
-		
+
 		// If player has overridden brightness beyond what's allowed in the settings menu, 
 		// (i.e. by hacking options.txt) then they are a power user and we'll leave them to it			
-		if (Minecraft.getInstance().options.gamma > 1.01f) {
+		if (Minecraft.getInstance().options.gamma().get() > 1.01D) {
 			NightVisionHelper.cancelAndHide();
 		}
-	}	
-    
-    private void resetState() {
-    	// Reset state
+	}
+
+	private void resetState() {
+		// Reset state
 		mDisabled = false;
 		mShowMessage = false;
 		mDarkTicksAccum = 0;
-		mShowMessageTicksAccum = 0;	
+		mShowMessageTicksAccum = 0;
 		mTicksLoaded = 0;
 		mLightnessThreshold = 0.2f;
-		mTicksThreshold = 2*20;
-    }
+		mTicksThreshold = 2 * 20;
+	}
 
 	private EventResult onDeath(LivingEntity entity, DamageSource damageSource) {
 		if (ModUtils.entityIsMe(entity)) {
 			this.resetState();
-			mTemporarilyDisabled = true;			
+			mTemporarilyDisabled = true;
 		}
 		return EventResult.pass();
-    }
+	}
 
 	private EventResult onSpawn(Entity entity, Level level) {
 		if (ModUtils.entityIsMe(entity)) {
@@ -97,9 +98,9 @@ public class NightVisionHelper extends SubMod {
 			mTemporarilyDisabled = false;
 		}
 		return EventResult.pass();
-    }
+	}
 
-    public void onClientTick(Minecraft event) {
+	public void onClientTick(Minecraft event) {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Don't apply logic while in loading screen / other UIs
 		if (minecraft.screen != null) {
@@ -107,7 +108,7 @@ public class NightVisionHelper extends SubMod {
 		}
 
 		final LocalPlayer player = Minecraft.getInstance().player;
-    	if (null != player ) {
+		if (player != null) {
 			if (!player.isCreative()) {
 				// We won't worry about survival players, they know what they're doing
 				return;
@@ -118,18 +119,17 @@ public class NightVisionHelper extends SubMod {
 			// We'll reduce (make stricter) the threshold for showing a warning message once the world
 			// has been loaded a while. We're mainly trying to catch the "reloaded into pitch black and
 			// don't know what's going on" failure mode.
-			if (mTicksLoaded > 20*20) {
+			if (mTicksLoaded > 20 * 20) {
 				mLightnessThreshold = 0.13f;
-				mTicksThreshold = 10*20;
-			}
-			else {
+				mTicksThreshold = 10 * 20;
+			} else {
 				mTicksLoaded++;
 			}
 
 			// If message is visible, keep alive for minimum time
 			if (mShowMessage) {
 				mShowMessageTicksAccum++;
-				if (mDisabled && mShowMessageTicksAccum > 5*20) {
+				if (mDisabled && mShowMessageTicksAccum > 5 * 20) {
 					mShowMessage = false;
 				}
 			}
@@ -150,19 +150,17 @@ public class NightVisionHelper extends SubMod {
 				}
 
 				// Get lightness of block(s) we're looking at and where player is
-				float lightnessBlock = level.getBrightness(pos);
-				float lightnessPlayer = level.getBrightness(posPlayer);
+				float lightnessBlock = level.getBrightness(LightLayer.BLOCK, pos);
+				float lightnessPlayer = level.getBrightness(LightLayer.BLOCK, posPlayer);
 				float lightness = Math.max(lightnessBlock, lightnessPlayer);
 
 
-
 				// If it's really dark, put message up to remind of night vision
-				float gamma = (float) Minecraft.getInstance().options.gamma;
-				float threshold = mLightnessThreshold - gamma/10f; // i.e. 0.03f for max brightness
+				float gamma = Minecraft.getInstance().options.gamma().get().floatValue();
+				float threshold = mLightnessThreshold - gamma / 10f; // i.e. 0.03f for max brightness
 				if (lightness < threshold) {
 					mDarkTicksAccum++;
-				}
-				else if (mDarkTicksAccum > 0) {
+				} else if (mDarkTicksAccum > 0) {
 					mDarkTicksAccum--;
 				}
 
@@ -177,26 +175,26 @@ public class NightVisionHelper extends SubMod {
 		if (mShowMessage) {
 			PoseStack matrixStack = poseStack;
 			Minecraft mc = Minecraft.getInstance();
-			
+
 			int w = mc.getWindow().getGuiScaledWidth();
 			int h = mc.getWindow().getGuiScaledHeight();
-			
+
 			String msg1 = "You are in the dark!";
 			String msg2 = "To turn on night vision, use the EyeMine keyboard or press F12";
 			String msg3 = "To reset to start location, press Home";
 
 			Font font = mc.font;
-			
-			int y = h/5;
-			drawCenteredString(matrixStack, font, msg1, w/2,      y, 0xffffff);
-			drawCenteredString(matrixStack, font, msg2, w/2, y + 20, 0xffffff);
-			drawCenteredString(matrixStack, font, msg3, w/2, y + 40, 0xffffff);
+
+			int y = h / 5;
+			drawCenteredString(matrixStack, font, msg1, w / 2, y, 0xffffff);
+			drawCenteredString(matrixStack, font, msg2, w / 2, y + 20, 0xffffff);
+			drawCenteredString(matrixStack, font, msg3, w / 2, y + 40, 0xffffff);
 		}
 	}
-	
+
 	private void drawCenteredString(PoseStack matrixStack, Font font, String msg, int x, int y, int c) {
 		int stringWidth = font.width(msg);
-        font.draw(matrixStack, msg, x - stringWidth/2, y, c);
+		font.draw(matrixStack, msg, x - stringWidth / 2, y, c);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {

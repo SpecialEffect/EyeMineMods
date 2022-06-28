@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -52,11 +52,11 @@ public class AutoJump extends SubMod implements IConfigListener {
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
-	
+
 	private void updateSettings(boolean autoJump) {
 		Options options = Minecraft.getInstance().options;
-		if(options != null) {
-			options.autoJump = autoJump;
+		if (options != null) {
+			options.autoJump().set(autoJump);
 			options.save();
 			options.load();
 		}
@@ -70,9 +70,9 @@ public class AutoJump extends SubMod implements IConfigListener {
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
-    public void onClientTick(Minecraft minecraft) {
+	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = minecraft.player;
-    	if (player != null) {
+		if (player != null) {
 			// We can't rely solely on the vanilla autojump implementation,
 			// since there are a few scenarios where it doesn't work correctly, see
 			//
@@ -80,26 +80,29 @@ public class AutoJump extends SubMod implements IConfigListener {
 			// We'll keep it in sync though so that keyboard-play is consistent
 			// with our autojump state (if you're moving with the keyboard you
 			// get visually-nicer autojump behaviour).
-			if(!mAutoJumpDisabled) {
+			if (!mAutoJumpDisabled) {
 				if (mDoingAutoJump) {
 					player.maxUpStep = 1.0f;
-				}
-				else {
+				} else {
 					player.maxUpStep = 0.6f;
 				}
 			}
-    	}
-    }
+		}
+	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			this.updateSettings(mDoingAutoJump);
-			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);			
+			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 			ModUtils.sendPlayerMessage("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF"));
 		}
 		return EventResult.pass();

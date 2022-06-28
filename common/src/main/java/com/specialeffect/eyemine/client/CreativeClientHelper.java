@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -27,15 +27,17 @@ import org.lwjgl.glfw.GLFW;
 
 public class CreativeClientHelper {
 	public static EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
-		if(action == GLFW.GLFW_RELEASE) {
+		if (action == GLFW.GLFW_RELEASE) {
 			int key = keyCode;
 			EyeMine.LOGGER.debug(key);
 			Screen currentScreen = minecraft.screen;
 			if (currentScreen != null) {
 				if (currentScreen instanceof CreativeModeInventoryScreen gui) {
-					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
+					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
 							accessor.getXSize(), accessor.getYSize(),
@@ -45,17 +47,15 @@ public class CreativeClientHelper {
 					if (handled) {
 						return EventResult.pass();
 					}
-				}
-				else if (currentScreen instanceof ContainerScreen gui) {
-					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
+				} else if (currentScreen instanceof ContainerScreen gui) {
+					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;
 					ChestInventoryManager con = ChestInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
 							accessor.getXSize(), accessor.getYSize(),
 							gui.getMenu());
 					con.acceptKey(key);
-				}
-				else if (currentScreen instanceof InventoryScreen gui) {
-					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
+				} else if (currentScreen instanceof InventoryScreen gui) {
+					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;
 					SurvivalInventoryManager con = SurvivalInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
 							accessor.getXSize(), accessor.getYSize(), gui.getMenu());

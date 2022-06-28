@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -34,18 +34,18 @@ import org.lwjgl.glfw.GLFW;
 
 public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	public static final String MODID = "specialeffect.movewithgaze2";
-    public static final String NAME = "MoveWithGaze2";
+	public static final String NAME = "MoveWithGaze2";
 
-    private static KeyMapping mToggleAutoWalkKB;
-    
-    private static boolean mMoveWhenMouseStationary = false;
-    private static float mCustomSpeedFactor = 0.8f;
+	private static KeyMapping mToggleAutoWalkKB;
+
+	private static boolean mMoveWhenMouseStationary = false;
+	private static float mCustomSpeedFactor = 0.8f;
 
 	public void onInitializeClient() {
-    	mOverlay = new JoystickControlOverlay();
+		mOverlay = new JoystickControlOverlay();
 		MainClientHandler.addOverlayToRender(mOverlay);
 
-    	// Register key bindings	
+		// Register key bindings
 		Keybindings.keybindings.add(mToggleAutoWalkKB = new KeyMapping(
 				"key.eyemine.toggle_walking", //Careful walk
 				Type.KEYSYM,
@@ -56,98 +56,99 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/legacy-mode.png");
 
-		//Initialize from Config
-		syncConfig();
-
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-    }
-    
-    private static int mIconIndex;
-    
+	}
+
+	private static int mIconIndex;
+
 	private static JoystickControlOverlay mOverlay;
 
 	public static void stop() {
 		if (mDoingAutoWalk) {
 			mDoingAutoWalk = false;
-			StateOverlay.setStateLeftIcon(mIconIndex, false);        	
-    		mOverlay.setVisible(false);
+			StateOverlay.setStateLeftIcon(mIconIndex, false);
+			mOverlay.setVisible(false);
 		}
-    }
-
-    @Override
-	public void syncConfig() {
-        mMoveWhenMouseStationary = EyeMineConfig.getMoveWhenMouseStationary();
-        mCustomSpeedFactor = EyeMineConfig.getCustomSpeedFactor();
-        // We need to scale the alpha since the texture here gets stretched a lot so it's quite soft already
-        mOverlay.setAlpha(2.5f * EyeMineConfig.getFullscreenOverlayAlpha());
 	}
-	
+
+	@Override
+	public void syncConfig() {
+		mMoveWhenMouseStationary = EyeMineConfig.getMoveWhenMouseStationary();
+		mCustomSpeedFactor = EyeMineConfig.getCustomSpeedFactor();
+		// We need to scale the alpha since the texture here gets stretched a lot so it's quite soft already
+		mOverlay.setAlpha(2.5f * EyeMineConfig.getFullscreenOverlayAlpha());
+	}
+
 	// Some hard-coded fudge factors for maximums.
 	// TODO: make configurable?
 	private float mMaxForward = 1.5f;
 	private float mMaxBackward = 0.5f;
-	
-	private int mTicksToLockOn = 5; // wait this # of ticks before acting in a new region
-    private int ticksForward = 0;
-    private int ticksBackward = 0;
 
-    public void onClientTick(Minecraft minecraft) {
+	private int mTicksToLockOn = 5; // wait this # of ticks before acting in a new region
+	private int ticksForward = 0;
+	private int ticksBackward = 0;
+
+	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = Minecraft.getInstance().player;
-    	if (player != null) {
+		if (player != null) {
 			if (mDoingAutoWalk && minecraft.screen == null && // no gui visible
-	    		(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent()) ) {
+					(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 
 				double lastMouseY = MouseHelper.lastYVelocity;
-				
+
 				// Y gives distance to walk forward/back.
 				float walkForwardAmount = 0.0f;
-				float h = (float)minecraft.getWindow().getGuiScaledHeight();
-				float h6 = h/6.0f;
-				
+				float h = (float) minecraft.getWindow().getGuiScaledHeight();
+				float h6 = h / 6.0f;
+
 				if (lastMouseY < -h6) {
 					// top of screen: forward!
-					if (ticksForward > mTicksToLockOn) {    				
-						walkForwardAmount = (float) (mMaxForward*(-lastMouseY-h6)/h6);
+					if (ticksForward > mTicksToLockOn) {
+						walkForwardAmount = (float) (mMaxForward * (-lastMouseY - h6) / h6);
 						ticksBackward = 0;
 					} else {
-						ticksForward++;	    					
+						ticksForward++;
 					}
 				} else if (lastMouseY > h6) {
 					// backward
-					
-					if (ticksBackward > mTicksToLockOn) {    				
+
+					if (ticksBackward > mTicksToLockOn) {
 						// backward!
-						walkForwardAmount = (float) (-mMaxBackward*(lastMouseY - h6)/h6);
+						walkForwardAmount = (float) (-mMaxBackward * (lastMouseY - h6) / h6);
 						ticksForward = 0;
 					} else {
 						ticksBackward++;
 					}
 				}
-				
+
 				// scaled by mCustomSpeedFactor 
 				walkForwardAmount *= 0.15;
 				walkForwardAmount *= mCustomSpeedFactor;
 				KeyboardInputHelper.setWalkOverride(true, walkForwardAmount);
-			}	
-    	}
-    }
-    
+			}
+		}
+	}
+
 	private static boolean mDoingAutoWalk = false;
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
-        if(mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
-        	mDoingAutoWalk = !mDoingAutoWalk;        	
-        	MouseHandlerMod.setLegacyWalking(mDoingAutoWalk);
-        	
-        	mOverlay.setVisible(mDoingAutoWalk);
+		if (mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
+			mDoingAutoWalk = !mDoingAutoWalk;
+			MouseHandlerMod.setLegacyWalking(mDoingAutoWalk);
+
+			mOverlay.setVisible(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
-        }
+		}
 		return EventResult.pass();
-    }
+	}
 }

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -22,13 +22,12 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -36,7 +35,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class MineOne extends DwellAction {
 	public MineOne() {
-		super("Mine one"); 
+		super("Mine one");
 	}
 
 	public final String MODID = "autodestroy";
@@ -70,23 +69,23 @@ public class MineOne extends DwellAction {
 				// Select the best tool from the inventory
 				ClientLevel level = minecraft.level;
 
-    			// Swords can't destroy blocks: warn user
-    			if (player.getMainHandItem().getItem() instanceof SwordItem) {
-    				String message = "Can't destroy blocks with a sword, please select another item";
-			        player.sendMessage(new TextComponent(message), Util.NIL_UUID);
+				// Swords can't destroy blocks: warn user
+				if (player.getMainHandItem().getItem() instanceof SwordItem) {
+					String message = "Can't destroy blocks with a sword, please select another item";
+					player.sendSystemMessage(Component.literal(message));
 
-    				this.stopDestroying();
-    				return;
-    			}
+					this.stopDestroying();
+					return;
+				}
 
 				// Stop attacking if we're not pointing at the block any more
 				// (which means either we've destroyed it, or moved away)
 				HitResult mov = minecraft.hitResult;
 				boolean blockDestroyed = level != null && mBlockToDestroy != null && (level.getBlockState(mBlockToDestroy).isAir());
-				boolean movedAway =  false;
+				boolean movedAway = false;
 				BlockPos pos = this.getMouseOverBlockPos();
 				if (pos != null) {
-					movedAway = mBlockToDestroy.distToLowCornerSqr((double)pos.getX(), (double)pos.getY(), (double)pos.getZ()) > 0.5;
+					movedAway = mBlockToDestroy.distToLowCornerSqr((double) pos.getX(), (double) pos.getY(), (double) pos.getZ()) > 0.5;
 				}
 
 				if (mov == null || blockDestroyed || movedAway) {
@@ -100,12 +99,12 @@ public class MineOne extends DwellAction {
 		mDestroying = true;
 
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), true);
+		KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), true);
 	}
 
 	private void stopDestroying() {
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
+		KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), false);
 
 		mDestroying = false;
 	}
@@ -122,9 +121,13 @@ public class MineOne extends DwellAction {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			// turn off continuous mining
@@ -135,15 +138,13 @@ public class MineOne extends DwellAction {
 			boolean useDwelling = player.isCreative() && EyeMineConfig.getUseDwellForSingleMine();
 			if (useDwelling) {
 				this.dwellOnce();
-			}
-			else {
+			} else {
 				// start mining the block you're facing
 				mBlockToDestroy = this.getMouseOverBlockPos();
 				if (mBlockToDestroy == null) {
 					LOGGER.debug("Nothing to attack");
 					return EventResult.pass();
-				}
-				else {
+				} else {
 					this.startDestroying();
 				}
 			}
@@ -154,6 +155,6 @@ public class MineOne extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
+		KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
 	}
 }

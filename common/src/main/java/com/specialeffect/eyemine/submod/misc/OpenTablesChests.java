@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -14,21 +14,22 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.mixin.ClientLevelAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -48,8 +49,8 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 
 	private static KeyMapping mOpenChestKB;
 	private static KeyMapping mOpenCraftingTableKB;
-	
-    private int mRadius = 5;
+
+	private int mRadius = 5;
 
 	public void onInitializeClient() {
 		// Register key bindings
@@ -105,8 +106,8 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 		Vec3 hitVec = new Vec3(pos.getX(), pos.getY(), pos.getZ());
 
 		Direction fakeDirection = Direction.DOWN;
-		for(Direction dir : Direction.values()) {
-			if(!level.getBlockState(pos.relative(dir)).isAir()) {
+		for (Direction dir : Direction.values()) {
+			if (!level.getBlockState(pos.relative(dir)).isAir()) {
 				fakeDirection = dir;
 				break;
 			}
@@ -115,44 +116,49 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
-		if(mOpenChestKB.matches(keyCode, scanCode) && mOpenChestKB.consumeClick()) {
+		if (mOpenChestKB.matches(keyCode, scanCode) && mOpenChestKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof AbstractChestBlock), player, level, mRadius);
 
 			// Ask server to open
 			if (null == closestBlockPos) {
-				player.sendMessage(new TranslatableComponent("eyemine.message.open_chest.none"), Util.NIL_UUID);
-			}
-			else {
+				player.sendSystemMessage(Component.translatable("eyemine.message.open_chest.none"));
+			} else {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
 				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
-					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit));
+					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+					int i = blockstatepredictionhandler.currentSequence();
+					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit, i));
 				}
 			}
-		}
-		else if(mOpenCraftingTableKB.matches(keyCode, scanCode) && mOpenCraftingTableKB.consumeClick()) {
+		} else if (mOpenCraftingTableKB.matches(keyCode, scanCode) && mOpenCraftingTableKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof CraftingTableBlock), player, level, mRadius);
 
 			// Ask server to open
 			if (null == closestBlockPos) {
-				player.sendMessage(new TranslatableComponent(
-						"eyemine.message.open_crafting_table.none"), Util.NIL_UUID);
-			}
-			else {
+				player.sendSystemMessage(Component.translatable(
+						"eyemine.message.open_crafting_table.none"));
+			} else {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
 				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
-					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit));
+					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+					int i = blockstatepredictionhandler.currentSequence();
+					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit, i));
 				}
 			}
 		}

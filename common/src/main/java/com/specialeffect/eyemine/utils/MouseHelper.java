@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -39,6 +39,7 @@ public class MouseHelper {
 	public static synchronized void consumePendingEvent() {
 		mHasPendingEvent = false;
 	}
+
 	public static synchronized boolean hasPendingEvent() {
 		return mHasPendingEvent;
 	}
@@ -49,10 +50,12 @@ public class MouseHelper {
 
 	public static void setUngrabbedMode(boolean ungrabbed) {
 		ungrabbedMouseMode = ungrabbed;
-		if (!hasGLcontext()) { return; }
+		if (!hasGLcontext()) {
+			return;
+		}
 
 		MouseHandler mouseHandler = Minecraft.getInstance().mouseHandler;
-		if(mouseHandler != null) {
+		if (mouseHandler != null) {
 			if (ungrabbed) {
 				mouseHandler.releaseMouse();
 			} else {
@@ -69,15 +72,15 @@ public class MouseHelper {
 
 	/** public entry points for automated cursor actions **/
 	public void moveCursor(MouseHandler mouseHelper, double xpos, double ypos) {
-		if(mouseHelper != null) {
+		if (mouseHelper != null) {
 			long handle = Minecraft.getInstance().getWindow().getWindow();
 			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), xpos, ypos);
-			((MouseHandlerAccessor)mouseHelper).invokeOnMove(handle, xpos, ypos);
+			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos);
 		}
 	}
 
 	public void leftMouseClickAtPosition(MouseHandler mouseHelper, double xpos, double ypos) {
-		if(mouseHelper != null) {
+		if (mouseHelper != null) {
 			this.moveCursor(mouseHelper, xpos, ypos);
 			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, 0);
 			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, 0);
@@ -85,7 +88,7 @@ public class MouseHelper {
 	}
 
 	public void leftShiftMouseClickAtPosition(MouseHandler mouseHelper, double xpos, double ypos) {
-		if(mouseHelper != null) {
+		if (mouseHelper != null) {
 			this.moveCursor(mouseHelper, xpos, ypos);
 			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, GLFW.GLFW_MOD_SHIFT);
 			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, GLFW.GLFW_MOD_SHIFT);
@@ -93,9 +96,9 @@ public class MouseHelper {
 	}
 
 	public void scroll(MouseHandler mouseHandler, double amount) {
-		if(mouseHandler != null) {
+		if (mouseHandler != null) {
 			long handle = Minecraft.getInstance().getWindow().getWindow();
-			((MouseHandlerAccessor)mouseHandler).invokeOnScroll(handle, 0, amount);
+			((MouseHandlerAccessor) mouseHandler).invokeOnScroll(handle, 0, amount);
 		}
 	}
 
@@ -108,7 +111,7 @@ public class MouseHelper {
 	 */
 	public void mouseButton(int button, int action, int mods) {
 		long handle = Minecraft.getInstance().getWindow().getWindow();
-		((MouseHandlerAccessor)Minecraft.getInstance().mouseHandler).invokeOnPress(handle, button, action, mods);
+		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnPress(handle, button, action, mods);
 	}
 
 	public static void setMovementState(PlayerMovement state) {

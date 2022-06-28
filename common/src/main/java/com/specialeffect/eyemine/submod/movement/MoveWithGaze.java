@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -61,9 +61,9 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 	private static boolean mMoveWhenMouseStationary = false;
 	public static float mCustomSpeedFactor = 0.8f;
 
-    private int jumpTicks = 0;
-    
-    private BoatController boatController = new BoatController(0.35,  0.15,  0);	
+	private int jumpTicks = 0;
+
+	private final BoatController boatController = new BoatController(0.35, 0.15, 0);
 
 	public MoveWithGaze() {
 	}
@@ -94,7 +94,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/walk.png");
-		
+
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
@@ -108,98 +108,98 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 	private static int mIconIndex;
 
-    public void onClientTick(Minecraft event) {
+	public void onClientTick(Minecraft event) {
 		Minecraft minecraft = Minecraft.getInstance();
 		LocalPlayer player = Minecraft.getInstance().player;
-    	if (player != null) {
-    		if (jumpTicks > 0) {
+		if (player != null) {
+			if (jumpTicks > 0) {
 				jumpTicks--;
 			}
-    		
-       		// Add current look dir to queue
-    		mPrevLookDirs.add(player.getLookAngle());
-       		while (mPrevLookDirs.size() > mQueueLength) {
-       			mPrevLookDirs.remove();
-       		}
 
-       		// Explanation of strategy:
-       		// - when turning a corner, we want to slow down to make it a bit more manageable.
-       		// - if it takes time to turn the auto-walk function off (e.g. using an eye gaze with dwell click) then
-       		//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
-       		//   hasn't moved at all. This is mainly applicable to gaze input.
-       		// - If walking into a wall, don't keep walking fast!
-       		
-            if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
-            	double forward = (double)mCustomSpeedFactor; 
-            	
-        		// Slow down when you're looking really far up/down, or turning round quickly
-             	if (EyeMineConfig.getSlowdownOnCorners()) {
-	            	double slowDownPitch = slowdownFactorPitch(player);
+			// Add current look dir to queue
+			mPrevLookDirs.add(player.getLookAngle());
+			while (mPrevLookDirs.size() > mQueueLength) {
+				mPrevLookDirs.remove();
+			}
 
-	            	// Slow down when you've been turning a corner
-	            	double slowDownCorners = slowdownFactorViewDirs();
+			// Explanation of strategy:
+			// - when turning a corner, we want to slow down to make it a bit more manageable.
+			// - if it takes time to turn the auto-walk function off (e.g. using an eye gaze with dwell click) then
+			//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
+			//   hasn't moved at all. This is mainly applicable to gaze input.
+			// - If walking into a wall, don't keep walking fast!
+
+			if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
+				double forward = (double) mCustomSpeedFactor;
+
+				// Slow down when you're looking really far up/down, or turning round quickly
+				if (EyeMineConfig.getSlowdownOnCorners()) {
+					double slowDownPitch = slowdownFactorPitch(player);
+
+					// Slow down when you've been turning a corner
+					double slowDownCorners = slowdownFactorViewDirs();
 //	            	System.out.println("slowdown corners: "+ slowDownCorners);
 
 					if (!player.onClimbable()) {
 						forward *= Math.min(slowDownCorners, slowDownPitch);
 					}
-            	}
-             	
-             	// Don't go "forward" if looking down ladder - let it naturally go down 
-             	// This may interfere in funny ways with the vanilla logic for whether or not you're on a ladder
-             	// Consider it experimental (it's not turned on by default)
-             	if (EyeMineConfig.getAllowLadderDescent() && player.onClimbable()) {
-    				// We're a bit more forgiving when player is on ground, to make sure player can exit the 
-    				// ladder okay.
-    				if ((player.isOnGround() && player.getXRot() > 30) ||
-    				    (!player.isOnGround() && player.getXRot() > 0)) {
-						KeyboardInputHelper.setWalkOverride(false, 0.0f);
-    					return;
-            		}
-             	}
-						            	
-            	// Slow down if you're facing an animal/mob while attacking
-				// (without this it's easy to run past)
-            	if (EyeMineConfig.getSlowdownOnAttack()) {
-            		if (ContinuouslyAttack.mIsAttacking) {
-            			forward *= slowdownFactorEntity(player);
-            		}
-            	}
+				}
 
-            	// The built-in autojump doesn't work when you're underwater, so we do our own implementation here 
+				// Don't go "forward" if looking down ladder - let it naturally go down
+				// This may interfere in funny ways with the vanilla logic for whether or not you're on a ladder
+				// Consider it experimental (it's not turned on by default)
+				if (EyeMineConfig.getAllowLadderDescent() && player.onClimbable()) {
+					// We're a bit more forgiving when player is on ground, to make sure player can exit the
+					// ladder okay.
+					if ((player.isOnGround() && player.getXRot() > 30) ||
+							(!player.isOnGround() && player.getXRot() > 0)) {
+						KeyboardInputHelper.setWalkOverride(false, 0.0f);
+						return;
+					}
+				}
+
+				// Slow down if you're facing an animal/mob while attacking
+				// (without this it's easy to run past)
+				if (EyeMineConfig.getSlowdownOnAttack()) {
+					if (ContinuouslyAttack.mIsAttacking) {
+						forward *= slowdownFactorEntity(player);
+					}
+				}
+
+				// The built-in autojump doesn't work when you're underwater, so we do our own implementation here
 				if (player.isInWater()) {
 					// Check the blocks around the player
-			    	Level level = minecraft.level;
+					Level level = minecraft.level;
 
 					Vec3 posVec = player.position();
 					Vec3 forwardVec = player.getForward();
 
 					//javax.vecmath.Vector2d is not available... let's use Vector2f and manually normalize the same way javax.vecmath.Vector2d did
-					double norm = (double) (1.0/Math.sqrt(forwardVec.x * forwardVec.x + forwardVec.y * forwardVec.y));
-					Vec2 forward2d = new Vec2((float)(forwardVec.x * norm), (float)(forwardVec.y * norm));
+					double norm = (double) (1.0 / Math.sqrt(forwardVec.x * forwardVec.x + forwardVec.y * forwardVec.y));
+					Vec2 forward2d = new Vec2((float) (forwardVec.x * norm), (float) (forwardVec.y * norm));
 
 					BlockPos blockInFrontPos = new BlockPos(
 							posVec.x + forward2d.x,
-							posVec.y , //y is UP
+							posVec.y, //y is UP
 							posVec.z + forward2d.y);
-					
+
 					BlockPos blockInFrontAbovePos = blockInFrontPos.offset(0, 1, 0);
 
-			    	Material materialInFront = level.getBlockState(blockInFrontPos).getMaterial();
-			    	Material materialAboveInFront = level.getBlockState(blockInFrontAbovePos).getMaterial();
-			    			    	
-		    		if ((materialInFront != null  && materialInFront.isSolid()) && (materialAboveInFront != null  && !materialAboveInFront.isSolid())) {
-		    			if (jumpTicks == 0) {
+					Material materialInFront = level.getBlockState(blockInFrontPos).getMaterial();
+					Material materialAboveInFront = level.getBlockState(blockInFrontAbovePos).getMaterial();
+
+					if ((materialInFront != null && materialInFront.isSolid()) && (materialAboveInFront != null && !materialAboveInFront.isSolid())) {
+						if (jumpTicks == 0) {
 							player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, true, player.input.shiftKeyDown));
 							player.jumpFromGround();
-							
+
 							// only jump every N ticks...
 							jumpTicks = 20;
-		    			}
-		    		}
+						}
+					}
 				}
-				
-				
+
+
 				// If riding, we may need to do things differently
 				if (player.isPassenger()) {
 					Entity riddenEntity = player.getVehicle();
@@ -221,34 +221,32 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 								}
 								LOGGER.debug(yawError);
 								boatController.pid_step(boat, yawError);
-							
+
 								// downscale the forward motion if we've got lots of turning to do first
 								float yawErrorAbs = Math.abs(yawError);
 								float maxYawForward = EyeMineConfig.getBoatMaxTurnAtSpeed();
-								if (yawErrorAbs > maxYawForward*0.2f) {
-									forward *= (maxYawForward - yawErrorAbs)/maxYawForward;									
-								}
-								else if (yawErrorAbs > maxYawForward) {
+								if (yawErrorAbs > maxYawForward * 0.2f) {
+									forward *= (maxYawForward - yawErrorAbs) / maxYawForward;
+								} else if (yawErrorAbs > maxYawForward) {
 									forward = 0.0;
 								}
-								
+
 								// slower in general since boats are quite hard to control
 								forward *= EyeMineConfig.getBoatSlowdown();
-								
+
 							}
 						} else if (riddenEntity instanceof Minecart) {
 							Vec3 motion3d = player.getLookAngle();
 							Vec3 motionAligned = motion3d.multiply(1.0, 0, 1.0);
 							motionAligned.normalize();
-							
+
 							// Our movement override isn't enough to get cart moving
 							// It's critical we add motion to player on the server, not just
 							// locally
 							player.setDeltaMovement(motionAligned);
 							player.connection.send(new ServerboundMoveVehiclePacket(riddenEntity)); //TEST IF WORKS
 
-						}
-						else {
+						} else {
 							// Any other ridden entities that don't work with the movement override??
 						}
 					}
@@ -256,15 +254,14 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 					boatController.releaseKeys();
 				}
 				LOGGER.debug(forward);
-        		KeyboardInputHelper.setWalkOverride(mDoingAutoWalk, (float) forward);
+				KeyboardInputHelper.setWalkOverride(mDoingAutoWalk, (float) forward);
 
-			}
-            else {
-            	boatController.releaseKeys();
+			} else {
+				boatController.releaseKeys();
 				KeyboardInputHelper.setWalkOverride(false, 0.0f);
-            }
-    	}
-    }
+			}
+		}
+	}
 
 	private double slowdownFactorPitch(Player player) {
 		float f = player.getXRot();
@@ -323,23 +320,27 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 		if (mDoingAutoWalk) {
 			mDoingAutoWalk = false;
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
-			
+
 			// Make sure any overridden key bindings are removed
 			final KeyMapping kbLeft = Minecraft.getInstance().options.keyLeft;
 			final KeyMapping kbRight = Minecraft.getInstance().options.keyRight;
-			KeyMapping.set(((KeyMappingAccessor)kbLeft).getActualKey(), false);
-			KeyMapping.set(((KeyMappingAccessor)kbRight).getActualKey(), false);
+			KeyMapping.set(((KeyMappingAccessor) kbLeft).getActualKey(), false);
+			KeyMapping.set(((KeyMappingAccessor) kbRight).getActualKey(), false);
 		}
 	}
-	
+
 	public static boolean isWalking() {
 		return mDoingAutoWalk;
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
 			mDoingAutoWalk = !mDoingAutoWalk;
@@ -351,18 +352,18 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
 		if (mDecreaseWalkSpeedKB.matches(keyCode, scanCode) && mDecreaseWalkSpeedKB.consumeClick()) {
-			float newSpeed = (float) Math.max(0.1f, 0.9f * EyeMineConfig.getCustomSpeedFactor());
+			float newSpeed = (float) Math.max(0.1d, 0.9d * EyeMineConfig.getCustomSpeedFactor());
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
 		if (mIncreaseWalkSpeedKB.matches(keyCode, scanCode) && mIncreaseWalkSpeedKB.consumeClick()) {
-			float newSpeed = (float) Math.min(2.0f, EyeMineConfig.getCustomSpeedFactor() * 1.1f);
+			float newSpeed = (float) Math.min(2.0d, EyeMineConfig.getCustomSpeedFactor() * 1.1d);
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
 		return EventResult.pass();
 	}
-	
+
 	private void displayCurrentSpeed() {
 		DecimalFormat myFormatter = new DecimalFormat("#0.00");
 		String speedString = myFormatter.format(EyeMineConfig.getCustomSpeedFactor());

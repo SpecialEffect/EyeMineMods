@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -84,8 +84,7 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 					boolean haveSword = chooseWeapon(player.getInventory());
 					if (haveSword) {
 						mWaitingForSword = false;
-					}
-					else if(!mWaitingForSword) {
+					} else if (!mWaitingForSword) {
 						requestCreateSword();
 						mWaitingForSword = true;
 					}
@@ -105,15 +104,13 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 						// but haven't tested enough to replace wholesale at this point
 						if (EyeMineConfig.getServerCompatibilityMode()) {
 							final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-							KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
-						}
-						else {
+							KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
+						} else {
 							player.attack(entity);
 //							channel.sendToServer(new AttackEntityMessage(entity));
 							player.connection.send(ServerboundInteractPacket.createAttackPacket(entity, player.isShiftKeyDown()));
 						}
-					}
-					else {
+					} else {
 						recharging = true;
 					}
 				}
@@ -128,9 +125,13 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mAttackKB.matches(keyCode, scanCode) && mAttackKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
@@ -149,14 +150,12 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 		// or just rustle up a new one
 		if (inventory.getSelected().getItem() instanceof SwordItem) {
 			return true;
-		}
-		else {
+		} else {
 			int swordId = ModUtils.findItemInHotbar(inventory, (item) -> item instanceof SwordItem);
 			if (swordId > -1) {
 				inventory.selected = swordId;
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}

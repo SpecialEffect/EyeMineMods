@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -21,22 +21,21 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 public class DwellBuild extends DwellAction {
-	
+
 	public DwellBuild() {
-		super("DWELL BUILDING"); 
+		super("DWELL BUILDING");
 	}
 
 	public final String MODID = "dwellbuild";
-		
+
 	private static KeyMapping mDwellBuildKB;
 	private static KeyMapping mDwellBuildOnceKB;
 
@@ -65,13 +64,17 @@ public class DwellBuild extends DwellAction {
 	@Override
 	public void performAction(TargetBlock block) {
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
-		KeyMapping.click(((KeyMappingAccessor)useItemKeyBinding).getActualKey());
+		KeyMapping.click(((KeyMappingAccessor) useItemKeyBinding).getActualKey());
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mDwellBuildKB.matches(keyCode, scanCode) && mDwellBuildKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
@@ -79,12 +82,11 @@ public class DwellBuild extends DwellAction {
 				// Turn off dwell build
 				setDwelling(false);
 				ModUtils.sendPlayerMessage("Dwell building: OFF");
-			}
-			else {
+			} else {
 				// Turn on dwell build
 				ItemStack itemStack = player.getInventory().getSelected();
 				if (itemStack.isEmpty()) {
-					player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
+					player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 					return EventResult.pass();
 				}
 
@@ -98,7 +100,7 @@ public class DwellBuild extends DwellAction {
 			// Turn on dwell once
 			ItemStack itemStack = player.getInventory().getSelected();
 			if (itemStack.isEmpty()) {
-				player.sendMessage(new TextComponent("Nothing in hand to use"), Util.NIL_UUID);
+				player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 				return EventResult.pass();
 			}
 

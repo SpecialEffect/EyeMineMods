@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -40,7 +40,7 @@ public class QuickCommands extends SubMod {
 	private static KeyMapping mDayNightKB;
 	private static KeyMapping mRespawnKB;
 	private static KeyMapping mDropItemKB;
-	
+
 	public void onInitializeClient() {
 		// Register key bindings
 		Keybindings.keybindings.add(mNightVisionKB = new KeyMapping(
@@ -75,26 +75,31 @@ public class QuickCommands extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
 		if (mNightVisionKB.matches(keyCode, scanCode) && mNightVisionKB.consumeClick()) {
 			// Toggle night vision effect
 			MobEffect nightVision = MobEffects.NIGHT_VISION;
-			
+
 			if (player.hasEffect(nightVision)) {
 				player.removeEffect(nightVision);
-			}
-			else {
+			} else {
 				player.addEffect(new MobEffectInstance(nightVision));
 				NightVisionHelper.cancelAndHide();
-			}		
+			}
 		}
-		
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
 		if (mDropItemKB.matches(keyCode, scanCode) && mDropItemKB.consumeClick()) {
 			// Drop item 
@@ -104,21 +109,21 @@ public class QuickCommands extends SubMod {
 			ItemStack stack = player.getInventory().getSelected();
 			player.drop(stack, true); //TODO: see if this still drops all?
 		}
-		
+
 		if (mDayNightKB.matches(keyCode, scanCode) && mDayNightKB.consumeClick()) {
 			GameRules rules = level.getGameRules();
 
 			GameRules.Key<BooleanValue> gameRule = GameRules.RULE_DAYLIGHT;
 			boolean newBool = !rules.getBoolean(gameRule);
-			
+
 			String cmd = "/gamerule " + gameRule + " " + newBool;
 			PacketHandler.CHANNEL.sendToServer(new SendCommandMessage(cmd));
 		}
-		
+
 		if (mRespawnKB.matches(keyCode, scanCode) && mRespawnKB.consumeClick()) {
-            PacketHandler.CHANNEL.sendToServer(new TeleportPlayerToSpawnPointMessage());
-            NightVisionHelper.cancelAndHide();
-        }
+			PacketHandler.CHANNEL.sendToServer(new TeleportPlayerToSpawnPointMessage());
+			NightVisionHelper.cancelAndHide();
+		}
 		return EventResult.pass();
 	}
 }

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -37,15 +37,18 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+
 public class ContinuouslyMine extends SubMod implements IConfigListener {
 	public final String MODID = "continuouslydestroy";
 
 	private static int mIconIndex;
 	private static KeyMapping mDestroyKB;
-	private boolean mAutoSelectTool = true;
+	private BooleanSupplier mAutoSelectTool = () -> true;
 	private boolean mWaitingForPickaxe = false;
 	private int miningTimer = 0;
-	private int miningCooldown = 10; // update from config
+	private IntSupplier miningCooldown = () -> 10; // update from config
 
 	private static boolean mIsAttacking = false;
 	private boolean mMouseEventLastTick = false;
@@ -70,22 +73,19 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-
-		//Initialize variables
-		this.syncConfig();
 	}
 
 	@Override
 	public void syncConfig() {
-		mAutoSelectTool = EyeMineConfig.getAutoSelectTool();
-		miningCooldown = EyeMineConfig.getTicksBetweenMining();
+		mAutoSelectTool = () -> EyeMineConfig.getAutoSelectTool();
+		miningCooldown = () -> EyeMineConfig.getTicksBetweenMining();
 	}
 
 	public static void stop() {
 		mIsAttacking = false;
 
 		final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
-		KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
+		KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), false);
 
 		StateOverlay.setStateRightIcon(mIconIndex, false);
 	}
@@ -99,13 +99,11 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 				if (player.isCreative()) {
 					// always select tool - first time we might need to ask server to
 					// create a new one
-					if (mAutoSelectTool) {
+					if (mAutoSelectTool.getAsBoolean()) {
 						boolean havePickaxe = choosePickaxe(player.getInventory());
 						if (havePickaxe) {
 							mWaitingForPickaxe = false;
-						}
-						else if(!mWaitingForPickaxe)
-						{
+						} else if (!mWaitingForPickaxe) {
 							requestCreatePickaxe();
 							mWaitingForPickaxe = true;
 						}
@@ -122,12 +120,11 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					if (MouseHandlerMod.hasPendingEvent() || mMouseEventLastTick) {
 						if (miningTimer == 0) {
 							System.out.println("attack");
-							KeyMapping.click(((KeyMappingAccessor)attackBinding).getActualKey());
+							KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
 							if (player.isCreative()) {
-								miningTimer = miningCooldown;
+								miningTimer = miningCooldown.getAsInt();
 							}
-						}
-						else {
+						} else {
 							if (player.attackAnim == 0) {
 								System.out.println("swing");
 								player.swing(InteractionHand.MAIN_HAND);
@@ -139,10 +136,9 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					// Set mouse in correct state - shouldn't attack unless there's an
 					// accompanying mouse movement.
 					if (MouseHandlerMod.hasPendingEvent() || mMouseEventLastTick) {
-						KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), true);
-					}
-					else {
-						KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), false);
+						KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), true);
+					} else {
+						KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), false);
 					}
 				}
 			}
@@ -154,9 +150,13 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
@@ -169,7 +169,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 				// In creative mode we handle throttled attacking in onClientTick
 				if (!player.isCreative()) {
 					// In survival, we hold down the attack binding for continuous mining
-					KeyMapping.set(((KeyMappingAccessor)attackBinding).getActualKey(), mIsAttacking);
+					KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), mIsAttacking);
 				}
 			}
 
@@ -188,14 +188,12 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 		// or just rustle up a new one
 		if (inventory.getSelected().getItem() instanceof PickaxeItem) {
 			return true;
-		}
-		else {
+		} else {
 			int pickaxeId = ModUtils.findItemInHotbar(inventory, (item -> item instanceof PickaxeItem));
 			if (pickaxeId > -1) {
 				inventory.selected = pickaxeId;
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -11,12 +11,14 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.specialeffect.eyemine.mixin.ClientLevelAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,11 +42,11 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 	}
-	
+
 	public void syncConfig() {
-        mDoorRadius = EyeMineConfig.getRadiusDoors();
+		mDoorRadius = EyeMineConfig.getRadiusDoors();
 	}
-	
+
 	// A list of the position of any doors we've opened that haven't yet been closed
 	private LinkedList<BlockPos> mOpenedDoors;
 
@@ -71,7 +73,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 
 								// For symmetry with door closing, we actually want to test a circular
 								// area, not a square.
-								if (playerPos.distSqr(new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ())) <= mDoorRadius*mDoorRadius) {
+								if (playerPos.distSqr(new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ())) <= mDoorRadius * mDoorRadius) {
 									// Check if block is door, if so, activate it.
 									BlockState state = level.getBlockState(blockPos);
 
@@ -81,8 +83,8 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 											// Ask the server to interact with the door to open
 											Vec3 hitVec = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
 											Direction fakeDirection = Direction.DOWN;
-											for(Direction dir : Direction.values()) {
-												if(!level.getBlockState(blockPos.relative(dir)).isAir()) {
+											for (Direction dir : Direction.values()) {
+												if (!level.getBlockState(blockPos.relative(dir)).isAir()) {
 													fakeDirection = dir;
 													break;
 												}
@@ -91,7 +93,9 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 
 											InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, blockHitResult);
 											if (result.consumesAction()) {
-												player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, blockHitResult));
+												BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+												int i = blockstatepredictionhandler.currentSequence();
+												player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, blockHitResult, i));
 											}
 											mOpenedDoors.add(blockPos);
 										}
@@ -104,19 +108,19 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 
 				// Close any doors that you've left behind
 				synchronized (mOpenedDoors) {
-					for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext();) {
+					for (Iterator<BlockPos> iterator = mOpenedDoors.iterator(); iterator.hasNext(); ) {
 						BlockPos pos = iterator.next();
 
 						double closeRadius = mDoorRadius + 0.1; // avoids any jumpiness between states
-						if (playerPos.distSqr(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > closeRadius*closeRadius) {
+						if (playerPos.distSqr(new Vec3i(pos.getX(), pos.getY(), pos.getZ())) > closeRadius * closeRadius) {
 							// Ask the server to interact with the door to close
 
 							BlockState state = level.getBlockState(pos);
 							if (state.hasProperty(BlockStateProperties.OPEN)) {
 								Vec3 hitVec = new Vec3(pos.getX(), pos.getY(), pos.getZ());
 								Direction fakeDirection = Direction.DOWN;
-								for(Direction dir : Direction.values()) {
-									if(!level.getBlockState(pos.relative(dir)).isAir()) {
+								for (Direction dir : Direction.values()) {
+									if (!level.getBlockState(pos.relative(dir)).isAir()) {
 										fakeDirection = dir;
 										break;
 									}
@@ -124,7 +128,9 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 								BlockHitResult blockHitResult = new BlockHitResult(hitVec, fakeDirection, pos, true);
 								InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, blockHitResult);
 								if (result.consumesAction()) {
-									player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(hitVec, Direction.UP, pos, false)));
+									BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+									int i = blockstatepredictionhandler.currentSequence();
+									player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(hitVec, Direction.UP, pos, false), i));
 								}
 
 								// Remove from list

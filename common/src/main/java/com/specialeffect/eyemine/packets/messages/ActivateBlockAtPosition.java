@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -24,26 +24,27 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.function.Supplier;
 
 public class ActivateBlockAtPosition {
-    
-    private BlockPos blockPos;
 
-    public ActivateBlockAtPosition() { }
+	private BlockPos blockPos;
 
-    public ActivateBlockAtPosition(BlockPos pos) {
-        this.blockPos = pos;
-    }
-           
+	public ActivateBlockAtPosition() {
+	}
+
+	public ActivateBlockAtPosition(BlockPos pos) {
+		this.blockPos = pos;
+	}
+
 	public static ActivateBlockAtPosition decode(FriendlyByteBuf buf) {
-        BlockPos blockPos = buf.readBlockPos();
-        return new ActivateBlockAtPosition(blockPos);
-    }
+		BlockPos blockPos = buf.readBlockPos();
+		return new ActivateBlockAtPosition(blockPos);
+	}
 
-    public static void encode(ActivateBlockAtPosition pkt, FriendlyByteBuf buf) {
-    	BlockPos blockPos = pkt.blockPos;
-    	buf.writeBlockPos(blockPos);       
-    }
+	public static void encode(ActivateBlockAtPosition pkt, FriendlyByteBuf buf) {
+		BlockPos blockPos = pkt.blockPos;
+		buf.writeBlockPos(blockPos);
+	}
 
-    public static class Handler {
+	public static class Handler {
 		@SuppressWarnings("deprecation")
 		public static void handle(final ActivateBlockAtPosition pkt, Supplier<NetworkManager.PacketContext> context) {
 			context.get().queue(() -> {

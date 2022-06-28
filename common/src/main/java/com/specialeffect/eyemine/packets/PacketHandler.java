@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -33,7 +33,7 @@ public class PacketHandler {
 
 	public static final NetworkChannel CHANNEL = NetworkChannel.create(new ResourceLocation("specialeffect", EyeMine.MOD_ID));
 
-	public static void init(){
+	public static void init() {
 		CHANNEL.register(AddItemToHotbar.class, AddItemToHotbar::encode, AddItemToHotbar::decode,
 				AddItemToHotbar.Handler::handle);
 

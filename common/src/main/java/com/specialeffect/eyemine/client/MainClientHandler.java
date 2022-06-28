@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -13,7 +13,6 @@ package com.specialeffect.eyemine.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.EyeMineClient;
-import com.specialeffect.eyemine.client.gui.CustomCreateWorldScreen;
 import com.specialeffect.eyemine.client.gui.crosshair.ICrosshairOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
@@ -23,7 +22,6 @@ import dev.architectury.event.CompoundEventResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +31,9 @@ public class MainClientHandler {
 	private static StateOverlay mStateOverlay;
 
 	public static void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
-		if(!MainClientHandler.crosshairOverlayList.isEmpty()) {
+		if (!MainClientHandler.crosshairOverlayList.isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
-			for(ICrosshairOverlay overlay : MainClientHandler.crosshairOverlayList) {
+			for (ICrosshairOverlay overlay : MainClientHandler.crosshairOverlayList) {
 				overlay.renderOverlay(poseStack, minecraft);
 			}
 		}
@@ -45,16 +43,16 @@ public class MainClientHandler {
 	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
 		System.out.println(screen);
 		Screen currentScreen = Minecraft.getInstance().screen;
-		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen createWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
-			if (!EyeMineClient.allowMoreOptions) {
-				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(screen));
-			}
-			EyeMineClient.allowMoreOptions = false;
-		}
+//		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen createWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
+//			if (!EyeMineClient.allowMoreOptions) {
+//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+//				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(screen));
+//			}
+//			EyeMineClient.allowMoreOptions = false;
+//		} TODO: Re-implement the custom create world
 		if (screen instanceof CreativeModeInventoryScreen gui) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
-			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor)gui;
+			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;
 			CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 					accessor.getLeftPos(), accessor.getTopPos(),
 					accessor.getXSize(), accessor.getYSize(),

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -16,13 +16,11 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -47,10 +45,10 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class ModUtils {
-	
+
 	// Check if LivingEntity is the current player (and not another
 	// player on the network, for instance)
-	public static boolean entityIsMe(Entity entity) {				
+	public static boolean entityIsMe(Entity entity) {
 		if (entity instanceof Player player) {
 			UUID playerUUID = player.getUUID();
 			Player myself = Minecraft.getInstance().player;
@@ -64,22 +62,22 @@ public class ModUtils {
 			return false;
 		}
 	}
-	
+
 	@SafeVarargs
 	public static <T> List<T> joinLists(List<T>... lists) {
 		List<T> combined = new ArrayList<>();
 		for (List<T> list : lists) {
 			combined.addAll(list);
 		}
-        return combined; 
+		return combined;
 	}
-	
-	public static boolean hasActiveGui( ) {
+
+	public static boolean hasActiveGui() {
 		// Is there a GUI currently open ?
 		// (i.e. false means in-game without gui)
 		return (null != Minecraft.getInstance().screen);
 	}
-	
+
 
 	public static int findSlotInContainer(AbstractContainerMenu container, int guiLeft, int guiTop, int x, int y, int slotWidth) {
 		// Find index of slot in container that contains the mouse position (x, y)
@@ -87,15 +85,15 @@ public class ModUtils {
 		// and a slot's xPos, yPos are relative to the inner gui with position (guiLeft, guiTop)
 		List<Slot> slots = container.slots;
 		for (int i = 0; i < slots.size(); i++) {
-			Slot slot = slots.get(i);		
+			Slot slot = slots.get(i);
 			if (x > guiLeft + slot.x &&
-				x < guiLeft + slot.x + slotWidth &&
-				y > guiTop + slot.y &&
-				y < guiTop + slot.y + slotWidth ){
+					x < guiLeft + slot.x + slotWidth &&
+					y > guiTop + slot.y &&
+					y < guiTop + slot.y + slotWidth) {
 				return i;
 			}
 		}
-		return -1;		
+		return -1;
 	}
 
 	// Get the x, y point corresponding to one of 8 compass points
@@ -124,8 +122,8 @@ public class ModUtils {
 //		return p;
 //
 //	}
-	
-	
+
+
 	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
 		RenderSystem.enableBlend();
@@ -183,37 +181,37 @@ public class ModUtils {
 	public static void sendPlayerMessage(String msg) {
 		Player player = Minecraft.getInstance().player;
 		if (player != null) {
-			player.sendMessage(new TextComponent(msg), Util.NIL_UUID);
+			player.sendSystemMessage(Component.literal(msg));
 		}
 	}
 
-	public static void sendPlayerMessage(BaseComponent component) {
+	public static void sendPlayerMessage(Component component) {
 		Player player = Minecraft.getInstance().player;
 		if (player != null) {
-			player.sendMessage(component, Util.NIL_UUID);
+			player.sendSystemMessage(component);
 		}
 	}
-	
+
 	public static EntityHitResult getMouseOverEntity() {
 		// Returns the entity the mouse is over, or null
 		HitResult result = Minecraft.getInstance().hitResult;
 		if (result instanceof EntityHitResult) {
-			return (EntityHitResult)result;
+			return (EntityHitResult) result;
 		} else {
 			return null;
 		}
 	}
-	
+
 	public static BlockHitResult getMouseOverBlock() {
 		// Returns the block the mouse is over, or null
 		HitResult result = Minecraft.getInstance().hitResult;
 		if (result instanceof BlockHitResult) {
-			return (BlockHitResult)result;
+			return (BlockHitResult) result;
 		} else {
 			return null;
 		}
 	}
-	
+
 	// Check if there's a block at the given position which
 	// blocks movement.
 	@SuppressWarnings("unused")
@@ -221,56 +219,56 @@ public class ModUtils {
 		Level world = Minecraft.getInstance().level;
 		return world.getBlockState(pos).getMaterial().blocksMotion();
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3 lookVec) {
 		double thresh = 0.8;
 		switch (sideHit) {
-		case NORTH:
-			if (lookVec.z > thresh) {
-				return true;
-			}
-			break;
-		case EAST:
-			if (lookVec.x < -thresh) {
-				return true;
-			}
-			break;
-		case SOUTH:
-			if (lookVec.z < -thresh) {
-				return true;
-			}
-			break;
-		case WEST:
-			if (lookVec.x > thresh) {
-				return true;
-			}
-			break;
-		default:
-			break;
+			case NORTH:
+				if (lookVec.z > thresh) {
+					return true;
+				}
+				break;
+			case EAST:
+				if (lookVec.x < -thresh) {
+					return true;
+				}
+				break;
+			case SOUTH:
+				if (lookVec.z < -thresh) {
+					return true;
+				}
+				break;
+			case WEST:
+				if (lookVec.x > thresh) {
+					return true;
+				}
+				break;
+			default:
+				break;
 		}
 		return false;
 	}
-	
+
 	public static BlockPos highestSolidPoint(BlockPos pos) {
 		// Gets a spawn-able location above the point
 		// Highest solid block that isn't foliage
-        Level world = Minecraft.getInstance().level;
+		Level world = Minecraft.getInstance().level;
 		LevelChunk chunk = world.getChunkAt(pos);
-        
-        BlockPos blockpos;
-        BlockPos blockpos1;
-        for (blockpos = new BlockPos(pos.getX(), chunk.getHighestSectionPosition() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1) {
-            blockpos1 = blockpos.below();
-            BlockState state = chunk.getBlockState(blockpos1);
-            
-            if (state.getMaterial().blocksMotion() && !(state.getBlock() instanceof LeavesBlock)) {
-                break;
-            }
-        }
 
-        return blockpos;
-    }
+		BlockPos blockpos;
+		BlockPos blockpos1;
+		for (blockpos = new BlockPos(pos.getX(), chunk.getHighestSectionPosition() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1) {
+			blockpos1 = blockpos.below();
+			BlockState state = chunk.getBlockState(blockpos1);
 
-	
+			if (state.getMaterial().blocksMotion() && !(state.getBlock() instanceof LeavesBlock)) {
+				break;
+			}
+		}
+
+		return blockpos;
+	}
+
+
 }

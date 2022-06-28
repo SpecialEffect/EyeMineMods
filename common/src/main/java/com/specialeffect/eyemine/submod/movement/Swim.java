@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -45,7 +45,7 @@ public class Swim extends SubMod {
 				GLFW.GLFW_KEY_V,
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
-		
+
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/swim.png");
 
@@ -54,21 +54,21 @@ public class Swim extends SubMod {
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
-	
+
 	public static void stopActivelySwimming() {
-		final KeyMapping swimBinding = 
+		final KeyMapping swimBinding =
 				Minecraft.getInstance().options.keyJump;
-		KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
-		jumpkeyTimer = jumpkeyCooldown; 
+		KeyMapping.set(((KeyMappingAccessor) swimBinding).getActualKey(), false);
+		jumpkeyTimer = jumpkeyCooldown;
 	}
-	
+
 	public static boolean isSwimmingOn() {
 		return mSwimmingTurnedOn;
 	}
-	
+
 	private int mIconIndex;
 	private boolean mJumpKeyOverridden = false;
-	
+
 	private static int jumpkeyTimer = 0;
 	private static int jumpkeyCooldown = 6;
 
@@ -93,16 +93,16 @@ public class Swim extends SubMod {
 				if ((player.isInWater() || player.isInLava()) &&
 						!swimBinding.isDown() &&
 						jumpkeyTimer == 0) {
-					KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), true);
+					KeyMapping.set(((KeyMappingAccessor) swimBinding).getActualKey(), true);
 					mJumpKeyOverridden = true;
 				}
 
 				// Switch off when on land
 				else if ((player.isOnGround() || isPlayerInAir(player)) &&
-						  swimBinding.isDown()) {
+						swimBinding.isDown()) {
 
 					if (mJumpKeyOverridden) {
-						KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
+						KeyMapping.set(((KeyMappingAccessor) swimBinding).getActualKey(), false);
 						mJumpKeyOverridden = false;
 						// don't turn back on until timer finished - otherwise we can trigger 'fly'.
 						jumpkeyTimer = jumpkeyCooldown;
@@ -113,22 +113,26 @@ public class Swim extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
-		
-		if(mSwimKB.matches(keyCode, scanCode) && mSwimKB.consumeClick()) {
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
+
+		if (mSwimKB.matches(keyCode, scanCode) && mSwimKB.consumeClick()) {
 			final KeyMapping swimBinding = minecraft.options.keyJump;
-			
+
 			mSwimmingTurnedOn = !mSwimmingTurnedOn;
 
 			StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
-			
+
 			if (!mSwimmingTurnedOn) {
-				KeyMapping.set(((KeyMappingAccessor)swimBinding).getActualKey(), false);
+				KeyMapping.set(((KeyMappingAccessor) swimBinding).getActualKey(), false);
 			}
-			
-			ModUtils.sendPlayerMessage("Swimming: " + (mSwimmingTurnedOn? "ON" : "OFF"));				
+
+			ModUtils.sendPlayerMessage("Swimming: " + (mSwimmingTurnedOn ? "ON" : "OFF"));
 		}
 		return EventResult.pass();
 	}

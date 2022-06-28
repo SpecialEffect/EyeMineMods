@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -42,27 +42,27 @@ public class DebugAverageFps extends SubMod {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
 			mTickCount++;
-			
-			int currFps = ((MinecraftAccessor)Minecraft.getInstance()).getFPS();
+
+			int currFps = ((MinecraftAccessor) Minecraft.getInstance()).getFPS();
 			mPrevFps.add(currFps);
-			
+
 			if (mPrevFps.size() > mAveragingPeriod) {
 				mPrevFps.remove();
 			}
-			
+
 			if (mTickCount == mLoggingPeriod) {
 				LOGGER.debug("FPS: " + this.computeAverage());
 				mTickCount = 0;
 			}
-		}			
+		}
 	}
-	
+
 	private float computeAverage() {
 		Iterator<Integer> iter = mPrevFps.iterator();
 		float runningAve = 0;
-    	while (iter.hasNext()) {
-    		runningAve += (float)iter.next()/(float)mPrevFps.size();
-    	}
+		while (iter.hasNext()) {
+			runningAve += (float) iter.next() / (float) mPrevFps.size();
+		}
 		return runningAve;
 	}
 }

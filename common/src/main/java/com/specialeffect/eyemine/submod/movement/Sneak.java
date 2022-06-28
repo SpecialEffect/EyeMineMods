@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -32,9 +32,9 @@ public class Sneak extends SubMod {
 
 	private static KeyMapping mSneakKB;
 	private static boolean mIsSneaking = false;
-	
+
 	private static int mIconIndex;
-	
+
 	public Sneak() {
 	}
 
@@ -46,7 +46,7 @@ public class Sneak extends SubMod {
 				GLFW.GLFW_KEY_Z,
 				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
 		));
-		
+
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/sneak.png");
 
@@ -56,41 +56,45 @@ public class Sneak extends SubMod {
 
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = minecraft.player;
-    	if (player != null) {
-    		// Sneaking is handled by the MovementInput class these days
-       		KeyboardInputHelper.setSneakOverride(mIsSneaking);
-       		
+		if (player != null) {
+			// Sneaking is handled by the MovementInput class these days
+			KeyboardInputHelper.setSneakOverride(mIsSneaking);
+
 			// Make sure icon up to date
 			StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);
 		}
 	}
-	
-	public static void stop() {		
+
+	public static void stop() {
 		updateSneak(false);
-	}	
-	
+	}
+
 	private static void updateSneak(boolean bSneak) {
-		if ( bSneak != mIsSneaking ) {
+		if (bSneak != mIsSneaking) {
 			ModUtils.sendPlayerMessage("Sneaking: " + (bSneak ? "ON" : "OFF"));
 		}
-		
+
 		mIsSneaking = bSneak;
 
 		// we both hold down the key here (helps with mod tooltips) *and*
 		// override the movementInput each tick (more robust to lost focus etc)
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyShift;
-		KeyMapping.set(((KeyMappingAccessor)useItemKeyBinding).getActualKey(), bSneak);
+		KeyMapping.set(((KeyMappingAccessor) useItemKeyBinding).getActualKey(), bSneak);
 
 		// Make sure icon up to date?
 		StateOverlay.setStateLeftIcon(mIconIndex, mIsSneaking);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
-		if(mSneakKB.matches(keyCode, scanCode) && mSneakKB.consumeClick()) {
+		if (mSneakKB.matches(keyCode, scanCode) && mSneakKB.consumeClick()) {
 			updateSneak(!mIsSneaking);
 		}
 		return EventResult.pass();

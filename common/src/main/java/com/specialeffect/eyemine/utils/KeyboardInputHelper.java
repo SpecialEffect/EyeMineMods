@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -28,8 +28,7 @@ public class KeyboardInputHelper {
 		if (Math.abs(walkSpeed) > 1e-5) {
 			mWalkForwardOverride.set(b);
 			mOverrideWalkSpeed = walkSpeed; // TODO: is concurrency an issue?
-		}
-		else {
+		} else {
 			mWalkForwardOverride.set(false);
 		}
 	}

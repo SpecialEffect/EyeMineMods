@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -28,18 +28,18 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TeleportPlayerToSpawnPointMessage {
-    
-    public TeleportPlayerToSpawnPointMessage() { 
-    }
-    
+
+	public TeleportPlayerToSpawnPointMessage() {
+	}
+
 	public static TeleportPlayerToSpawnPointMessage decode(FriendlyByteBuf buf) {
-    	return new TeleportPlayerToSpawnPointMessage();
-    }
+		return new TeleportPlayerToSpawnPointMessage();
+	}
 
-    public static void encode(TeleportPlayerToSpawnPointMessage pkt, FriendlyByteBuf buf) {
-    }    
+	public static void encode(TeleportPlayerToSpawnPointMessage pkt, FriendlyByteBuf buf) {
+	}
 
-    public static class Handler {
+	public static class Handler {
 		public static void handle(final TeleportPlayerToSpawnPointMessage pkt, Supplier<NetworkManager.PacketContext> context) {
 			context.get().queue(() -> {
 				Player player = context.get().getPlayer();
@@ -47,7 +47,7 @@ public class TeleportPlayerToSpawnPointMessage {
 					return;
 				}
 
-				if(!player.level.isClientSide) {
+				if (!player.level.isClientSide) {
 					MinecraftServer server = player.getServer();
 					ServerPlayer serverPlayer = (ServerPlayer) player;
 					ServerLevel respawnDimension = server.getLevel(serverPlayer.getRespawnDimension());
@@ -76,6 +76,6 @@ public class TeleportPlayerToSpawnPointMessage {
 					}
 				}
 			});
-       }
-	}       
+		}
+	}
 }

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- * 
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -56,20 +56,17 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 	private int labelOffset = 0;
 
 	private final Map<TargetBlock, DwellState> liveTargets = new HashMap<>();
-	
+
 	public DwellAction(String name) {
 		this.actionName = name;
 	}
-	
+
 	public DwellAction(String name, int labelOffset) {
 		this.actionName = name;
 		this.labelOffset = labelOffset;
 	}
 
 	public void onInitializeClient() {
-		//Initialize variables from Config
-		this.syncConfig();
-
 		ClientGuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 		BlockOutlineEvent.OUTLINE.register(this::onBlockOutlineRender);
 	}
@@ -80,21 +77,21 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			this.liveTargets.clear();
 		}
 	}
-	
+
 	protected void dwellOnce() {
 		oneShot = true;
-		setDwelling(true);	
+		setDwelling(true);
 		showLabel = false;
 	}
 
 	@Override
 	public void syncConfig() {
-        this.dwellTimeComplete = (int) (1000 * EyeMineConfig.getDwellTimeSeconds());
-        this.dwellTimeInit = (int) (1000 * EyeMineConfig.getDwellLockonTimeSeconds());
-        this.dwellTimeDecay = (int) (this.dwellTimeComplete/3.5);
+		this.dwellTimeComplete = (int) (1000 * EyeMineConfig.getDwellTimeSeconds());
+		this.dwellTimeInit = (int) (1000 * EyeMineConfig.getDwellLockonTimeSeconds());
+		this.dwellTimeDecay = (int) (this.dwellTimeComplete / 3.5);
 
-        //Cache values
-        this.moveWhenMouseStationary = EyeMineConfig.getMoveWhenMouseStationary();
+		//Cache values
+		this.moveWhenMouseStationary = EyeMineConfig.getMoveWhenMouseStationary();
 		this.doCentralised = !EyeMineConfig.getDwellShowWithTransparency();
 		this.expanding = EyeMineConfig.getDwellShowExpanding();
 	}
@@ -153,7 +150,9 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 		// size of square proportional to dwell progress
 		double dDwell = dwellState.getDwellProportionSinceLockon();
-		if (expanding) { dDwell = 1.0f - dDwell; }
+		if (expanding) {
+			dDwell = 1.0f - dDwell;
+		}
 
 		// opacity proportional to decay progress
 		int usualOpacity = 125;
@@ -167,8 +166,8 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		double maxAlpha = 0.85D * 255.0D;
 
 		// Opacity increases with dwell amount
-		double dAlpha = maxAlpha*(dwellState.getDwellProportion());
-		int iAlpha = (int)dAlpha;
+		double dAlpha = maxAlpha * (dwellState.getDwellProportion());
+		int iAlpha = (int) dAlpha;
 
 		AbstractRenderer.renderBlockFace(poseStack, vertexConsumer, target.pos, target.direction, color, iAlpha);
 	}
@@ -207,8 +206,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 					if (doCentralised) {
 						this.renderCentralisedDwell(poseStack, vertexConsumer, target, dwellState, expanding);
-					}
-					else {
+					} else {
 						this.renderOpacityDwell(poseStack, vertexConsumer, target, dwellState);
 					}
 
@@ -228,13 +226,13 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			Minecraft minecraft = Minecraft.getInstance();
 			final String msg = actionName;
 
-			float w = (float)minecraft.getWindow().getGuiScaledWidth();
-			float h = (float)minecraft.getWindow().getGuiScaledHeight();
+			float w = (float) minecraft.getWindow().getGuiScaledWidth();
+			float h = (float) minecraft.getWindow().getGuiScaledHeight();
 
 			final Font font = minecraft.font;
-			float msgWidth = (float)font.width(msg);
+			float msgWidth = (float) font.width(msg);
 
-			font.drawShadow(poseStack, msg, w/2.0f - msgWidth/2.0f, h/2.0f - 20 - labelOffset, 0xffFFFFFF);
+			font.drawShadow(poseStack, msg, w / 2.0f - msgWidth / 2.0f, h / 2.0f - 20 - labelOffset, 0xffFFFFFF);
 		}
 	}
 }

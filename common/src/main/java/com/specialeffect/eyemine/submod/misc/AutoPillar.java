@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2016-2020 Kirsty McNaught
- *
+ * <p>
  * Developed for SpecialEffect, www.specialeffect.org.uk
- *
+ * <p>
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 3
@@ -41,9 +41,9 @@ import java.util.LinkedList;
 
 public class AutoPillar extends SubMod {
 	public final String MODID = "autopillar";
-	
+
 	public static AutoPillar instance;
-	
+
 	public static KeyMapping autoPlaceKeyBinding;
 
 	private LinkedList<OnLivingCallback> mOnLivingQueue;
@@ -97,9 +97,13 @@ public class AutoPillar extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) { return EventResult.pass(); }
+		if (ModUtils.hasActiveGui()) {
+			return EventResult.pass();
+		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) { return EventResult.pass(); }
+		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+			return EventResult.pass();
+		}
 
 		// Auto place is implemented as:
 		// - Make sure you're holding a block (in creative mode; in survival you're on your own)
@@ -128,11 +132,11 @@ public class AutoPillar extends SubMod {
 				player.setXRot(90);
 			}, 1));
 
-			for(int i = 3; i <= 6; i++) {
+			for (int i = 3; i <= 6; i++) {
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(delayedEvent -> {
 					Minecraft mc = Minecraft.getInstance();
 					LocalPlayer player = mc.player;
-					ClientLevel level = (ClientLevel)player.level;
+					ClientLevel level = (ClientLevel) player.level;
 					// It's important to make sure we're approximately - but not
 					// exactly - centred
 					// on a block here, so that the block always ends up under
@@ -142,10 +146,10 @@ public class AutoPillar extends SubMod {
 					// Also look down, purely for effect.
 
 					player.setXRot(90);
-					if(!player.isOnGround() && player.getXRot() == 90) {
-						if(mc.hitResult instanceof BlockHitResult blockHitResult) {
-							if(blockHitResult.getBlockPos().getY() < player.getY()) {
-								mc.gameMode.useItemOn(player, level, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
+					if (!player.isOnGround() && player.getXRot() == 90) {
+						if (mc.hitResult instanceof BlockHitResult blockHitResult) {
+							if (blockHitResult.getBlockPos().getY() < player.getY()) {
+								mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
 								// Make sure we get the animation
 								player.swing(InteractionHand.MAIN_HAND);
 							}
