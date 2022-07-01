@@ -34,6 +34,7 @@ import com.specialeffect.eyemine.submod.movement.Sneak;
 import com.specialeffect.eyemine.submod.movement.Swim;
 import com.specialeffect.eyemine.submod.utils.DebugAverageFps;
 import me.shedaniel.architectury.event.events.GuiEvent;
+import com.specialeffect.eyemine.submod.survival.AutoAim;
 import me.shedaniel.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.architectury.event.events.client.ClientRawInputEvent;
 import me.shedaniel.architectury.registry.KeyBindings;
@@ -49,7 +50,7 @@ public class EyeMineClient {
     public static boolean disableCustomNewWorld = false;
 
     public static void init() {
-        //Initialize the first StateOverlay
+        // Initialize the first StateOverlay
         MainClientHandler.initialize();
 
         // Setup all other sub mods
@@ -60,8 +61,8 @@ public class EyeMineClient {
         ClientRawInputEvent.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
 
         ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
-            if(!Keybindings.keybindings.isEmpty()) {
-                for(KeyMapping keyBinding : Keybindings.keybindings) {
+            if (!Keybindings.keybindings.isEmpty()) {
+                for (KeyMapping keyBinding : Keybindings.keybindings) {
                     KeyBindings.registerKeyBinding(keyBinding);
                 }
             }
@@ -102,6 +103,7 @@ public class EyeMineClient {
         setupSubMod(new IronSights());
         setupSubMod(new NightVisionHelper());
         setupSubMod(new CountBlocks());
+        setupSubMod(new AutoAim());
     }
 
     private static void setupSubMod(SubMod mod) {
@@ -113,7 +115,7 @@ public class EyeMineClient {
         if (setupComplete) {
             for (SubMod child : subModList) {
                 if (child instanceof IConfigListener) {
-                    IConfigListener configListener = (IConfigListener)child;
+                    IConfigListener configListener = (IConfigListener) child;
                     configListener.syncConfig();
                 }
             }
