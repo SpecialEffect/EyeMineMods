@@ -18,14 +18,7 @@ package com.specialeffect.eyemine.submod.survival;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor; // not sure
-
-import java.rmi.server.Skeleton; // not sure
-import java.util.ArrayList; // not sure
-import java.util.List; // not sure
 import java.util.function.Predicate;
-import java.util.function.Predicate; // not sure
-
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 
@@ -39,12 +32,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity; // not sure
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.monster.Creeper; // not sure
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level; // not sure
 import net.minecraft.world.phys.Vec3;
 import me.shedaniel.architectury.event.events.EntityEvent;
 
@@ -55,6 +45,14 @@ public class AutoAim extends SubMod {
     // - a static KeyMapping for the shortcut key
     public static KeyMapping mAutoAimKB;
 
+    private LivingEntity nearEntity;
+    private LivingEntity targetEntity = null;
+
+    /**
+     * We register the keybinding, register the key input event, register the living
+     * attack event, and
+     * register the client tick event
+     */
     public void onInitializeClient() {
 
         // Register the key binding here
@@ -81,8 +79,16 @@ public class AutoAim extends SubMod {
 
     }
 
+    /**
+     * This method cheques weather the player is being attacked
+     * 
+     * @param entity       The entity that was attacked
+     * @param damageSource The source of the damage.
+     * @param amount       The amount of damage that was dealt
+     * @return The return value is an InteractionResult.
+     */
     public InteractionResult onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount) {
-        LivingEntity nearEntity;
+
         // If entity is a LocalPlayer then it is us being attacked
         // The damage source is sometimes "DamageSource (generic)" or Damage Source
         // (magic) or sometimes an
@@ -95,14 +101,16 @@ public class AutoAim extends SubMod {
             nearEntity = this.findClosestEntity(player);
             Vec3 pos = nearEntity.position();
 
-            // player.setYBodyRot(90);
-            // player.turn(d, e);
-
         }
         return null;
-
     }
 
+    /**
+     * Find the closest entity to the player that is not the player
+     * 
+     * @param player The player that is using the aimbot
+     * @return The closest entity to the player.
+     */
     private LivingEntity findClosestEntity(Player player) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
@@ -117,8 +125,17 @@ public class AutoAim extends SubMod {
 
     }
 
-    private LivingEntity targetEntity = null;
-
+    /**
+     * If the key is pressed, find the closest entity to the player and set it as
+     * the target entity
+     * 
+     * @param minecraft The Minecraft instance
+     * @param keyCode   The key code of the key that was pressed.
+     * @param scanCode  The scan code of the key that was pressed.
+     * @param action    0 = key down, 1 = key up, 2 = repeat
+     * @param modifiers
+     * @return The InteractionResult.PASS is being returned.
+     */
     private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
         // This method gets called when *any* key is pressed
 
@@ -138,7 +155,7 @@ public class AutoAim extends SubMod {
         // - empty the list of blocks
         if (mAutoAimKB.matches(keyCode, scanCode) && mAutoAimKB.consumeClick()) {
             ModUtils.sendPlayerMessage("Key pressed: " + keyCode);
-            LivingEntity nearEntity;
+
             nearEntity = this.findClosestEntity(minecraft.player);
             targetEntity = nearEntity;
 
@@ -146,6 +163,12 @@ public class AutoAim extends SubMod {
         return InteractionResult.PASS;
     }
 
+    /**
+     * It finds the closest entity to the player, and then turns the player to face
+     * it
+     * 
+     * @param event The event that was fired.
+     */
     public void onClientTick(Minecraft event) {
 
         if (targetEntity == null) {
