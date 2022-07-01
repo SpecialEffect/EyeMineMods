@@ -94,50 +94,7 @@ public class CountBlocks extends SubMod {
         // Register the "place block" event
         BlockEvent.PLACE.register(this::onPlaceBlock);
 
-        // Register the LivingHurt and LivingAttack events
-        EntityEvent.LIVING_ATTACK.register(this::onLivingAttack);
-
-        ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-
     }
-
-    public InteractionResult onLivingAttack(LivingEntity entity, DamageSource damageSource, float amount) {
-        LivingEntity nearEntity;
-        // If entity is a LocalPlayer then it is us being attacked
-        // The damage source is sometimes "DamageSource (generic)" or Damage Source
-        // (magic) or sometimes an
-        // EntityDamageSource like "Arrow" which has a position we can query
-        // The number is probably an amount of damage
-        if (entity instanceof LocalPlayer) {
-            System.out.println(entity + " " + damageSource + " " + amount);
-            LocalPlayer player = (LocalPlayer) entity;
-            this.findClosestEntity(player);
-            nearEntity = this.findClosestEntity(player);
-            Vec3 pos = nearEntity.position();
-
-            // player.setYBodyRot(90);
-            // player.turn(d, e);
-
-        }
-        return null;
-
-    }
-
-    private LivingEntity findClosestEntity(Player player) {
-        Minecraft minecraft = Minecraft.getInstance();
-        ClientLevel level = minecraft.level;
-
-        Predicate<LivingEntity> predicate = i -> !(i.equals(player));
-        TargetingConditions conditions = new TargetingConditions();
-        conditions.selector(predicate);
-
-        return level.getNearestEntity(LivingEntity.class, conditions, player,
-                player.getX(), player.getY(), player.getZ(),
-                player.getBoundingBox().inflate(10));
-
-    }
-
-    private LivingEntity targetEntity = null;
 
     private InteractionResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
         // This method gets called when *any* key is pressed
@@ -165,47 +122,8 @@ public class CountBlocks extends SubMod {
             // Clear the list of BlockPos positions
             blockPosList.clear();
 
-            LivingEntity nearEntity;
-            nearEntity = this.findClosestEntity(minecraft.player);
-            targetEntity = nearEntity;
-
         }
         return InteractionResult.PASS;
-    }
-
-    public void onClientTick(Minecraft event) {
-
-        if (targetEntity == null) {
-            System.out.println("can't find entitys");
-            return;
-        }
-
-        Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
-        float playerYaw = player.yRot;
-        Vec3 playerPos = player.position();
-
-        Vec3 entityPos = targetEntity.position();
-
-        Vec3 targetDirection = playerPos.subtract(entityPos);
-        double xDiff = targetDirection.x;
-        double zDiff = targetDirection.z;
-        double targetYaw = Math.atan2(zDiff, xDiff); // in radians
-        targetYaw = targetYaw * 360 / (2 * Math.PI) + 90;
-        double turnYaw = targetYaw - playerYaw; // possibly out by 90 degrees??
-
-        System.out.println(
-                targetEntity.getType().getDescriptionId() + " " + entityPos + "(player at " + playerPos + ")");
-        System.out.println(playerYaw + " " + targetYaw + " " + turnYaw);
-
-        System.out.println(findClosestEntity(minecraft.player));
-        minecraft.player.turn(turnYaw, 0.0);
-
-        // Turn off once we are facing entity
-        if (Math.abs(turnYaw) < 1.0) {
-            targetEntity = null;
-        }
-
     }
 
     /**
