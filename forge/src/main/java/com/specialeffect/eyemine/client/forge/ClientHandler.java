@@ -13,7 +13,7 @@ package com.specialeffect.eyemine.client.forge;
 
 import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
-import net.minecraftforge.client.event.DrawSelectionEvent.HighlightBlock;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ClientHandler {
@@ -22,7 +22,7 @@ public class ClientHandler {
 		EyeMineClient.refresh();
 	}
 
-	public static void onOutlineRender(HighlightBlock event) {
+	public static void onOutlineRender(RenderHighlightEvent.Block event) {
 		BlockOutlineEvent.OUTLINE.invoker().renderOutline(event.getMultiBufferSource(), event.getPoseStack());
 	}
 }

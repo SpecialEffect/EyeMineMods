@@ -70,7 +70,9 @@ public class MouseHelper {
 		NONE, VANILLA, LEGACY
 	}
 
-	/** public entry points for automated cursor actions **/
+	/**
+	 * public entry points for automated cursor actions
+	 **/
 	public void moveCursor(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
 			long handle = Minecraft.getInstance().getWindow().getWindow();
@@ -102,7 +104,9 @@ public class MouseHelper {
 		}
 	}
 
-	/** **/
+	/**
+	 *
+	 **/
 
 	/* Move cursor to location and perform mouse action
 	 * button: any constant GLFW.GLFW_MOUSE_BUTTON_X

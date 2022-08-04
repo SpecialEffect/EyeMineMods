@@ -47,8 +47,8 @@ public class SurvivalInventoryManager {
 
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
-	 * @param playerContainer
 	 *
+	 * @param playerContainer
 	 * @param playerContainer A container from a GUI
 	 * @return manager-singleton
 	 */

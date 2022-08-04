@@ -138,7 +138,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 
 				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
-					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();
 					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit, i));
 				}
@@ -156,7 +156,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 
 				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
-					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();
 					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit, i));
 				}

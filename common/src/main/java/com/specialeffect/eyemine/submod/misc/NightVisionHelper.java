@@ -26,12 +26,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.chunk.EmptyLevelChunk;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class NightVisionHelper extends SubMod {
@@ -150,15 +152,10 @@ public class NightVisionHelper extends SubMod {
 				}
 
 				// Get lightness of block(s) we're looking at and where player is
-				float lightnessBlock = level.getBrightness(LightLayer.BLOCK, pos);
-				float lightnessPlayer = level.getBrightness(LightLayer.BLOCK, posPlayer);
-				float lightness = Math.max(lightnessBlock, lightnessPlayer);
-
+				boolean isDark = isDark(level, pos, level.random);
 
 				// If it's really dark, put message up to remind of night vision
-				float gamma = Minecraft.getInstance().options.gamma().get().floatValue();
-				float threshold = mLightnessThreshold - gamma / 10f; // i.e. 0.03f for max brightness
-				if (lightness < threshold) {
+				if (isDark) {
 					mDarkTicksAccum++;
 				} else if (mDarkTicksAccum > 0) {
 					mDarkTicksAccum--;
@@ -167,6 +164,21 @@ public class NightVisionHelper extends SubMod {
 				if (mDarkTicksAccum >= mTicksThreshold) {
 					mShowMessage = true;
 				}
+			}
+		}
+	}
+
+	public static boolean isDark(Level level, BlockPos blockPos, RandomSource randomSource) {
+		if (level.getBrightness(LightLayer.SKY, blockPos) > randomSource.nextInt(32)) {
+			return false;
+		} else {
+			DimensionType dimensionType = level.dimensionType();
+			int i = dimensionType.monsterSpawnBlockLightLimit();
+			if (i < 15 && level.getBrightness(LightLayer.BLOCK, blockPos) > i) {
+				return false;
+			} else {
+				int j = level.isThundering() ? level.getMaxLocalRawBrightness(blockPos, 10) : level.getMaxLocalRawBrightness(blockPos);
+				return j <= dimensionType.monsterSpawnLightTest().sample(randomSource);
 			}
 		}
 	}

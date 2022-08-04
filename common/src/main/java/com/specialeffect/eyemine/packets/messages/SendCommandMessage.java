@@ -43,12 +43,10 @@ public class SendCommandMessage {
 				MinecraftServer server = context.get().getPlayer().getServer();
 				if (server == null) {
 					System.out.println("Server is null, cannot send command");
-					return;
 				} else {
 					Commands mgr = server.getCommands();
 					if (null == mgr) {
 						System.out.println("CommandManager is null, cannot send command");
-						return;
 					} else {
 						mgr.performCommand(server.createCommandSourceStack(), pkt.command);
 					}

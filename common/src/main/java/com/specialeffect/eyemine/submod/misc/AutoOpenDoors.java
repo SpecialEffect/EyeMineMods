@@ -93,7 +93,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 
 											InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, blockHitResult);
 											if (result.consumesAction()) {
-												BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+												BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 												int i = blockstatepredictionhandler.currentSequence();
 												player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, blockHitResult, i));
 											}
@@ -128,7 +128,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 								BlockHitResult blockHitResult = new BlockHitResult(hitVec, fakeDirection, pos, true);
 								InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, blockHitResult);
 								if (result.consumesAction()) {
-									BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor)level).eyemineGetPredictionHandler().startPredicting();
+									BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 									int i = blockstatepredictionhandler.currentSequence();
 									player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, new BlockHitResult(hitVec, Direction.UP, pos, false), i));
 								}

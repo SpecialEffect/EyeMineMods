@@ -44,8 +44,8 @@ public class ChestInventoryManager {
 
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
-	 * @param chestContainer
 	 *
+	 * @param chestContainer
 	 * @param chestContainer A container from a GUI
 	 * @return manager-singleton
 	 */

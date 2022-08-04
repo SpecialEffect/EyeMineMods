@@ -13,6 +13,7 @@ package com.specialeffect.eyemine.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.EyeMineClient;
+import com.specialeffect.eyemine.client.gui.CustomCreateWorldScreen;
 import com.specialeffect.eyemine.client.gui.crosshair.ICrosshairOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
@@ -22,6 +23,7 @@ import dev.architectury.event.CompoundEventResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,15 +43,14 @@ public class MainClientHandler {
 
 	// Replace / augment some GUIs
 	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
-		System.out.println(screen);
 		Screen currentScreen = Minecraft.getInstance().screen;
-//		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen createWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
-//			if (!EyeMineClient.allowMoreOptions) {
-//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-//				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(screen));
-//			}
-//			EyeMineClient.allowMoreOptions = false;
-//		} TODO: Re-implement the custom create world
+		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
+			if (!EyeMineClient.allowMoreOptions) {
+				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
+				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(Minecraft.getInstance(), screen));
+			}
+			EyeMineClient.allowMoreOptions = false;
+		}
 		if (screen instanceof CreativeModeInventoryScreen gui) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;

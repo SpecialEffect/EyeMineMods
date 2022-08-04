@@ -41,8 +41,8 @@ public class CreativeInventoryManager {
 
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
-	 * @param creativeContainer
 	 *
+	 * @param creativeContainer
 	 * @param creativeContainer A container from a GUI
 	 * @return manager-singleton
 	 */
