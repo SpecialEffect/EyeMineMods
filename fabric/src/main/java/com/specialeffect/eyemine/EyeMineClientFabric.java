@@ -1,6 +1,7 @@
 package com.specialeffect.eyemine;
 
 import com.specialeffect.eyemine.config.EyeMineConfig;
+import com.specialeffect.eyemine.config.InventoryConfig;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
 import dev.architectury.event.EventResult;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -14,6 +15,7 @@ public class EyeMineClientFabric implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		AutoConfig.register(EyeMineConfig.class, Toml4jConfigSerializer::new);
+		AutoConfig.register(InventoryConfig.class, Toml4jConfigSerializer::new);
 		WorldRenderEvents.BLOCK_OUTLINE.register((blockOutline, blockOutlineContext) -> {
 			BlockOutlineEvent.OUTLINE.invoker().renderOutline(blockOutline.consumers(), blockOutline.matrixStack());
 			return true;

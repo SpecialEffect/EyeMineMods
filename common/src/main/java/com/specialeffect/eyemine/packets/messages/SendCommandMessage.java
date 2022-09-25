@@ -48,7 +48,7 @@ public class SendCommandMessage {
 					if (null == mgr) {
 						System.out.println("CommandManager is null, cannot send command");
 					} else {
-						mgr.performCommand(server.createCommandSourceStack(), pkt.command);
+						mgr.performPrefixedCommand(server.createCommandSourceStack(), pkt.command);
 					}
 				}
 			});
