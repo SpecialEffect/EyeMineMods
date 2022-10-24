@@ -80,6 +80,7 @@
   "key.eyemine.fly_lower": "Fly lower",
   "key.eyemine.toggle_dwell_build": "Dwell build (toggle)",
   "key.eyemine.dwell_build_once": "Dwell build (once)",
+  "key.eyemine.count_blocks": "Count Blocks",
 
   "_comment": "Text",
   "eyemine.message.open_chest.none": "No chests found in range",
