@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[44,)"
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods"
 license="GPL-3.0"
 
@@ -11,7 +11,6 @@ displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught"
 logoFile="eyemine_logo.png"
 credits = "Written in collaboration with SpecialEffect"
-license="GPLv3"
 description='''
 EyeMine by SpecialEffect allows you to play Minecraft using eye gaze.
 
@@ -23,13 +22,13 @@ For questions or support, contact eyemine@specialeffect.org.uk
 [[dependencies.eyemine]]
 	modId="forge"
 	mandatory=true
-	versionRange="[41,)"
+	versionRange="[44,)"
 	ordering="NONE"
 	side="CLIENT"
 [[dependencies.eyemine]]
 	modId="minecraft"
 	mandatory=true
-	versionRange="[1.19,1.20]"
+	versionRange="[1.19.3,1.20]"
 	ordering="NONE"
 	side="CLIENT"
 
@@ -38,6 +37,6 @@ For questions or support, contact eyemine@specialeffect.org.uk
 [[dependencies.eyemine]]
 modId = "architectury"
 mandatory = true
-versionRange = "[5.6,)"
+versionRange = "[7.1.78,)"
 ordering = "AFTER"
 side = "BOTH"

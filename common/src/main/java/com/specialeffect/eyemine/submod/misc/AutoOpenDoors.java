@@ -38,8 +38,6 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 	public final String MODID = "autoopendoors";
 
 	public void onInitializeClient() {
-		mOpenedDoors = new LinkedList<>();
-
 		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
 	}
 
@@ -48,7 +46,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 	}
 
 	// A list of the position of any doors we've opened that haven't yet been closed
-	private LinkedList<BlockPos> mOpenedDoors;
+	private final LinkedList<BlockPos> mOpenedDoors = new LinkedList<>();
 
 	private static int mDoorRadius = 3;
 	private BlockPos mLastPlayerPos;

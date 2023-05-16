@@ -46,15 +46,13 @@ public class AutoPillar extends SubMod {
 
 	public static KeyMapping autoPlaceKeyBinding;
 
-	private LinkedList<OnLivingCallback> mOnLivingQueue;
+	private final LinkedList<OnLivingCallback> mOnLivingQueue = new LinkedList<>();
 
 	public AutoPillar() {
 		instance = this;
 	}
 
 	public void onInitializeClient() {
-		mOnLivingQueue = new LinkedList<>();
-
 		// Register key bindings
 		Keybindings.keybindings.add(autoPlaceKeyBinding = new KeyMapping(
 				"key.eyemine.pillar",

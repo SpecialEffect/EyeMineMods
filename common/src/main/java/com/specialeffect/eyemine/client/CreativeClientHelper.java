@@ -41,7 +41,7 @@ public class CreativeClientHelper {
 					CreativeInventoryManager con = CreativeInventoryManager.getInstance(
 							accessor.getLeftPos(), accessor.getTopPos(),
 							accessor.getXSize(), accessor.getYSize(),
-							gui.getSelectedTab(),
+							gui.selectedTab,
 							gui.getMenu());
 					boolean handled = con.acceptKey(key);
 					if (handled) {

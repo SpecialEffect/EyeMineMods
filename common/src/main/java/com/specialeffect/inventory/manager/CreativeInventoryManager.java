@@ -17,6 +17,7 @@ import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.ItemPickerMenu;
+import net.minecraft.world.item.CreativeModeTab;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -48,7 +49,7 @@ public class CreativeInventoryManager {
 	 */
 	public static CreativeInventoryManager getInstance(int left, int top,
 													   int xSize, int ySize,
-													   int currTab,
+													   CreativeModeTab currTab,
 													   ItemPickerMenu creativeContainer) {
 		if (instance == null) {
 			instance = new CreativeInventoryManager();
@@ -86,7 +87,7 @@ public class CreativeInventoryManager {
 	private float yScale = 1.0f;
 
 	// Current state, reported by GUI and cached
-	private int currTab;
+	private CreativeModeTab currTab;
 
 	private void onTabChanged() {
 		// reset to hovering over first item when changing tabs
@@ -194,10 +195,10 @@ public class CreativeInventoryManager {
 			this.switchToTab(10);
 			handled = true;
 		} else if (key == InventoryConfig.getKeyPrev()) {
-			this.switchToTab(validateTabIdx(currTab - 1));
+			this.switchToTab(validateTabIdx(getID() - 1));
 			handled = true;
 		} else if (key == InventoryConfig.getKeyNext()) {
-			this.switchToTab(validateTabIdx(currTab + 1));
+			this.switchToTab(validateTabIdx(getID() + 1));
 			handled = true;
 		} else if (key == InventoryConfig.getKeyNextItemRow()) {
 			this.updateItemPos();
@@ -326,6 +327,10 @@ public class CreativeInventoryManager {
 		idx += NUM_TABS; // ensure positive
 		idx %= NUM_TABS; // modulo into range	
 		return idx;
+	}
+
+	private int getID() {
+		return currTab.column() + (currTab.row() == CreativeModeTab.Row.BOTTOM ? 5 : 0);
 	}
 
 	public void resetMouse() {

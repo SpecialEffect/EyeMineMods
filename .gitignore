@@ -1,28 +1,19 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
+build/
+*.ipr
+run/
+*.iws
+out/
+*.iml
+.gradle/
+output/
+bin/
+libs/
+
 .classpath
 .project
+.idea/
+classes/
+.metadata
 .vscode
-
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
-
-# gradle
-build
-.gradle
-classes
-logs
-
-# other
-eclipse
-run
-output/
-libs/
-*.architectury-transformer
+.settings
+*.launch

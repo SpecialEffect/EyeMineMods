@@ -35,10 +35,10 @@
   "depends": {
     "fabricloader": ">=0.14",
     "fabric": "*",
-    "minecraft": "1.19.x",
+    "minecraft": ">=1.19.3",
     "java": ">=17",
-    "architectury": ">=5.6",
-    "cloth-config": ">=7.0.67"
+    "architectury": ">=7",
+    "cloth-config": ">=9"
   },
   "suggests": {
     "flamingo": "*"
