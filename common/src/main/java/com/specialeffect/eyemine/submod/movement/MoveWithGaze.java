@@ -178,7 +178,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 					double norm = (double) (1.0 / Math.sqrt(forwardVec.x * forwardVec.x + forwardVec.y * forwardVec.y));
 					Vec2 forward2d = new Vec2((float) (forwardVec.x * norm), (float) (forwardVec.y * norm));
 
-					BlockPos blockInFrontPos = new BlockPos(
+					BlockPos blockInFrontPos = BlockPos.containing(
 							posVec.x + forward2d.x,
 							posVec.y, //y is UP
 							posVec.z + forward2d.y);

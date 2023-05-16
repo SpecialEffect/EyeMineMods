@@ -72,7 +72,7 @@ public class TeleportPlayerToSpawnPointMessage {
 							f1 = (float) Mth.wrapDegrees(Mth.atan2(vector3d1.z, vector3d1.x) * (double) (180F / (float) Math.PI) - 90.0D);
 						}
 						serverPlayer.moveTo(vector3d.x, vector3d.y, vector3d.z, f1, 0.0F);
-						serverPlayer.setRespawnPosition(respawnDimension.dimension(), new BlockPos(vector3d), respawnAngle, false, false);
+						serverPlayer.setRespawnPosition(respawnDimension.dimension(), BlockPos.containing(vector3d), respawnAngle, false, false);
 					}
 				}
 			});

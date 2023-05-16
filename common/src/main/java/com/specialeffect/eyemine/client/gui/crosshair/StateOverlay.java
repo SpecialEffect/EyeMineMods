@@ -78,7 +78,6 @@ public class StateOverlay implements ICrosshairOverlay {
 	// A helper function to draw a texture scaled to fit.
 	private void drawScaledTextureWithGlow(Minecraft minecraft, ResourceLocation res, int x, int y, int width, int height) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.enableTexture();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, res);
 

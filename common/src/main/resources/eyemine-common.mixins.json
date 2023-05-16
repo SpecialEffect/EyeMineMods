@@ -15,8 +15,7 @@
 	"MinecraftAccessor",
 	"MouseHandlerAccessor",
 	"MouseHandlerMixin",
-	"TitleScreenMixin",
-	"WorldGenSettingsComponentAccessor"
+	"TitleScreenMixin"
   ],
   "injectors": {
 	"defaultRequire": 1

@@ -98,7 +98,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 				Level level = minecraft.level;
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {
-					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.x,
+					BlockPos blockPosInFrontOfPlayer = BlockPos.containing(playerPos.getX() + lookVec.x,
 							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.z);
 
 					// If there's a block in your way, and you're not already jumping over it...

@@ -328,7 +328,6 @@ public abstract class AbstractRenderer {
 //		RenderSystem.rotatef(0.0F, 0.0F, 1.0F, 0.0F);
 //		RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
 //		RenderSystem.scalef(-0.0175F, -0.0175F, 0.0175F);
-//		RenderSystem.enableTexture();
 //
 //		RenderSystem.enableBlend();
 //		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
