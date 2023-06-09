@@ -15,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -80,7 +81,7 @@ public class IconOverlay implements ICrosshairOverlay {
 	}
 
 	@Override
-	public void renderOverlay(PoseStack poseStack, Minecraft minecraft) {
+	public void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft) {
 		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);

@@ -11,9 +11,9 @@
 
 package com.specialeffect.eyemine.client.gui.crosshair;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface ICrosshairOverlay {
-	void renderOverlay(PoseStack poseStack, Minecraft minecraft);
+	void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft);
 }

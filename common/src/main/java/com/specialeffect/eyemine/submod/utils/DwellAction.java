@@ -25,6 +25,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -220,7 +221,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
 		// If dwell is on, show a warning message
 		if (mDwelling && showLabel) {
 			Minecraft minecraft = Minecraft.getInstance();
@@ -232,7 +233,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			final Font font = minecraft.font;
 			float msgWidth = (float) font.width(msg);
 
-			font.drawShadow(poseStack, msg, w / 2.0f - msgWidth / 2.0f, h / 2.0f - 20 - labelOffset, 0xffFFFFFF);
+			guiGraphics.drawString(font, msg, (int) (w / 2.0f - msgWidth / 2.0f), (int)(h / 2.0f - 20 - labelOffset), 0xffFFFFFF);
 		}
 	}
 }

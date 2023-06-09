@@ -217,7 +217,7 @@ public class ModUtils {
 	@SuppressWarnings("unused")
 	private boolean doesBlockMovement(BlockPos pos) {
 		Level world = Minecraft.getInstance().level;
-		return world.getBlockState(pos).getMaterial().blocksMotion();
+		return world.getBlockState(pos).blocksMotion();
 	}
 
 	@SuppressWarnings("unused")
@@ -258,11 +258,12 @@ public class ModUtils {
 
 		BlockPos blockpos;
 		BlockPos blockpos1;
+		//TODO: LevelChunk#getHighestSectionPosition() is deprecated and marked for removal
 		for (blockpos = new BlockPos(pos.getX(), chunk.getHighestSectionPosition() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1) {
 			blockpos1 = blockpos.below();
 			BlockState state = chunk.getBlockState(blockpos1);
 
-			if (state.getMaterial().blocksMotion() && !(state.getBlock() instanceof LeavesBlock)) {
+			if (state.blocksMotion() && !(state.getBlock() instanceof LeavesBlock)) {
 				break;
 			}
 		}

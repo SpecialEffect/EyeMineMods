@@ -47,7 +47,7 @@ public class TeleportPlayerToSpawnPointMessage {
 					return;
 				}
 
-				if (!player.level.isClientSide) {
+				if (!player.level().isClientSide) {
 					MinecraftServer server = player.getServer();
 					ServerPlayer serverPlayer = (ServerPlayer) player;
 					ServerLevel respawnDimension = server.getLevel(serverPlayer.getRespawnDimension());

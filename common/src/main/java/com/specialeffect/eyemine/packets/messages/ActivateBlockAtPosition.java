@@ -53,15 +53,15 @@ public class ActivateBlockAtPosition {
 					return;
 				}
 
-				Level world = player.level;
-				BlockState state = world.getBlockState(pkt.blockPos);
+				Level level = player.level();
+				BlockState state = level.getBlockState(pkt.blockPos);
 				Block block = state.getBlock();
 
 				// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks
 				BlockHitResult hit = null;
 
 				// NOTE: should use state.onBlockActivated, but this requires non-null hit, so we suppress warning
-				block.use(state, world, pkt.blockPos, player, InteractionHand.MAIN_HAND, hit);
+				block.use(state, level, pkt.blockPos, player, InteractionHand.MAIN_HAND, hit);
 			});
 		}
 	}

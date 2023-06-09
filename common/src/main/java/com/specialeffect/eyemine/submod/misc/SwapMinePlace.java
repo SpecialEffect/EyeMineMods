@@ -24,6 +24,8 @@ import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import org.lwjgl.glfw.GLFW;
 
 public class SwapMinePlace extends SubMod {
@@ -69,7 +71,7 @@ public class SwapMinePlace extends SubMod {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
 		// If these are swapped, show a warning message
 		KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 		KeyMapping useBinding = Minecraft.getInstance().options.keyUse;
@@ -86,8 +88,6 @@ public class SwapMinePlace extends SubMod {
 				Minecraft mc = Minecraft.getInstance();
 				int w = mc.getWindow().getGuiScaledWidth();
 				int h = mc.getWindow().getGuiScaledHeight();
-				PoseStack matrixStack = poseStack;
-
 
 				String msg1 = "Mine / place";
 				int msg1width = mc.font.width(msg1);
@@ -95,9 +95,10 @@ public class SwapMinePlace extends SubMod {
 				int msg2width = mc.font.width(msg2);
 
 				int delta = (msg1width - msg2width) / 2;
+				final Font font = mc.font;
 
-				mc.font.drawShadow(matrixStack, msg1, w - msg2width - delta - 10, h - 22, 0xffFFFFFF);
-				mc.font.drawShadow(matrixStack, msg2, w - msg2width - 10, h - 12, 0xffFFFFFF);
+				guiGraphics.drawString(font, msg1, w - msg2width - delta - 10, h - 22, 0xffFFFFFF);
+				guiGraphics.drawString(font, msg2, w - msg2width - 10, h - 12, 0xffFFFFFF);
 
 			}
 		}

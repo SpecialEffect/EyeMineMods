@@ -11,7 +11,6 @@
 
 package com.specialeffect.eyemine.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.client.gui.crosshair.ICrosshairOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
@@ -20,6 +19,7 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import dev.architectury.event.CompoundEventResult;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 
@@ -30,11 +30,11 @@ public class MainClientHandler {
 	public static final List<ICrosshairOverlay> crosshairOverlayList = new ArrayList<>();
 	private static StateOverlay mStateOverlay;
 
-	public static void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
+	public static void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
 		if (!MainClientHandler.crosshairOverlayList.isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			for (ICrosshairOverlay overlay : MainClientHandler.crosshairOverlayList) {
-				overlay.renderOverlay(poseStack, minecraft);
+				overlay.renderOverlay(guiGraphics, minecraft);
 			}
 		}
 	}

@@ -105,7 +105,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 
 					Vec3 motion = player.getDeltaMovement();
 					Vec3 addMotion = new Vec3(0.0, Math.max(mFlyHeightAuto / 4, 1), 0.0);
-					if (level.getBlockState(blockPosInFrontOfPlayer).getMaterial().blocksMotion() &&
+					if (level.getBlockState(blockPosInFrontOfPlayer).blocksMotion() &&
 							motion.y == 0) {
 						player.setDeltaMovement(motion.add(addMotion));
 						break;

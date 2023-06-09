@@ -134,7 +134,7 @@ public class AutoPillar extends SubMod {
 				this.queueOnLivingCallback(new DelayedOnLivingCallback(delayedEvent -> {
 					Minecraft mc = Minecraft.getInstance();
 					LocalPlayer player = mc.player;
-					ClientLevel level = (ClientLevel) player.level;
+					ClientLevel level = (ClientLevel) player.level();
 					// It's important to make sure we're approximately - but not
 					// exactly - centred
 					// on a block here, so that the block always ends up under
@@ -144,7 +144,7 @@ public class AutoPillar extends SubMod {
 					// Also look down, purely for effect.
 
 					player.setXRot(90);
-					if (!player.isOnGround() && player.getXRot() == 90) {
+					if (!player.onGround() && player.getXRot() == 90) {
 						if (mc.hitResult instanceof BlockHitResult blockHitResult) {
 							if (blockHitResult.getBlockPos().getY() < player.getY()) {
 								mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server

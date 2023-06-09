@@ -22,6 +22,8 @@ import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -183,9 +185,8 @@ public class NightVisionHelper extends SubMod {
 		}
 	}
 
-	public void onRenderExperienceBar(PoseStack poseStack, float partialTicks) {
+	public void onRenderExperienceBar(GuiGraphics guiGraphics, float partialTicks) {
 		if (mShowMessage) {
-			PoseStack matrixStack = poseStack;
 			Minecraft mc = Minecraft.getInstance();
 
 			int w = mc.getWindow().getGuiScaledWidth();
@@ -198,15 +199,15 @@ public class NightVisionHelper extends SubMod {
 			Font font = mc.font;
 
 			int y = h / 5;
-			drawCenteredString(matrixStack, font, msg1, w / 2, y, 0xffffff);
-			drawCenteredString(matrixStack, font, msg2, w / 2, y + 20, 0xffffff);
-			drawCenteredString(matrixStack, font, msg3, w / 2, y + 40, 0xffffff);
+			drawCenteredString(guiGraphics, font, msg1, w / 2, y, 0xffffff);
+			drawCenteredString(guiGraphics, font, msg2, w / 2, y + 20, 0xffffff);
+			drawCenteredString(guiGraphics, font, msg3, w / 2, y + 40, 0xffffff);
 		}
 	}
 
-	private void drawCenteredString(PoseStack matrixStack, Font font, String msg, int x, int y, int c) {
+	private void drawCenteredString(GuiGraphics guiGraphics, Font font, String msg, int x, int y, int c) { //TODO: check if we can just use GuiGraphics#drawCenteredString
 		int stringWidth = font.width(msg);
-		font.draw(matrixStack, msg, x - stringWidth / 2, y, c);
+		guiGraphics.drawString(font, msg, x - stringWidth / 2, y, c);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {

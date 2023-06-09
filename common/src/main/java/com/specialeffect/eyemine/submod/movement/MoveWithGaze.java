@@ -39,7 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -151,8 +151,8 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 				if (EyeMineConfig.getAllowLadderDescent() && player.onClimbable()) {
 					// We're a bit more forgiving when player is on ground, to make sure player can exit the
 					// ladder okay.
-					if ((player.isOnGround() && player.getXRot() > 30) ||
-							(!player.isOnGround() && player.getXRot() > 0)) {
+					if ((player.onGround() && player.getXRot() > 30) ||
+							(!player.onGround() && player.getXRot() > 0)) {
 						KeyboardInputHelper.setWalkOverride(false, 0.0f);
 						return;
 					}
@@ -185,10 +185,10 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 					BlockPos blockInFrontAbovePos = blockInFrontPos.offset(0, 1, 0);
 
-					Material materialInFront = level.getBlockState(blockInFrontPos).getMaterial();
-					Material materialAboveInFront = level.getBlockState(blockInFrontAbovePos).getMaterial();
+					BlockState stateInFront = level.getBlockState(blockInFrontPos);
+					BlockState stateAboveInFront = level.getBlockState(blockInFrontAbovePos);
 
-					if ((materialInFront != null && materialInFront.isSolid()) && (materialAboveInFront != null && !materialAboveInFront.isSolid())) {
+					if ((stateInFront != null && stateInFront.isSolid()) && (stateAboveInFront != null && !stateAboveInFront.isSolid())) {
 						if (jumpTicks == 0) {
 							player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, true, player.input.shiftKeyDown));
 							player.jumpFromGround();

@@ -13,6 +13,7 @@ package com.specialeffect.eyemine.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
@@ -33,8 +34,8 @@ public class TitleScreenMixin extends Screen {
 		super(component);
 	}
 
-	@Inject(at = @At("HEAD"), method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V")
-	public void eyemineTitleHeadRender(PoseStack poseStack, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
+	public void eyemineTitleHeadRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
 		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
 			this.firstRenderTime = Util.getMillis();
 		}
@@ -42,18 +43,19 @@ public class TitleScreenMixin extends Screen {
 		animationTime = this.showFadeInAnimation ? (float) (Util.getMillis() - this.firstRenderTime) / 1000.0F : 1.0F;
 	}
 
-	@Inject(at = @At("TAIL"), method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;IIF)V")
-	public void eyemineTitleTailRender(PoseStack poseStack, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
+	@Inject(at = @At("TAIL"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
+	public void eyemineTitleTailRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
 		float f1 = this.showFadeInAnimation ? Mth.clamp(animationTime - 1.0F, 0.0F, 1.0F) : 1.0F;
 		int l = Mth.ceil(f1 * 255.0F) << 24;
 
 		String subtitle = "EyeMine Edition";
 		if ((l & -67108864) != 0) {
+			PoseStack poseStack = guiGraphics.pose();
 			poseStack.pushPose();
 			poseStack.translate((float) (this.width / 2), 25.0F, 0.0F);
 			float f2 = 1.5f;
 			poseStack.scale(f2, f2, f2);
-			drawCenteredString(poseStack, this.font, subtitle, 0, -8, 16776960 | l);
+			guiGraphics.drawCenteredString(this.font, subtitle, 0, -8, 16776960 | l);
 			poseStack.popPose();
 		}
 	}

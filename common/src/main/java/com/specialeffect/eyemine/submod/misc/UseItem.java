@@ -25,6 +25,7 @@ import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
@@ -199,12 +200,11 @@ public class UseItem extends DwellAction {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(PoseStack poseStack, float partialTicks) {
-		super.onRenderGameOverlayEvent(poseStack, partialTicks);
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
+		super.onRenderGameOverlayEvent(guiGraphics, partialTicks);
 
 		// If use-item is on, show a warning message
 		if (mUsingItem) {
-			PoseStack matrixStack = poseStack;
 			String msg = "USING";
 			Minecraft mc = Minecraft.getInstance();
 			int w = mc.getWindow().getGuiScaledWidth();
@@ -212,7 +212,7 @@ public class UseItem extends DwellAction {
 
 			int msgWidth = mc.font.width(msg);
 
-			mc.font.drawShadow(matrixStack, msg, (int) (w / 2.0) - (int) (msgWidth / 2.0), (int) (h / 2.0) - 20, 0xffFFFFFF);
+			guiGraphics.drawString(mc.font, msg, (int) (w / 2.0) - (int) (msgWidth / 2.0), (int) (h / 2.0) - 20, 0xffFFFFFF);
 		}
 	}
 
