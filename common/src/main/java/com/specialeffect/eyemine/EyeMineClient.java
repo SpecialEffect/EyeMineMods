@@ -58,13 +58,11 @@ public class EyeMineClient {
 		ClientGuiEvent.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
 		ClientRawInputEvent.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
 
-		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> {
-			if (!Keybindings.keybindings.isEmpty()) {
-				for (KeyMapping keyBinding : Keybindings.keybindings) {
-					KeyMappingRegistry.register(keyBinding);
-				}
+		if (!Keybindings.keybindings.isEmpty()) {
+			for (KeyMapping keyBinding : Keybindings.keybindings) {
+				KeyMappingRegistry.register(keyBinding);
 			}
-		});
+		}
 
 		ClientLifecycleEvent.CLIENT_STARTED.register((state) -> {
 			setupComplete = true;
