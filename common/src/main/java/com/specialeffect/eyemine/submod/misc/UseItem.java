@@ -13,7 +13,6 @@ package com.specialeffect.eyemine.submod.misc;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
@@ -106,7 +105,7 @@ public class UseItem extends DwellAction {
 
 		// Behaviour for shootable items (bows)
 		if (bowCountdown > 0) {
-			bowCountdown -= dt;
+			bowCountdown -= (long)dt;
 			if (bowCountdown < 1) {
 				// Release bow if count-down complete
 				final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;

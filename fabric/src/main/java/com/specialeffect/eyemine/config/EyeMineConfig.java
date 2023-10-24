@@ -150,7 +150,7 @@ public class EyeMineConfig implements ConfigData {
 	}
 
 	@Override
-	public void validatePostLoad() throws ValidationException {
+	public void validatePostLoad() {
 		general.customSpeedFactor = Mth.clamp(general.customSpeedFactor, 0.25f, 2.0f);
 
 		advanced.fullscreenOverlayAlpha = Mth.clamp(advanced.fullscreenOverlayAlpha, 0.0f, 0.2f);

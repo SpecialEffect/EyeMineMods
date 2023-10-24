@@ -250,6 +250,7 @@ public class ModUtils {
 		return false;
 	}
 
+	@SuppressWarnings("removal")
 	public static BlockPos highestSolidPoint(BlockPos pos) {
 		// Gets a spawn-able location above the point
 		// Highest solid block that isn't foliage

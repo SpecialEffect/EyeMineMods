@@ -123,7 +123,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 				}
 
 				// scaled by mCustomSpeedFactor 
-				walkForwardAmount *= 0.15;
+				walkForwardAmount *= (float) 0.15F;
 				walkForwardAmount *= mCustomSpeedFactor;
 				KeyboardInputHelper.setWalkOverride(true, walkForwardAmount);
 			}

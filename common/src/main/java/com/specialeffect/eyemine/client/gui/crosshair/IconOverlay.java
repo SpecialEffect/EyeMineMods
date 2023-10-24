@@ -12,7 +12,6 @@
 package com.specialeffect.eyemine.client.gui.crosshair;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -76,7 +75,7 @@ public class IconOverlay implements ICrosshairOverlay {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, mResource);
-		ModUtils.drawTexQuad(centreX - width / 2, centreY - height / 2,
+		ModUtils.drawTexQuad(centreX - (double) width / 2, centreY - (double) height / 2,
 				width, height, mAlpha * fade);
 	}
 

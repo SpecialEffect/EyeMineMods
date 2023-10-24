@@ -139,8 +139,8 @@ public abstract class MouseHandlerMixin {
 	}
 
 	private void processMousePosition(double x, double y) {
-		double w_half = this.minecraft.getWindow().getScreenWidth() / 2;
-		double h_half = this.minecraft.getWindow().getScreenHeight() / 2;
+		double w_half = (double) this.minecraft.getWindow().getScreenWidth() / 2;
+		double h_half = (double) this.minecraft.getWindow().getScreenHeight() / 2;
 
 		// adjust coordinates to centralised when ungrabbed
 		if (MouseHelper.ungrabbedMouseMode) {

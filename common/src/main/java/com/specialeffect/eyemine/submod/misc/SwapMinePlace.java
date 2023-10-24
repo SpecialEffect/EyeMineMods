@@ -14,7 +14,6 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.InputConstants.Type;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;

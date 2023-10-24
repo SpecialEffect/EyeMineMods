@@ -12,7 +12,6 @@
 package com.specialeffect.eyemine.client.gui.crosshair;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -97,7 +96,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		// We draw the texture larger, in white, at progressive levels of alpha 
 		// for blur effect (the alpha gets added on each layer)
 		int blurSteps = 4; // how many levels of progressive blur
-		double totalBlur = width / 12; // in pixels
+		double totalBlur = (double) width / 12; // in pixels
 
 		for (int i = 0; i < blurSteps; i++) {
 			double blurAmount = totalBlur / blurSteps * (i + 1);

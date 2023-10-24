@@ -11,7 +11,6 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
@@ -22,7 +21,6 @@ import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
