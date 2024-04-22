@@ -4,11 +4,7 @@ import net.minecraft.client.settings.GameSettings;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 // Copied from net.minecraft.util.MovementInputFromOptions, changes to sneak only
 public class MovementInputFromOptionsOverride extends MovementInputFromOptions

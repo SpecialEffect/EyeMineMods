@@ -11,12 +11,8 @@
 package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -47,18 +43,18 @@ public class JumpMessage implements IMessage {
     public static class Handler implements IMessageHandler<JumpMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final JumpMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
 //            mainThread.addScheduledTask(new Runnable() {
 //                @Override
 //                public void run() {
 //                	System.out.println("jumping player " + message.playerName);
-//                    World world = ctx.getServerHandler().playerEntity.world;
+//                    World world = ctx.getServerHandler().player.world;
 //                    EntityPlayer player = world.getPlayerEntityByName(message.playerName);
 //					player.jump();
 //                }
 //            });
             mainThread.addScheduledTask(new Runnable() {
-    			World world = ctx.getServerHandler().playerEntity.world;
+    			World world = ctx.getServerHandler().player.world;
 
     			@Override
     			public void run() {

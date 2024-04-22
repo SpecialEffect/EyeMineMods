@@ -7,12 +7,7 @@ import java.awt.event.KeyEvent;
 
 import com.specialeffect.utils.ModUtils;
 
-import de.skate702.craftingkeys.CraftingKeys;
-import de.skate702.craftingkeys.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -29,8 +24,6 @@ public class CreativeInventoryManager {
 
 	/**
 	 * Creates a new Inventory Manager with the given container.
-	 *
-	 * @param container The container from a crafting GUI
 	 */
 	private CreativeInventoryManager() {
 		try {
@@ -43,7 +36,6 @@ public class CreativeInventoryManager {
 	/**
 	 * Returns a Inventory Manager Instance operating on the given container
 	 *
-	 * @param container A container from a GUI
 	 * @return manager-singleton
 	 */
 	public static CreativeInventoryManager getInstance(int left, int top, 

@@ -21,7 +21,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
-import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -186,7 +185,7 @@ public class NightVisionHelper extends BaseClassWithCallbacks {
 			String msg2 = "To turn on night vision, use the EyeMine keyboard or press F12";
 			String msg3 = "To reset to start location, press Home";
 						
-			FontRenderer font = mc.fontRendererObj;
+			FontRenderer font = mc.fontRenderer;
 			
 			int y = h/5;
 			drawCenteredString(font, msg1, w/2,      y, 0xffffff);

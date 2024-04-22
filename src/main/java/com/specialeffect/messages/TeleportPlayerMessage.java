@@ -10,19 +10,10 @@
 
 package com.specialeffect.messages;
 
-import javax.vecmath.Point2d;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -56,13 +47,13 @@ public class TeleportPlayerMessage implements IMessage {
     public static class Handler implements IMessageHandler<TeleportPlayerMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final TeleportPlayerMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;                    
+                    EntityPlayer player = ctx.getServerHandler().player;                    
                     BlockPos pos = message.blockPos;
-        			pos = ctx.getServerHandler().playerEntity.world.getTopSolidOrLiquidBlock(pos);
+        			pos = ctx.getServerHandler().player.world.getTopSolidOrLiquidBlock(pos);
        			    player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
                 }
             });

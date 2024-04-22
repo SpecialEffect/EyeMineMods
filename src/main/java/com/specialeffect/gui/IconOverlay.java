@@ -94,7 +94,7 @@ public class IconOverlay extends Gui
 
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, mAlpha);
 
-		ModUtils.drawTexQuad(centreX - width/2, centreY - height/2, 
+		ModUtils.drawTexQuad(centreX - (double) width /2, centreY - (double) height /2,
 							 width, height);
 		
 		// reset GL attributes!

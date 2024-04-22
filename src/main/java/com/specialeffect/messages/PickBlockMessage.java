@@ -42,12 +42,12 @@ public class PickBlockMessage implements IMessage {
     public static class Handler implements IMessageHandler<PickBlockMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final PickBlockMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
 					if(message.entityId != 0) {
-	                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+	                    EntityPlayer player = ctx.getServerHandler().player;
 			            World world = player.getEntityWorld();
 			            Entity target = world.getEntityByID(message.entityId);
 			            if(target != null && target instanceof EntityItem) {

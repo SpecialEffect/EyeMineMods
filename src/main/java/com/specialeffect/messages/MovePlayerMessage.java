@@ -53,11 +53,11 @@ public class MovePlayerMessage implements IMessage {
     public static class Handler implements IMessageHandler<MovePlayerMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final MovePlayerMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+                    EntityPlayer player = ctx.getServerHandler().player;
                     if (player.isRiding()) {
 //                    	player.moveForward = 1.0f;
                     	Entity riddenEntity = player.getRidingEntity();
@@ -71,18 +71,18 @@ public class MovePlayerMessage implements IMessage {
 							
 							if (riddenEntity instanceof EntityMinecart) {
 								EntityMinecart minecart = (EntityMinecart)riddenEntity;
-								message.moveAmount *= scaleMinecart;
+								message.moveAmount *= (float) scaleMinecart;
 
 								Vec3d lookVec = player.getLookVec();
 								System.out.println(message.moveAmount);
-								minecart.motionX = lookVec.xCoord*message.moveAmount;
-								minecart.motionZ = lookVec.zCoord*message.moveAmount;
+								minecart.motionX = lookVec.x*message.moveAmount;
+								minecart.motionZ = lookVec.z*message.moveAmount;
 								minecart.moveMinecartOnRail(null);
 								minecart.onUpdate();
 							}
 							else if (riddenEntity instanceof EntityAnimal) {
 								EntityAnimal animal = (EntityAnimal)riddenEntity;
-								message.moveAmount *= scaleAnimal;
+								message.moveAmount *= (float) scaleAnimal;
 								
 								// Make sure riding doesn't hurt animal (this can happen
 								// if you ride down a drop, or collide) 
@@ -100,7 +100,7 @@ public class MovePlayerMessage implements IMessage {
 							}
 							else if (riddenEntity instanceof EntityBoat) {
 								EntityBoat boat = (EntityBoat)riddenEntity;
-								message.moveAmount *= scaleBoat;
+								message.moveAmount *= (float) scaleBoat;
 								double yaw = Math.toRadians(riddenEntity.rotationYaw);
 								Point2d xyDiff = polarToCartesian(message.moveAmount, 
 																  message.moveAngle + yaw);

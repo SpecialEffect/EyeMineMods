@@ -53,11 +53,11 @@ public class ActivateBlockAtPosition implements IMessage {
     public static class Handler implements IMessageHandler<ActivateBlockAtPosition, IMessage> {        
     	@Override
         public IMessage onMessage(final ActivateBlockAtPosition message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayer player = ctx.getServerHandler().playerEntity;
+                    EntityPlayer player = ctx.getServerHandler().player;
                     World world = player.getEntityWorld();
 					Block block = world.getBlockState(message.blockPos).getBlock();
 

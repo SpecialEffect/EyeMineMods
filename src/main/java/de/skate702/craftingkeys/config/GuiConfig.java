@@ -74,15 +74,15 @@ public class GuiConfig extends GuiScreen {
         drawDefaultBackground(); //drawWorldBackground(0);
 
         //Title
-        drawCenteredString(fontRendererObj, LanguageLocalizer.localize("craftingkeys.config.title"), width / 2, height / 2 - 115, pureWhite.getRGB());
+        drawCenteredString(fontRenderer, LanguageLocalizer.localize("craftingkeys.config.title"), width / 2, height / 2 - 115, pureWhite.getRGB());
 
         // Info-text and fake line
-        drawCenteredString(fontRendererObj, LanguageLocalizer.localize("craftingkeys.config.description"), width / 2, height / 2 - 10, pureWhite.getRGB());
-        drawCenteredString(fontRendererObj, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", width / 2, height / 2 + 8, lightGray.getRGB());
+        drawCenteredString(fontRenderer, LanguageLocalizer.localize("craftingkeys.config.description"), width / 2, height / 2 - 10, pureWhite.getRGB());
+        drawCenteredString(fontRenderer, "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -", width / 2, height / 2 + 8, lightGray.getRGB());
 
         // Key Info
-        drawCenteredString(fontRendererObj, LanguageLocalizer.localize("craftingkeys.config.stack"), guiBasePosition + 130, height / 2 - 96, pureWhite.getRGB());
-        drawCenteredString(fontRendererObj, LanguageLocalizer.localize("craftingkeys.config.drop"), guiBasePosition + 130, height / 2 - 58, pureWhite.getRGB());
+        drawCenteredString(fontRenderer, LanguageLocalizer.localize("craftingkeys.config.stack"), guiBasePosition + 130, height / 2 - 96, pureWhite.getRGB());
+        drawCenteredString(fontRenderer, LanguageLocalizer.localize("craftingkeys.config.drop"), guiBasePosition + 130, height / 2 - 58, pureWhite.getRGB());
 
         //Draw line to let it look better
         drawHorizontalLine(guiBasePosition - 86, guiBasePosition + 85, height / 2 - 20, pureWhite.getRGB());
@@ -257,7 +257,7 @@ public class GuiConfig extends GuiScreen {
         mc.renderEngine.bindTexture(new ResourceLocation("textures/gui/container/anvil.png"));
         drawTexturedModalRect(guiShowBasePosX - 86, guiShowBasePosY, 1, 0, 174, 80);
 
-        drawRect(guiShowBasePosX + -30, guiShowBasePosY + 17, guiShowBasePosX + 83, guiShowBasePosY + 36, Color.black.getRGB());
+        drawRect(guiShowBasePosX - 30, guiShowBasePosY + 17, guiShowBasePosX + 83, guiShowBasePosY + 36, Color.black.getRGB());
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
         mc.renderEngine.bindTexture(new ResourceLocation(CraftingKeys.MODID, "textures/gui/symbols.png"));
@@ -325,7 +325,7 @@ public class GuiConfig extends GuiScreen {
     }
 
     private void drawInfoString(int index, int posX, int posY) {
-        drawCenteredString(fontRendererObj, Keyboard.getKeyName(keyValues[index]),
+        drawCenteredString(fontRenderer, Keyboard.getKeyName(keyValues[index]),
                 guiShowBasePosX + posX - 86, guiShowBasePosY + posY, highlight.getRGB());
     }
 

@@ -113,7 +113,7 @@ public class StateOverlay extends Gui
 		// We draw the texture larger, in white, at progressive levels of alpha 
 		// for blur effect (the alpha gets added on each layer)
 		int blurSteps = 4; // how many levels of progressive blur
-		double totalBlur = width/12; // in pixels		
+		double totalBlur = (double) width /12; // in pixels
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f/blurSteps);
 
 		for (int i=0; i < blurSteps; i++) {

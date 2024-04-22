@@ -45,7 +45,7 @@ public class ChangeFlyingStateMessage implements IMessage {
     public static class Handler implements IMessageHandler<ChangeFlyingStateMessage, IMessage> {        
     	@Override
     	public IMessage onMessage(final ChangeFlyingStateMessage message,final MessageContext ctx) {
-    		EntityPlayer player = ctx.getServerHandler().playerEntity;                    
+    		EntityPlayer player = ctx.getServerHandler().player;                    
 
     		if (player.capabilities.allowFlying) {
     			if (message.shouldBeFlying) {

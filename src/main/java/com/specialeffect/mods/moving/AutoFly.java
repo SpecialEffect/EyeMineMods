@@ -44,7 +44,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import scala.swing.TextComponent;
 
 @Mod(modid = AutoFly.MODID, version = ModUtils.VERSION, name = AutoFly.NAME)
 public class AutoFly 
@@ -119,8 +118,8 @@ implements ChildModWithConfig
 
 				// Check all three blocks ahead of player
 				for (int yDiff = -1; yDiff < 2; yDiff++) {
-					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.xCoord,
-							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.zCoord);
+					BlockPos blockPosInFrontOfPlayer = new BlockPos(playerPos.getX() + lookVec.x,
+							playerPos.getY() + yDiff, playerPos.getZ() + lookVec.z);
 
 					World world = Minecraft.getMinecraft().world;
 					Block block = world.getBlockState(blockPosInFrontOfPlayer).getBlock();

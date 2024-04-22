@@ -20,7 +20,6 @@ import org.lwjgl.input.Keyboard;
 import com.specialeffect.callbacks.BaseClassWithCallbacks;
 import com.specialeffect.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.callbacks.IOnLiving;
-import com.specialeffect.callbacks.SingleShotOnLivingCallback;
 import com.specialeffect.gui.StateOverlay;
 import com.specialeffect.messages.MovePlayerMessage;
 import com.specialeffect.mods.EyeGaze;
@@ -41,7 +40,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.client.CPacketSteerBoat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -249,9 +247,9 @@ implements ChildModWithConfig
 								playerPos.getY()+1, playerPos.getZ());
 
 						BlockPos blockInFrontPos = new BlockPos(
-								posVec.xCoord + forwardVec.xCoord,
-								posVec.yCoord + forwardVec.yCoord,
-								posVec.zCoord + forwardVec.zCoord);
+								posVec.x + forwardVec.x,
+								posVec.y + forwardVec.y,
+								posVec.z + forwardVec.z);
 						BlockPos blockInFrontBelowPos = blockInFrontPos.add(0, -1, 0);
 									
 						Block blockAbove = world.getBlockState(blockAbovePos).getBlock();
@@ -270,7 +268,7 @@ implements ChildModWithConfig
 				    		}
 				    		
 							for (int i = 0; i < 2; i++) {
-								player.moveEntityWithHeading(0.0f, halfForward);
+								player.travel(0.0f, 0.0F, halfForward);
 							}
 							
 						}
@@ -278,7 +276,7 @@ implements ChildModWithConfig
 					else {
 						for (int i = 0; i < 2; i++) {
 //							player.handleWaterMovement();
-							player.moveEntityWithHeading(0.0f, halfForward);
+							player.travel(0.0f, 0.0F, halfForward);
 						}
 					}
 				}
@@ -315,22 +313,22 @@ implements ChildModWithConfig
     	double thresh = 0.8;
     	switch(sideHit) {
 		case NORTH:
-			if (lookVec.zCoord > thresh){
+			if (lookVec.z > thresh){
 				return true;
 			}
 			break;
 		case EAST:
-			if (lookVec.xCoord < -thresh){
+			if (lookVec.x < -thresh){
 				return true;
 			}
 			break;
 		case SOUTH:
-			if (lookVec.zCoord < -thresh){
+			if (lookVec.z < -thresh){
 				return true;
 			}
 			break;
 		case WEST:
-			if (lookVec.xCoord > thresh){
+			if (lookVec.x > thresh){
 				return true;
 			}
 			break;
@@ -376,19 +374,19 @@ implements ChildModWithConfig
 		
 		// Check block in front of player, and the one above it.
 		// Also same two blocks in front.
-		BlockPos posInFront = new BlockPos(posVec.xCoord + lookVec.xCoord,
-				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFront = new BlockPos(posVec.x + lookVec.x,
+				posVec.y, posVec.z + lookVec.z);
 		
 		//isPlayerDirectlyFacingBlock(player, posInFront);
 		
-		BlockPos posInFrontAbove = new BlockPos(posVec.xCoord + lookVec.xCoord,
-				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontAbove = new BlockPos(posVec.x + lookVec.x,
+				posVec.y+1, posVec.z + lookVec.z);
 		
-		BlockPos posInFrontTwo = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
-				posVec.yCoord, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontTwo = new BlockPos(posVec.x + 2*lookVec.x,
+				posVec.y, posVec.z + lookVec.z);
 		
-		BlockPos posInFrontTwoAbove = new BlockPos(posVec.xCoord + 2*lookVec.xCoord,
-				posVec.yCoord+1, posVec.zCoord + lookVec.zCoord);
+		BlockPos posInFrontTwoAbove = new BlockPos(posVec.x + 2*lookVec.x,
+				posVec.y+1, posVec.z + lookVec.z);
 
 		if (doesBlockMovement(posInFront) &&
 				doesBlockMovement(posInFrontAbove)) {
@@ -437,7 +435,7 @@ implements ChildModWithConfig
     	while (iter.hasNext()) {
             vectorSum = vectorSum.add(iter.next());
     	}
-    	double vectorLength = vectorSum.lengthVector();            	
+    	double vectorLength = vectorSum.length();
     	double normalCongruency = vectorLength/scalarLength;
     	
     	// If in auto-walk mode, walk forward an amount scaled by the view change (less if looking around)

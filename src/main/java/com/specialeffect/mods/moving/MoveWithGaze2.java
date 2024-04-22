@@ -153,12 +153,12 @@ implements ChildModWithConfig
     			// scaled by user sensitivity
     			// TODO: sensitivity isn't linear :-S
     			float sens = Minecraft.getMinecraft().gameSettings.mouseSensitivity;
-    			yawAmount *= Math.max(sens, 0.05);
+    			yawAmount *= (float) Math.max(sens, 0.05);
     			
     			// TODO: Scale by user sensitivity?
     			
     			player.rotationYaw += yawAmount;
-    			player.moveEntityWithHeading(0.0f, walkForwardAmount);
+    			player.travel(0.0f, 0.0f, walkForwardAmount);
     		}
 			this.processQueuedCallbacks(event);
 			

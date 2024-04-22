@@ -10,7 +10,6 @@
 
 package com.specialeffect.mods.moving;
 
-import java.awt.AWTException;
 import java.awt.Point;
 
 import org.lwjgl.input.Keyboard;
@@ -139,7 +138,7 @@ implements ChildModWithConfig
 	    			float yaw = player.rotationYaw;
 	    			float pitch = player.rotationPitch; 
 	    			
-	    			player.setPositionAndRotation(pos.xCoord, pos.yCoord, pos.zCoord, 
+	    			player.setPositionAndRotation(pos.x, pos.y, pos.z, 
 	    					(float)(yaw+dYaw), (float)(pitch+dPitch));
 				}
 			}));

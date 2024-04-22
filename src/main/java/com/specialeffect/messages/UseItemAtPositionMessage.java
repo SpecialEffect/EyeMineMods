@@ -12,14 +12,12 @@ package com.specialeffect.messages;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -60,11 +58,11 @@ public class UseItemAtPositionMessage implements IMessage {
     public static class Handler implements IMessageHandler<UseItemAtPositionMessage, IMessage> {        
     	@Override
         public IMessage onMessage(final UseItemAtPositionMessage message,final MessageContext ctx) {
-            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().playerEntity.world; // or Minecraft.getMinecraft() on the client
+            IThreadListener mainThread = (WorldServer) ctx.getServerHandler().player.world; // or Minecraft.getMinecraft() on the client
             mainThread.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    World world = ctx.getServerHandler().playerEntity.world;
+                    World world = ctx.getServerHandler().player.world;
                     EntityPlayer player = world.getPlayerEntityByName(message.playerName);
 					ItemStack item = player.getHeldItem(EnumHand.MAIN_HAND);					
 					if (null != item)

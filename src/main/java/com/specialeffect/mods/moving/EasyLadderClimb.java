@@ -78,8 +78,8 @@ public class EasyLadderClimb {
 							Vec3d playerPos = player.getPositionVector();
 							
 							// Rotate player to face ladder.
-							player.setPositionAndRotation(playerPos.xCoord,
-									playerPos.yCoord, playerPos.zCoord,
+							player.setPositionAndRotation(playerPos.x,
+									playerPos.y, playerPos.z,
 									getYawFromEnumFacing(facing), player.rotationPitch);
 						}
 					}

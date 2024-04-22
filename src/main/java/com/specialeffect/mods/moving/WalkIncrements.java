@@ -146,7 +146,7 @@ implements ChildModWithConfig
 					else {
 						float strafe = - (float)(p.getX() * mWalkDistance);
 						float forward = (float)(p.getY() * mWalkDistance);
-						player.moveEntityWithHeading(strafe, forward);
+						player.travel(strafe, 0.0f, forward);
 					}
 				}
 			}));
