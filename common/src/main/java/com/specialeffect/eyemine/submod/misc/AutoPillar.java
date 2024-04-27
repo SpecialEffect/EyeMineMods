@@ -179,7 +179,7 @@ public class AutoPillar extends SubMod {
 			inventory.selected = blockId;
 		} else {
 			// Ask server to put new item in hotbar
-			PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.GRASS)));
+			PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.SHORT_GRASS)));
 		}
 	}
 }

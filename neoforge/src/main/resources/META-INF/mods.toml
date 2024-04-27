@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[49,)"
+loaderVersion="[2,)"
 issueTrackerURL="https://github.com/SpecialEffect/SpecialEffectMinecraftMods"
 license="GPL-3.0"
 
@@ -20,14 +20,14 @@ For questions or support, contact eyemine@specialeffect.org.uk
 '''
 
 [[dependencies.eyemine]]
-	modId="forge"
-	mandatory=true
-	versionRange="[49,)"
+	modId="neoforge"
+	type="required"
+	versionRange="[20.4.167,)"
 	ordering="NONE"
 	side="CLIENT"
 [[dependencies.eyemine]]
 	modId="minecraft"
-	mandatory=true
+	type="required"
 	versionRange="[1.20.4,1.21]"
 	ordering="NONE"
 	side="CLIENT"
@@ -36,7 +36,9 @@ For questions or support, contact eyemine@specialeffect.org.uk
 
 [[dependencies.eyemine]]
 modId = "architectury"
-mandatory = true
+type = "required"
 versionRange = "[11.1.13,)"
 ordering = "AFTER"
 side = "BOTH"
+[[mixins]]
+config = "eyemine-common.mixins.json"

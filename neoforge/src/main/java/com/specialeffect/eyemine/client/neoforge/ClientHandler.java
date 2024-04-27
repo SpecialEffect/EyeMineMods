@@ -1,0 +1,28 @@
+/**
+ * Copyright (C) 2016-2020 Kirsty McNaught
+ * <p>
+ * Developed for SpecialEffect, www.specialeffect.org.uk
+ * <p>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ */
+
+package com.specialeffect.eyemine.client.neoforge;
+
+import com.specialeffect.eyemine.EyeMineClient;
+import com.specialeffect.eyemine.event.BlockOutlineEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+
+public class ClientHandler {
+	public static void setup(final FMLCommonSetupEvent event) {
+		EyeMineClient.setupComplete = true;
+		EyeMineClient.refresh();
+	}
+
+	public static void onOutlineRender(RenderHighlightEvent.Block event) {
+		BlockOutlineEvent.OUTLINE.invoker().renderOutline(event.getMultiBufferSource(), event.getPoseStack());
+	}
+}

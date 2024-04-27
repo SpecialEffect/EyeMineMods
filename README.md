@@ -1,5 +1,5 @@
 # EyeMineArchitectury
-A version of [EyeMineMods](https://github.com/SpecialEffect/EyeMineMods) that is build upon the [Architectury API](https://github.com/architectury/architectury-api) allowing it to work on either Forge or Fabric.
+A version of [EyeMineMods](https://github.com/SpecialEffect/EyeMineMods) that is build upon the [Architectury API](https://github.com/architectury/architectury-api) allowing it to work on either NeoForge, Forge or Fabric.
 
 This repository contains the Minecraft mods used with [EyeMine](https://github.com/SpecialEffect/EyeMine), which provides a gaze-controlled keyboard for in-game actions.
 

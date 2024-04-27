@@ -24,10 +24,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -73,9 +72,10 @@ public class GatherDrops extends SubMod {
 
 	public static void gatherBlocks(LocalPlayer player) {
 		ClientLevel level = Minecraft.getInstance().level;
-		BlockPos playerPos = player.blockPosition();
-		AABB AaBb = new AABB(playerPos.subtract(new Vec3i(5, 5, 5)),
-				playerPos.offset(new Vec3i(5, 5, 5)));
+		if (level == null) return;
+
+		Vec3 playerPos = Vec3.atLowerCornerOf(player.blockPosition());
+		AABB AaBb = new AABB(playerPos.subtract(5, 5, 5), playerPos.add(5, 5, 5));
 		ArrayList<ItemEntity> items = (ArrayList<ItemEntity>) level.getEntitiesOfClass(ItemEntity.class, AaBb);
 
 		if (items != null && !items.isEmpty()) {

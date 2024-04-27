@@ -96,7 +96,7 @@ public class IconOverlay implements ICrosshairOverlay {
 			}
 
 			// Don't show if the debug screen is open
-			if (minecraft.options.renderDebug) {
+			if (minecraft.getDebugOverlay().showDebugScreen()) {
 				return;
 			}
 

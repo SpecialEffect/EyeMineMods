@@ -130,7 +130,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		// Don't show if the debug screen is open
-		if (minecraft.options.renderDebug) {
+		if (minecraft.getDebugOverlay().showDebugScreen()) {
 			return;
 		}
 
