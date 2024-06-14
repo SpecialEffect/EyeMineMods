@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 public class JoystickControlOverlay implements ICrosshairOverlay {
 
 	public JoystickControlOverlay() {
-		mResource = new ResourceLocation("eyemine", "textures/icons/overlay.png");
+		mResource = ResourceLocation.fromNamespaceAndPath("eyemine", "textures/icons/overlay.png");
 	}
 
 	ResourceLocation mResource;

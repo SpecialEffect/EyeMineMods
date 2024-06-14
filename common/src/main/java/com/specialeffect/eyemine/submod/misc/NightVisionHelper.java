@@ -19,6 +19,7 @@ import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -183,7 +184,7 @@ public class NightVisionHelper extends SubMod {
 		}
 	}
 
-	public void onRenderExperienceBar(GuiGraphics guiGraphics, float partialTicks) {
+	public void onRenderExperienceBar(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		if (mShowMessage) {
 			Minecraft mc = Minecraft.getInstance();
 

@@ -40,45 +40,45 @@ public abstract class AbstractRenderer {
 		switch (facing) {
 			case UP -> {
 				maxY += 0.01;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case DOWN -> {
 				minY -= 0.01;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case NORTH -> {
 				minZ -= 0.01;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			case SOUTH -> {
 				maxZ += 0.01;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case EAST -> {
 				maxX += 0.01;
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			case WEST -> {
 				minX -= 0.01;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			default -> {
 			}
@@ -119,10 +119,10 @@ public abstract class AbstractRenderer {
 				maxX -= removeX;
 				minZ += removeZ;
 				maxZ -= removeZ;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case DOWN -> {
 				minY -= 0.01;
@@ -130,10 +130,10 @@ public abstract class AbstractRenderer {
 				maxX -= removeX;
 				minZ += removeZ;
 				maxZ -= removeZ;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case NORTH -> {
 				minZ -= 0.01;
@@ -141,10 +141,10 @@ public abstract class AbstractRenderer {
 				maxX -= removeX;
 				minY += removeY;
 				maxY -= removeY;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			case SOUTH -> {
 				maxZ += 0.01;
@@ -152,10 +152,10 @@ public abstract class AbstractRenderer {
 				maxX -= removeX;
 				minY += removeY;
 				maxY -= removeY;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
 			}
 			case EAST -> {
 				maxX += 0.01;
@@ -163,10 +163,10 @@ public abstract class AbstractRenderer {
 				maxY -= removeY;
 				minZ += removeZ;
 				maxZ -= removeZ;
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) maxX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			case WEST -> {
 				minX -= 0.01;
@@ -174,10 +174,10 @@ public abstract class AbstractRenderer {
 				maxY -= removeY;
 				minZ += removeZ;
 				maxZ -= removeZ;
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) minZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) minY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).color(r, g, b, opacity).endVertex();
-				vertexConsumer.vertex(matrix4f, (float) minX, (float) maxY, (float) minZ).color(r, g, b, opacity).endVertex();
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) minZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) minY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) maxZ).setColor(r, g, b, opacity);
+				vertexConsumer.addVertex(matrix4f, (float) minX, (float) maxY, (float) minZ).setColor(r, g, b, opacity);
 			}
 			default -> {
 			}
@@ -211,30 +211,30 @@ public abstract class AbstractRenderer {
 
 		// Render a quad for each face
 
-		vertexConsumer.vertex(matrix4f, minX, maxY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, maxY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, maxY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, maxY, maxZ).color(r, g, b, opacity).endVertex();
+		vertexConsumer.addVertex(matrix4f, minX, maxY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, maxY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, maxY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, maxY, maxZ).setColor(r, g, b, opacity);
 
-		vertexConsumer.vertex(matrix4f, minX, minY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, minY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, minY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, minY, maxZ).color(r, g, b, opacity).endVertex();
+		vertexConsumer.addVertex(matrix4f, minX, minY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, minY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, minY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, minY, maxZ).setColor(r, g, b, opacity);
 
-		vertexConsumer.vertex(matrix4f, minX, minY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, maxY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, maxY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, minY, minZ).color(r, g, b, opacity).endVertex();
+		vertexConsumer.addVertex(matrix4f, minX, minY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, maxY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, maxY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, minY, minZ).setColor(r, g, b, opacity);
 
-		vertexConsumer.vertex(matrix4f, minX, minY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, maxY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, maxY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, maxX, minY, maxZ).color(r, g, b, opacity).endVertex();
+		vertexConsumer.addVertex(matrix4f, minX, minY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, maxY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, maxY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, maxX, minY, maxZ).setColor(r, g, b, opacity);
 
-		vertexConsumer.vertex(matrix4f, minX, minY, minZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, minY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, maxY, maxZ).color(r, g, b, opacity).endVertex();
-		vertexConsumer.vertex(matrix4f, minX, maxY, minZ).color(r, g, b, opacity).endVertex();
+		vertexConsumer.addVertex(matrix4f, minX, minY, minZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, minY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, maxY, maxZ).setColor(r, g, b, opacity);
+		vertexConsumer.addVertex(matrix4f, minX, maxY, minZ).setColor(r, g, b, opacity);
 
 //		RenderSystem.disableBlend();
 //		RenderSystem.enablePolygonOffset();
@@ -294,7 +294,6 @@ public abstract class AbstractRenderer {
 						.addPoint(maxX, maxY, minZ);
 			}
 		}
-		renderer.render();
 	}
 
 	void renderLine(OffsetPoint startPoint, OffsetPoint endPoint, Color color) {
@@ -303,8 +302,7 @@ public abstract class AbstractRenderer {
 		Renderer.startLines()
 				.setColor(color)
 				.addPoint(startPoint)
-				.addPoint(endPoint)
-				.render();
+				.addPoint(endPoint);
 	}
 
 	void renderFilledFaces(OffsetPoint min, OffsetPoint max, Color color, int alpha) {

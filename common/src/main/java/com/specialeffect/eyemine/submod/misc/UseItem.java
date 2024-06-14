@@ -22,6 +22,7 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -199,8 +200,8 @@ public class UseItem extends DwellAction {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
-		super.onRenderGameOverlayEvent(guiGraphics, partialTicks);
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+		super.onRenderGameOverlayEvent(guiGraphics, deltaTracker);
 
 		// If use-item is on, show a warning message
 		if (mUsingItem) {

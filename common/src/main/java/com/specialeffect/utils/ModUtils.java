@@ -129,17 +129,14 @@ public class ModUtils {
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-		Tesselator tessellator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tessellator.getBuilder();
+		Tesselator tesselator = Tesselator.getInstance();
 
 		int z = 10;
-		bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(x, y + height, z).uv(0.0f, 1.0f).endVertex();
-		bufferbuilder.vertex(x + width, y + height, z).uv(1.0f, 1.0f).endVertex();
-		bufferbuilder.vertex(x + width, y, z).uv(1.0f, 0.0f).endVertex();
-		bufferbuilder.vertex(x, y, z).uv(0.0f, 0.0f).endVertex();
-
-		tessellator.end();
+		BufferBuilder bufferbuilder = tesselator.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.addVertex((float) x, (float) (y + height), z).setUv(0.0f, 1.0f);
+		bufferbuilder.addVertex((float) (x + width), (float) (y + height), z).setUv(1.0f, 1.0f);
+		bufferbuilder.addVertex((float) (x + width), (float) y, z).setUv(1.0f, 0.0f);
+		bufferbuilder.addVertex((float) x, (float) y, z).setUv(0.0f, 0.0f);
 	}
 
 	// Find an item in the hotbar which matches the given class

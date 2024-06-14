@@ -21,6 +21,7 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientRawInputEvent;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -70,7 +71,7 @@ public class SwapMinePlace extends SubMod {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		// If these are swapped, show a warning message
 		KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 		KeyMapping useBinding = Minecraft.getInstance().options.keyUse;

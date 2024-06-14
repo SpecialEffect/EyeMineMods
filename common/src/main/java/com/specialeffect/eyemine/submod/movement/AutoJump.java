@@ -82,9 +82,9 @@ public class AutoJump extends SubMod implements IConfigListener {
 			// get visually-nicer autojump behaviour).
 			if (!mAutoJumpDisabled) {
 				if (mDoingAutoJump) {
-					player.setMaxUpStep(1.0F);
+					((IStepUp)player).eyemine$setExtraStepUp(0.4F);
 				} else {
-					player.setMaxUpStep(0.6f);
+					((IStepUp)player).eyemine$setExtraStepUp(0F);
 				}
 			}
 		}

@@ -27,6 +27,7 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -201,6 +202,6 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 	static void requestCreatePickaxe() {
 		// Ask server to put new item in hotbar
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
+		NetworkManager.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
 	}
 }

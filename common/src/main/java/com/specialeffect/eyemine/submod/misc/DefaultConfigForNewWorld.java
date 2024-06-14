@@ -22,6 +22,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.EntityEvent;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.MinecraftServer;
@@ -157,20 +158,20 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 
 	private void equipPlayer(Inventory inventory) {
 		// Ask server to put new item in hotbar
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.BRICKS), 0));
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.SANDSTONE), 1));
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.GLASS_PANE), 2));
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.MOSSY_COBBLESTONE), 3));
 
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.TORCH), 6));
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Items.DIAMOND_PICKAXE), 7));
-		PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(
+		NetworkManager.sendToServer(new AddItemToHotbar(
 				new ItemStack(Items.DIAMOND_SWORD), 8));
 
 		inventory.selected = 1;

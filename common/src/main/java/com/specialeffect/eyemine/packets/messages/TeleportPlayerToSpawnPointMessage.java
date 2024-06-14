@@ -11,9 +11,14 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
+import com.specialeffect.eyemine.EyeMine;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,27 +27,33 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Optional;
-import java.util.function.Supplier;
+public record TeleportPlayerToSpawnPointMessage() implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, TeleportPlayerToSpawnPointMessage> CODEC = CustomPacketPayload.codec(
+			TeleportPlayerToSpawnPointMessage::write,
+			TeleportPlayerToSpawnPointMessage::new);
+	public static final CustomPacketPayload.Type<TeleportPlayerToSpawnPointMessage> ID = new CustomPacketPayload.Type<>(
+			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "teleport_to_spawn_point"));
 
-public class TeleportPlayerToSpawnPointMessage {
-
-	public TeleportPlayerToSpawnPointMessage() {
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return ID;
 	}
 
-	public static TeleportPlayerToSpawnPointMessage decode(FriendlyByteBuf buf) {
-		return new TeleportPlayerToSpawnPointMessage();
+
+	public TeleportPlayerToSpawnPointMessage(FriendlyByteBuf buf) {
+		this();
 	}
 
-	public static void encode(TeleportPlayerToSpawnPointMessage pkt, FriendlyByteBuf buf) {
+	public void write(FriendlyByteBuf buf) {
 	}
 
 	public static class Handler {
-		public static void handle(final TeleportPlayerToSpawnPointMessage pkt, Supplier<NetworkManager.PacketContext> context) {
-			context.get().queue(() -> {
-				Player player = context.get().getPlayer();
+		public static void handle(final TeleportPlayerToSpawnPointMessage pkt, NetworkManager.PacketContext context) {
+			context.queue(() -> {
+				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}
@@ -53,17 +64,17 @@ public class TeleportPlayerToSpawnPointMessage {
 					ServerLevel respawnDimension = server.getLevel(serverPlayer.getRespawnDimension());
 					BlockPos respawnPos = serverPlayer.getRespawnPosition();
 					float respawnAngle = serverPlayer.getRespawnAngle();
-					Optional<Vec3> optional;
+					DimensionTransition transition;
 					if (serverPlayer != null && respawnPos != null) {
-						optional = Player.findRespawnPositionAndUseSpawnBlock(respawnDimension, respawnPos, respawnAngle, false, false);
+						transition = serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.DO_NOTHING);
 					} else {
-						optional = Optional.empty();
+						transition = null;
 					}
 
-					if (optional.isPresent()) {
+					if (transition != null) {
 						BlockState state = respawnDimension.getBlockState(respawnPos);
 						boolean blockIsRespawnAnchor = state.is(Blocks.RESPAWN_ANCHOR);
-						Vec3 vector3d = optional.get();
+						Vec3 vector3d = transition.pos();
 						float f1;
 						if (!state.is(BlockTags.BEDS) && !blockIsRespawnAnchor) {
 							f1 = respawnAngle;

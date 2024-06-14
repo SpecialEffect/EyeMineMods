@@ -45,7 +45,7 @@ public class MouseHelper {
 	}
 
 	public static boolean hasGLcontext() {
-		return RenderSystem.isOnGameThread() && !(Minecraft.getInstance().getOverlay() instanceof Overlay);
+		return /*RenderSystem.isOnGameThread() && */!(Minecraft.getInstance().getOverlay() instanceof Overlay);
 	}
 
 	public static void setUngrabbedMode(boolean ungrabbed) {

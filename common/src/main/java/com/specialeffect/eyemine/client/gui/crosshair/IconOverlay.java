@@ -36,7 +36,7 @@ public class IconOverlay implements ICrosshairOverlay {
 	public int fadeCountdown = 0;
 
 	public IconOverlay(Minecraft mc, String resourcePath) {
-		mResource = new ResourceLocation(resourcePath);
+		mResource = ResourceLocation.tryParse(resourcePath);
 	}
 
 	public void setPosition(float centreX, float centreY, float height, float aspectRatio) {

@@ -20,6 +20,7 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -82,7 +83,7 @@ public class GatherDrops extends SubMod {
 			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (ItemEntity itemEntity : items) {
-				PacketHandler.CHANNEL.sendToServer(new GatherBlockMessage(itemEntity.getId()));
+				NetworkManager.sendToServer(new GatherBlockMessage(itemEntity.getId()));
 			}
 		}
 	}

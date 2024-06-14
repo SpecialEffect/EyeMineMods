@@ -11,44 +11,37 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
+import com.specialeffect.eyemine.EyeMine;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.function.Supplier;
+public record ChangeFlyingStateMessage(boolean shouldBeFlying, int flyHeight) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, ChangeFlyingStateMessage> CODEC = StreamCodec.composite(
+			ByteBufCodecs.BOOL,
+			p -> p.shouldBeFlying,
+			ByteBufCodecs.INT,
+			p -> p.flyHeight,
+			ChangeFlyingStateMessage::new
+	);
+	public static final CustomPacketPayload.Type<ChangeFlyingStateMessage> ID = new CustomPacketPayload.Type<>(
+			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "change_flying_state"));
 
-public class ChangeFlyingStateMessage {
-
-	private boolean shouldBeFlying;
-	private int flyHeight;
-
-	public ChangeFlyingStateMessage() {
-	}
-
-	public ChangeFlyingStateMessage(boolean shouldBeFlying,
-									int flyHeight) {
-		this.shouldBeFlying = shouldBeFlying;
-		this.flyHeight = flyHeight;
-	}
-
-
-	public static ChangeFlyingStateMessage decode(FriendlyByteBuf buf) {
-		boolean shouldBeFlying = buf.readBoolean();
-		int flyHeight = buf.readInt();
-		return new ChangeFlyingStateMessage(shouldBeFlying, flyHeight);
-	}
-
-	public static void encode(ChangeFlyingStateMessage pkt, FriendlyByteBuf buf) {
-		buf.writeBoolean(pkt.shouldBeFlying);
-		buf.writeInt(pkt.flyHeight);
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return ID;
 	}
 
 	public static class Handler {
-		public static void handle(final ChangeFlyingStateMessage pkt, Supplier<NetworkManager.PacketContext> context) {
-			context.get().queue(() -> {
-				Player player = context.get().getPlayer();
+		public static void handle(final ChangeFlyingStateMessage pkt, NetworkManager.PacketContext context) {
+			context.queue(() -> {
+				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}

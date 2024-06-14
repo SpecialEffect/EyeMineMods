@@ -24,6 +24,7 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -153,7 +154,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		Player player = Minecraft.getInstance().player;
 
 		player.getAbilities().flying = false;
-		PacketHandler.CHANNEL.sendToServer(new ChangeFlyingStateMessage(false, 0));
+		NetworkManager.sendToServer(new ChangeFlyingStateMessage(false, 0));
 		updateIcons();
 	}
 
@@ -186,7 +187,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 			player.move(MoverType.SELF, new Vec3(0, flyHeight, 0));
 		}
 
-		PacketHandler.CHANNEL.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
+		NetworkManager.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 
 		updateIcons();
 

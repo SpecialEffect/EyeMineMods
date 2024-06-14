@@ -1,23 +1,23 @@
 {
   "required": true,
   "minVersion": "0.8.4",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "package": "com.specialeffect.eyemine.mixin",
   "target": "@env(DEFAULT)",
   "mixins": [
-
   ],
   "client": [
-	"AbstractContainerScreenAccessor",
-	"ClientLevelAccessor",
-	"KeyboardInputMixin",
-	"KeyMappingAccessor",
-	"MinecraftAccessor",
-	"MouseHandlerAccessor",
-	"MouseHandlerMixin",
-	"TitleScreenMixin"
+    "AbstractContainerScreenAccessor",
+    "ClientLevelAccessor",
+    "KeyboardInputMixin",
+    "KeyMappingAccessor",
+    "LivingEntityMixin",
+    "MinecraftAccessor",
+    "MouseHandlerAccessor",
+    "MouseHandlerMixin",
+    "TitleScreenMixin"
   ],
   "injectors": {
-	"defaultRequire": 1
+    "defaultRequire": 1
   }
 }

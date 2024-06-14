@@ -11,9 +11,13 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
+import com.specialeffect.eyemine.EyeMine;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,47 +25,38 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import java.util.function.Supplier;
+public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, ActivateBlockAtPosition> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC,
+			p -> p.pos,
+			ActivateBlockAtPosition::new
+	);
+	public static final CustomPacketPayload.Type<ActivateBlockAtPosition> ID = new CustomPacketPayload.Type<>(
+			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "activate_block_at_position"));
 
-public class ActivateBlockAtPosition {
-
-	private BlockPos blockPos;
-
-	public ActivateBlockAtPosition() {
-	}
-
-	public ActivateBlockAtPosition(BlockPos pos) {
-		this.blockPos = pos;
-	}
-
-	public static ActivateBlockAtPosition decode(FriendlyByteBuf buf) {
-		BlockPos blockPos = buf.readBlockPos();
-		return new ActivateBlockAtPosition(blockPos);
-	}
-
-	public static void encode(ActivateBlockAtPosition pkt, FriendlyByteBuf buf) {
-		BlockPos blockPos = pkt.blockPos;
-		buf.writeBlockPos(blockPos);
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return ID;
 	}
 
 	public static class Handler {
 		@SuppressWarnings("deprecation")
-		public static void handle(final ActivateBlockAtPosition pkt, Supplier<NetworkManager.PacketContext> context) {
-			context.get().queue(() -> {
-				Player player = context.get().getPlayer();
+		public static void handle(final ActivateBlockAtPosition pkt, NetworkManager.PacketContext context) {
+			context.queue(() -> {
+				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}
 
 				Level level = player.level();
-				BlockState state = level.getBlockState(pkt.blockPos);
+				BlockState state = level.getBlockState(pkt.pos);
 				Block block = state.getBlock();
 
 				// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks
 				BlockHitResult hit = null;
 
 				// NOTE: should use state.onBlockActivated, but this requires non-null hit, so we suppress warning
-				block.use(state, level, pkt.blockPos, player, InteractionHand.MAIN_HAND, hit);
+				block.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), state, level, pkt.pos, player, InteractionHand.MAIN_HAND, hit);
 			});
 		}
 	}

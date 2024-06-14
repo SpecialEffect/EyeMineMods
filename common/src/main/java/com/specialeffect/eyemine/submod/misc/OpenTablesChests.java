@@ -33,6 +33,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.AbstractChestBlock;
 import net.minecraft.world.level.block.Block;
@@ -136,7 +137,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
-				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
+				ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
 					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();
@@ -154,7 +155,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
-				InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, simulatedHit);
+				ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
 					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();

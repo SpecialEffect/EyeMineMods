@@ -32,8 +32,8 @@ import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsScreen;
 import net.minecraft.client.player.LocalPlayer;
 import org.lwjgl.glfw.GLFW;
 

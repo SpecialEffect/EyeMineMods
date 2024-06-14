@@ -21,10 +21,12 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -87,7 +89,7 @@ public class QuickCommands extends SubMod {
 		final ClientLevel level = minecraft.level;
 		if (mNightVisionKB.matches(keyCode, scanCode) && mNightVisionKB.consumeClick()) {
 			// Toggle night vision effect
-			MobEffect nightVision = MobEffects.NIGHT_VISION;
+			Holder<MobEffect> nightVision = MobEffects.NIGHT_VISION;
 
 			if (player.hasEffect(nightVision)) {
 				player.removeEffect(nightVision);
@@ -117,11 +119,11 @@ public class QuickCommands extends SubMod {
 			boolean newBool = !rules.getBoolean(gameRule);
 
 			String cmd = "/gamerule " + gameRule + " " + newBool;
-			PacketHandler.CHANNEL.sendToServer(new SendCommandMessage(cmd));
+			NetworkManager.sendToServer(new SendCommandMessage(cmd));
 		}
 
 		if (mRespawnKB.matches(keyCode, scanCode) && mRespawnKB.consumeClick()) {
-			PacketHandler.CHANNEL.sendToServer(new TeleportPlayerToSpawnPointMessage());
+			NetworkManager.sendToServer(new TeleportPlayerToSpawnPointMessage());
 			NightVisionHelper.cancelAndHide();
 		}
 		return EventResult.pass();

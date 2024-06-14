@@ -59,7 +59,7 @@ public class StateOverlay implements ICrosshairOverlay {
 	// You need to hang onto the position to later turn the
 	// icon on/off.
 	public synchronized static int registerTextureLeft(String filepath) {
-		ResourceLocation res = new ResourceLocation(filepath);
+		ResourceLocation res = ResourceLocation.tryParse(filepath);
 		mResourcesLeft.add(res);
 		mFlagsLeft.add(false);
 		return mResourcesLeft.size() - 1;
@@ -69,7 +69,7 @@ public class StateOverlay implements ICrosshairOverlay {
 	// You need to hang onto the position to later turn the
 	// icon on/off.
 	public synchronized static int registerTextureRight(String filepath) {
-		ResourceLocation res = new ResourceLocation(filepath);
+		ResourceLocation res = ResourceLocation.tryParse(filepath);
 		mResourcesRight.add(res);
 		mFlagsRight.add(false);
 		return mResourcesRight.size() - 1;

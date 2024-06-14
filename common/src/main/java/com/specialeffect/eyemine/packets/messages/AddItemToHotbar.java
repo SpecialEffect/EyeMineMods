@@ -11,57 +11,52 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
+import com.specialeffect.eyemine.EyeMine;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Supplier;
+public record AddItemToHotbar(ItemStack item, int slotId) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, AddItemToHotbar> CODEC = StreamCodec.composite(
+			ItemStack.STREAM_CODEC,
+			p -> p.item,
+			ByteBufCodecs.INT,
+			p -> p.slotId,
+			AddItemToHotbar::new
+	);
+	public static final CustomPacketPayload.Type<AddItemToHotbar> ID = new CustomPacketPayload.Type<>(
+			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "add_item_to_hotbar"));
 
-public class AddItemToHotbar {
-
-	private ItemStack item;
-	private int slotId = -1;
-
-	public AddItemToHotbar() {
-	}
-
-	public AddItemToHotbar(ItemStack item, int id) {
-		this.item = item;
-		this.slotId = id;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return ID;
 	}
 
 	public AddItemToHotbar(ItemStack item) {
-		this.item = item;
-	}
-
-	public static AddItemToHotbar decode(FriendlyByteBuf buf) {
-		ItemStack item = buf.readItem();
-		int slotId = buf.readInt();
-		return new AddItemToHotbar(item, slotId);
-	}
-
-	public static void encode(AddItemToHotbar pkt, FriendlyByteBuf buf) {
-		buf.writeItem(pkt.item);
-		buf.writeInt(pkt.slotId);
+		this(item, -1);
 	}
 
 	public static class Handler {
-		public static void handle(final AddItemToHotbar pkt, Supplier<NetworkManager.PacketContext> context) {
-			context.get().queue(() -> {
-				Player player = context.get().getPlayer();
+		public static void handle(final AddItemToHotbar pkt, NetworkManager.PacketContext context) {
+			context.queue(() -> {
+				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}
 
 				Inventory inventory = player.getInventory();
-
-				if (pkt.slotId < 0) {
-					pkt.slotId = inventory.getSuitableHotbarSlot();
+				int slot = pkt.slotId;
+				if (slot < 0) {
+					slot = inventory.getSuitableHotbarSlot();
 				}
-				inventory.setItem(pkt.slotId, pkt.item);
-				inventory.selected = pkt.slotId;
+				inventory.setItem(slot, pkt.item);
+				inventory.selected = slot;
 			});
 		}
 	}

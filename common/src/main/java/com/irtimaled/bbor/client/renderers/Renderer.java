@@ -28,7 +28,7 @@ public class Renderer {
 	}
 
 	private static final Tesselator tessellator = new Tesselator(2097152);
-	private static final BufferBuilder bufferBuilder = tessellator.getBuilder();
+	private static BufferBuilder bufferBuilder;
 
 	private int red;
 	private int green;
@@ -36,7 +36,7 @@ public class Renderer {
 	private int alpha;
 
 	private Renderer(Mode glMode, VertexFormat vertexFormat) {
-		bufferBuilder.begin(glMode, vertexFormat);
+		this.bufferBuilder = tessellator.begin(glMode, vertexFormat);
 		this.glMode = glMode;
 	}
 
@@ -70,37 +70,28 @@ public class Renderer {
 	}
 
 	Renderer addPoint(double x, double y, double z) {
-		pos(x, y, z);
+		pos((float) x, (float) y, (float) z);
 		color();
-		end();
 		return this;
 	}
 
 	public Renderer addPoint(double x, double y, double z, float u, float v) {
-		pos(x, y, z);
+		pos((float) x, (float) y, (float) z);
 		tex(u, v);
 		color();
-		end();
 		return this;
 	}
 
-	public void render() {
-		tessellator.end();
-	}
 
-	private void pos(double x, double y, double z) {
-		bufferBuilder.vertex(x, y, z);
+	private void pos(float x, float y, float z) {
+		bufferBuilder.addVertex(x, y, z);
 	}
 
 	private void tex(float u, float v) {
-		bufferBuilder.uv(u, v);
+		bufferBuilder.setUv(u, v);
 	}
 
 	private void color() {
-		bufferBuilder.color(red, green, blue, alpha);
-	}
-
-	private void end() {
-		bufferBuilder.endVertex();
+		bufferBuilder.setColor(red, green, blue, alpha);
 	}
 }

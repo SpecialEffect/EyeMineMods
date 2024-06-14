@@ -18,6 +18,7 @@ import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import dev.architectury.event.CompoundEventResult;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,7 +31,7 @@ public class MainClientHandler {
 	public static final List<ICrosshairOverlay> crosshairOverlayList = new ArrayList<>();
 	private static StateOverlay mStateOverlay;
 
-	public static void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
+	public static void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		if (!MainClientHandler.crosshairOverlayList.isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			for (ICrosshairOverlay overlay : MainClientHandler.crosshairOverlayList) {

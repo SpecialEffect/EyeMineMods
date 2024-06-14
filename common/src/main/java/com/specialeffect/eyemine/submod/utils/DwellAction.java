@@ -23,6 +23,7 @@ import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -221,7 +222,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, float partialTicks) {
+	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
 		// If dwell is on, show a warning message
 		if (mDwelling && showLabel) {
 			Minecraft minecraft = Minecraft.getInstance();

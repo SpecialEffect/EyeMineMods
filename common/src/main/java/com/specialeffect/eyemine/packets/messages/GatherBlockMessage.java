@@ -11,39 +11,36 @@
 
 package com.specialeffect.eyemine.packets.messages;
 
+import com.specialeffect.eyemine.EyeMine;
 import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.function.Supplier;
+public record GatherBlockMessage(int entityId) implements CustomPacketPayload {
+	public static final StreamCodec<RegistryFriendlyByteBuf, GatherBlockMessage> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT,
+			p -> p.entityId,
+			GatherBlockMessage::new
+	);
+	public static final CustomPacketPayload.Type<GatherBlockMessage> ID = new CustomPacketPayload.Type<>(
+			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "gather_block"));
 
-public class GatherBlockMessage {
-
-	private int entityId = 0;
-
-	public GatherBlockMessage() {
-	}
-
-	public GatherBlockMessage(int id) {
-		this.entityId = id;
-	}
-
-	public static GatherBlockMessage decode(FriendlyByteBuf buf) {
-		int entityId = buf.readInt();
-		return new GatherBlockMessage(entityId);
-	}
-
-	public static void encode(GatherBlockMessage pkt, FriendlyByteBuf buf) {
-		buf.writeInt(pkt.entityId);
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return ID;
 	}
 
 	public static class Handler {
-		public static void handle(final GatherBlockMessage pkt, Supplier<NetworkManager.PacketContext> context) {
-			context.get().queue(() -> {
-				Player player = context.get().getPlayer();
+		public static void handle(final GatherBlockMessage pkt, NetworkManager.PacketContext context) {
+			context.queue(() -> {
+				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}

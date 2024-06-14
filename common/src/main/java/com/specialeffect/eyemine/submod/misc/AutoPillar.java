@@ -23,6 +23,7 @@ import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -179,7 +180,7 @@ public class AutoPillar extends SubMod {
 			inventory.selected = blockId;
 		} else {
 			// Ask server to put new item in hotbar
-			PacketHandler.CHANNEL.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.SHORT_GRASS)));
+			NetworkManager.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.SHORT_GRASS)));
 		}
 	}
 }
