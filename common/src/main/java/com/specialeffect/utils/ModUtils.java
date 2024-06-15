@@ -13,6 +13,7 @@ package com.specialeffect.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -137,6 +138,7 @@ public class ModUtils {
 		bufferbuilder.addVertex((float) (x + width), (float) (y + height), z).setUv(1.0f, 1.0f);
 		bufferbuilder.addVertex((float) (x + width), (float) y, z).setUv(1.0f, 0.0f);
 		bufferbuilder.addVertex((float) x, (float) y, z).setUv(0.0f, 0.0f);
+		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 	}
 
 	// Find an item in the hotbar which matches the given class

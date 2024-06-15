@@ -1,6 +1,7 @@
 package com.irtimaled.bbor.client.renderers;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -72,6 +73,7 @@ public class Renderer {
 	Renderer addPoint(double x, double y, double z) {
 		pos((float) x, (float) y, (float) z);
 		color();
+		draw();
 		return this;
 	}
 
@@ -79,6 +81,7 @@ public class Renderer {
 		pos((float) x, (float) y, (float) z);
 		tex(u, v);
 		color();
+		draw();
 		return this;
 	}
 
@@ -93,5 +96,9 @@ public class Renderer {
 
 	private void color() {
 		bufferBuilder.setColor(red, green, blue, alpha);
+	}
+
+	public void draw() {
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 }
