@@ -5,7 +5,7 @@ license="GPL-3.0"
 
 [[mods]]
 modId="eyemine"
-version="${version}"
+version="${file.jarVersion}"
 displayName="EyeMine"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught, Mrbysco"
@@ -37,7 +37,7 @@ For questions or support, contact eyemine@specialeffect.org.uk
 [[dependencies.eyemine]]
 modId = "architectury"
 type = "required"
-versionRange = "[15.0.127,)"
+versionRange = "[13.0.1,)"
 ordering = "AFTER"
 side = "BOTH"
 [[mixins]]

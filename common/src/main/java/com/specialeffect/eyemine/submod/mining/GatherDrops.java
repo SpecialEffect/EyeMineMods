@@ -14,7 +14,6 @@ package com.specialeffect.eyemine.submod.mining;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;

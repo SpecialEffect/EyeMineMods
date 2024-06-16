@@ -16,7 +16,6 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.eyemine.callbacks.OnLivingCallback;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;

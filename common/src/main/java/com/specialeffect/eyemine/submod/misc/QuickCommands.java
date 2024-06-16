@@ -14,7 +14,6 @@ package com.specialeffect.eyemine.submod.misc;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.SendCommandMessage;
 import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
 import com.specialeffect.eyemine.submod.SubMod;

@@ -12,7 +12,6 @@
 package com.specialeffect.eyemine.submod.misc;
 
 import com.specialeffect.eyemine.EyeMineClient;
-import com.specialeffect.eyemine.packets.PacketHandler;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
