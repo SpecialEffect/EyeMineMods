@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.mixin;
 
+import com.specialeffect.eyemine.utils.MouseHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.util.SmoothDouble;
@@ -75,18 +76,8 @@ public abstract class MouseHandlerMixin {
 
 
 	@Inject(method = "onMove(JDD)V", at = @At(value = "HEAD"))
-	public void EyeMine$checkOutsideWindow(long windowPointer, double xPos, double yPos, CallbackInfo ci) {
-		// Get Minecraft Window size
-		double w_half = (double) this.minecraft.getWindow().getScreenWidth() / 2;
-		double h_half = (double) this.minecraft.getWindow().getScreenWidth() / 2;
-
-		// Check if mouse position outside window
-		double x_abs = Math.abs(xPos);
-		double y_abs = Math.abs(yPos);
-		boolean isOutsideWindow = (x_abs > w_half * (1 - deadBorder) || y_abs > h_half * (1 - deadBorder));
-		if (isOutsideWindow) {
-			this.setIgnoreFirstMove();
-		}
+	public void EyeMine$addPendingEvent(long windowPointer, double xPos, double yPos, CallbackInfo ci) {
+		MouseHelper.addPendingEvent();
 	}
 
 //	@Inject(method = "onMove(JDD)V",
