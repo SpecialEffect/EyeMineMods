@@ -275,7 +275,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	}
 
 	public static boolean hasPendingEvent() {
-		return mTicksSinceMouseEvent < 2;
+		return mTicksSinceMouseEvent < 5;
 	}
 
 	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
