@@ -64,9 +64,11 @@ public class EyeMineClient {
 			}
 		}
 
-		ClientLifecycleEvent.CLIENT_STARTED.register((state) -> {
-			setupComplete = true;
-			refresh();
+		ClientLifecycleEvent.CLIENT_SETUP.register((client) -> {
+			if (!setupComplete) {
+				setupComplete = true;
+				refresh();
+			}
 		});
 	}
 
