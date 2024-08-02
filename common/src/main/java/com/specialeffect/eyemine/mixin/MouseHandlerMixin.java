@@ -68,11 +68,11 @@ public abstract class MouseHandlerMixin {
 	@Shadow public abstract void setIgnoreFirstMove();
 
 	@Unique
-	public float deadBorder = 0.05f;
+	public float eyemine$deadBorder = 0.05f;
 	@Unique
-	public float clipBorderHorizontal = 0.3f;
+	public float eyemine$clipBorderHorizontal = 0.3f;
 	@Unique
-	public float clipBorderVertical = 0.2f;
+	public float eyemine$clipBorderVertical = 0.2f;
 
 
 	@Inject(method = "onMove(JDD)V", at = @At(value = "HEAD"))

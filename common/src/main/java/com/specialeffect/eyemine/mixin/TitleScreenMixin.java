@@ -28,11 +28,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TitleScreenMixin extends Screen {
 
 	@Unique
-	private final boolean showFadeInAnimation = false;
+	private final boolean eyemine$showFadeInAnimation = false;
 	@Unique
-	private long firstRenderTime;
+	private long eyemine$firstRenderTime;
 	@Unique
-	private float animationTime;
+	private float eyemine$animationTime;
 
 	protected TitleScreenMixin(Component component) {
 		super(component);
@@ -40,16 +40,16 @@ public class TitleScreenMixin extends Screen {
 
 	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
 	public void eyemineTitleHeadRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
-		if (this.firstRenderTime == 0L && this.showFadeInAnimation) {
-			this.firstRenderTime = Util.getMillis();
+		if (this.eyemine$firstRenderTime == 0L && this.eyemine$showFadeInAnimation) {
+			this.eyemine$firstRenderTime = Util.getMillis();
 		}
 
-		animationTime = this.showFadeInAnimation ? (float) (Util.getMillis() - this.firstRenderTime) / 1000.0F : 1.0F;
+		eyemine$animationTime = this.eyemine$showFadeInAnimation ? (float) (Util.getMillis() - this.eyemine$firstRenderTime) / 1000.0F : 1.0F;
 	}
 
 	@Inject(at = @At("TAIL"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
 	public void eyemineTitleTailRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
-		float f1 = this.showFadeInAnimation ? Mth.clamp(animationTime - 1.0F, 0.0F, 1.0F) : 1.0F;
+		float f1 = this.eyemine$showFadeInAnimation ? Mth.clamp(eyemine$animationTime - 1.0F, 0.0F, 1.0F) : 1.0F;
 		int l = Mth.ceil(f1 * 255.0F) << 24;
 
 		String subtitle = "EyeMine Edition";
