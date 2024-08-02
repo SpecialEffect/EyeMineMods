@@ -11,16 +11,11 @@
 
 package com.specialeffect.eyemine.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.ParsingMode;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.EyeMineClient;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
-
-import java.nio.file.Path;
 
 public class EyeMineConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
@@ -249,14 +244,6 @@ public class EyeMineConfig {
 		useDwellForSingleUseItem = CLIENT_BUILDER.comment("Use dwell for single 'use item'")
 				.define("useDwellForSingleUseItem", false);
 
-	}
-
-	public static void loadConfig(ModConfigSpec spec, Path path) {
-		final CommentedFileConfig configData = CommentedFileConfig.builder(path).preserveInsertionOrder().sync()
-				.autosave().writingMode(WritingMode.REPLACE).parsingMode(ParsingMode.ADD).concurrent().build();
-
-		configData.load();
-		spec.setConfig(configData);
 	}
 
 	@SubscribeEvent

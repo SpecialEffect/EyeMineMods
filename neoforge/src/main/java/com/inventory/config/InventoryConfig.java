@@ -11,16 +11,12 @@
 
 package com.inventory.config;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
-
-import java.nio.file.Path;
 
 public class InventoryConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
@@ -104,18 +100,6 @@ public class InventoryConfig {
 
 		keySearch = CLIENT_BUILDER.comment("keySearch").define("keySearch", GLFW.GLFW_KEY_DOWN);
 		keyDrop = CLIENT_BUILDER.comment("keyDrop2").define("keyDrop2", GLFW.GLFW_KEY_MINUS);
-	}
-
-	public static void loadConfig(ModConfigSpec spec, Path path) {
-
-		final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-				.sync()
-				.autosave()
-				.writingMode(WritingMode.REPLACE)
-				.build();
-
-		configData.load();
-		spec.setConfig(configData);
 	}
 
 	@SubscribeEvent
