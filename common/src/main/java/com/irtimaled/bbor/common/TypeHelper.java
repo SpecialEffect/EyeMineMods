@@ -3,6 +3,7 @@ package com.irtimaled.bbor.common;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("ALL")
 public class TypeHelper {
 	public static <T> T as(Object value, Class<T> clazz) {
 		return clazz.isInstance(value) ? (T) value : null;
