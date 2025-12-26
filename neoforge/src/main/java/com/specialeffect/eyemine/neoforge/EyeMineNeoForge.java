@@ -15,6 +15,8 @@ import net.neoforged.neoforge.common.NeoForge;
 @Mod(EyeMine.MOD_ID)
 public class EyeMineNeoForge {
 	public EyeMineNeoForge(IEventBus eventBus, ModContainer container, Dist dist) {
+		// In NeoForge 1.21+, the event bus is passed directly to the constructor
+		// and Architectury automatically detects it via ModList.getModContainerById()
 		EyeMine.init();
 
 		if (dist.isClient()) {

@@ -249,7 +249,6 @@ public class ModUtils {
 		return false;
 	}
 
-	@SuppressWarnings("removal")
 	public static BlockPos highestSolidPoint(BlockPos pos) {
 		// Gets a spawn-able location above the point
 		// Highest solid block that isn't foliage
@@ -258,8 +257,8 @@ public class ModUtils {
 
 		BlockPos blockpos;
 		BlockPos blockpos1;
-		//TODO: LevelChunk#getHighestSectionPosition() is deprecated and marked for removal
-		for (blockpos = new BlockPos(pos.getX(), chunk.getHighestSectionPosition() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1) {
+		// Start from max build height and search downward
+		for (blockpos = new BlockPos(pos.getX(), world.getMaxBuildHeight(), pos.getZ()); blockpos.getY() >= world.getMinBuildHeight(); blockpos = blockpos1) {
 			blockpos1 = blockpos.below();
 			BlockState state = chunk.getBlockState(blockpos1);
 

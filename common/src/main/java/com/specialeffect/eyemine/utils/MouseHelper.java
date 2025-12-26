@@ -30,7 +30,7 @@ public class MouseHelper {
 	// to access EyeMine keyboard
 	public static boolean ungrabbedMouseMode = false;
 
-	private static boolean mHasPendingEvent = false;
+	public static boolean mHasPendingEvent = false;
 
 	public static double lastXVelocity = 0.0;
 	public static double lastYVelocity = 0.0;

@@ -5,7 +5,7 @@ license="GPL-3.0"
 
 [[mods]]
 modId="eyemine"
-version="${file.jarVersion}"
+version="${version}"
 displayName="EyeMine"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="Kirsty McNaught, Mrbysco"

@@ -8,4 +8,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface MinecraftAccessor {
 	@Accessor("fps")
 	int getFPS();
+
+	@Accessor("missTime")
+	void setMissTime(int missTime);
+
+	@Accessor("missTime")
+	int getMissTime();
 }

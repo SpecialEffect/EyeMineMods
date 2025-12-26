@@ -156,7 +156,10 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		if (EyeMineConfig.getUsingMouseEmulation()) {
 			mInputSource = InputSource.Mouse;
 			updateState(InteractionState.MOUSE_NOTHING);
-			MouseHelper.setUngrabbedMode(true);
+			// In MOUSE_NOTHING mode, let vanilla handle everything including mouse grabbing.
+			// Don't call setUngrabbedMode(true) - that would release the mouse and prevent
+			// normal gameplay. This allows testing with a regular mouse.
+			MouseHelper.setUngrabbedMode(false);
 		} else {
 			mInputSource = InputSource.EyeTracker;
 			updateState(InteractionState.EYETRACKER_NORMAL);
