@@ -23,6 +23,7 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
+import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
@@ -56,10 +57,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 	private static KeyMapping mIncreaseWalkSpeedKB;
 	private static KeyMapping mDecreaseWalkSpeedKB;
 
-	private static int mQueueLength = 50;
+	private static int mQueueLength = 20;
 
 	private static boolean mMoveWhenMouseStationary = false;
 	public static float mCustomSpeedFactor = 0.8f;
+
+	private static boolean mWasPausedByGaze = false; // Track for logging
 
 	private int jumpTicks = 0;
 
@@ -128,6 +131,23 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			//   you don't want to continue walking. In this case you can opt to not walk on any ticks where the mouse
 			//   hasn't moved at all. This is mainly applicable to gaze input.
 			// - If walking into a wall, don't keep walking fast!
+
+			// Pause walking when gaze is below the hotbar (where EyeMine keyboard renders)
+			// or when gaze is outside the window entirely (original behavior per dev)
+			// This check must be OUTSIDE the hasPendingEvent() condition because gaze at
+			// keyboard area may be in the deadzone where no pending event is registered
+			if (mDoingAutoWalk && null == minecraft.screen &&
+					(MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow)) {
+				if (!mWasPausedByGaze) {
+					LOGGER.info("Walking paused - gaze {} threshold",
+						MouseHelper.isGazeOutsideWindow ? "outside window" : "below hotbar");
+					mWasPausedByGaze = true;
+				}
+				KeyboardInputHelper.setWalkOverride(false, 0.0f);
+				return;
+			} else {
+				mWasPausedByGaze = false;
+			}
 
 			if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 				double forward = (double) mCustomSpeedFactor;
@@ -265,7 +285,10 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 	private double slowdownFactorPitch(Player player) {
 		float f = player.getXRot();
-		if (f < -75 || f > 75) {
+		// Fully stop when looking at extreme angles (e.g., onboard keyboard)
+		if (f < -80 || f > 80) {
+			return 0.0f;
+		} else if (f < -75 || f > 75) {
 			return 0.15f;
 		} else if (f < -60 || f > 60) {
 			return 0.3f;

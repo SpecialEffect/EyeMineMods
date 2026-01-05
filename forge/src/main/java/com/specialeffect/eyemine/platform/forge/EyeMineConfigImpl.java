@@ -126,4 +126,8 @@ public class EyeMineConfigImpl {
 	public static boolean getSlowdownOnAttack() {
 		return EyeMineConfig.slowdownOnAttack.get();
 	}
+
+	public static int getGazeIdleThreshold() {
+		return EyeMineConfig.gazeIdleThreshold.get();
+	}
 }

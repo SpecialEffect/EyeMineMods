@@ -14,6 +14,7 @@ package com.specialeffect.eyemine.mixin;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.specialeffect.eyemine.EyeMine;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import net.minecraft.client.Minecraft;
@@ -83,6 +84,13 @@ public abstract class MouseHandlerMixin {
 	@Unique
 	public float eyemine$clipBorderVertical = 0.2f;
 
+	// Store last known cursor position for ungrabbed mode
+	@Unique
+	private double eyemine$lastX = 0;
+
+	@Unique
+	private double eyemine$lastY = 0;
+
 	/**
 	 * Inject at HEAD of onMove to add our pending event tracking
 	 */
@@ -122,26 +130,60 @@ public abstract class MouseHandlerMixin {
 			this.grabMouse();
 		}
 
-		// Process mouse position
-		if (this.minecraft.isWindowActive()) {
-			this.eyemine$processMousePosition(xpos, ypos);
+		// Store current position for ungrabbed mode
+		if (MouseHelper.ungrabbedMouseMode) {
+			this.eyemine$lastX = xpos;
+			this.eyemine$lastY = ypos;
 		}
 
-		// Turn the player
-		this.turnPlayer(Blaze3D.getTime() - this.lastHandleMovementTime);
+		// Check if gaze is below the hotbar area (configurable threshold)
+		// This is where the EyeMine keyboard renders, so walking should pause
+		// Skip the check if position is (0,0) in grabbed mode - that's our cursor reset position,
+		// not a real gaze. GLFW fires an onMove callback when we reset the cursor.
+		int threshold = EyeMineConfig.getGazeIdleThreshold();
+		boolean isCursorResetEvent = !MouseHelper.ungrabbedMouseMode && xpos == 0 && ypos == 0;
+		if (threshold > 0 && !isCursorResetEvent) {
+			double screenHeight = this.minecraft.getWindow().getScreenHeight();
+			// Use raw ypos from callback - this is the actual gaze/cursor position
+			// In grabbed mode, ypos is reported relative to window after we set NORMAL mode above
+			double thresholdY = screenHeight * (1.0 - threshold / 100.0);
+			boolean wasBelow = MouseHelper.isGazeBelowHotbar;
+			MouseHelper.isGazeBelowHotbar = ypos > thresholdY;
+			// Log when state changes to help debug
+			if (MouseHelper.isGazeBelowHotbar != wasBelow) {
+				EyeMine.LOGGER.info("Gaze threshold: ypos={}, screenHeight={}, threshold={}%, thresholdY={}, isBelow={}",
+					String.format("%.1f", ypos), String.format("%.1f", screenHeight), threshold,
+					String.format("%.1f", thresholdY), MouseHelper.isGazeBelowHotbar);
+			}
+		} else if (threshold <= 0) {
+			MouseHelper.isGazeBelowHotbar = false;
+		}
+		// Note: if isCursorResetEvent, we leave isGazeBelowHotbar unchanged
 
-		// Reset cursor to origin when in grabbed mode
+		// Process mouse position - sets accumulatedDX/DY based on position
+		if (this.minecraft.isWindowActive()) {
+			this.eyemine$processMousePosition(xpos, ypos, isCursorResetEvent);
+		}
+
+		// In grabbed mode (eye tracker), reset cursor to origin after each move
+		// This makes each subsequent position effectively a delta
 		if (!MouseHelper.ungrabbedMouseMode) {
 			GLFW.glfwSetCursorPos(this.minecraft.getWindow().getWindow(), 0, 0);
 			this.xpos = 0;
 			this.ypos = 0;
+			// In grabbed mode, call turnPlayer immediately since position IS the delta
+			this.turnPlayer(Blaze3D.getTime() - this.lastHandleMovementTime);
+		} else {
+			// In ungrabbed mode, update xpos/ypos for vanilla compatibility
+			this.xpos = xpos;
+			this.ypos = ypos;
 		}
 
 		ci.cancel();
 	}
 
 	@Unique
-	private void eyemine$processMousePosition(double x, double y) {
+	private void eyemine$processMousePosition(double x, double y, boolean isCursorResetEvent) {
 		double w_half = (double) this.minecraft.getWindow().getScreenWidth() / 2;
 		double h_half = (double) this.minecraft.getWindow().getScreenHeight() / 2;
 
@@ -154,9 +196,16 @@ public abstract class MouseHandlerMixin {
 		double x_abs = Math.abs(x);
 		double y_abs = Math.abs(y);
 
-		// If mouse is outside minecraft window, throw it away
-		if (x_abs > w_half * (1 - this.eyemine$deadBorder) ||
-				y_abs > h_half * (1 - this.eyemine$deadBorder)) {
+		// Check if gaze is outside the window (in dead border)
+		// Skip updating for cursor reset events - (0,0) is our reset position, not real gaze
+		boolean isOutside = x_abs > w_half * (1 - this.eyemine$deadBorder) ||
+				y_abs > h_half * (1 - this.eyemine$deadBorder);
+		if (!isCursorResetEvent) {
+			MouseHelper.isGazeOutsideWindow = isOutside;
+		}
+
+		// If mouse is outside minecraft window, or gaze is at keyboard area, stop camera movement
+		if (isOutside || MouseHelper.isGazeBelowHotbar) {
 			// do nothing
 			this.eyemine$resetVelocity();
 		} else {
@@ -194,6 +243,12 @@ public abstract class MouseHandlerMixin {
 			return;
 		}
 
+		// In ungrabbed mode (emulation), recalculate accumulated values from stored position
+		// This ensures values are correct even when called from game loop (handleAccumulatedMovement)
+		if (MouseHelper.ungrabbedMouseMode) {
+			this.eyemine$recalculateFromStoredPosition();
+		}
+
 		if (MouseHelper.movementState == PlayerMovement.VANILLA) {
 			eyemine$updatePlayerLookVanilla();
 		} else if (MouseHelper.movementState == PlayerMovement.LEGACY) {
@@ -204,6 +259,40 @@ public abstract class MouseHandlerMixin {
 		}
 
 		ci.cancel();
+	}
+
+	/**
+	 * Recalculate accumulatedDX/DY from stored cursor position for ungrabbed mode
+	 */
+	@Unique
+	private void eyemine$recalculateFromStoredPosition() {
+		double w_half = (double) this.minecraft.getWindow().getScreenWidth() / 2;
+		double h_half = (double) this.minecraft.getWindow().getScreenHeight() / 2;
+
+		// Position relative to center
+		double x = this.eyemine$lastX - w_half;
+		double y = this.eyemine$lastY - h_half;
+
+		double x_abs = Math.abs(x);
+		double y_abs = Math.abs(y);
+
+		// If mouse is outside dead border, don't turn
+		if (x_abs > w_half * (1 - this.eyemine$deadBorder) ||
+				y_abs > h_half * (1 - this.eyemine$deadBorder)) {
+			this.accumulatedDX = 0;
+			this.accumulatedDY = 0;
+		} else {
+			// Clip to border regions
+			if (x_abs > w_half * (1 - this.eyemine$clipBorderHorizontal)) {
+				x = Math.signum(x) * (w_half * (1 - this.eyemine$clipBorderHorizontal));
+			}
+			if (y_abs > h_half * (1 - this.eyemine$clipBorderVertical)) {
+				y = Math.signum(y) * (h_half * (1 - this.eyemine$clipBorderVertical));
+			}
+
+			this.accumulatedDX = x;
+			this.accumulatedDY = y;
+		}
 	}
 
 	@Unique
