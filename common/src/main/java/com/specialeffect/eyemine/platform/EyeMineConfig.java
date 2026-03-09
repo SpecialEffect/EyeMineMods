@@ -188,4 +188,10 @@ public class EyeMineConfig {
 		// Just throw an error, the content should get replaced at runtime.
 		throw new AssertionError();
 	}
+
+	@ExpectPlatform
+	public static int getGazeIdleThreshold() {
+		// Just throw an error, the content should get replaced at runtime.
+		throw new AssertionError();
+	}
 }

@@ -48,6 +48,7 @@ public class EyeMineConfig {
 	public static ForgeConfigSpec.IntValue walkingSlowdownFilter;
 	public static ForgeConfigSpec.BooleanValue moveWhenMouseStationary;
 	public static ForgeConfigSpec.DoubleValue customSpeedFactor;
+	public static ForgeConfigSpec.IntValue gazeIdleThreshold;
 
 	public static ForgeConfigSpec.BooleanValue slowdownOnCorners;
 	public static ForgeConfigSpec.BooleanValue slowdownOnAttack;
@@ -197,12 +198,16 @@ public class EyeMineConfig {
 				.define("slowdownOnCorners", true);
 
 		walkingSlowdownFilter = CLIENT_BUILDER.comment(
-						"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster)")
-				.defineInRange("walkingSlowdownFilter", 10, 1, 200);
+						"How many ticks to take into account for slowing down while looking around / turning corners.\n(smaller number = faster, 20 = 1 second)")
+				.defineInRange("walkingSlowdownFilter", 20, 1, 200);
 
 		moveWhenMouseStationary = CLIENT_BUILDER.comment(
 						"Continue walking forward when the mouse is stationary?\nRecommended to be turned off for eye gaze control, or turned on for joysticks.")
 				.define("moveWhenMouseStationary", false);
+
+		gazeIdleThreshold = CLIENT_BUILDER.comment(
+						"Percentage of screen height from bottom where gaze pauses walking\n(for looking at onboard keyboard). 0 = disabled, 10 = bottom 10% of screen")
+				.defineInRange("gazeIdleThreshold", 10, 0, 50);
 
 		slowdownOnAttack = CLIENT_BUILDER.comment(
 						"Slow down auto-walk when attacking an entity\nThis only applies when your crosshair is over an entity, and makes\nit easier to chase mobs")

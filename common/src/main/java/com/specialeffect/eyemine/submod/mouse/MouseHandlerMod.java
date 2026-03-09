@@ -156,6 +156,8 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		if (EyeMineConfig.getUsingMouseEmulation()) {
 			mInputSource = InputSource.Mouse;
 			updateState(InteractionState.MOUSE_NOTHING);
+			// Mouse emulation uses ungrabbed mode - cursor moves freely
+			// Position relative to center determines turn rate when in MOUSE_LOOK mode
 			MouseHelper.setUngrabbedMode(true);
 		} else {
 			mInputSource = InputSource.EyeTracker;

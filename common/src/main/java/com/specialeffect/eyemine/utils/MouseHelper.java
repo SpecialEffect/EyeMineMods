@@ -30,10 +30,18 @@ public class MouseHelper {
 	// to access EyeMine keyboard
 	public static boolean ungrabbedMouseMode = false;
 
-	private static boolean mHasPendingEvent = false;
+	public static boolean mHasPendingEvent = false;
 
 	public static double lastXVelocity = 0.0;
 	public static double lastYVelocity = 0.0;
+
+	// Track if gaze is below the hotbar area (where EyeMine keyboard renders)
+	// Walking should pause when this is true
+	public static boolean isGazeBelowHotbar = false;
+
+	// Track if gaze is outside the window (in the dead border area)
+	// Walking should pause when this is true - matches original behavior
+	public static boolean isGazeOutsideWindow = false;
 
 	public static synchronized void addPendingEvent() {
 		mHasPendingEvent = true;

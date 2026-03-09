@@ -88,13 +88,18 @@ public class EyeMineConfig implements ConfigData {
 		public boolean slowdownOnCorners = true;
 
 		@Comment("How many ticks to take into account for slowing down while looking around / turning corners. " +
-				" (smaller number = faster)")
+				" (smaller number = faster, 20 = 1 second)")
 		@BoundedDiscrete(min = 1, max = 200)
-		public int walkingSlowdownFilter = 10;
+		public int walkingSlowdownFilter = 20;
 
 		@Comment("Continue walking forward when the mouse is stationary?" +
 				" Recommended to be turned off for eye gaze control, or turned on for joysticks.")
 		public boolean moveWhenMouseStationary = false;
+
+		@Comment("Percentage of screen height from bottom where gaze pauses walking" +
+				" (for looking at onboard keyboard). 0 = disabled, 10 = bottom 10% of screen")
+		@BoundedDiscrete(min = 0, max = 50)
+		public int gazeIdleThreshold = 10;
 
 		@Comment("Slow down auto-walk when attacking an entity" +
 				" This only applies when your crosshair is over an entity, and makes it easier to chase mobs")

@@ -92,6 +92,16 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
+			// Pause walking when gaze is below the hotbar (where EyeMine keyboard renders)
+			// or when gaze is outside the window entirely (original behavior per dev)
+			// This check must be OUTSIDE the hasPendingEvent() condition because gaze at
+			// keyboard area may be in the deadzone where no pending event is registered
+			if (mDoingAutoWalk && minecraft.screen == null &&
+					(MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow)) {
+				KeyboardInputHelper.setWalkOverride(false, 0.0f);
+				return;
+			}
+
 			if (mDoingAutoWalk && minecraft.screen == null && // no gui visible
 					(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 

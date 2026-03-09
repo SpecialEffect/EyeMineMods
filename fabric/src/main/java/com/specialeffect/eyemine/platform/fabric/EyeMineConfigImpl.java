@@ -158,4 +158,9 @@ public class EyeMineConfigImpl {
 		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
 		return config.movement.slowdownOnAttack;
 	}
+
+	public static int getGazeIdleThreshold() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.movement.gazeIdleThreshold;
+	}
 }
