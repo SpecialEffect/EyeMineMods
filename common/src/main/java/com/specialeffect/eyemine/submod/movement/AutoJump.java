@@ -53,12 +53,17 @@ public class AutoJump extends SubMod implements IConfigListener {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
-	private void updateSettings(boolean autoJump) {
+	private void updateSettings(boolean autoJump, boolean persist) {
 		Options options = Minecraft.getInstance().options;
 		if (options != null) {
 			options.autoJump().set(autoJump);
-			options.save();
-			options.load();
+			// Only save/reload when user toggles the setting, not during startup
+			// Calling options.save()/load() during mod initialization can interfere
+			// with keybinding persistence
+			if (persist) {
+				options.save();
+				options.load();
+			}
 		}
 	}
 
@@ -66,7 +71,8 @@ public class AutoJump extends SubMod implements IConfigListener {
 	public void syncConfig() {
 		this.mAutoJumpDisabled = EyeMineConfig.getDisableAutoJumpFixes();
 		this.mDoingAutoJump = EyeMineConfig.getDefaultDoAutoJump();
-		this.updateSettings(mDoingAutoJump);
+		// Don't persist during config sync (startup) - this can reset keybindings
+		this.updateSettings(mDoingAutoJump, false);
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
@@ -101,7 +107,8 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
-			this.updateSettings(mDoingAutoJump);
+			// User toggled the setting, so persist it
+			this.updateSettings(mDoingAutoJump, true);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 			ModUtils.sendPlayerMessage("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF"));
 		}

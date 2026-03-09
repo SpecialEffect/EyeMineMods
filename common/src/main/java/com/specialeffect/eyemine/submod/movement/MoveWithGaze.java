@@ -132,25 +132,29 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			//   hasn't moved at all. This is mainly applicable to gaze input.
 			// - If walking into a wall, don't keep walking fast!
 
-			// Pause walking when gaze is below the hotbar (where EyeMine keyboard renders)
+			// Slow down walking when gaze is below the hotbar (where EyeMine keyboard renders)
 			// or when gaze is outside the window entirely (original behavior per dev)
+			// Per Kirsty: stopping completely isn't intuitive (e.g., looking up/down hills),
+			// so we slow down significantly instead
 			// This check must be OUTSIDE the hasPendingEvent() condition because gaze at
 			// keyboard area may be in the deadzone where no pending event is registered
-			if (mDoingAutoWalk && null == minecraft.screen &&
-					(MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow)) {
-				if (!mWasPausedByGaze) {
-					LOGGER.info("Walking paused - gaze {} threshold",
-						MouseHelper.isGazeOutsideWindow ? "outside window" : "below hotbar");
-					mWasPausedByGaze = true;
-				}
-				KeyboardInputHelper.setWalkOverride(false, 0.0f);
-				return;
-			} else {
+			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
+			if (gazeAtKeyboard && !mWasPausedByGaze) {
+				LOGGER.info("Walking slowed - gaze {}",
+					MouseHelper.isGazeOutsideWindow ? "outside window" : "below hotbar threshold");
+				mWasPausedByGaze = true;
+			} else if (!gazeAtKeyboard && mWasPausedByGaze) {
 				mWasPausedByGaze = false;
 			}
 
 			if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 				double forward = (double) mCustomSpeedFactor;
+
+				// Slow down significantly when gaze is at keyboard area or outside window
+				// Per Kirsty: stopping completely isn't intuitive when looking up/down hills
+				if (gazeAtKeyboard) {
+					forward *= 0.15; // 15% speed when looking at keyboard
+				}
 
 				// Slow down when you're looking really far up/down, or turning round quickly
 				if (EyeMineConfig.getSlowdownOnCorners()) {
