@@ -21,6 +21,7 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
+import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientRawInputEvent;
@@ -78,6 +79,13 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = minecraft.player;
 		if (player != null) {
+			// Pause attacking when gaze is at keyboard area or outside window
+			// Per EyeGazeGirl: "toggle mining meant to stop too" (applies to attack as well)
+			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
+			if (mIsAttacking && gazeAtKeyboard) {
+				return; // Skip attacking while gaze is at keyboard
+			}
+
 			if (mIsAttacking) {
 				if (player.isCreative() &&
 						mAutoSelectSword) {

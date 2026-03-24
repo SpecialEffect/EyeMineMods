@@ -20,6 +20,7 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
+import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
@@ -109,7 +110,9 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			lastTime = time;
 
 			if (mDwelling && !ModUtils.hasActiveGui()) {
-				if (MouseHandlerMod.hasPendingEvent() || moveWhenMouseStationary) {
+				// Stop dwell actions when gaze is at keyboard area or outside window
+				boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
+				if (!gazeAtKeyboard && (MouseHandlerMod.hasPendingEvent() || moveWhenMouseStationary)) {
 					// What are we currently targeting?
 					BlockHitResult rayTraceBlock = ModUtils.getMouseOverBlock();
 					TargetBlock currentTarget = (rayTraceBlock == null) ? null : new TargetBlock(rayTraceBlock);

@@ -37,6 +37,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import org.lwjgl.glfw.GLFW;
 
+import com.specialeffect.eyemine.utils.MouseHelper;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
@@ -94,6 +96,15 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
 			final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
+
+			// Pause mining when gaze is at keyboard area or outside window
+			// Per EyeGazeGirl: "toggle mining meant to stop too"
+			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
+			if (mIsAttacking && gazeAtKeyboard) {
+				// Release the attack key while gaze is at keyboard
+				KeyMapping.set(((KeyMappingAccessor) attackBinding).getActualKey(), false);
+				return;
+			}
 
 			if (mIsAttacking) {
 				if (player.isCreative()) {

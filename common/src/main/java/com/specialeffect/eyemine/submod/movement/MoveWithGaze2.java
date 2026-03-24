@@ -92,15 +92,12 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null) {
-			// Pause walking when gaze is below the hotbar (where EyeMine keyboard renders)
+			// Slow down walking when gaze is below the hotbar (where EyeMine keyboard renders)
 			// or when gaze is outside the window entirely (original behavior per dev)
+			// Per Kirsty: stopping completely isn't intuitive when looking up/down hills
 			// This check must be OUTSIDE the hasPendingEvent() condition because gaze at
 			// keyboard area may be in the deadzone where no pending event is registered
-			if (mDoingAutoWalk && minecraft.screen == null &&
-					(MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow)) {
-				KeyboardInputHelper.setWalkOverride(false, 0.0f);
-				return;
-			}
+			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
 
 			if (mDoingAutoWalk && minecraft.screen == null && // no gui visible
 					(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
@@ -132,9 +129,15 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 					}
 				}
 
-				// scaled by mCustomSpeedFactor 
+				// scaled by mCustomSpeedFactor
 				walkForwardAmount *= (float) 0.15F;
 				walkForwardAmount *= mCustomSpeedFactor;
+
+				// Slow down significantly when gaze is at keyboard area
+				if (gazeAtKeyboard) {
+					walkForwardAmount *= 0.15f; // 15% speed when looking at keyboard
+				}
+
 				KeyboardInputHelper.setWalkOverride(true, walkForwardAmount);
 			}
 		}
