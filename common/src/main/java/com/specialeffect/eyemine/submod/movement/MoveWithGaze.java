@@ -132,15 +132,15 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			//   hasn't moved at all. This is mainly applicable to gaze input.
 			// - If walking into a wall, don't keep walking fast!
 
-			// Slow down walking when gaze is below the hotbar (where EyeMine keyboard renders)
-			// or when gaze is outside the window entirely (original behavior per dev)
-			// Per Kirsty: stopping completely isn't intuitive (e.g., looking up/down hills),
-			// so we slow down significantly instead
+			// Stop walking when gaze is below the hotbar (where EyeMine keyboard renders)
+			// or when gaze is outside the window entirely
+			// Kirsty's "stopping completely isn't intuitive" feedback was about pitch-based
+			// slowdown on hills (in-game looking direction), NOT about the on-screen keyboard
 			// This check must be OUTSIDE the hasPendingEvent() condition because gaze at
 			// keyboard area may be in the deadzone where no pending event is registered
 			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
 			if (gazeAtKeyboard && !mWasPausedByGaze) {
-				LOGGER.info("Walking slowed - gaze {}",
+				LOGGER.info("Walking stopped - gaze {}",
 					MouseHelper.isGazeOutsideWindow ? "outside window" : "below hotbar threshold");
 				mWasPausedByGaze = true;
 			} else if (!gazeAtKeyboard && mWasPausedByGaze) {
@@ -150,10 +150,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 				double forward = (double) mCustomSpeedFactor;
 
-				// Slow down significantly when gaze is at keyboard area or outside window
-				// Per Kirsty: stopping completely isn't intuitive when looking up/down hills
+				// Fully stop when gaze is at keyboard area or outside window
+				// Per Kirsty: the "stopping completely isn't intuitive" feedback was about
+				// pitch-based slowdown on hills (handled by slowdownFactorPitch below),
+				// NOT about looking at the on-screen keyboard — that should always stop
 				if (gazeAtKeyboard) {
-					forward *= 0.15; // 15% speed when looking at keyboard
+					forward = 0.0;
 				}
 
 				// Slow down when you're looking really far up/down, or turning round quickly
@@ -289,9 +291,10 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 	private double slowdownFactorPitch(Player player) {
 		float f = player.getXRot();
-		// Fully stop when looking at extreme angles (e.g., onboard keyboard)
+		// Slow to a crawl at extreme angles but never fully stop
+		// (fully stopping when looking up/down feels unintuitive per user feedback)
 		if (f < -80 || f > 80) {
-			return 0.0f;
+			return 0.05f;
 		} else if (f < -75 || f > 75) {
 			return 0.15f;
 		} else if (f < -60 || f > 60) {
