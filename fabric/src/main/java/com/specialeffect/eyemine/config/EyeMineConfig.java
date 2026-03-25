@@ -154,6 +154,26 @@ public class EyeMineConfig implements ConfigData {
 		public boolean useDwellForSingleUseItem = false;
 	}
 
+	@CollapsibleObject()
+	public AutoAim autoAim = new AutoAim();
+
+	public static class AutoAim {
+		@Comment("Automatically aim at attacker when player takes damage")
+		public boolean autoAimOnDamage = true;
+
+		@Comment("Turn speed multiplier for auto-aim (0.1 = very slow, 2.0 = instant)")
+		public double autoAimTurnSpeed = 0.3;
+
+		@Comment("Enable debug logging for auto-aim heuristics")
+		public boolean autoAimDebug = false;
+
+		@Comment("Maximum distance (blocks) to track a target before giving up")
+		public double autoAimMaxTargetDistance = 20.0;
+
+		@Comment("Aiming stops when within this many degrees of the target")
+		public double autoAimStopAngle = 2.0;
+	}
+
 	@Override
 	public void validatePostLoad() {
 		general.customSpeedFactor = Mth.clamp(general.customSpeedFactor, 0.25f, 2.0f);
@@ -164,5 +184,9 @@ public class EyeMineConfig implements ConfigData {
 		movement.boatSlowdown = Mth.clamp(movement.boatSlowdown, 0.01, 1.0);
 
 		dwell.dwellTimeSeconds = Mth.clamp(dwell.dwellTimeSeconds, 0.2, 5.0);
+
+		autoAim.autoAimTurnSpeed = Mth.clamp(autoAim.autoAimTurnSpeed, 0.1, 2.0);
+		autoAim.autoAimMaxTargetDistance = Mth.clamp(autoAim.autoAimMaxTargetDistance, 1.0, 100.0);
+		autoAim.autoAimStopAngle = Mth.clamp(autoAim.autoAimStopAngle, 0.1, 45.0);
 	}
 }

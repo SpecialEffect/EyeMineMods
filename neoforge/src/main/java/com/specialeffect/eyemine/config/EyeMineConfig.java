@@ -26,11 +26,13 @@ public class EyeMineConfig {
 	public static final String CATEGORY_ADVANCED = "advanced";
 	public static final String CATEGORY_MOVING = "moving";
 	public static final String CATEGORY_DWELLING = "dwelling";
+	public static final String CATEGORY_AUTOAIM = "autoaim";
 
 	public static final String CATEGORY_BASIC_USERSTRING = "Basic options";
 	public static final String CATEGORY_ADVANCED_USERSTRING = "Advanced options";
 	public static final String CATEGORY_MOVING_USERSTRING = "Moving options";
 	public static final String CATEGORY_DWELLING_USERSTRING = "Dwelling options";
+	public static final String CATEGORY_AUTOAIM_USERSTRING = "AutoAim options";
 
 	private static final ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 	public static ModConfigSpec CLIENT_CONFIG;
@@ -96,6 +98,13 @@ public class EyeMineConfig {
 	// Create World
 	public static ModConfigSpec.BooleanValue disableCustomNewWorld;
 
+	// AutoAim
+	public static ModConfigSpec.BooleanValue autoAimOnDamage;
+	public static ModConfigSpec.DoubleValue autoAimTurnSpeed;
+	public static ModConfigSpec.BooleanValue autoAimDebug;
+	public static ModConfigSpec.DoubleValue autoAimMaxTargetDistance;
+	public static ModConfigSpec.DoubleValue autoAimStopAngle;
+
 	static {
 		CLIENT_BUILDER.comment(CATEGORY_BASIC_USERSTRING).push(CATEGORY_BASIC);
 		setupBasicConfig();
@@ -111,6 +120,10 @@ public class EyeMineConfig {
 
 		CLIENT_BUILDER.comment(CATEGORY_DWELLING_USERSTRING).push(CATEGORY_DWELLING);
 		setupDwellConfig();
+		CLIENT_BUILDER.pop();
+
+		CLIENT_BUILDER.comment(CATEGORY_AUTOAIM_USERSTRING).push(CATEGORY_AUTOAIM);
+		setupAutoAimConfig();
 		CLIENT_BUILDER.pop();
 
 		CLIENT_CONFIG = CLIENT_BUILDER.build();
@@ -249,6 +262,23 @@ public class EyeMineConfig {
 		useDwellForSingleUseItem = CLIENT_BUILDER.comment("Use dwell for single 'use item'")
 				.define("useDwellForSingleUseItem", false);
 
+	}
+
+	private static void setupAutoAimConfig() {
+		autoAimOnDamage = CLIENT_BUILDER.comment("Automatically aim at attacker when player takes damage")
+				.define("autoAimOnDamage", true);
+
+		autoAimTurnSpeed = CLIENT_BUILDER.comment("Turn speed multiplier for auto-aim (0.1 = very slow, 2.0 = instant)")
+				.defineInRange("autoAimTurnSpeed", 0.3, 0.1, 2.0);
+
+		autoAimDebug = CLIENT_BUILDER.comment("Enable debug logging for auto-aim heuristics")
+				.define("autoAimDebug", false);
+
+		autoAimMaxTargetDistance = CLIENT_BUILDER.comment("Maximum distance (blocks) to track a target before giving up")
+				.defineInRange("autoAimMaxTargetDistance", 20.0, 1.0, 100.0);
+
+		autoAimStopAngle = CLIENT_BUILDER.comment("Aiming stops when within this many degrees of the target")
+				.defineInRange("autoAimStopAngle", 2.0, 0.1, 45.0);
 	}
 
 	@SubscribeEvent
