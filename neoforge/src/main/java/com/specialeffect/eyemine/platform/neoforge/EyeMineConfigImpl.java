@@ -130,4 +130,24 @@ public class EyeMineConfigImpl {
 	public static int getGazeIdleThreshold() {
 		return EyeMineConfig.gazeIdleThreshold.get();
 	}
+
+	public static boolean getAutoAimOnDamage() {
+		return EyeMineConfig.autoAimOnDamage.get();
+	}
+
+	public static double getAutoAimTurnSpeed() {
+		return EyeMineConfig.autoAimTurnSpeed.get();
+	}
+
+	public static boolean getAutoAimDebug() {
+		return EyeMineConfig.autoAimDebug.get();
+	}
+
+	public static double getAutoAimMaxTargetDistance() {
+		return EyeMineConfig.autoAimMaxTargetDistance.get();
+	}
+
+	public static double getAutoAimStopAngle() {
+		return EyeMineConfig.autoAimStopAngle.get();
+	}
 }

@@ -163,4 +163,29 @@ public class EyeMineConfigImpl {
 		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
 		return config.movement.gazeIdleThreshold;
 	}
+
+	public static boolean getAutoAimOnDamage() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.autoAim.autoAimOnDamage;
+	}
+
+	public static double getAutoAimTurnSpeed() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.autoAim.autoAimTurnSpeed;
+	}
+
+	public static boolean getAutoAimDebug() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.autoAim.autoAimDebug;
+	}
+
+	public static double getAutoAimMaxTargetDistance() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.autoAim.autoAimMaxTargetDistance;
+	}
+
+	public static double getAutoAimStopAngle() {
+		EyeMineConfig config = AutoConfig.getConfigHolder(EyeMineConfig.class).getConfig();
+		return config.autoAim.autoAimStopAngle;
+	}
 }

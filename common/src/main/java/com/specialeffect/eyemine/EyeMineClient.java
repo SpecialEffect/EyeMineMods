@@ -31,6 +31,7 @@ import com.specialeffect.eyemine.submod.movement.MoveWithGaze;
 import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
 import com.specialeffect.eyemine.submod.movement.Sneak;
 import com.specialeffect.eyemine.submod.movement.Swim;
+import com.specialeffect.eyemine.submod.survival.AutoAim;
 import com.specialeffect.eyemine.submod.utils.DebugAverageFps;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
@@ -100,6 +101,7 @@ public class EyeMineClient {
 		setupSubMod(new DefaultConfigForNewWorld());
 		setupSubMod(new IronSights());
 		setupSubMod(new NightVisionHelper());
+		setupSubMod(new AutoAim());
 	}
 
 	private static void setupSubMod(SubMod mod) {

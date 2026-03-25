@@ -194,4 +194,29 @@ public class EyeMineConfig {
 		// Just throw an error, the content should get replaced at runtime.
 		throw new AssertionError();
 	}
+
+	@ExpectPlatform
+	public static boolean getAutoAimOnDamage() {
+		throw new AssertionError();
+	}
+
+	@ExpectPlatform
+	public static double getAutoAimTurnSpeed() {
+		throw new AssertionError();
+	}
+
+	@ExpectPlatform
+	public static boolean getAutoAimDebug() {
+		throw new AssertionError();
+	}
+
+	@ExpectPlatform
+	public static double getAutoAimMaxTargetDistance() {
+		throw new AssertionError();
+	}
+
+	@ExpectPlatform
+	public static double getAutoAimStopAngle() {
+		throw new AssertionError();
+	}
 }
