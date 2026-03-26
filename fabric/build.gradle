@@ -89,8 +89,8 @@ publishing {
 }
 
 if (System.getenv("CURSEFORGE_TOKEN")) {
-    def releaseType = rootProject.mod_version.contains("alpha") ? "alpha" :
-                      rootProject.mod_version.contains("beta") ? "beta" : "release"
+    def cfReleaseType = rootProject.mod_version.contains("alpha") ? "alpha" :
+                        rootProject.mod_version.contains("beta") ? "beta" : "release"
 
     curseforge {
         apiKey = System.getenv("CURSEFORGE_TOKEN")
@@ -98,7 +98,7 @@ if (System.getenv("CURSEFORGE_TOKEN")) {
             id = rootProject.curseforge_id
             changelog = rootProject.file("changes.md").text
             changelogType = "markdown"
-            releaseType = releaseType
+            releaseType = cfReleaseType
             addGameVersion rootProject.minecraft_version
             addGameVersion "Fabric"
             addGameVersion "Java 21"
