@@ -36,3 +36,9 @@ jobs:
             neoforge/build/libs/eyemine-*[0-9].jar
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Publish to CurseForge
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: ./gradlew :fabric:curseforge :neoforge:curseforge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
