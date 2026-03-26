@@ -1,10 +1,7 @@
-name: Build
+name: Preview Build
 
 on:
-  push:
-    branches: ['**']
-    tags: ['v*']
-  pull_request:
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -15,24 +12,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read build config
+        id: config
+        run: |
+          JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
+          if [ -z "$JAVA" ]; then
+            echo "::error::java_version is not set in gradle.properties. Add java_version=21 (or 17) to gradle.properties before building."
+            exit 1
+          fi
+          echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: ${{ steps.config.outputs.java_version }}
           distribution: 'temurin'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build
-        run: ./gradlew build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: eyemine-${{ github.ref_name }}-${{ github.sha }}
-          path: |
-            fabric/build/libs/eyemine-*[0-9].jar
-            neoforge/build/libs/eyemine-*[0-9].jar
+          path: '*/build/libs/eyemine-*[0-9].jar'
           if-no-files-found: warn
           retention-days: 14
