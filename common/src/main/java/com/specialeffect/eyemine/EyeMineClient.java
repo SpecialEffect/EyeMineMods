@@ -23,6 +23,7 @@ import com.specialeffect.eyemine.submod.misc.QuickCommands;
 import com.specialeffect.eyemine.submod.misc.SwapMinePlace;
 import com.specialeffect.eyemine.submod.misc.UseItem;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
+import com.specialeffect.eyemine.submod.survival.AutoAim;
 import com.specialeffect.eyemine.submod.movement.AutoFly;
 import com.specialeffect.eyemine.submod.movement.AutoJump;
 import com.specialeffect.eyemine.submod.movement.Dismount;
