@@ -2,81 +2,11 @@ name: Bump Version
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to bump version on (e.g. "1.21" or "architectury_1.21")'
-        required: true
-      semver_part:
-        description: 'For non-alpha versions: which semver part to bump'
-        required: false
-        default: 'minor'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
 
 jobs:
-  bump-version:
+  wrong-branch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Resolve branch
-        id: resolve
-        run: |
-          INPUT="${{ inputs.branch }}"
-          for CANDIDATE in "$INPUT" "architectury_$INPUT"; do
-            if git ls-remote --heads origin "refs/heads/$CANDIDATE" | grep -q .; then
-              echo "branch=$CANDIDATE" >> "$GITHUB_OUTPUT"
-              echo "Resolved '$INPUT' to branch '$CANDIDATE'."
-              exit 0
-            fi
-          done
-          echo "::error::No branch found matching '$INPUT'. Use a full branch name (e.g. 'architectury_1.21') or just the version (e.g. '1.21')."
-          exit 1
-
-      - name: Checkout branch
-        run: git checkout ${{ steps.resolve.outputs.branch }}
-
-      - name: Bump version in gradle.properties
-        id: bump
-        run: |
-          CURRENT=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
-          echo "Current version: $CURRENT"
-
-          if echo "$CURRENT" | grep -qE '\-alpha'; then
-            # Bump the trailing revision number
-            # e.g. 6.1.0-alpha.autoaim.1 -> 6.1.0-alpha.autoaim.2
-            #      6.1.0-alpha.1         -> 6.1.0-alpha.2
-            PREFIX=$(echo "$CURRENT" | sed 's/\.[0-9]*$//')
-            REVISION=$(echo "$CURRENT" | grep -oE '[0-9]+$')
-            NEW="${PREFIX}.$((REVISION + 1))"
-          else
-            # Bump the requested semver part
-            SEMVER=$(echo "$CURRENT" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
-            SUFFIX=$(echo "$CURRENT" | sed "s|^${SEMVER}||")
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$SEMVER"
-            case "${{ inputs.semver_part }}" in
-              major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
-              minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
-              patch) PATCH=$((PATCH + 1)) ;;
-            esac
-            NEW="${MAJOR}.${MINOR}.${PATCH}${SUFFIX}"
-          fi
-
-          echo "New version: $NEW"
-          sed -i "s/^mod_version=.*/mod_version=${NEW}/" gradle.properties
-          echo "new_version=$NEW" >> "$GITHUB_OUTPUT"
-          echo "old_version=$CURRENT" >> "$GITHUB_OUTPUT"
-
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add gradle.properties
-          git commit -m "Bump version: ${{ steps.bump.outputs.old_version }} -> ${{ steps.bump.outputs.new_version }}"
-          git push origin ${{ steps.resolve.outputs.branch }}
+      - run: |
+          echo "This is a legacy branch with no automated build."
+          echo "To run the Bump Version workflow, switch to an architectury_* branch using the branch dropdown above."
