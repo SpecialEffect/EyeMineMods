@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to build'
+        description: 'Branch to build (e.g. "1.21" or "architectury_1.21")'
         required: true
 
 env:
@@ -15,15 +15,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve branch
+        id: resolve
+        run: |
+          INPUT="${{ inputs.branch }}"
+          for CANDIDATE in "$INPUT" "architectury_$INPUT"; do
+            if git ls-remote --heads origin "refs/heads/$CANDIDATE" | grep -q .; then
+              echo "branch=$CANDIDATE" >> "$GITHUB_OUTPUT"
+              echo "Resolved '$INPUT' to branch '$CANDIDATE'."
+              exit 0
+            fi
+          done
+          echo "::error::No branch found matching '$INPUT'. Use a full branch name (e.g. 'architectury_1.21') or just the version (e.g. '1.21')."
+          exit 1
+
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ steps.resolve.outputs.branch }}
 
       - name: Read build config
         id: config
         run: |
           JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
           if [ -z "$JAVA" ]; then
-            echo "::error::java_version is not set in gradle.properties on branch '${{ inputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before building."
+            echo "::error::java_version is not set in gradle.properties on branch '${{ steps.resolve.outputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before building."
             exit 1
           fi
           echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
@@ -43,7 +59,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: eyemine-${{ inputs.branch }}-${{ github.sha }}
+          name: eyemine-${{ steps.resolve.outputs.branch }}-${{ github.sha }}
           path: '*/build/libs/eyemine-*[0-9].jar'
           if-no-files-found: warn
           retention-days: 14

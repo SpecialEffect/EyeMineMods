@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to release'
+        description: 'Branch to release (e.g. "1.21" or "architectury_1.21")'
         required: true
       publish_to_curseforge:
         description: 'Publish to CurseForge'
@@ -24,15 +24,29 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve branch
+        id: resolve
+        run: |
+          INPUT="${{ inputs.branch }}"
+          for CANDIDATE in "$INPUT" "architectury_$INPUT"; do
+            if git ls-remote --heads origin "refs/heads/$CANDIDATE" | grep -q .; then
+              echo "branch=$CANDIDATE" >> "$GITHUB_OUTPUT"
+              echo "Resolved '$INPUT' to branch '$CANDIDATE'."
+              exit 0
+            fi
+          done
+          echo "::error::No branch found matching '$INPUT'. Use a full branch name (e.g. 'architectury_1.21') or just the version (e.g. '1.21')."
+          exit 1
+
       - name: Checkout branch
-        run: git checkout ${{ inputs.branch }}
+        run: git checkout ${{ steps.resolve.outputs.branch }}
 
       - name: Read build config
         id: config
         run: |
           JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
           if [ -z "$JAVA" ]; then
-            echo "::error::java_version is not set in gradle.properties on branch '${{ inputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before releasing."
+            echo "::error::java_version is not set in gradle.properties on branch '${{ steps.resolve.outputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before releasing."
             exit 1
           fi
           VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
@@ -73,7 +87,7 @@ jobs:
       - name: Fail if tag points to a different commit
         if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_elsewhere'
         run: |
-          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to the tip of ${{ inputs.branch }}. Bump the version in gradle.properties before publishing."
+          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to the tip of ${{ steps.resolve.outputs.branch }}. Bump the version in gradle.properties before publishing."
           exit 1
 
       - name: Create and push tag
