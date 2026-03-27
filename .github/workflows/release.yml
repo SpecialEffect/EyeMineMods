@@ -35,8 +35,9 @@ jobs:
           echo "::error::No branch found matching '$INPUT'. Use a full branch name (e.g. 'architectury_1.21') or just the version (e.g. '1.21')."
           exit 1
 
-      - name: Checkout branch
-        run: git checkout ${{ steps.resolve.outputs.branch }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.resolve.outputs.branch }}
 
       - name: Read build config
         id: config
