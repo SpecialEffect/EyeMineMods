@@ -53,12 +53,15 @@ public class AutoJump extends SubMod implements IConfigListener {
 		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
 	}
 
-	private void updateSettings(boolean autoJump) {
+	private void updateSettings(boolean autoJump, boolean persist) {
 		Options options = Minecraft.getInstance().options;
 		if (options != null) {
 			options.autoJump().set(autoJump);
-			options.save();
-			options.load();
+
+			if (persist) {
+				options.save();
+				options.load();
+			}
 		}
 	}
 
@@ -66,20 +69,15 @@ public class AutoJump extends SubMod implements IConfigListener {
 	public void syncConfig() {
 		this.mAutoJumpDisabled = EyeMineConfig.getDisableAutoJumpFixes();
 		this.mDoingAutoJump = EyeMineConfig.getDefaultDoAutoJump();
-		this.updateSettings(mDoingAutoJump);
+		// Don't persist during config sync (startup) - this can reset keybindings
+		this.updateSettings(mDoingAutoJump, false);
 		StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 	}
 
 	public void onClientTick(Minecraft minecraft) {
 		LocalPlayer player = minecraft.player;
 		if (player != null) {
-			// We can't rely solely on the vanilla autojump implementation,
-			// since there are a few scenarios where it doesn't work correctly, see
-			//
-			// 
-			// We'll keep it in sync though so that keyboard-play is consistent
-			// with our autojump state (if you're moving with the keyboard you
-			// get visually-nicer autojump behaviour).
+
 			if (!mAutoJumpDisabled) {
 				if (mDoingAutoJump) {
 					player.setMaxUpStep(1.0F);
@@ -101,7 +99,8 @@ public class AutoJump extends SubMod implements IConfigListener {
 
 		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
-			this.updateSettings(mDoingAutoJump);
+			// User toggled the setting, so persist it
+			this.updateSettings(mDoingAutoJump, true);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoJump);
 			ModUtils.sendPlayerMessage("Auto jump: " + (mDoingAutoJump ? "ON" : "OFF"));
 		}
