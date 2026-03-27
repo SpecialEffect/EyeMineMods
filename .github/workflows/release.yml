@@ -3,9 +3,6 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to release'
-        required: true
       publish_to_curseforge:
         description: 'Publish to CurseForge'
         required: false
@@ -24,15 +21,12 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout branch
-        run: git checkout ${{ inputs.branch }}
-
       - name: Read build config
         id: config
         run: |
           JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
           if [ -z "$JAVA" ]; then
-            echo "::error::java_version is not set in gradle.properties on branch '${{ inputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before releasing."
+            echo "::error::java_version is not set in gradle.properties. Add java_version=21 (or 17) to gradle.properties before releasing."
             exit 1
           fi
           VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
@@ -73,7 +67,7 @@ jobs:
       - name: Fail if tag points to a different commit
         if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_elsewhere'
         run: |
-          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to the tip of ${{ inputs.branch }}. Bump the version in gradle.properties before publishing."
+          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to HEAD. Bump the version in gradle.properties before publishing."
           exit 1
 
       - name: Create and push tag

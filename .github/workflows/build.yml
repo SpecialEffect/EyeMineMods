@@ -2,10 +2,6 @@ name: Preview Build
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to build'
-        required: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -15,15 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch }}
 
       - name: Read build config
         id: config
         run: |
           JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
           if [ -z "$JAVA" ]; then
-            echo "::error::java_version is not set in gradle.properties on branch '${{ inputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before building."
+            echo "::error::java_version is not set in gradle.properties. Add java_version=21 (or 17) to gradle.properties before building."
             exit 1
           fi
           echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
@@ -45,7 +39,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: eyemine-${{ inputs.branch }}-${{ github.sha }}
+          name: eyemine-${{ github.ref_name }}-${{ github.sha }}
           path: '*/build/libs/eyemine-*[0-9].jar'
           if-no-files-found: warn
           retention-days: 14
