@@ -20,9 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Resolve branch
         id: resolve
@@ -55,53 +52,11 @@ jobs:
           if [ -z "$PLATFORMS" ]; then
             PLATFORMS="forge"
           fi
-          CURSEFORGE_TASKS=""
-          for platform in $(echo "$PLATFORMS" | tr ',' ' '); do
-            CURSEFORGE_TASKS="$CURSEFORGE_TASKS :${platform}:curseforge"
-          done
           echo "Version: $VERSION (MC $MC_VERSION, Java $JAVA, platforms: $PLATFORMS)"
           echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "mc_version=$MC_VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
-          echo "curseforge_tasks=$CURSEFORGE_TASKS" >> "$GITHUB_OUTPUT"
-
-      - name: Check for existing tag
-        id: tag_check
-        run: |
-          TAG="${{ steps.config.outputs.tag }}"
-          if git tag --list "$TAG" | grep -q "^${TAG}$"; then
-            TAG_COMMIT=$(git rev-list -n1 "$TAG")
-            HEAD_COMMIT=$(git rev-parse HEAD)
-            echo "Tag $TAG exists, points to $TAG_COMMIT (HEAD is $HEAD_COMMIT)."
-            if [ "$TAG_COMMIT" = "$HEAD_COMMIT" ]; then
-              echo "status=exists_at_head" >> "$GITHUB_OUTPUT"
-            else
-              echo "status=exists_elsewhere" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "status=missing" >> "$GITHUB_OUTPUT"
-            echo "Tag $TAG does not exist yet."
-          fi
-
-      - name: Fail if tag points to a different commit
-        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_elsewhere'
-        run: |
-          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to the tip of ${{ steps.resolve.outputs.branch }}. Bump the version in gradle.properties before publishing."
-          exit 1
-
-      - name: Create and push tag
-        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'missing'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag ${{ steps.config.outputs.tag }}
-          git push origin ${{ steps.config.outputs.tag }}
-          echo "Created and pushed tag ${{ steps.config.outputs.tag }}."
-
-      - name: Tag already at HEAD
-        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_at_head'
-        run: echo "::notice::Tag ${{ steps.config.outputs.tag }} already exists at HEAD — skipping tag creation, proceeding with publish."
+          echo "platforms=$PLATFORMS" >> "$GITHUB_OUTPUT"
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -127,6 +82,19 @@ jobs:
 
       - name: Publish to CurseForge
         if: inputs.publish_to_curseforge == true
-        run: ./gradlew ${{ steps.config.outputs.curseforge_tasks }}
+        run: |
+          CURSEFORGE_TASKS=""
+          for platform in $(echo "${{ steps.config.outputs.platforms }}" | tr ',' ' '); do
+            if ./gradlew :${platform}:tasks --all 2>/dev/null | grep -q "^curseforge "; then
+              CURSEFORGE_TASKS="$CURSEFORGE_TASKS :${platform}:curseforge"
+            else
+              echo "::warning::No curseforge task found in :${platform} — skipping."
+            fi
+          done
+          if [ -z "$CURSEFORGE_TASKS" ]; then
+            echo "::error::No curseforge tasks found on this branch. Add the CurseForge Gradle plugin to the platform build.gradle files."
+            exit 1
+          fi
+          ./gradlew $CURSEFORGE_TASKS
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
