@@ -75,8 +75,6 @@ public class AutoAim extends SubMod implements IConfigListener {
 
     @Override
     public void onInitializeClient() {
-        syncConfig();
-
         Keybindings.keybindings.add(mAutoAimKB = new KeyMapping(
                 "key.eyemine.auto_aim",
                 Type.KEYSYM,

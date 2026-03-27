@@ -107,7 +107,7 @@ if (System.getenv("CURSEFORGE_TOKEN")) {
             addGameVersion "NeoForge"
             addGameVersion "Java 21"
             mainArtifact(remapJar) {
-                displayName = "EyeMine ${rootProject.minecraft_version} NeoForge ${rootProject.mod_version}"
+                displayName = "eyemine-${rootProject.minecraft_version}-neoforge-${rootProject.mod_version}"
             }
             relations {
                 requiredDependency "architectury-api"

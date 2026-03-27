@@ -101,6 +101,7 @@ Both `fabric.mod.json` and `neoforge.mods.toml` are populated automatically at b
 1. Update `mod_version` in `gradle.properties`
    - Stable: `6.1.0`
    - Alpha (experimental/WIP): `6.1.0-alpha.1`
+   - Feature alpha (named experiment on a feature branch): `6.1.0-alpha.autoaim.1`
    - Beta: `6.1.0-beta.1`
 2. Add a changelog entry to `changes.md`
 3. Commit, tag, and push:

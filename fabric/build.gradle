@@ -103,7 +103,7 @@ if (System.getenv("CURSEFORGE_TOKEN")) {
             addGameVersion "Fabric"
             addGameVersion "Java 21"
             mainArtifact(remapJar) {
-                displayName = "EyeMine ${rootProject.minecraft_version} Fabric ${rootProject.mod_version}"
+                displayName = "eyemine-${rootProject.minecraft_version}-fabric-${rootProject.mod_version}"
             }
             relations {
                 requiredDependency "fabric-api"
