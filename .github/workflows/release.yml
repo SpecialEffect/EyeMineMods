@@ -1,0 +1,116 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release'
+        required: true
+      publish_to_curseforge:
+        description: 'Publish to CurseForge'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout branch
+        run: git checkout ${{ inputs.branch }}
+
+      - name: Read build config
+        id: config
+        run: |
+          JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
+          if [ -z "$JAVA" ]; then
+            echo "::error::java_version is not set in gradle.properties on branch '${{ inputs.branch }}'. Add java_version=21 (or 17) to gradle.properties before releasing."
+            exit 1
+          fi
+          VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
+          MC_VERSION=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2)
+          PLATFORMS=$(grep '^enabled_platforms=' gradle.properties | cut -d'=' -f2)
+          if [ -z "$PLATFORMS" ]; then
+            PLATFORMS="forge"
+          fi
+          CURSEFORGE_TASKS=""
+          for platform in $(echo "$PLATFORMS" | tr ',' ' '); do
+            CURSEFORGE_TASKS="$CURSEFORGE_TASKS :${platform}:curseforge"
+          done
+          echo "Version: $VERSION (MC $MC_VERSION, Java $JAVA, platforms: $PLATFORMS)"
+          echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "mc_version=$MC_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "curseforge_tasks=$CURSEFORGE_TASKS" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing tag
+        id: tag_check
+        run: |
+          TAG="${{ steps.config.outputs.tag }}"
+          if git tag --list "$TAG" | grep -q "^${TAG}$"; then
+            TAG_COMMIT=$(git rev-list -n1 "$TAG")
+            HEAD_COMMIT=$(git rev-parse HEAD)
+            echo "Tag $TAG exists, points to $TAG_COMMIT (HEAD is $HEAD_COMMIT)."
+            if [ "$TAG_COMMIT" = "$HEAD_COMMIT" ]; then
+              echo "status=exists_at_head" >> "$GITHUB_OUTPUT"
+            else
+              echo "status=exists_elsewhere" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "status=missing" >> "$GITHUB_OUTPUT"
+            echo "Tag $TAG does not exist yet."
+          fi
+
+      - name: Fail if tag points to a different commit
+        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_elsewhere'
+        run: |
+          echo "::error::Tag ${{ steps.config.outputs.tag }} already exists but does not point to the tip of ${{ inputs.branch }}. Bump the version in gradle.properties before publishing."
+          exit 1
+
+      - name: Create and push tag
+        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'missing'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.config.outputs.tag }}
+          git push origin ${{ steps.config.outputs.tag }}
+          echo "Created and pushed tag ${{ steps.config.outputs.tag }}."
+
+      - name: Tag already at HEAD
+        if: inputs.publish_to_curseforge == true && steps.tag_check.outputs.status == 'exists_at_head'
+        run: echo "::notice::Tag ${{ steps.config.outputs.tag }} already exists at HEAD — skipping tag creation, proceeding with publish."
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ steps.config.outputs.java_version }}
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: eyemine-${{ steps.config.outputs.mc_version }}-${{ steps.config.outputs.version }}
+          path: '*/build/libs/eyemine-*[0-9].jar'
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish to CurseForge
+        if: inputs.publish_to_curseforge == true
+        run: ./gradlew ${{ steps.config.outputs.curseforge_tasks }}
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
