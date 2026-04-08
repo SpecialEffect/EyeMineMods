@@ -40,11 +40,11 @@ public record SendCommandMessage(String command) implements CustomPacketPayload 
 			context.queue(() -> {
 				MinecraftServer server = context.getPlayer().level().getServer();
 				if (server == null) {
-					System.out.println("Server is null, cannot send command");
+					EyeMine.LOGGER.warn("Server is null, cannot send command");
 				} else {
 					Commands mgr = server.getCommands();
 					if (null == mgr) {
-						System.out.println("CommandManager is null, cannot send command");
+						EyeMine.LOGGER.warn("CommandManager is null, cannot send command");
 					} else {
 						mgr.performPrefixedCommand(server.createCommandSourceStack(), pkt.command);
 					}

@@ -16,6 +16,7 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
@@ -55,11 +56,7 @@ public class GatherDrops extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
-			return EventResult.pass();
-		}
-
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 

@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -57,7 +58,7 @@ public class BoatController {
 	// speed [-1, +1] where +1 is for turning right
 	// if abs(speed) > 1, it will just clip the effect
 	private void steer(double speed) {
-		System.out.println("steer " + speed);
+		EyeMine.LOGGER.debug("steer {}", speed);
 
 		final KeyMapping kbLeft = Minecraft.getInstance().options.keyLeft;
 		final KeyMapping kbRight = Minecraft.getInstance().options.keyRight;

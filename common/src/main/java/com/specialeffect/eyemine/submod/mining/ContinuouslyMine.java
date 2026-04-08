@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
@@ -19,9 +20,13 @@ import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
@@ -130,14 +135,14 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 					// accompanying mouse movement.
 					if (MouseHandlerMod.hasPendingEvent() || mMouseEventLastTick) {
 						if (miningTimer == 0) {
-							System.out.println("attack");
+							EyeMine.LOGGER.debug("attack");
 							KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
 							if (player.isCreative()) {
 								miningTimer = miningCooldown.getAsInt();
 							}
 						} else {
 							if (player.attackAnim == 0) {
-								System.out.println("swing");
+								EyeMine.LOGGER.debug("swing");
 								player.swing(InteractionHand.MAIN_HAND);
 							}
 						}
@@ -161,11 +166,7 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
-			return EventResult.pass();
-		}
-
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 

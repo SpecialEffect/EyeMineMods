@@ -11,6 +11,7 @@
 
 package com.specialeffect.inventory.manager;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.platform.InventoryConfig;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
@@ -139,7 +140,7 @@ public class CreativeInventoryManager {
 		// This allows users to set cursor position manually and then make adjustments
 		// with prev/next
 		MouseHandler helper = Minecraft.getInstance().mouseHandler;
-		System.out.println(helper.xpos() + ", " + helper.ypos());
+		EyeMine.LOGGER.debug("Creative inventory pos: {}, {}", helper.xpos(), helper.ypos());
 		int x = (int) (helper.xpos() / this.xScale);
 		int y = (int) (helper.ypos() / this.yScale);
 		int i = ModUtils.findSlotInContainer(creativeContainer, guiLeft, guiTop, x, y, itemWidth);

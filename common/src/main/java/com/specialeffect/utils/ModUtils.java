@@ -106,16 +106,6 @@ public class ModUtils {
 		}
 		return p;
 	}
-//
-//	public static Point getScaledDisplaySize(Minecraft mc) {
-//		Point p = new Point(0, 0);
-//		ScaledResolution res = new ScaledResolution(mc);
-//		p.setLocation(res.getScaledWidth(), res.getScaledHeight());
-//
-//		return p;
-//
-//	}
-
 
 	// Find an item in the hotbar which matches the given class
 	// (this includes all subclasses)
@@ -185,44 +175,6 @@ public class ModUtils {
 		} else {
 			return null;
 		}
-	}
-
-	// Check if there's a block at the given position which
-	// blocks movement.
-	@SuppressWarnings("unused")
-	private boolean doesBlockMovement(BlockPos pos) {
-		Level world = Minecraft.getInstance().level;
-		return world.getBlockState(pos).blocksMotion();
-	}
-
-	@SuppressWarnings("unused")
-	private boolean isDirectlyFacingSideHit(Direction sideHit, Vec3 lookVec) {
-		double thresh = 0.8;
-		switch (sideHit) {
-			case NORTH:
-				if (lookVec.z > thresh) {
-					return true;
-				}
-				break;
-			case EAST:
-				if (lookVec.x < -thresh) {
-					return true;
-				}
-				break;
-			case SOUTH:
-				if (lookVec.z < -thresh) {
-					return true;
-				}
-				break;
-			case WEST:
-				if (lookVec.x > thresh) {
-					return true;
-				}
-				break;
-			default:
-				break;
-		}
-		return false;
 	}
 
 	public static BlockPos highestSolidPoint(BlockPos pos) {

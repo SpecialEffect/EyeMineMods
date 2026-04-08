@@ -18,9 +18,13 @@ import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.IconOverlay;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.movement.MoveWithGaze;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import com.specialeffect.utils.ModUtils;
@@ -200,11 +204,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
-			return EventResult.pass();
-		}
-
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 

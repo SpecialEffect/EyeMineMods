@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -87,10 +88,26 @@ public class EyeMineClientFabric implements ClientModInitializer {
             return true;
         });
 
+        // Server-side: Entity added to world
+        ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+            for (var listener : EyeMineEvents.ENTITY_ADD.getListeners()) {
+                listener.onAdd(entity, level);
+            }
+        });
+
         // Server-side: World load
         ServerLevelEvents.LOAD.register((server, level) -> {
             for (var listener : EyeMineEvents.WORLD_LOAD.getListeners()) {
                 listener.onWorldLoad(level);
+            }
+        });
+
+        // Server-side: Player tick - Fabric uses ClientTickEvents for client-side player tick
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null) {
+                for (var listener : EyeMineEvents.PLAYER_TICK.getListeners()) {
+                    listener.onPlayerTick(client.player);
+                }
             }
         });
     }

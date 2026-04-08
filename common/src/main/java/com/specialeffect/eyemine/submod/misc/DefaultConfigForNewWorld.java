@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
@@ -141,7 +142,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 
 	@SuppressWarnings("unused")
 	private void printGameRules(GameRules rules) {
-		System.out.println("Game rules:");
+		EyeMine.LOGGER.debug("Game rules:");
 
 		// We use reflection to print out any relevant fields
 		Field[] fields = rules.getClass().getFields();

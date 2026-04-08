@@ -19,8 +19,11 @@ import com.specialeffect.eyemine.client.gui.crosshair.JoystickControlOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
@@ -145,11 +148,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	private static boolean mDoingAutoWalk = false;
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
-			return EventResult.pass();
-		}
-
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 

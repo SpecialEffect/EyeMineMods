@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.utils;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -135,7 +136,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 					// Place block if dwell complete
 					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {
-						System.out.println("Performing");
+						EyeMine.LOGGER.debug("Performing dwell action");
 						this.performAction(currentTarget);
 						liveTargets.remove(currentTarget);
 						if (oneShot) {

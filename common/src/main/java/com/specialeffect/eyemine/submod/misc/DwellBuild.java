@@ -16,7 +16,9 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
@@ -67,11 +69,7 @@ public class DwellBuild extends DwellAction {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
-			return EventResult.pass();
-		}
-
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 

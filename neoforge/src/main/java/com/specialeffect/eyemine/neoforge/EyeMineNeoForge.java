@@ -5,11 +5,11 @@ import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.EyeMineClient;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.config.EyeMineConfig;
+import com.specialeffect.eyemine.client.neoforge.ClientHandler;
 import com.specialeffect.eyemine.platform.neoforge.NeoForgeNetworkService;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -31,6 +31,7 @@ public class EyeMineNeoForge {
             eventBus.register(InventoryConfig.class);
 
             eventBus.addListener(this::registerKeyMappings);
+            eventBus.addListener(ClientHandler::onSetup);
 
             EyeMineClient.init();
         }

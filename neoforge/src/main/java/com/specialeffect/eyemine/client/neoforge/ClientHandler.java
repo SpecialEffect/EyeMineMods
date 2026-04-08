@@ -29,6 +29,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(modid = EyeMine.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
@@ -97,6 +98,13 @@ public class ClientHandler {
         for (var listener : EyeMineEvents.ENTITY_ADD.getListeners()) {
             EventResult result = listener.onAdd(event.getEntity(), event.getLevel());
             if (result.isPresent()) break;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        for (var listener : EyeMineEvents.PLAYER_TICK.getListeners()) {
+            listener.onPlayerTick(event.getEntity());
         }
     }
 
