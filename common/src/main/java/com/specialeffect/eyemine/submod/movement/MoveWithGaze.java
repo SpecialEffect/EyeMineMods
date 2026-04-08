@@ -25,20 +25,20 @@ import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ServerboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
+import net.minecraft.world.entity.vehicle.minecart.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
@@ -77,20 +77,20 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 				"key.eyemine.toggle_walking_forward",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_H,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mIncreaseWalkSpeedKB = new KeyMapping(
 				"key.eyemine.increase_walk_speed",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_UP,
-				"category.eyemine.category.eyegaze_settings" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mDecreaseWalkSpeedKB = new KeyMapping(
 				"key.eyemine.decrease_walk_speed",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_DOWN,
-				"category.eyemine.category.eyegaze_settings" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
 		mPrevLookDirs = new LinkedBlockingQueue<>();
@@ -98,8 +98,8 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/walk.png");
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	@Override
@@ -216,7 +216,9 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 
 					if ((stateInFront != null && stateInFront.isSolid()) && (stateAboveInFront != null && !stateAboveInFront.isSolid())) {
 						if (jumpTicks == 0) {
-							player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, true, player.input.shiftKeyDown));
+							player.connection.send(new ServerboundPlayerInputPacket(new Input(
+								player.zza > 0, player.zza < 0, player.xxa > 0, player.xxa < 0,
+								true, player.isShiftKeyDown(), false)));
 							player.jumpFromGround();
 
 							// only jump every N ticks...
@@ -231,12 +233,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 					Entity riddenEntity = player.getVehicle();
 
 					if (null != riddenEntity) {
-						if (riddenEntity instanceof Boat boat) {
+						if (riddenEntity instanceof AbstractBoat boat) {
 							// very special case: you can't steer a boat without keys,
 							// so we first steer left/right with keys until the boat
 							// and the player's view are aligned, only then move 
 							// forward 
-							if (boat.isControlledByLocalInstance()) {
+							if (boat.isLocalInstanceAuthoritative()) {
 								float yawError = boat.getYRot() - player.getYRot();
 								yawError %= 360;
 								if (yawError < -180) {
@@ -270,7 +272,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 							// It's critical we add motion to player on the server, not just
 							// locally
 							player.setDeltaMovement(motionAligned);
-							player.connection.send(new ServerboundMoveVehiclePacket(riddenEntity)); //TEST IF WORKS
+							player.connection.send(ServerboundMoveVehiclePacket.fromEntity(riddenEntity)); //TEST IF WORKS
 
 						} else {
 							// Any other ridden entities that don't work with the movement override??
@@ -368,11 +370,11 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mToggleAutoWalkKB.matches(keyCode, scanCode) && mToggleAutoWalkKB.consumeClick()) {
+		if (mToggleAutoWalkKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mToggleAutoWalkKB.consumeClick()) {
 			mDoingAutoWalk = !mDoingAutoWalk;
 			MouseHandlerMod.setWalking(mDoingAutoWalk);
 			StateOverlay.setStateLeftIcon(mIconIndex, mDoingAutoWalk);
@@ -381,12 +383,12 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 			}
 			ModUtils.sendPlayerMessage("Auto walk: " + (mDoingAutoWalk ? "ON" : "OFF"));
 		}
-		if (mDecreaseWalkSpeedKB.matches(keyCode, scanCode) && mDecreaseWalkSpeedKB.consumeClick()) {
+		if (mDecreaseWalkSpeedKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDecreaseWalkSpeedKB.consumeClick()) {
 			float newSpeed = (float) Math.max(0.1d, 0.9d * EyeMineConfig.getCustomSpeedFactor());
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();
 		}
-		if (mIncreaseWalkSpeedKB.matches(keyCode, scanCode) && mIncreaseWalkSpeedKB.consumeClick()) {
+		if (mIncreaseWalkSpeedKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mIncreaseWalkSpeedKB.consumeClick()) {
 			float newSpeed = (float) Math.min(2.0d, EyeMineConfig.getCustomSpeedFactor() * 1.1d);
 			MainClientHandler.saveWalkingSpeed(newSpeed);
 			displayCurrentSpeed();

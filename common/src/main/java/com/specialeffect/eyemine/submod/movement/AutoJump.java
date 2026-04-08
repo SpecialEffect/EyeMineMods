@@ -19,9 +19,8 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -43,14 +42,14 @@ public class AutoJump extends SubMod implements IConfigListener {
 				"key.eyemine.toggle_auto_jump",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_J,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureLeft("eyemine:textures/icons/jump.png");
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	private void updateSettings(boolean autoJump, boolean persist) {
@@ -101,11 +100,11 @@ public class AutoJump extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(keyCode, scanCode) && autoJumpKeyBinding.consumeClick()) {
+		if (!mAutoJumpDisabled && autoJumpKeyBinding.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && autoJumpKeyBinding.consumeClick()) {
 			mDoingAutoJump = !mDoingAutoJump;
 			// User toggled the setting, so persist it
 			this.updateSettings(mDoingAutoJump, true);

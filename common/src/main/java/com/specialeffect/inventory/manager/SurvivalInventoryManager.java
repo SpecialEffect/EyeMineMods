@@ -123,7 +123,7 @@ public class SurvivalInventoryManager {
 
 
 		List<Slot> slots = playerContainer.slots;
-		int iSlotOutput = playerContainer.getResultSlotIndex();
+		int iSlotOutput = InventoryMenu.RESULT_SLOT;
 
 		for (Slot slot : slots) {
 
@@ -148,7 +148,7 @@ public class SurvivalInventoryManager {
 
 		List<Slot> slots = playerContainer.slots;
 
-		this.outputSlot = slots.get(playerContainer.getResultSlotIndex());
+		this.outputSlot = slots.get(InventoryMenu.RESULT_SLOT);
 
 		this.slotFirstX = slots.get(10).x;
 		this.slotFirstY = slots.get(10).y;
@@ -166,7 +166,7 @@ public class SurvivalInventoryManager {
 	  
 		// Parse the list of slots to work out the location of things
 		List<Slot> slots = playerContainer.inventorySlots;
-		int iSlotOutput = playerContainer.getResultSlotIndex();
+		int iSlotOutput = InventoryMenu.RESULT_SLOT;
 		for (Slot slot : slots) {
 //			if (slot instanceof )
 			LOGGER.debug(slot.xPos+ ", "+ slot.yPos);
@@ -193,7 +193,7 @@ public class SurvivalInventoryManager {
 		MouseHelper.instance().moveCursor(helper, xPos * this.xScale, yPos * this.yScale);
 
 
-		playerContainer.quickMoveStack(Minecraft.getInstance().player, playerContainer.getResultSlotIndex());
+		playerContainer.quickMoveStack(Minecraft.getInstance().player, InventoryMenu.RESULT_SLOT);
 
 	}
 
@@ -273,7 +273,7 @@ public class SurvivalInventoryManager {
 		int yPos = topItemYPos + itemRow * itemWidth;
 		int xPos = leftItemXPos + itemCol * itemWidth;
 
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), xPos * this.xScale, yPos * this.yScale);
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 	}
 
 	private void switchToTab(int iTab) {

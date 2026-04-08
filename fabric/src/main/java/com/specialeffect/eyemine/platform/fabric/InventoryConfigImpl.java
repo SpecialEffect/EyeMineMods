@@ -1,131 +1,37 @@
 package com.specialeffect.eyemine.platform.fabric;
 
 import com.specialeffect.eyemine.config.InventoryConfig;
+import com.specialeffect.eyemine.platform.services.IInventoryConfigService;
 import me.shedaniel.autoconfig.AutoConfig;
 
-public class InventoryConfigImpl {
-	public static int getKey0() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key0;
-	}
+public class InventoryConfigImpl implements IInventoryConfigService {
+    private InventoryConfig getConfig() {
+        return AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
+    }
 
-	public static int getKey1() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key1;
-	}
-
-	public static int getKey2() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key2;
-	}
-
-	public static int getKey3() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key3;
-	}
-
-	public static int getKey4() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key4;
-	}
-
-	public static int getKey5() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key5;
-	}
-
-	public static int getKey6() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key6;
-	}
-
-	public static int getKey7() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key7;
-	}
-
-	public static int getKey8() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key8;
-	}
-
-	public static int getKey9() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.configKeys.key9;
-	}
-
-	public static int getKeySurvPrevTab() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvPrevTab;
-	}
-
-	public static int getKeySurvNextTab() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvNextTab;
-	}
-
-	public static int getKeySurvRecipes() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvRecipes;
-	}
-
-	public static int getKeySurvCraftable() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvCraftable;
-	}
-
-	public static int getkeySurvPrevPage() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvPrevPage;
-	}
-
-	public static int getkeySurvNextPage() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvNextPage;
-	}
-
-	public static int getKeySurvOutput() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.survival.keySurvOutput;
-	}
-
-	public static int getKeyPrev() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyPrev;
-	}
-
-	public static int getKeyNext() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyNext;
-	}
-
-	public static int getKeyNextItemRow() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyNextItemRow;
-	}
-
-	public static int getKeyNextItemCol() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyNextItemCol;
-	}
-
-	public static int getKeyScrollUp() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyScrollUp;
-	}
-
-	public static int getKeyScrollDown() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyScrollDown;
-	}
-
-	public static int getKeySearch() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keySearch;
-	}
-
-	public static int getKeyDrop() {
-		InventoryConfig config = AutoConfig.getConfigHolder(InventoryConfig.class).getConfig();
-		return config.navKeys.keyDrop;
-	}
+    @Override public int getKey0() { return getConfig().configKeys.key0; }
+    @Override public int getKey1() { return getConfig().configKeys.key1; }
+    @Override public int getKey2() { return getConfig().configKeys.key2; }
+    @Override public int getKey3() { return getConfig().configKeys.key3; }
+    @Override public int getKey4() { return getConfig().configKeys.key4; }
+    @Override public int getKey5() { return getConfig().configKeys.key5; }
+    @Override public int getKey6() { return getConfig().configKeys.key6; }
+    @Override public int getKey7() { return getConfig().configKeys.key7; }
+    @Override public int getKey8() { return getConfig().configKeys.key8; }
+    @Override public int getKey9() { return getConfig().configKeys.key9; }
+    @Override public int getKeySurvPrevTab() { return getConfig().survival.keySurvPrevTab; }
+    @Override public int getKeySurvNextTab() { return getConfig().survival.keySurvNextTab; }
+    @Override public int getKeySurvRecipes() { return getConfig().survival.keySurvRecipes; }
+    @Override public int getKeySurvCraftable() { return getConfig().survival.keySurvCraftable; }
+    @Override public int getkeySurvPrevPage() { return getConfig().survival.keySurvPrevPage; }
+    @Override public int getkeySurvNextPage() { return getConfig().survival.keySurvNextPage; }
+    @Override public int getKeySurvOutput() { return getConfig().survival.keySurvOutput; }
+    @Override public int getKeyPrev() { return getConfig().navKeys.keyPrev; }
+    @Override public int getKeyNext() { return getConfig().navKeys.keyNext; }
+    @Override public int getKeyNextItemRow() { return getConfig().navKeys.keyNextItemRow; }
+    @Override public int getKeyNextItemCol() { return getConfig().navKeys.keyNextItemCol; }
+    @Override public int getKeyScrollUp() { return getConfig().navKeys.keyScrollUp; }
+    @Override public int getKeyScrollDown() { return getConfig().navKeys.keyScrollDown; }
+    @Override public int getKeySearch() { return getConfig().navKeys.keySearch; }
+    @Override public int getKeyDrop() { return getConfig().navKeys.keyDrop; }
 }

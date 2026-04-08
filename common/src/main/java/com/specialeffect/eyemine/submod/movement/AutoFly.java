@@ -20,10 +20,10 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -52,29 +52,29 @@ public class AutoFly extends SubMod implements IConfigListener {
 				"key.eyemine.toggle_manual_flying",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_COMMA,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyAutoKB = new KeyMapping(
 				"key.eyemine.toggle_auto_flying",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_G,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyUpKB = new KeyMapping(
 				"key.eyemine.fly_higher",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_PERIOD,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyDownKB = new KeyMapping(
 				"key.eyemine.fly_lower",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_APOSTROPHE,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 
 		// Register an icon for the overlay
 		mIconIndexAuto = StateOverlay.registerTextureLeft("eyemine:textures/icons/fly-auto.png");
@@ -153,7 +153,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 		Player player = Minecraft.getInstance().player;
 
 		player.getAbilities().flying = false;
-		NetworkManager.sendToServer(new ChangeFlyingStateMessage(false, 0));
+		Services.NETWORK.sendToServer(new ChangeFlyingStateMessage(false, 0));
 		updateIcons();
 	}
 
@@ -186,7 +186,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 			player.move(MoverType.SELF, new Vec3(0, flyHeight, 0));
 		}
 
-		NetworkManager.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
+		Services.NETWORK.sendToServer(new ChangeFlyingStateMessage(true, flyHeight));
 
 		updateIcons();
 
@@ -224,11 +224,11 @@ public class AutoFly extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mFlyManualKB.matches(keyCode, scanCode) && mFlyManualKB.consumeClick()) {
+		if (mFlyManualKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mFlyManualKB.consumeClick()) {
 			if (mIsFlyingManual) {
 				ModUtils.sendPlayerMessage("Fly manual: OFF");
 				this.stopFlying();
@@ -237,7 +237,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 				boolean doFlyUp = !mIsFlyingAuto;
 				this.setFlying(doFlyUp, false);
 			}
-		} else if (mFlyAutoKB.matches(keyCode, scanCode) && mFlyAutoKB.consumeClick()) {
+		} else if (mFlyAutoKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mFlyAutoKB.consumeClick()) {
 			if (mIsFlyingAuto) {
 				ModUtils.sendPlayerMessage("Fly auto: OFF");
 				this.stopFlying();
@@ -246,9 +246,9 @@ public class AutoFly extends SubMod implements IConfigListener {
 				boolean doFlyUp = !mIsFlyingManual;
 				this.setFlying(doFlyUp, true);
 			}
-		} else if (mFlyUpKB.matches(keyCode, scanCode) && mFlyUpKB.consumeClick()) {
+		} else if (mFlyUpKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mFlyUpKB.consumeClick()) {
 			this.setFlying(true, mIsFlyingAuto);
-		} else if (mFlyDownKB.matches(keyCode, scanCode) && mFlyDownKB.consumeClick()) {
+		} else if (mFlyDownKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mFlyDownKB.consumeClick()) {
 			flyDown();
 		}
 		AutoFly.updateIcons();

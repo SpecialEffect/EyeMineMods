@@ -18,9 +18,8 @@ import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -41,18 +40,18 @@ public class DwellMine extends DwellAction {
 				"key.eyemine.toggle_dwell",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_6,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mDwellMineOnceKB = new KeyMapping(
 				"key.eyemine.dwell_once",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_8,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 
 		//Initialize variables
 		super.onInitializeClient();
@@ -69,11 +68,11 @@ public class DwellMine extends DwellAction {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mDwellMineKB.matches(keyCode, scanCode) && mDwellMineKB.consumeClick()) {
+		if (mDwellMineKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDwellMineKB.consumeClick()) {
 			if (mDwelling) {
 				// Turn off dwell mine
 				this.setDwelling(false);
@@ -86,7 +85,7 @@ public class DwellMine extends DwellAction {
 			return EventResult.pass();
 		}
 
-		if (mDwellMineOnceKB.matches(keyCode, scanCode) && mDwellMineOnceKB.consumeClick()) {
+		if (mDwellMineOnceKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDwellMineOnceKB.consumeClick()) {
 			this.dwellOnce();
 			return EventResult.pass();
 		}

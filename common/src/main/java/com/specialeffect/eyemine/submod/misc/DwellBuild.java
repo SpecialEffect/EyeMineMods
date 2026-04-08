@@ -18,9 +18,8 @@ import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -45,17 +44,17 @@ public class DwellBuild extends DwellAction {
 				"key.eyemine.toggle_dwell_build",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_3,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mDwellBuildOnceKB = new KeyMapping(
 				"key.eyemine.dwell_build_once",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_7,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 
 		//Initialize variables
 		super.onInitializeClient();
@@ -72,11 +71,11 @@ public class DwellBuild extends DwellAction {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mDwellBuildKB.matches(keyCode, scanCode) && mDwellBuildKB.consumeClick()) {
+		if (mDwellBuildKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDwellBuildKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
 			if (mDwelling) {
 				// Turn off dwell build
@@ -84,7 +83,7 @@ public class DwellBuild extends DwellAction {
 				ModUtils.sendPlayerMessage("Dwell building: OFF");
 			} else {
 				// Turn on dwell build
-				ItemStack itemStack = player.getInventory().getSelected();
+				ItemStack itemStack = player.getInventory().getSelectedItem();
 				if (itemStack.isEmpty()) {
 					player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 					return EventResult.pass();
@@ -94,11 +93,11 @@ public class DwellBuild extends DwellAction {
 				ModUtils.sendPlayerMessage("Dwell building: ON");
 			}
 		}
-		if (mDwellBuildOnceKB.matches(keyCode, scanCode) && mDwellBuildOnceKB.consumeClick()) {
+		if (mDwellBuildOnceKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDwellBuildOnceKB.consumeClick()) {
 			Player player = Minecraft.getInstance().player;
 
 			// Turn on dwell once
-			ItemStack itemStack = player.getInventory().getSelected();
+			ItemStack itemStack = player.getInventory().getSelectedItem();
 			if (itemStack.isEmpty()) {
 				player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 				return EventResult.pass();

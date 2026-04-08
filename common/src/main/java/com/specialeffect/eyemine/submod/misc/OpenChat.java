@@ -17,8 +17,8 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -34,10 +34,10 @@ public class OpenChat extends SubMod {
 				"key.eyemine.open_chat",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_END,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
@@ -45,11 +45,11 @@ public class OpenChat extends SubMod {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mOpenChatKB.matches(keyCode, scanCode) && mOpenChatKB.consumeClick()) {
+		if (mOpenChatKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mOpenChatKB.consumeClick()) {
 			KeyMapping.click(((KeyMappingAccessor) minecraft.options.keyChat).getActualKey());
 		}
 		return EventResult.pass();

@@ -13,16 +13,12 @@ package com.specialeffect.eyemine.submod.misc;
 
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.event.events.common.EntityEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -58,12 +54,12 @@ public class NightVisionHelper extends SubMod {
 	}
 
 	public void onInitializeClient() {
-		LifecycleEvent.SERVER_LEVEL_LOAD.register(this::onWorldLoad);
-		EntityEvent.LIVING_DEATH.register(this::onDeath);
-		EntityEvent.ADD.register(this::onSpawn);
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		ClientGuiEvent.RENDER_HUD.register(this::onRenderExperienceBar);
+		EyeMineEvents.WORLD_LOAD.register(this::onWorldLoad);
+		EyeMineEvents.ENTITY_DEATH.register(this::onDeath);
+		EyeMineEvents.ENTITY_ADD.register(this::onSpawn);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.RENDER_HUD.register(this::onRenderExperienceBar);
 	}
 
 	private void onWorldLoad(ServerLevel serverLevel) {
@@ -153,7 +149,7 @@ public class NightVisionHelper extends SubMod {
 				}
 
 				// Get lightness of block(s) we're looking at and where player is
-				boolean isDark = isDark(level, pos, level.random);
+				boolean isDark = isDark(level, pos, level.getRandom());
 
 				// If it's really dark, put message up to remind of night vision
 				if (isDark) {
@@ -184,7 +180,7 @@ public class NightVisionHelper extends SubMod {
 		}
 	}
 
-	public void onRenderExperienceBar(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public void onRenderExperienceBar(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		if (mShowMessage) {
 			Minecraft mc = Minecraft.getInstance();
 
@@ -204,9 +200,9 @@ public class NightVisionHelper extends SubMod {
 		}
 	}
 
-	private void drawCenteredString(GuiGraphics guiGraphics, Font font, String msg, int x, int y, int c) { //TODO: check if we can just use GuiGraphics#drawCenteredString
+	private void drawCenteredString(GuiGraphicsExtractor guiGraphics, Font font, String msg, int x, int y, int c) { //TODO: check if we can just use GuiGraphics#drawCenteredString
 		int stringWidth = font.width(msg);
-		guiGraphics.drawString(font, msg, x - stringWidth / 2, y, c);
+		guiGraphics.text(font, msg, x - stringWidth / 2, y, c);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {

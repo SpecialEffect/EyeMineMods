@@ -17,43 +17,17 @@ import com.specialeffect.eyemine.packets.messages.ChangeFlyingStateMessage;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.packets.messages.SendCommandMessage;
 import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.platform.Services;
 
 public class PacketHandler {
-	private static final String PROTOCOL_VERSION = "1";
-//	public static final Predicate<String> validator = v -> PROTOCOL_VERSION.equals(v) || NetworkRegistry.ABSENT.equals(v) || NetworkRegistry.ACCEPTVANILLA.equals(v);
-//	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath("specialeffect", EyeMine.MOD_ID))
-//			.clientAcceptedVersions(validator)
-//			.serverAcceptedVersions(validator)
-//			.networkProtocolVersion(() -> PROTOCOL_VERSION)
-//			.simpleChannel();
-
-
-//	public static final NetworkChannel CHANNEL = NetworkChannel.create(ResourceLocation.fromNamespaceAndPath("specialeffect", EyeMine.MOD_ID));
-
 	public static void init() {
-		NetworkManager.registerReceiver(NetworkManager.c2s(), AddItemToHotbar.ID, AddItemToHotbar.CODEC, AddItemToHotbar.Handler::handle);
-//		CHANNEL.register(AddItemToHotbar.class, AddItemToHotbar::write, AddItemToHotbar::decode,
-//				AddItemToHotbar.Handler::handle);
+		NetworkService net = Services.NETWORK;
 
-		NetworkManager.registerReceiver(NetworkManager.c2s(), SendCommandMessage.ID, SendCommandMessage.CODEC, SendCommandMessage.Handler::handle);
-//		CHANNEL.register(SendCommandMessage.class, SendCommandMessage::encode,
-//				SendCommandMessage::decode, SendCommandMessage.Handler::handle);
-
-		NetworkManager.registerReceiver(NetworkManager.c2s(), TeleportPlayerToSpawnPointMessage.ID, TeleportPlayerToSpawnPointMessage.CODEC, TeleportPlayerToSpawnPointMessage.Handler::handle);
-//		CHANNEL.register(TeleportPlayerToSpawnPointMessage.class, TeleportPlayerToSpawnPointMessage::encode,
-//				TeleportPlayerToSpawnPointMessage::decode, TeleportPlayerToSpawnPointMessage.Handler::handle);
-
-		NetworkManager.registerReceiver(NetworkManager.c2s(), GatherBlockMessage.ID, GatherBlockMessage.CODEC, GatherBlockMessage.Handler::handle);
-//		CHANNEL.register(GatherBlockMessage.class, GatherBlockMessage::encode,
-//				GatherBlockMessage::decode, GatherBlockMessage.Handler::handle);
-
-		NetworkManager.registerReceiver(NetworkManager.c2s(), ActivateBlockAtPosition.ID, ActivateBlockAtPosition.CODEC, ActivateBlockAtPosition.Handler::handle);
-//		CHANNEL.register(ActivateBlockAtPosition.class, ActivateBlockAtPosition::encode,
-//				ActivateBlockAtPosition::decode, ActivateBlockAtPosition.Handler::handle);
-
-		NetworkManager.registerReceiver(NetworkManager.c2s(), ChangeFlyingStateMessage.ID, ChangeFlyingStateMessage.CODEC, ChangeFlyingStateMessage.Handler::handle);
-//		CHANNEL.register(ChangeFlyingStateMessage.class, ChangeFlyingStateMessage::encode,
-//				ChangeFlyingStateMessage::decode, ChangeFlyingStateMessage.Handler::handle);
+		net.registerC2S(AddItemToHotbar.ID, AddItemToHotbar.CODEC, AddItemToHotbar.Handler::handle);
+		net.registerC2S(SendCommandMessage.ID, SendCommandMessage.CODEC, SendCommandMessage.Handler::handle);
+		net.registerC2S(TeleportPlayerToSpawnPointMessage.ID, TeleportPlayerToSpawnPointMessage.CODEC, TeleportPlayerToSpawnPointMessage.Handler::handle);
+		net.registerC2S(GatherBlockMessage.ID, GatherBlockMessage.CODEC, GatherBlockMessage.Handler::handle);
+		net.registerC2S(ActivateBlockAtPosition.ID, ActivateBlockAtPosition.CODEC, ActivateBlockAtPosition.Handler::handle);
+		net.registerC2S(ChangeFlyingStateMessage.ID, ChangeFlyingStateMessage.CODEC, ChangeFlyingStateMessage.Handler::handle);
 	}
 }

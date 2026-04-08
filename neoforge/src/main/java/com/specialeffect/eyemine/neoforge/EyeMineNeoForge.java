@@ -3,38 +3,54 @@ package com.specialeffect.eyemine.neoforge;
 import com.inventory.config.InventoryConfig;
 import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.EyeMineClient;
-import com.specialeffect.eyemine.client.neoforge.ClientHandler;
+import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.config.EyeMineConfig;
+import com.specialeffect.eyemine.platform.neoforge.NeoForgeNetworkService;
+import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 @Mod(EyeMine.MOD_ID)
 public class EyeMineNeoForge {
-	public EyeMineNeoForge(IEventBus eventBus, ModContainer container, Dist dist) {
-		// In NeoForge 1.21+, the event bus is passed directly to the constructor
-		// and Architectury automatically detects it via ModList.getModContainerById()
-		EyeMine.init();
+    public EyeMineNeoForge(IEventBus eventBus, ModContainer container, Dist dist) {
+        EyeMine.init();
 
-		if (dist.isClient()) {
-			// Config setup
-			container.registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG, "eyemine-config.toml");
-			eventBus.register(EyeMineConfig.class);
-			container.registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG, "eyemine-inventory-config.toml");
-			eventBus.register(InventoryConfig.class);
+        eventBus.addListener(this::registerPayloads);
 
-			// Hook up config gui
-//            ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> ClientHandler::openSettings);
+        if (dist.isClient()) {
+            container.registerConfig(ModConfig.Type.CLIENT, EyeMineConfig.CLIENT_CONFIG, "eyemine-config.toml");
+            eventBus.register(EyeMineConfig.class);
+            container.registerConfig(ModConfig.Type.CLIENT, InventoryConfig.CLIENT_CONFIG, "eyemine-inventory-config.toml");
+            eventBus.register(InventoryConfig.class);
 
-			// Register this setup method *after* children have registered theirs
-			// (this way the children will be fully set up before any config gets loaded)
-			eventBus.addListener(ClientHandler::setup);
+            eventBus.addListener(this::registerKeyMappings);
 
-			NeoForge.EVENT_BUS.addListener(ClientHandler::onOutlineRender);
-			EyeMineClient.init();
-		}
-	}
+            EyeMineClient.init();
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(EyeMine.MOD_ID);
+        for (var entry : NeoForgeNetworkService.getPendingRegistrations().values()) {
+            registrar.playToServer(
+                    entry.type(),
+                    (net.minecraft.network.codec.StreamCodec) entry.codec(),
+                    (payload, context) -> entry.handlePayload(payload, context)
+            );
+        }
+    }
+
+    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        for (KeyMapping keyBinding : Keybindings.keybindings) {
+            event.register(keyBinding);
+        }
+    }
 }

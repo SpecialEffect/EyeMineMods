@@ -13,7 +13,7 @@ package com.specialeffect.eyemine.submod.utils;
 
 import com.specialeffect.eyemine.mixin.MinecraftAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
@@ -35,7 +35,7 @@ public class DebugAverageFps extends SubMod {
 	public void onInitializeClient() {
 		mPrevFps = new LinkedBlockingQueue<>();
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
 	}
 
 	public void onClientTick(Minecraft event) {

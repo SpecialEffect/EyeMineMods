@@ -1,8 +1,8 @@
 package com.irtimaled.bbor.client.renderers;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -20,15 +20,10 @@ public class Renderer {
 		return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 	}
 
-//    static Renderer startPoints() {
-//        return new Renderer(GL11.GL_POINTS, DefaultVertexFormat.POSITION_COLOR);
-//    }
-
 	public static Renderer startTextured() {
 		return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 	}
 
-	private static final Tesselator tessellator = new Tesselator(2097152);
 	private static BufferBuilder bufferBuilder;
 
 	private int red;
@@ -37,7 +32,7 @@ public class Renderer {
 	private int alpha;
 
 	private Renderer(Mode glMode, VertexFormat vertexFormat) {
-		this.bufferBuilder = tessellator.begin(glMode, vertexFormat);
+		bufferBuilder = Tesselator.getInstance().begin(glMode, vertexFormat);
 		this.glMode = glMode;
 	}
 
@@ -73,7 +68,6 @@ public class Renderer {
 	Renderer addPoint(double x, double y, double z) {
 		pos((float) x, (float) y, (float) z);
 		color();
-		draw();
 		return this;
 	}
 
@@ -81,10 +75,8 @@ public class Renderer {
 		pos((float) x, (float) y, (float) z);
 		tex(u, v);
 		color();
-		draw();
 		return this;
 	}
-
 
 	private void pos(float x, float y, float z) {
 		bufferBuilder.addVertex(x, y, z);
@@ -99,6 +91,9 @@ public class Renderer {
 	}
 
 	public void draw() {
-		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+		MeshData mesh = bufferBuilder.build();
+		if (mesh != null) {
+			mesh.close();
+		}
 	}
 }

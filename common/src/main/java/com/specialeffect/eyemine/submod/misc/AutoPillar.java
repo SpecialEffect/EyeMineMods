@@ -19,15 +19,16 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
@@ -58,11 +59,11 @@ public class AutoPillar extends SubMod {
 				"key.eyemine.pillar",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_0,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	private float lastPlayerPitch;
@@ -99,7 +100,7 @@ public class AutoPillar extends SubMod {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
@@ -109,7 +110,7 @@ public class AutoPillar extends SubMod {
 		// - next few ticks, gradually reset view
 		// Technically there is no need to change player's view, but the user experience
 		// is weird if you don't (you don't really know what just happened).
-		if (autoPlaceKeyBinding.matches(keyCode, scanCode) && autoPlaceKeyBinding.consumeClick()) {
+		if (autoPlaceKeyBinding.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && autoPlaceKeyBinding.consumeClick()) {
 			float origPitchTemp;
 			synchronized (mOnLivingQueue) {
 				origPitchTemp = lastPlayerPitch;
@@ -124,7 +125,9 @@ public class AutoPillar extends SubMod {
 				Minecraft mc = Minecraft.getInstance();
 				LocalPlayer player = mc.player;
 
-				player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, true, player.input.shiftKeyDown));
+				player.connection.send(new ServerboundPlayerInputPacket(new Input(
+						player.zza > 0, player.zza < 0, player.xxa > 0, player.xxa < 0,
+						true, player.isShiftKeyDown(), false)));
 				player.jumpFromGround();
 
 				player.setXRot(90);
@@ -176,10 +179,10 @@ public class AutoPillar extends SubMod {
 		// or just rustle up a new one
 		int blockId = ModUtils.findItemInHotbar(inventory, (item -> item instanceof BlockItem));
 		if (blockId > -1) {
-			inventory.selected = blockId;
+			inventory.setSelectedSlot(blockId);
 		} else {
 			// Ask server to put new item in hotbar
-			NetworkManager.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.SHORT_GRASS)));
+			Services.NETWORK.sendToServer(new AddItemToHotbar(new ItemStack(Blocks.SHORT_GRASS)));
 		}
 	}
 }

@@ -19,8 +19,8 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -32,7 +32,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.AbstractChestBlock;
 import net.minecraft.world.level.block.Block;
@@ -58,16 +58,16 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				"key.eyemine.open_chest",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_LEFT_BRACKET,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mOpenCraftingTableKB = new KeyMapping(
 				"key.eyemine.open_crafting_table",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_RIGHT_BRACKET,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	public void syncConfig() {
@@ -120,13 +120,13 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
 		final LocalPlayer player = Minecraft.getInstance().player;
 		final ClientLevel level = minecraft.level;
-		if (mOpenChestKB.matches(keyCode, scanCode) && mOpenChestKB.consumeClick()) {
+		if (mOpenChestKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mOpenChestKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof AbstractChestBlock), player, level, mRadius);
 
 			// Ask server to open
@@ -136,14 +136,14 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
-				ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
+				InteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
 					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();
 					player.connection.send(new ServerboundUseItemOnPacket(InteractionHand.MAIN_HAND, simulatedHit, i));
 				}
 			}
-		} else if (mOpenCraftingTableKB.matches(keyCode, scanCode) && mOpenCraftingTableKB.consumeClick()) {
+		} else if (mOpenCraftingTableKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mOpenCraftingTableKB.consumeClick()) {
 			BlockPos closestBlockPos = OpenTablesChests.findClosestBlockOfType((block -> block instanceof CraftingTableBlock), player, level, mRadius);
 
 			// Ask server to open
@@ -154,7 +154,7 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 				BlockState state = level.getBlockState(closestBlockPos);
 				BlockHitResult simulatedHit = getSimulatedHitResult(level, closestBlockPos);
 
-				ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
+				InteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, simulatedHit);
 				if (result.consumesAction()) {
 					BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 					int i = blockstatepredictionhandler.currentSequence();

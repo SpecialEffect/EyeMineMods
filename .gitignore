@@ -17,4 +17,10 @@ classes/
 .vscode
 .settings
 *.launch
-.architectury-transformer
+runs/
+
+# Ignore markdown files except the ones we want tracked
+*.md
+!README.md
+!LICENSE.md
+!CHANGES.md

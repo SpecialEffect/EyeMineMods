@@ -16,20 +16,21 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.Saddleable;
-import net.minecraft.world.entity.animal.horse.Horse;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.Horse;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
+import net.minecraft.world.entity.vehicle.minecart.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
@@ -49,10 +50,10 @@ public class Dismount extends SubMod {
 				"key.eyemine.ride_or_dismount",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_F15,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
@@ -60,11 +61,11 @@ public class Dismount extends SubMod {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mDismountKB.matches(keyCode, scanCode) && mDismountKB.consumeClick()) {
+		if (mDismountKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDismountKB.consumeClick()) {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player.isPassenger()) {
 				// Dismount player locally
@@ -72,7 +73,7 @@ public class Dismount extends SubMod {
 				player.jumpFromGround();
 				// Dismount player on server
 //		        channel.sendToServer(new DismountPlayerMessage());
-				player.connection.send(new ServerboundPlayerInputPacket(player.xxa, player.zza, false, true));
+				player.connection.send(new ServerboundPlayerInputPacket(new Input(false, false, false, false, false, true, false)));
 			} else {
 				EntityHitResult entityResult = ModUtils.getMouseOverEntity();
 				Entity entity = entityResult == null ? null : entityResult.getEntity();
@@ -86,7 +87,7 @@ public class Dismount extends SubMod {
 					AABB box = player.getBoundingBox().inflate(2);
 
 					List<Mob> mobEntities = level.getEntitiesOfClass(Mob.class, box);
-					List<Boat> boatEntities = level.getEntitiesOfClass(Boat.class, box);
+					List<AbstractBoat> boatEntities = level.getEntitiesOfClass(AbstractBoat.class, box);
 					List<Minecart> minecartEntities = level.getEntitiesOfClass(Minecart.class, box);
 
 					List<Entity> entities = new ArrayList<>();
@@ -101,7 +102,7 @@ public class Dismount extends SubMod {
 						ModUtils.sendPlayerMessage("Nothing found to ride");
 					} else if (entities.size() == 1) {
 						entity = entities.get(0);
-						if (entity instanceof Saddleable || entity instanceof Minecart || entity instanceof Boat) {
+						if (entity instanceof AbstractHorse || entity instanceof Minecart || entity instanceof AbstractBoat) {
 							ModUtils.sendPlayerMessage("Attempting to mount nearby " + entity.getName().getString());
 						}
 					} else {
@@ -126,8 +127,8 @@ public class Dismount extends SubMod {
 						ModUtils.sendPlayerMessage("You need an empty hand to ride a horse");
 					}
 
-					entity.interact(player, hand);
-					player.connection.send(ServerboundInteractPacket.createInteractionPacket(entity, player.isShiftKeyDown(), hand));
+					entity.interact(player, hand, entity.position());
+					player.connection.send(new ServerboundInteractPacket(entity.getId(), hand, entity.position(), player.isShiftKeyDown()));
 				}
 			}
 		}

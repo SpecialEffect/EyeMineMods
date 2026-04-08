@@ -12,12 +12,12 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,7 @@ public record GatherBlockMessage(int entityId) implements CustomPacketPayload {
 			GatherBlockMessage::new
 	);
 	public static final CustomPacketPayload.Type<GatherBlockMessage> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "gather_block"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "gather_block"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -38,14 +38,14 @@ public record GatherBlockMessage(int entityId) implements CustomPacketPayload {
 	}
 
 	public static class Handler {
-		public static void handle(final GatherBlockMessage pkt, NetworkManager.PacketContext context) {
+		public static void handle(final GatherBlockMessage pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
 				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}
 
-				Level level = player.getCommandSenderWorld();
+				Level level = player.level();
 				Entity target = level.getEntity(pkt.entityId);
 				if (target != null && target instanceof ItemEntity) {
 					// Move item next to player to be picked up automatically

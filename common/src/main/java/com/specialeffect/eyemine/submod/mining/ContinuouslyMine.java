@@ -23,10 +23,10 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -34,7 +34,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.tags.ItemTags;
 import org.lwjgl.glfw.GLFW;
 
 import com.specialeffect.eyemine.utils.MouseHelper;
@@ -67,14 +67,14 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 				"key.eyemine.continious_destroy",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_M,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureRight("eyemine:textures/icons/mine.png");
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	@Override
@@ -165,11 +165,11 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
+		if (mDestroyKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDestroyKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
@@ -197,12 +197,12 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 		// In creative mode, we can either select a pickaxe from the hotbar
 		// or just rustle up a new one
-		if (inventory.getSelected().getItem() instanceof PickaxeItem) {
+		if (inventory.getSelectedItem().is(ItemTags.PICKAXES)) {
 			return true;
 		} else {
-			int pickaxeId = ModUtils.findItemInHotbar(inventory, (item -> item instanceof PickaxeItem));
+			int pickaxeId = ModUtils.findItemInHotbar(inventory, (item -> item.builtInRegistryHolder().is(ItemTags.PICKAXES)));
 			if (pickaxeId > -1) {
-				inventory.selected = pickaxeId;
+				inventory.setSelectedSlot(pickaxeId);
 				return true;
 			} else {
 				return false;
@@ -212,6 +212,6 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 
 	static void requestCreatePickaxe() {
 		// Ask server to put new item in hotbar
-		NetworkManager.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
+		Services.NETWORK.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_PICKAXE)));
 	}
 }

@@ -11,13 +11,13 @@
 
 package com.specialeffect.eyemine.mixin;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import org.joml.Matrix3x2fStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,29 +38,28 @@ public class TitleScreenMixin extends Screen {
 		super(component);
 	}
 
-	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
-	public void eyemineTitleHeadRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V")
+	public void eyemineTitleHeadRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
 		if (this.eyemine$firstRenderTime == 0L && this.eyemine$showFadeInAnimation) {
-			this.eyemine$firstRenderTime = Util.getMillis();
+			this.eyemine$firstRenderTime = System.currentTimeMillis();
 		}
-
-		eyemine$animationTime = this.eyemine$showFadeInAnimation ? (float) (Util.getMillis() - this.eyemine$firstRenderTime) / 1000.0F : 1.0F;
+		eyemine$animationTime = this.eyemine$showFadeInAnimation ? (float) (System.currentTimeMillis() - this.eyemine$firstRenderTime) / 1000.0F : 1.0F;
 	}
 
-	@Inject(at = @At("TAIL"), method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V")
-	public void eyemineTitleTailRender(GuiGraphics guiGraphics, int p_render_1_, int p_render_2_, float p_render_3_, CallbackInfo ci) {
+	@Inject(at = @At("TAIL"), method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V")
+	public void eyemineTitleTailRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
 		float f1 = this.eyemine$showFadeInAnimation ? Mth.clamp(eyemine$animationTime - 1.0F, 0.0F, 1.0F) : 1.0F;
 		int l = Mth.ceil(f1 * 255.0F) << 24;
 
 		String subtitle = "EyeMine Edition";
 		if ((l & -67108864) != 0) {
-			PoseStack poseStack = guiGraphics.pose();
-			poseStack.pushPose();
-			poseStack.translate((float) (this.width / 2), 25.0F, 0.0F);
+			Matrix3x2fStack pose = guiGraphics.pose();
+			pose.pushMatrix();
+			pose.translate((float) (this.width / 2), 25.0F);
 			float f2 = 1.5f;
-			poseStack.scale(f2, f2, f2);
-			guiGraphics.drawCenteredString(this.font, subtitle, 0, -8, 16776960 | l);
-			poseStack.popPose();
+			pose.scale(f2, f2);
+			guiGraphics.centeredText(this.font, subtitle, 0, -8, 16776960 | l);
+			pose.popMatrix();
 		}
 	}
 }

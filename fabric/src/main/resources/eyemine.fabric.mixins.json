@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.specialeffect.eyemine.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "FabricKeyboardHandlerMixin",
+    "FabricSetScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

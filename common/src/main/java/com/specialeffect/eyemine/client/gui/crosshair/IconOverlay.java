@@ -11,22 +11,15 @@
 
 package com.specialeffect.eyemine.client.gui.crosshair;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class IconOverlay implements ICrosshairOverlay {
-	private ResourceLocation mResource;
+	private Identifier mResource;
 
-	// Current state
 	public boolean mVisible = false;
-
-	// Position/appearance (see setters)
-	// Position/size are relative to screen
 	public float mCentreX = 0.5f;
 	public float mCentreY = 0.5f;
 	public float mHeight = 1.0f;
@@ -36,7 +29,7 @@ public class IconOverlay implements ICrosshairOverlay {
 	public int fadeCountdown = 0;
 
 	public IconOverlay(Minecraft mc, String resourcePath) {
-		mResource = ResourceLocation.tryParse(resourcePath);
+		mResource = Identifier.tryParse(resourcePath);
 	}
 
 	public void setPosition(float centreX, float centreY, float height, float aspectRatio) {
@@ -50,42 +43,36 @@ public class IconOverlay implements ICrosshairOverlay {
 		if (visible != mVisible) {
 			fadeCountdown = fadeTime;
 		}
-
 		mVisible = visible;
 	}
 
 	public void setAlpha(float alpha) {
-		// Minecraft clips alpha at 0.1, so we add 0.1 back in to get reasonable user-facing behaviour
 		if (alpha > 0.0f && alpha < 0.9f) {
 			alpha += 0.1f;
 		}
 		mAlpha = alpha;
 	}
 
-	// A helper function to draw a texture scaled to fit.
-	public void drawTexture(Minecraft minecraft, int screenHeight, int screenWidth, float fade) {
-		// calculate position
+	private static int colorWithAlpha(float alpha) {
+		int a = Math.clamp((int) (alpha * 255), 0, 255);
+		return (a << 24) | 0xFFFFFF;
+	}
+
+	public void drawTexture(GuiGraphicsExtractor guiGraphics, int screenHeight, int screenWidth, float fade) {
 		int height = (int) (screenWidth * mHeight);
 		int width = (int) (height * mAspectRatio);
 		int centreX = (int) (mCentreX * screenWidth);
 		int centreY = (int) (mCentreY * screenHeight);
 
-		// render the texture
-		// TODO:white? black? drop shadow?
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, mResource);
-		ModUtils.drawTexQuad(centreX - (double) width / 2, centreY - (double) height / 2,
-				width, height, mAlpha * fade);
+		float alpha = mAlpha * fade;
+		int x = centreX - width / 2;
+		int y = centreY - height / 2;
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, mResource, x, y, 0, 0, width, height, width, height, colorWithAlpha(alpha));
 	}
 
 	@Override
-	public void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft) {
+	public void renderOverlay(GuiGraphicsExtractor guiGraphics, Minecraft minecraft) {
 		if (mAlpha > 0.0 && (mVisible || fadeCountdown > 0)) {
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-
-			// Update fading ticks
 			float fade = 1.0f;
 			if (fadeCountdown > 0) {
 				fadeCountdown--;
@@ -95,16 +82,13 @@ public class IconOverlay implements ICrosshairOverlay {
 				}
 			}
 
-			// Don't show if the debug screen is open
 			if (minecraft.getDebugOverlay().showDebugScreen()) {
 				return;
 			}
 
 			int w = minecraft.getWindow().getGuiScaledWidth();
 			int h = minecraft.getWindow().getGuiScaledHeight();
-			drawTexture(minecraft, h, w, fade);
-
-			RenderSystem.disableBlend();
+			drawTexture(guiGraphics, h, w, fade);
 		}
 	}
 }

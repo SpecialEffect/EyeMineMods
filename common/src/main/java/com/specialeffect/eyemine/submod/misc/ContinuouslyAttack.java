@@ -23,20 +23,20 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.phys.EntityHitResult;
 import org.lwjgl.glfw.GLFW;
 
@@ -56,14 +56,14 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 				"key.eyemine.continious_attack",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_R,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		// Register an icon for the overlay
 		mIconIndex = StateOverlay.registerTextureRight("eyemine:textures/icons/attack.png");
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	@Override
@@ -114,9 +114,11 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 							final KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 							KeyMapping.click(((KeyMappingAccessor) attackBinding).getActualKey());
 						} else {
-							player.attack(entity);
-//							channel.sendToServer(new AttackEntityMessage(entity));
-							player.connection.send(ServerboundInteractPacket.createAttackPacket(entity, player.isShiftKeyDown()));
+							// Use gameMode.attack which handles both local and server-side
+							MultiPlayerGameMode gameMode = Minecraft.getInstance().gameMode;
+							if (gameMode != null) {
+								gameMode.attack(player, entity);
+							}
 						}
 					} else {
 						recharging = true;
@@ -137,11 +139,11 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mAttackKB.matches(keyCode, scanCode) && mAttackKB.consumeClick()) {
+		if (mAttackKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mAttackKB.consumeClick()) {
 			mIsAttacking = !mIsAttacking;
 			StateOverlay.setStateRightIcon(mIconIndex, mIsAttacking);
 
@@ -156,12 +158,12 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 
 		// In creative mode, we can either select a sword from the hotbar
 		// or just rustle up a new one
-		if (inventory.getSelected().getItem() instanceof SwordItem) {
+		if (inventory.getSelectedItem().is(ItemTags.SWORDS)) {
 			return true;
 		} else {
-			int swordId = ModUtils.findItemInHotbar(inventory, (item) -> item instanceof SwordItem);
+			int swordId = ModUtils.findItemInHotbar(inventory, (item) -> item.builtInRegistryHolder().is(ItemTags.SWORDS));
 			if (swordId > -1) {
-				inventory.selected = swordId;
+				inventory.setSelectedSlot(swordId);
 				return true;
 			} else {
 				return false;
@@ -171,6 +173,6 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 
 	private void requestCreateSword() {
 		// Ask server to put new item in hotbar
-		NetworkManager.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
+		Services.NETWORK.sendToServer(new AddItemToHotbar(new ItemStack(Items.DIAMOND_SWORD)));
 	}
 }

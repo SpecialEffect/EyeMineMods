@@ -1,0 +1,95 @@
+// Loader convention plugin - injects common sources into platform builds.
+
+plugins {
+    id 'java'
+}
+
+base {
+    archivesName = "${mod_id}-${minecraft_version}-${version}-${project.name}"
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    archiveVersion.set('')
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+}
+
+configurations {
+    commonJava {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+    commonResources {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    commonJava project(path: ':common', configuration: 'commonJava')
+    commonResources project(path: ':common', configuration: 'commonResources')
+}
+
+tasks.named('compileJava').configure {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava.incoming.artifactView {
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }.files)
+}
+
+tasks.named('processResources').configure {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources.incoming.artifactView {
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }.files)
+
+    // Property expansion for mod metadata files
+    var expandProps = [
+            'version'                      : version,
+            'group'                        : project.group,
+            'minecraft_version'            : minecraft_version,
+            'minecraft_version_range'      : minecraft_version_range,
+            'fabric_version'               : fabric_version,
+            'fabric_loader_version'        : fabric_loader_version,
+            'mod_name'                     : mod_name,
+            'mod_author'                   : mod_author,
+            'mod_id'                       : mod_id,
+            'license'                      : license,
+            'description'                  : project.description ?: '',
+            'neoforge_version'             : neoforge_version,
+            'neoforge_loader_version_range': neoforge_loader_version_range,
+            'credits'                      : credits,
+            'java_version'                 : java_version
+    ]
+
+    var jsonExpandProps = expandProps.collectEntries {
+        key, value -> [(key): value instanceof String ? value.replace("\n", "\\\\n") : value]
+    }
+
+    filesMatching(['META-INF/mods.toml', 'META-INF/neoforge.mods.toml']) {
+        expand expandProps
+    }
+
+    filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+        expand jsonExpandProps
+    }
+
+    inputs.properties(expandProps)
+}
+
+tasks.matching { it.name == 'javadoc' }.configureEach {
+    source(configurations.commonJava.incoming.artifactView {
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }.files)
+}
+
+tasks.matching { it.name == 'sourcesJar' }.configureEach {
+    from(configurations.commonJava.incoming.artifactView {
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }.files)
+    from(configurations.commonResources.incoming.artifactView {
+        attributes { attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME)) }
+    }.files)
+}

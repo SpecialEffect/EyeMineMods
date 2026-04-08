@@ -17,9 +17,10 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -47,10 +48,10 @@ public class GatherDrops extends SubMod {
 				"key.eyemine.gather",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_MULTIPLY,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
@@ -58,12 +59,12 @@ public class GatherDrops extends SubMod {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
 
-		if (mGatherKB.matches(keyCode, scanCode) && mGatherKB.consumeClick()) {
+		if (mGatherKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mGatherKB.consumeClick()) {
 			LocalPlayer player = minecraft.player;
 			gatherBlocks(player);
 		}
@@ -82,7 +83,7 @@ public class GatherDrops extends SubMod {
 			LOGGER.debug("gathering " + items.size() + " nearby items");
 			// Ask server to move items
 			for (ItemEntity itemEntity : items) {
-				NetworkManager.sendToServer(new GatherBlockMessage(itemEntity.getId()));
+				Services.NETWORK.sendToServer(new GatherBlockMessage(itemEntity.getId()));
 			}
 		}
 	}

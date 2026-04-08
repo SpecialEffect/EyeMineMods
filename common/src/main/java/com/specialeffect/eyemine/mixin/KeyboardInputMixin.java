@@ -12,44 +12,44 @@
 package com.specialeffect.eyemine.mixin;
 
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
-import net.minecraft.client.Options;
-import net.minecraft.client.player.Input;
+import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.KeyboardInput;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.phys.Vec2;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(KeyboardInput.class)
-public class KeyboardInputMixin extends Input {
-	@Shadow
-	@Final
-	private Options options;
+public class KeyboardInputMixin extends ClientInput {
 
-	@Inject(method = "tick(ZF)V",
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
-			value = "FIELD",
-			target = "Lnet/minecraft/client/player/KeyboardInput;up:Z",
-			shift = Shift.AFTER,
-			ordinal = 0))
-	public void EyeMineTickSetUp(boolean bl, float f, CallbackInfo ci) {
-		this.up = this.options.keyUp.isDown() || KeyboardInputHelper.mWalkForwardOverride.get();
-	}
-
-	@Inject(method = "tick(ZF)V",
-			locals = LocalCapture.CAPTURE_FAILEXCEPTION, at = @At(
-			value = "FIELD",
-			target = "Lnet/minecraft/client/player/KeyboardInput;forwardImpulse:F",
-			shift = Shift.AFTER,
-			ordinal = 0))
-	public void EyeMineTick(boolean bl, float f, CallbackInfo ci) {
+	/**
+	 * After tick() computes key presses and moveVector, override forward movement
+	 * if EyeMine walk override is active.
+	 *
+	 * In 26.1.1, Input is an immutable record (boolean flags only), so we:
+	 * 1. Set the forward flag to true in keyPresses
+	 * 2. Override moveVector.x (forward impulse) with the fractional walk speed
+	 *
+	 * moveVector is a Vec2 where x = forward/backward impulse, y = left/right impulse
+	 */
+	@Inject(method = "tick()V", at = @At("TAIL"))
+	public void eyemine$overrideWalkForward(CallbackInfo ci) {
 		if (KeyboardInputHelper.mWalkForwardOverride.get()) {
-			this.forwardImpulse = Math.max(-1, Math.min(1, KeyboardInputHelper.mOverrideWalkSpeed));
-			// TODO: do we still want as drastic a sneak-slowing-down with eyemine??
+			Input current = this.keyPresses;
+			this.keyPresses = new Input(
+					true,
+					current.backward(),
+					current.left(),
+					current.right(),
+					current.jump(),
+					current.shift(),
+					current.sprint()
+			);
+			// Override the move vector with fractional walk speed
+			float speed = Math.max(-1, Math.min(1, KeyboardInputHelper.mOverrideWalkSpeed));
+			this.moveVector = new Vec2(speed, this.moveVector.y);
 		}
 	}
 }

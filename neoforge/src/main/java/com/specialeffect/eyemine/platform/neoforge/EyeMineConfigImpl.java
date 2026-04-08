@@ -1,133 +1,39 @@
 package com.specialeffect.eyemine.platform.neoforge;
 
 import com.specialeffect.eyemine.config.EyeMineConfig;
+import com.specialeffect.eyemine.platform.services.IEyeMineConfigService;
 
-public class EyeMineConfigImpl {
-	public static boolean getDisableCustomNewWorld() {
-		return EyeMineConfig.disableCustomNewWorld.get();
-	}
-
-	public static void setCustomSpeedFactor(float speed) {
-		EyeMineConfig.customSpeedFactor.set((double) speed);
-	}
-
-	public static boolean getUsingMouseEmulation() {
-		return EyeMineConfig.usingMouseEmulation.get();
-	}
-
-	public static boolean getAutoSelectTool() {
-		return EyeMineConfig.autoSelectTool.get();
-	}
-
-	public static boolean getAutoSelectSword() {
-		return EyeMineConfig.autoSelectSword.get();
-	}
-
-	public static int getRadiusChests() {
-		return EyeMineConfig.radiusChests.get();
-	}
-
-	public static int getTicksBetweenMining() {
-		return EyeMineConfig.ticksBetweenMining.get();
-	}
-
-	public static double getBowDrawTime() {
-		return EyeMineConfig.bowDrawTime.get();
-	}
-
-	public static float getFullscreenOverlayAlpha() {
-		return EyeMineConfig.fullscreenOverlayAlpha.get().floatValue();
-	}
-
-	public static int getIronsightsFovReduction() {
-		return EyeMineConfig.ironsightsFovReduction.get();
-	}
-
-	public static double getIronsightsSensitivityReduction() {
-		return EyeMineConfig.ironsightsSensitivityReduction.get().floatValue();
-	}
-
-	public static boolean getUseDwellForSingleUseItem() {
-		return EyeMineConfig.useDwellForSingleUseItem.get();
-	}
-
-	public static boolean getUseDwellForSingleMine() {
-		return EyeMineConfig.useDwellForSingleMine.get();
-	}
-
-	public static int getRadiusDoors() {
-		return EyeMineConfig.radiusDoors.get();
-	}
-
-	public static boolean getServerCompatibilityMode() {
-		return EyeMineConfig.serverCompatibilityMode.get();
-	}
-
-	public static int getFlyHeightManual() {
-		return EyeMineConfig.flyHeightManual.get();
-	}
-
-	public static int getFlyHeightAuto() {
-		return EyeMineConfig.flyHeightAuto.get();
-	}
-
-	public static boolean getDefaultDoAutoJump() {
-		return EyeMineConfig.defaultDoAutoJump.get();
-	}
-
-	public static boolean getDisableAutoJumpFixes() {
-		return EyeMineConfig.disableAutoJumpFixes.get();
-	}
-
-	public static boolean getMoveWhenMouseStationary() {
-		return EyeMineConfig.moveWhenMouseStationary.get();
-	}
-
-	public static boolean getSlowdownOnCorners() {
-		return EyeMineConfig.slowdownOnCorners.get();
-	}
-
-	public static int getWalkingSlowdownFilter() {
-		return EyeMineConfig.walkingSlowdownFilter.get();
-	}
-
-	public static boolean getAllowLadderDescent() {
-		return EyeMineConfig.allowLadderDescent.get();
-	}
-
-	public static float getCustomSpeedFactor() {
-		return EyeMineConfig.customSpeedFactor.get().floatValue();
-	}
-
-	public static float getBoatMaxTurnAtSpeed() {
-		return EyeMineConfig.boatMaxTurnAtSpeed.get().floatValue();
-	}
-
-	public static double getBoatSlowdown() {
-		return EyeMineConfig.boatSlowdown.get();
-	}
-
-	public static double getDwellTimeSeconds() {
-		return EyeMineConfig.dwellTimeSeconds.get();
-	}
-
-	public static double getDwellLockonTimeSeconds() {
-		return EyeMineConfig.dwellLockonTimeSeconds.get();
-	}
-
-	public static boolean getDwellShowWithTransparency() {
-		return EyeMineConfig.dwellShowWithTransparency.get();
-	}
-
-	public static boolean getDwellShowExpanding() {
-		return EyeMineConfig.dwellShowExpanding.get();
-	}
-
-	public static boolean getSlowdownOnAttack() {
-		return EyeMineConfig.slowdownOnAttack.get();
-	}
-
-	public static int getGazeIdleThreshold() {
-		return EyeMineConfig.gazeIdleThreshold.get();
-	}
+public class EyeMineConfigImpl implements IEyeMineConfigService {
+    @Override public boolean getDisableCustomNewWorld() { return EyeMineConfig.disableCustomNewWorld.get(); }
+    @Override public void setCustomSpeedFactor(float speed) { EyeMineConfig.customSpeedFactor.set((double) speed); }
+    @Override public boolean getUsingMouseEmulation() { return EyeMineConfig.usingMouseEmulation.get(); }
+    @Override public boolean getAutoSelectTool() { return EyeMineConfig.autoSelectTool.get(); }
+    @Override public boolean getAutoSelectSword() { return EyeMineConfig.autoSelectSword.get(); }
+    @Override public int getRadiusChests() { return EyeMineConfig.radiusChests.get(); }
+    @Override public int getTicksBetweenMining() { return EyeMineConfig.ticksBetweenMining.get(); }
+    @Override public double getBowDrawTime() { return EyeMineConfig.bowDrawTime.get(); }
+    @Override public float getFullscreenOverlayAlpha() { return EyeMineConfig.fullscreenOverlayAlpha.get().floatValue(); }
+    @Override public int getIronsightsFovReduction() { return EyeMineConfig.ironsightsFovReduction.get(); }
+    @Override public double getIronsightsSensitivityReduction() { return EyeMineConfig.ironsightsSensitivityReduction.get().floatValue(); }
+    @Override public boolean getUseDwellForSingleUseItem() { return EyeMineConfig.useDwellForSingleUseItem.get(); }
+    @Override public boolean getUseDwellForSingleMine() { return EyeMineConfig.useDwellForSingleMine.get(); }
+    @Override public int getRadiusDoors() { return EyeMineConfig.radiusDoors.get(); }
+    @Override public boolean getServerCompatibilityMode() { return EyeMineConfig.serverCompatibilityMode.get(); }
+    @Override public int getFlyHeightManual() { return EyeMineConfig.flyHeightManual.get(); }
+    @Override public int getFlyHeightAuto() { return EyeMineConfig.flyHeightAuto.get(); }
+    @Override public boolean getDefaultDoAutoJump() { return EyeMineConfig.defaultDoAutoJump.get(); }
+    @Override public boolean getDisableAutoJumpFixes() { return EyeMineConfig.disableAutoJumpFixes.get(); }
+    @Override public boolean getMoveWhenMouseStationary() { return EyeMineConfig.moveWhenMouseStationary.get(); }
+    @Override public boolean getSlowdownOnCorners() { return EyeMineConfig.slowdownOnCorners.get(); }
+    @Override public int getWalkingSlowdownFilter() { return EyeMineConfig.walkingSlowdownFilter.get(); }
+    @Override public boolean getAllowLadderDescent() { return EyeMineConfig.allowLadderDescent.get(); }
+    @Override public float getCustomSpeedFactor() { return EyeMineConfig.customSpeedFactor.get().floatValue(); }
+    @Override public float getBoatMaxTurnAtSpeed() { return EyeMineConfig.boatMaxTurnAtSpeed.get().floatValue(); }
+    @Override public double getBoatSlowdown() { return EyeMineConfig.boatSlowdown.get(); }
+    @Override public double getDwellTimeSeconds() { return EyeMineConfig.dwellTimeSeconds.get(); }
+    @Override public double getDwellLockonTimeSeconds() { return EyeMineConfig.dwellLockonTimeSeconds.get(); }
+    @Override public boolean getDwellShowWithTransparency() { return EyeMineConfig.dwellShowWithTransparency.get(); }
+    @Override public boolean getDwellShowExpanding() { return EyeMineConfig.dwellShowExpanding.get(); }
+    @Override public boolean getSlowdownOnAttack() { return EyeMineConfig.slowdownOnAttack.get(); }
+    @Override public int getGazeIdleThreshold() { return EyeMineConfig.gazeIdleThreshold.get(); }
 }

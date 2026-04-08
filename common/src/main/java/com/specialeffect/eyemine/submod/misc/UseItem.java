@@ -19,14 +19,14 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
@@ -48,32 +48,32 @@ public class UseItem extends DwellAction {
 				"key.eyemine.use_item",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_0,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mUseItemContinuouslyKB = new KeyMapping(
 				"key.eyemine.use_item_continuously",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_1,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mPrevItemKB = new KeyMapping(
 				"key.eyemine.select_previous_item",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_4,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mNextItemKB = new KeyMapping(
 				"key.eyemine.select_next_item",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_KP_5,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 
 		//Initialize variables
 		super.onInitializeClient();
@@ -114,7 +114,7 @@ public class UseItem extends DwellAction {
 
 				// If it was a crossbow we'll need to re-click to actually fire it
 				Player player = Minecraft.getInstance().player;
-				Item item = player.getInventory().getSelected().getItem();
+				Item item = player.getInventory().getSelectedItem().getItem();
 				if (item instanceof CrossbowItem) {
 					// Crossbows don't fire on mouse-release, they need another 'click' on the next tick to be shot
 					needBowFire = true;
@@ -134,14 +134,14 @@ public class UseItem extends DwellAction {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
 		final KeyMapping useItemKeyBinding = Minecraft.getInstance().options.keyUse;
 		Player player = Minecraft.getInstance().player;
 
-		if (mUseItemContinuouslyKB.matches(keyCode, scanCode) && mUseItemContinuouslyKB.consumeClick()) {
+		if (mUseItemContinuouslyKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mUseItemContinuouslyKB.consumeClick()) {
 			if (mUsingItem) {
 				// Turn off
 				mUsingItem = false;
@@ -150,7 +150,7 @@ public class UseItem extends DwellAction {
 			} else {
 				// Turn on continuous-building
 
-				ItemStack itemStack = player.getInventory().getSelected();
+				ItemStack itemStack = player.getInventory().getSelectedItem();
 				if (itemStack.isEmpty()) {
 					player.sendSystemMessage(Component.literal("Nothing in hand to use"));
 					return EventResult.pass();
@@ -161,9 +161,9 @@ public class UseItem extends DwellAction {
 
 				ModUtils.sendPlayerMessage("Using item: ON");
 			}
-		} else if (mUseItemOnceKB.matches(keyCode, scanCode) && mUseItemOnceKB.consumeClick()) {
+		} else if (mUseItemOnceKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mUseItemOnceKB.consumeClick()) {
 
-			ItemStack stack = player.getInventory().getSelected();
+			ItemStack stack = player.getInventory().getSelectedItem();
 			Item item = stack.getItem();
 
 			// Special case for shootable items
@@ -192,15 +192,17 @@ public class UseItem extends DwellAction {
 					this.performAction(null);
 			}
 
-		} else if (mPrevItemKB.matches(keyCode, scanCode) && mPrevItemKB.consumeClick()) {
-			player.getInventory().swapPaint(1);
-		} else if (mNextItemKB.matches(keyCode, scanCode) && mNextItemKB.consumeClick()) {
-			player.getInventory().swapPaint(-1);
+		} else if (mPrevItemKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mPrevItemKB.consumeClick()) {
+			int current = player.getInventory().getSelectedSlot();
+			player.getInventory().setSelectedSlot((current + Inventory.getSelectionSize() - 1) % Inventory.getSelectionSize());
+		} else if (mNextItemKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mNextItemKB.consumeClick()) {
+			int current = player.getInventory().getSelectedSlot();
+			player.getInventory().setSelectedSlot((current + 1) % Inventory.getSelectionSize());
 		}
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public void onRenderGameOverlayEvent(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		super.onRenderGameOverlayEvent(guiGraphics, deltaTracker);
 
 		// If use-item is on, show a warning message
@@ -212,7 +214,7 @@ public class UseItem extends DwellAction {
 
 			int msgWidth = mc.font.width(msg);
 
-			guiGraphics.drawString(mc.font, msg, (int) (w / 2.0) - (int) (msgWidth / 2.0), (int) (h / 2.0) - 20, 0xffFFFFFF);
+			guiGraphics.text(mc.font, msg, (int) (w / 2.0) - (int) (msgWidth / 2.0), (int) (h / 2.0) - 20, 0xffFFFFFF);
 		}
 	}
 

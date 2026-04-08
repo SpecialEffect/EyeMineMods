@@ -11,12 +11,6 @@
 
 package com.specialeffect.utils;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,8 +31,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.opengl.GL11;
-
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,28 +117,12 @@ public class ModUtils {
 //	}
 
 
-	public static void drawTexQuad(double x, double y, double width, double height, float alpha) {
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-		RenderSystem.enableBlend();
-		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-
-		Tesselator tesselator = Tesselator.getInstance();
-
-		int z = 10;
-		BufferBuilder bufferbuilder = tesselator.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.addVertex((float) x, (float) (y + height), z).setUv(0.0f, 1.0f);
-		bufferbuilder.addVertex((float) (x + width), (float) (y + height), z).setUv(1.0f, 1.0f);
-		bufferbuilder.addVertex((float) (x + width), (float) y, z).setUv(1.0f, 0.0f);
-		bufferbuilder.addVertex((float) x, (float) y, z).setUv(0.0f, 0.0f);
-		BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-	}
-
 	// Find an item in the hotbar which matches the given class
 	// (this includes all subclasses)
 	public static int findItemInHotbar(Inventory inventory, Predicate<Item> Itempredicate) {
 		int itemId = -1;
-		int currentItemId = inventory.selected;
-		NonNullList<ItemStack> items = inventory.items;
+		int currentItemId = inventory.getSelectedSlot();
+		NonNullList<ItemStack> items = inventory.getNonEquipmentItems();
 		if (items != null) {
 			for (int i = 0; i < Inventory.getSelectionSize(); i++) {
 				ItemStack stack = items.get(i);
@@ -258,7 +234,7 @@ public class ModUtils {
 		BlockPos blockpos;
 		BlockPos blockpos1;
 		// Start from max build height and search downward
-		for (blockpos = new BlockPos(pos.getX(), world.getMaxBuildHeight(), pos.getZ()); blockpos.getY() >= world.getMinBuildHeight(); blockpos = blockpos1) {
+		for (blockpos = new BlockPos(pos.getX(), world.getMaxY(), pos.getZ()); blockpos.getY() >= world.getMinY(); blockpos = blockpos1) {
 			blockpos1 = blockpos.below();
 			BlockState state = chunk.getBlockState(blockpos1);
 

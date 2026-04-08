@@ -12,12 +12,12 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +31,7 @@ public record ChangeFlyingStateMessage(boolean shouldBeFlying, int flyHeight) im
 			ChangeFlyingStateMessage::new
 	);
 	public static final CustomPacketPayload.Type<ChangeFlyingStateMessage> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "change_flying_state"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "change_flying_state"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -39,7 +39,7 @@ public record ChangeFlyingStateMessage(boolean shouldBeFlying, int flyHeight) im
 	}
 
 	public static class Handler {
-		public static void handle(final ChangeFlyingStateMessage pkt, NetworkManager.PacketContext context) {
+		public static void handle(final ChangeFlyingStateMessage pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
 				Player player = context.getPlayer();
 				if (player == null) {

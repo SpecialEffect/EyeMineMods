@@ -86,8 +86,8 @@ public class MouseHelper {
 	 **/
 	public void moveCursor(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
-			long handle = Minecraft.getInstance().getWindow().getWindow();
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), xpos, ypos);
+			long handle = Minecraft.getInstance().getWindow().handle();
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xpos, ypos);
 			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos);
 		}
 	}
@@ -110,7 +110,7 @@ public class MouseHelper {
 
 	public void scroll(MouseHandler mouseHandler, double amount) {
 		if (mouseHandler != null) {
-			long handle = Minecraft.getInstance().getWindow().getWindow();
+			long handle = Minecraft.getInstance().getWindow().handle();
 			((MouseHandlerAccessor) mouseHandler).invokeOnScroll(handle, 0, amount);
 		}
 	}
@@ -125,7 +125,7 @@ public class MouseHelper {
 	 * mods: GLFW.GLFW_MOD_[SHIFT/CONTROL/ALT/SUPER]
 	 */
 	public void mouseButton(int button, int action, int mods) {
-		long handle = Minecraft.getInstance().getWindow().getWindow();
+		long handle = Minecraft.getInstance().getWindow().handle();
 		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnPress(handle, button, action, mods);
 	}
 

@@ -19,16 +19,15 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.lwjgl.glfw.GLFW;
@@ -49,11 +48,11 @@ public class MineOne extends DwellAction {
 				"key.eyemine.mine_singular",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_N,
-				"category.eyemine.category.eyegaze_common" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 
 		//Initialize variables
 		super.onInitializeClient();
@@ -70,7 +69,7 @@ public class MineOne extends DwellAction {
 				ClientLevel level = minecraft.level;
 
 				// Swords can't destroy blocks: warn user
-				if (player.getMainHandItem().getItem() instanceof SwordItem) {
+				if (player.getMainHandItem().is(ItemTags.SWORDS)) {
 					String message = "Can't destroy blocks with a sword, please select another item";
 					player.sendSystemMessage(Component.literal(message));
 
@@ -125,11 +124,11 @@ public class MineOne extends DwellAction {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mDestroyKB.matches(keyCode, scanCode) && mDestroyKB.consumeClick()) {
+		if (mDestroyKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDestroyKB.consumeClick()) {
 			// turn off continuous mining
 			ContinuouslyMine.stop();
 

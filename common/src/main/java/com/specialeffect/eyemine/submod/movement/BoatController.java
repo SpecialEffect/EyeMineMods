@@ -14,7 +14,7 @@ package com.specialeffect.eyemine.submod.movement;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 
 public class BoatController {
 	// Boats are steered with left, right arrow keys to control the paddles
@@ -87,7 +87,7 @@ public class BoatController {
 		this.steer(steer_amount);
 	}
 
-	public void pid_step(Boat boat, double yaw_error) {
+	public void pid_step(AbstractBoat boat, double yaw_error) {
 		// Reset if new boat 
 		if (boat.getId() != this.boat_id) {
 			this.yaw_error = 0;

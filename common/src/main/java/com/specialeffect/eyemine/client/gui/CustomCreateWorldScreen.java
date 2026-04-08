@@ -19,7 +19,7 @@
 //import com.specialeffect.eyemine.submod.misc.DefaultConfigForNewWorld;
 //import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 //import net.minecraft.FileUtil;
-//import net.minecraft.Util;
+//
 //import net.minecraft.client.Minecraft;
 //import net.minecraft.client.gui.components.Button;
 //import net.minecraft.client.gui.components.EditBox;
@@ -41,7 +41,7 @@
 //import net.minecraft.server.packs.repository.ServerPacksSource;
 //import net.minecraft.world.Difficulty;
 //import net.minecraft.world.level.DataPackConfig;
-//import net.minecraft.world.level.GameRules;
+//import net.minecraft.world.level.gamerules.GameRules;
 //import net.minecraft.world.level.GameType;
 //import net.minecraft.world.level.LevelSettings;
 //import net.minecraft.world.level.levelgen.WorldGenSettings;
@@ -264,9 +264,9 @@
 //			LevelSettings levelSettings = new LevelSettings(this.worldNameField.getValue().trim(), GameType.CREATIVE, hardcoreMode, Difficulty.NORMAL, true, new GameRules(), DataPackConfig.DEFAULT);
 //
 //			GameRules gameRules = levelSettings.gameRules();
-//			gameRules.getRule(GameRules.RULE_DAYLIGHT).set(!btnDaytime.getValue(), (MinecraftServer) null);
-//			gameRules.getRule(GameRules.RULE_WEATHER_CYCLE).set(!btnSunny.getValue(), (MinecraftServer) null);
-//			gameRules.getRule(GameRules.RULE_KEEPINVENTORY).set(btnInventory.getValue(), (MinecraftServer) null);
+//			gameRules.getRule(GameRules.ADVANCE_TIME).set(!btnDaytime.getValue(), (MinecraftServer) null);
+//			gameRules.getRule(GameRules.ADVANCE_WEATHER).set(!btnSunny.getValue(), (MinecraftServer) null);
+//			gameRules.getRule(GameRules.KEEP_INVENTORY).set(btnInventory.getValue(), (MinecraftServer) null);
 //
 //			// TODO: more options here?
 //			levelSettings.allowCommands();

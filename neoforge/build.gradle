@@ -1,92 +1,40 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
 }
 
-architectury {
-    platformSetupLoomIde()
-    neoForge()
-}
+def accessTransformerFile = project(':common').file("src/main/resources/META-INF/accesstransformer.cfg")
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+neoForge {
+    version = neoforge_version
 
-    neoForge {
-        runs {
-            all {}
+    if (accessTransformerFile.exists()) {
+        accessTransformers.from(accessTransformerFile)
+    }
+
+    runs {
+        client {
+            client()
+            ideName = 'NeoForge Client'
+        }
+
+        server {
+            server()
+            ideName = 'NeoForge Server'
+        }
+
+        clientData {
+            clientData()
+            ideName = 'NeoForge Client Data'
+            programArguments.addAll("--mod=${mod_id}", "--output=${file("src/generated/resources").absolutePath}", "--existing=${file("src/main/resources").absolutePath}")
+        }
+
+        serverData {
+            serverData()
+            ideName = 'NeoForge Server Data'
+            programArguments.addAll("--mod=${mod_id}", "--output=${file("src/generated/resources").absolutePath}", "--existing=${file("src/main/resources").absolutePath}")
         }
     }
 }
 
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
-}
-
-dependencies {
-    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
-
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
-
-//    modCompileOnly("curse.maven:configured-457570:5105024")
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("META-INF/neoforge.mods.toml") {
-        expand "version": project.version
-    }
-}
-
-shadowJar {
-    exclude "fabric.mod.json"
-    exclude "eyemine.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier.set("dev-shadow")
-}
-
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.minecraft_version}-${project.name}"
-    archiveClassifier.set('')
-    atAccessWideners.add("${rootProject.archives_base_name}.accesswidener") // this is a path inside the mod jar
-}
-
-jar {
-    archiveClassifier.set("dev")
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenNeoForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
-}
+sourceSets.main.resources.srcDir 'src/generated/resources'

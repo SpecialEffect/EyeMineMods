@@ -187,9 +187,6 @@ public abstract class AbstractRenderer {
 
 	public static void renderCubeAtPosition(PoseStack poseStack, VertexConsumer vertexConsumer, Vec3 pos, Color color, int opacity, double size) {
 
-//		RenderSystem.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
-//		RenderSystem.enableBlend();
-//		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 		// Set up bounding cube corners
 		OffsetPoint min = new OffsetPoint(pos.x() - size, pos.y() - size, pos.z() - size);
@@ -236,9 +233,6 @@ public abstract class AbstractRenderer {
 		vertexConsumer.addVertex(matrix4f, minX, maxY, maxZ).setColor(r, g, b, opacity);
 		vertexConsumer.addVertex(matrix4f, minX, maxY, minZ).setColor(r, g, b, opacity);
 
-//		RenderSystem.disableBlend();
-//		RenderSystem.enablePolygonOffset();
-//		RenderSystem.polygonOffset(-1.f, -1.f);
 	}
 
 	public static void renderFaces(OffsetPoint min, OffsetPoint max, Color color, int alpha) {
@@ -297,7 +291,6 @@ public abstract class AbstractRenderer {
 	}
 
 	void renderLine(OffsetPoint startPoint, OffsetPoint endPoint, Color color) {
-		RenderSystem.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 
 		Renderer.startLines()
 				.setColor(color)
@@ -306,29 +299,21 @@ public abstract class AbstractRenderer {
 	}
 
 	void renderFilledFaces(OffsetPoint min, OffsetPoint max, Color color, int alpha) {
-		RenderSystem.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
-		RenderSystem.enableBlend();
 
 		renderFaces(min, max, color, alpha);
 
-		RenderSystem.disableBlend();
-		RenderSystem.enablePolygonOffset();
-		RenderSystem.polygonOffset(-1.f, -1.f);
 	}
 
 	void renderText(PoseStack poseStack, OffsetPoint offsetPoint, String... texts) {
 		Font fontRenderer = Minecraft.getInstance().font;
 
 //		RenderSystem.pushMatrix(); TODO: Redo when renderText() is required
-//		RenderSystem.polygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 //		RenderSystem.translated(offsetPoint.getX(), offsetPoint.getY() + 0.002D, offsetPoint.getZ());
 //		GL11.glNormal3f(0.0F, 1.0F, 0.0F);
 //		RenderSystem.rotatef(0.0F, 0.0F, 1.0F, 0.0F);
 //		RenderSystem.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
 //		RenderSystem.scalef(-0.0175F, -0.0175F, 0.0175F);
 //
-//		RenderSystem.enableBlend();
-//		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 //
 //		RenderSystem.disableDepthTest();
 //		RenderSystem.enableDepthTest();
@@ -340,7 +325,6 @@ public abstract class AbstractRenderer {
 //            top += fontRenderer.lineHeight;
 //        }
 //		RenderSystem.disableTexture();
-//		RenderSystem.disableBlend();
 	}
 
 	private static void enablePointSmooth() {

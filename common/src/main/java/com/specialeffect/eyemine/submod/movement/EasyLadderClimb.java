@@ -18,12 +18,12 @@ import com.specialeffect.eyemine.client.EyeMineRenderType;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -42,7 +42,7 @@ public class EasyLadderClimb extends SubMod {
 	// You'll get nudged toward the centre of the ladder a little bit.
 
 	public void onInitializeClient() {
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
 		BlockOutlineEvent.OUTLINE.register(this::onBlockOutlineRender);
 	}
 

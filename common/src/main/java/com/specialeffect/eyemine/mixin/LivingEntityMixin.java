@@ -1,22 +1,20 @@
 package com.specialeffect.eyemine.mixin;
 
 import com.specialeffect.eyemine.submod.movement.IStepUp;
-import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin implements IStepUp {
-	@Shadow
-	public abstract double getAttributeValue(Holder<Attribute> holder);
+
+	@Unique
+	private static final Identifier EYEMINE_STEP_UP_ID = Identifier.fromNamespaceAndPath("eyemine", "extra_step_up");
 
 	@Unique
 	public float eyemine$extraStepUp = 0.0F;
@@ -29,15 +27,21 @@ public abstract class LivingEntityMixin implements IStepUp {
 	@Override
 	public void eyemine$setExtraStepUp(float stepUp) {
 		this.eyemine$extraStepUp = stepUp;
-	}
-
-	@Inject(method = "maxUpStep()F", at = @At(value = "RETURN"), cancellable = true)
-	public void maxUpStep(CallbackInfoReturnable<Float> cir) {
-		LivingEntity livingEntity = (LivingEntity) (Object) this;
-		if (livingEntity instanceof Player && eyemine$getExtraStepUp() > 0.0F) {
-			float f = (float) this.getAttributeValue(Attributes.STEP_HEIGHT);
-			float value = livingEntity.getControllingPassenger() instanceof Player ? Math.max(f, 1.0F) : f;
-			cir.setReturnValue(value + this.eyemine$getExtraStepUp());
+		LivingEntity self = (LivingEntity) (Object) this;
+		if (self instanceof Player) {
+			AttributeInstance attr = self.getAttribute(Attributes.STEP_HEIGHT);
+			if (attr != null) {
+				// Remove old modifier if present
+				attr.removeModifier(EYEMINE_STEP_UP_ID);
+				// Add new modifier if non-zero
+				if (stepUp > 0.0F) {
+					attr.addTransientModifier(new AttributeModifier(
+							EYEMINE_STEP_UP_ID,
+							stepUp,
+							AttributeModifier.Operation.ADD_VALUE
+					));
+				}
+			}
 		}
 	}
 }

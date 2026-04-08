@@ -11,46 +11,23 @@
 
 package com.specialeffect.eyemine.client;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class EyeMineRenderType extends RenderType {
-	public EyeMineRenderType(String nameIn, VertexFormat formatIn, Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
-		super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
-	}
+/**
+ * Custom RenderTypes for EyeMine's in-world rendering (dwell indicators, block outlines).
+ * In MC 26.1.1, uses RenderTypes utility for translucent position-color rendering.
+ */
+public class EyeMineRenderType {
 
-	public static RenderType dwellRenderType() {
-		return RenderType.create("eyemine:dwell", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 2097152, false, false, getDwellState());
-	}
+    public static RenderType dwellRenderType() {
+        // Use the debug quads type for translucent position-color quads
+        // TODO: If this doesn't render correctly, create a proper custom RenderType
+        // using the new RenderSetup/RenderPipeline API
+        return RenderTypes.debugQuads();
+    }
 
-	private static CompositeState getDwellState() {
-		return CompositeState.builder()
-				.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
-				.setLightmapState(LIGHTMAP)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(TRANSLUCENT_TARGET)
-				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setCullState(NO_CULL)
-				.setDepthTestState(NO_DEPTH_TEST)
-				.createCompositeState(true);
-	}
-
-	public static RenderType cubeRenderType() {
-		return RenderType.create("eyemine:cube", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 2097152, false, false, getCubeState());
-	}
-
-	private static CompositeState getCubeState() {
-		return CompositeState.builder()
-				.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
-				.setLightmapState(LIGHTMAP)
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setOutputState(TRANSLUCENT_TARGET)
-				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setCullState(NO_CULL)
-				.setDepthTestState(NO_DEPTH_TEST)
-				.createCompositeState(true);
-	}
+    public static RenderType cubeRenderType() {
+        return dwellRenderType();
+    }
 }

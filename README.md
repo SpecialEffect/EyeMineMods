@@ -1,5 +1,5 @@
-# EyeMineArchitectury
-A version of [EyeMineMods](https://github.com/SpecialEffect/EyeMineMods) that is build upon the [Architectury API](https://github.com/architectury/architectury-api) allowing it to work on either NeoForge, Forge or Fabric.
+# EyeMineMods
+A version of [EyeMineMods](https://github.com/SpecialEffect/EyeMineMods) using Jared's [MultiLoader Template](https://github.com/jaredlll08/MultiLoader-Template) to support both NeoForge and Fabric.
 
 This repository contains the Minecraft mods used with [EyeMine](https://github.com/SpecialEffect/EyeMine), which provides a gaze-controlled keyboard for in-game actions.
 
@@ -21,18 +21,19 @@ A version of the mod ported by [Mrbysco](https://github.com/Mrbysco) supports **
 
 ## Information for developers
 
-Code for different versions of Minecraft Forge can be found on different branches:
+Code for different versions of Minecraft can be found on different branches:
 - Minecraft Forge v1.11.2 (via the [eyemineClassic_mc1_11_2 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineClassic_mc1_11_2)) 
 - Minecraft Forge v1.14.4 (via the [eyemineV2_mc1_14_4 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_14_4)).
 - Minecraft Forge v1.16.5 (via the [eyemineV2_mc1_16_5 branch](https://github.com/SpecialEffect/EyeMineMods/tree/eyemineV2_mc1_16_5)).
+- Minecraft 1.21.1 NeoForge + Fabric via Architectury (via the [architectury_1.21 branch](https://github.com/SpecialEffect/EyeMineMods/tree/architectury_1.21)).
+- Minecraft 26.1.1 NeoForge + Fabric via MultiLoader (via the [multiloader_26.1.1 branch](https://github.com/SpecialEffect/EyeMineMods/tree/multiloader_26.1.1)).
 
 All the code comprising EyeMine is GPL3 licensed. We would love contributions to port to other versions of Minecraft. If you're interested in doing this, please email eyemine@specialeffect.org.uk to let us know what you're working on!
 
 ## Dev setup
-These instructions are based on Windows 10 and using Eclipse as an IDE. If you are using a different setup, some details may vary.
 
 ### Pre-requisites
-- Java SDK ("JDK")
+- Java 25 JDK
 
 ### Instructions 
 Get the code.
@@ -41,17 +42,13 @@ git clone git@github.com:SpecialEffect/EyeMineMods.git
 cd EyeMineMods
 ```
 
-Build the code. The built mod file will be found in the `build/libs` directory.
+Build the code. Output JARs will be in `neoforge/build/libs/` and `fabric/build/libs/`.
 ```
-gradlew build
+./gradlew build
 ```
 
-Optionally set up to build and run from Eclipse:
+Run the client in dev:
 ```
-gradlew genEclipseRuns
-gradlew eclipse
+./gradlew :neoforge:runClient
+./gradlew :fabric:runClient
 ```
-Now you can open the project in Eclipse:
-File -> Import -> Gradle -> Existing Gradle project -> Set Project Root Directory to the EyeMineMods folder -> Finish
-Once the project is loaded, select the project in Package Explorer, hit the green "Run" or "Debug" button and select "runClient" as the configuration to run.
-

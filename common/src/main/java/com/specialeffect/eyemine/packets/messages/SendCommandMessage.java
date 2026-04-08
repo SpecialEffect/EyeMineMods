@@ -12,13 +12,13 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 
 public record SendCommandMessage(String command) implements CustomPacketPayload {
@@ -28,7 +28,7 @@ public record SendCommandMessage(String command) implements CustomPacketPayload 
 			SendCommandMessage::new
 	);
 	public static final CustomPacketPayload.Type<SendCommandMessage> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "send_command"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "send_command"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -36,9 +36,9 @@ public record SendCommandMessage(String command) implements CustomPacketPayload 
 	}
 	
 	public static class Handler {
-		public static void handle(final SendCommandMessage pkt, NetworkManager.PacketContext context) {
+		public static void handle(final SendCommandMessage pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
-				MinecraftServer server = context.getPlayer().getServer();
+				MinecraftServer server = context.getPlayer().level().getServer();
 				if (server == null) {
 					System.out.println("Server is null, cannot send command");
 				} else {

@@ -24,12 +24,9 @@ import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.CompoundEventResult;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.ScreenSetResult;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -63,11 +60,11 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	private boolean hasPendingConfigChange = false;
 
 	public void onInitializeClient() {
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		ClientGuiEvent.SET_SCREEN.register(MouseHandlerMod::onGuiOpen);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.SCREEN_SET.register(MouseHandlerMod::onGuiOpen);
 
-		ClientLifecycleEvent.CLIENT_SETUP.register((state) -> setupInitialState());
+		EyeMineEvents.CLIENT_SETUP.register((state) -> setupInitialState());
 
 		// Set up icon rendering		
 		mIconEye = new IconOverlay(Minecraft.getInstance(), "eyemine:textures/icons/eye.png");
@@ -81,14 +78,14 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				"key.eyemine.sensitivity_up",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_RIGHT,
-				"category.eyemine.category.eyegaze_settings" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mSensitivityDownKB = new KeyMapping(
 				"key.eyemine.sensitivity_down",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_LEFT,
-				"category.eyemine.category.eyegaze_settings" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
 		// Used to turn 'look with gaze' on and off when using mouse emulation
@@ -98,7 +95,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				"key.eyemine.toggle_mouse_look",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_Y,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 	}
 
@@ -207,17 +204,17 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mSensitivityUpKB.matches(keyCode, scanCode) && mSensitivityUpKB.consumeClick()) {
+		if (mSensitivityUpKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mSensitivityUpKB.consumeClick()) {
 			increaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0d * minecraft.options.sensitivity().get()));
-		} else if (mSensitivityDownKB.matches(keyCode, scanCode) && mSensitivityDownKB.consumeClick()) {
+		} else if (mSensitivityDownKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mSensitivityDownKB.consumeClick()) {
 			decreaseSens();
 			ModUtils.sendPlayerMessage("Sensitivity: " + toPercent(2.0d * minecraft.options.sensitivity().get()));
-		} else if (mToggleMouseViewControlKB.matches(keyCode, scanCode) && mToggleMouseViewControlKB.consumeClick()) {
+		} else if (mToggleMouseViewControlKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mToggleMouseViewControlKB.consumeClick()) {
 			if (mInputSource == InputSource.EyeTracker) {
 				LOGGER.debug("this key doesn't do anything in eyetracker mode");
 				ModUtils.sendPlayerMessage("Warning: Minecraft expects eye tracker input, not mouse");
@@ -260,13 +257,13 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 	}
 
 	private static void setEmptyCursor() {
-		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
+		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),
 				GLFW.GLFW_CURSOR,
 				GLFW.GLFW_CURSOR_HIDDEN);
 	}
 
 	private static void setNativeCursor() {
-		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),
+		GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),
 				GLFW.GLFW_CURSOR,
 				GLFW.GLFW_CURSOR_NORMAL);
 	}
@@ -280,7 +277,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		return mTicksSinceMouseEvent < 5;
 	}
 
-	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
+	public static ScreenSetResult onGuiOpen(Screen screen) {
 		// For any open event, make sure cursor not overridden
 		if (screen != null) {
 			setNativeCursor();
@@ -291,7 +288,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 				setEmptyCursor();
 			}
 		}
-		return CompoundEventResult.interruptTrue(screen);
+		return ScreenSetResult.set(screen);
 	}
 
 	// This is the constant offset applied in MC source, corresponding

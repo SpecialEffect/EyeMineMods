@@ -18,14 +18,13 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientRawInputEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.lwjgl.glfw.GLFW;
 
 public class SwapMinePlace extends SubMod {
@@ -35,11 +34,11 @@ public class SwapMinePlace extends SubMod {
 				"key.eyemine.swap_mine_place",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_F10,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
-		ClientGuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 	}
 
 	private static KeyMapping mSwapKB;
@@ -49,17 +48,17 @@ public class SwapMinePlace extends SubMod {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
+		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
 			return EventResult.pass();
 		}
 
-		if (mSwapKB.matches(keyCode, scanCode) && mSwapKB.consumeClick()) {
+		if (mSwapKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mSwapKB.consumeClick()) {
 
 			Key attackInput = ((KeyMappingAccessor) Minecraft.getInstance().options.keyAttack).getActualKey();
 			Key useInput = ((KeyMappingAccessor) Minecraft.getInstance().options.keyUse).getActualKey();
 
-			Minecraft.getInstance().options.setKey(Minecraft.getInstance().options.keyAttack, useInput);
-			Minecraft.getInstance().options.setKey(Minecraft.getInstance().options.keyUse, attackInput);
+			Minecraft.getInstance().options.keyAttack.setKey(useInput);
+			Minecraft.getInstance().options.keyUse.setKey(attackInput);
 
 			// It's important to force a reload
 			Minecraft.getInstance().options.save();
@@ -71,7 +70,7 @@ public class SwapMinePlace extends SubMod {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public void onRenderGameOverlayEvent(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		// If these are swapped, show a warning message
 		KeyMapping attackBinding = Minecraft.getInstance().options.keyAttack;
 		KeyMapping useBinding = Minecraft.getInstance().options.keyUse;
@@ -97,8 +96,8 @@ public class SwapMinePlace extends SubMod {
 				int delta = (msg1width - msg2width) / 2;
 				final Font font = mc.font;
 
-				guiGraphics.drawString(font, msg1, w - msg2width - delta - 10, h - 22, 0xffFFFFFF);
-				guiGraphics.drawString(font, msg2, w - msg2width - 10, h - 12, 0xffFFFFFF);
+				guiGraphics.text(font, msg1, w - msg2width - delta - 10, h - 22, 0xffFFFFFF);
+				guiGraphics.text(font, msg2, w - msg2width - 10, h - 12, 0xffFFFFFF);
 
 			}
 		}

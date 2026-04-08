@@ -12,8 +12,8 @@
 package com.specialeffect.eyemine.client.gui.crosshair;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface ICrosshairOverlay {
-	void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft);
+	void renderOverlay(GuiGraphicsExtractor guiGraphics, Minecraft minecraft);
 }

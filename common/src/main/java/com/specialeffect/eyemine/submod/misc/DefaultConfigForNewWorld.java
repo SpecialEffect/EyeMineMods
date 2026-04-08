@@ -17,11 +17,10 @@ import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.EntityEvent;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.event.events.common.TickEvent;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.NetworkService;
+import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.MinecraftServer;
@@ -32,11 +31,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AirItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRule;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.LevelData;
+import net.minecraft.world.level.storage.ServerLevelData;
 
 import java.lang.reflect.Field;
 
@@ -59,9 +60,9 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 	}
 
 	public void onInitializeClient() {
-		EntityEvent.ADD.register(this::onSpawn);
-		TickEvent.PLAYER_POST.register(this::onLiving);
-		LifecycleEvent.SERVER_LEVEL_LOAD.register(this::onWorldLoad);
+		EyeMineEvents.ENTITY_ADD.register(this::onSpawn);
+		EyeMineEvents.PLAYER_TICK.register(this::onLiving);
+		EyeMineEvents.WORLD_LOAD.register(this::onWorldLoad);
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 				firstOnLivingTick = false;
 
 				if (player.isCreative()) {
-					NonNullList<ItemStack> inventory = player.getInventory().items;
+					NonNullList<ItemStack> inventory = player.getInventory().getNonEquipmentItems();
 					boolean hasSomeItems = false;
 					for (ItemStack itemStack : inventory) {
 						if (itemStack != null && !(itemStack.getItem() instanceof AirItem)) {
@@ -114,21 +115,23 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 
 			MinecraftServer server = serverLevel.getServer();
 			LevelData info = serverLevel.getLevelData();
-			GameRules rules = info.getGameRules();
+			GameRules rules = serverLevel.getGameRules();
 
 			if (info.getGameTime() < 60) {
 				// First time loading, set rules according to user preference
 				if (server != null && server.getDefaultGameType() == GameType.CREATIVE) {
-					rules.getRule(GameRules.RULE_DAYLIGHT).set(!alwaysDayTimeSetting, server);
-					rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(!alwaysSunnySetting, server);
-					rules.getRule(GameRules.RULE_KEEPINVENTORY).set(keepInventorySetting, server);
+					rules.set(GameRules.ADVANCE_TIME, !alwaysDayTimeSetting, server);
+					rules.set(GameRules.ADVANCE_WEATHER, !alwaysSunnySetting, server);
+					rules.set(GameRules.KEEP_INVENTORY, keepInventorySetting, server);
 
 					// Extra settings as a result of the above
 					if (alwaysDayTimeSetting) {
 						// we've just turned off daylightcycle while time = morning...
-						// we prefer full daylight!
+						// we prefer full daylight! Advance game time to noon.
 						for (ServerLevel level : server.getAllLevels()) {
-							level.setDayTime(level.getDayTime() + (long) 2000);
+							if (level.getLevelData() instanceof ServerLevelData sld) {
+								sld.setGameTime(sld.getGameTime() + 2000L);
+							}
 						}
 					}
 				}
@@ -146,8 +149,8 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 			try {
 				Object v = f.get(rules);
 
-				if (v instanceof GameRules.Key<?> key) {
-					LOGGER.debug(key + ": " + rules.getRule(key).toString());
+				if (v instanceof GameRule<?> rule) {
+					LOGGER.debug(f.getName() + ": " + rules.get(rule).toString());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -157,22 +160,22 @@ public class DefaultConfigForNewWorld extends SubMod implements IConfigListener 
 
 	private void equipPlayer(Inventory inventory) {
 		// Ask server to put new item in hotbar
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.BRICKS), 0));
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.SANDSTONE), 1));
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.GLASS_PANE), 2));
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.MOSSY_COBBLESTONE), 3));
 
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Blocks.TORCH), 6));
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Items.DIAMOND_PICKAXE), 7));
-		NetworkManager.sendToServer(new AddItemToHotbar(
+		Services.NETWORK.sendToServer(new AddItemToHotbar(
 				new ItemStack(Items.DIAMOND_SWORD), 8));
 
-		inventory.selected = 1;
+		inventory.setSelectedSlot(1);
 	}
 }
