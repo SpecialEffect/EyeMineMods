@@ -12,6 +12,12 @@ neoForge {
         accessTransformers.from(accessTransformerFile)
     }
 
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+
     runs {
         client {
             client()

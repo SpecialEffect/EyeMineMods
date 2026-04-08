@@ -126,7 +126,8 @@ public class MouseHelper {
 	 */
 	public void mouseButton(int button, int action, int mods) {
 		long handle = Minecraft.getInstance().getWindow().handle();
-		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnPress(handle, button, action, mods);
+		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnButton(
+				handle, new net.minecraft.client.input.MouseButtonInfo(button, mods), action);
 	}
 
 	public static void setMovementState(PlayerMovement state) {

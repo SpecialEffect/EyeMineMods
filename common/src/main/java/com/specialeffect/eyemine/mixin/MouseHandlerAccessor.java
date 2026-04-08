@@ -1,6 +1,7 @@
 package com.specialeffect.eyemine.mixin;
 
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.input.MouseButtonInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -12,6 +13,6 @@ public interface MouseHandlerAccessor {
 	@Invoker("onScroll")
 	void invokeOnScroll(long l, double d, double e);
 
-	@Invoker("onPress")
-	void invokeOnPress(long l, int i, int j, int k);
+	@Invoker("onButton")
+	void invokeOnButton(long l, MouseButtonInfo buttonInfo, int action);
 }
