@@ -5,7 +5,10 @@ import com.specialeffect.eyemine.platform.services.IEyeMineConfigService;
 
 public class EyeMineConfigImpl implements IEyeMineConfigService {
     @Override public boolean getDisableCustomNewWorld() { return EyeMineConfig.disableCustomNewWorld.get(); }
-    @Override public void setCustomSpeedFactor(float speed) { EyeMineConfig.customSpeedFactor.set((double) speed); }
+    @Override public void setCustomSpeedFactor(float speed) {
+        EyeMineConfig.customSpeedFactor.set((double) speed);
+        EyeMineConfig.customSpeedFactor.save();
+    }
     @Override public boolean getUsingMouseEmulation() { return EyeMineConfig.usingMouseEmulation.get(); }
     @Override public boolean getAutoSelectTool() { return EyeMineConfig.autoSelectTool.get(); }
     @Override public boolean getAutoSelectSword() { return EyeMineConfig.autoSelectSword.get(); }

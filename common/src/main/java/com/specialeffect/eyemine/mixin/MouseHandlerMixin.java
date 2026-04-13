@@ -100,16 +100,6 @@ public abstract class MouseHandlerMixin {
 	}
 
 	/**
-	 * Set cursor to normal mode before vanilla processes - this allows us to read position
-	 */
-	@Inject(method = "onMove(JDD)V", at = @At(value = "FIELD",
-			target = "Lnet/minecraft/client/MouseHandler;minecraft:Lnet/minecraft/client/Minecraft;",
-			ordinal = 0))
-	public void eyemine$setInputMode(long handle, double xpos, double ypos, CallbackInfo ci) {
-		GLFW.glfwSetInputMode(this.minecraft.getWindow().handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
-	}
-
-	/**
 	 * Main injection point - replaces vanilla onMove logic after the window handle check
 	 */
 	@Inject(method = "onMove(JDD)V", at = @At(value = "FIELD",

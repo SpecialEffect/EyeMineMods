@@ -10,7 +10,10 @@ public class EyeMineConfigImpl implements IEyeMineConfigService {
     }
 
     @Override public boolean getDisableCustomNewWorld() { return getConfig().advanced.disableCustomNewWorld; }
-    @Override public void setCustomSpeedFactor(float speed) { getConfig().general.customSpeedFactor = speed; }
+    @Override public void setCustomSpeedFactor(float speed) {
+        getConfig().general.customSpeedFactor = speed;
+        AutoConfig.getConfigHolder(EyeMineConfig.class).save();
+    }
     @Override public boolean getUsingMouseEmulation() { return getConfig().general.usingMouseEmulation; }
     @Override public boolean getAutoSelectTool() { return getConfig().general.autoSelectTool; }
     @Override public boolean getAutoSelectSword() { return getConfig().general.autoSelectSword; }

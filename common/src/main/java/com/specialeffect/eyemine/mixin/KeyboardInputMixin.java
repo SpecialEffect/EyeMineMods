@@ -32,7 +32,7 @@ public class KeyboardInputMixin extends ClientInput {
 	 * 1. Set the forward flag to true in keyPresses
 	 * 2. Override moveVector.x (forward impulse) with the fractional walk speed
 	 *
-	 * moveVector is a Vec2 where x = forward/backward impulse, y = left/right impulse
+	 * moveVector is a Vec2 where x = left/right (strafe) impulse, y = forward/backward impulse
 	 */
 	@Inject(method = "tick()V", at = @At("TAIL"))
 	public void eyemine$overrideWalkForward(CallbackInfo ci) {
@@ -47,9 +47,8 @@ public class KeyboardInputMixin extends ClientInput {
 					current.shift(),
 					current.sprint()
 			);
-			// Override the move vector with fractional walk speed
 			float speed = Math.max(-1, Math.min(1, KeyboardInputHelper.mOverrideWalkSpeed));
-			this.moveVector = new Vec2(speed, this.moveVector.y);
+			this.moveVector = new Vec2(this.moveVector.x, speed);
 		}
 	}
 }
