@@ -1,5 +1,18 @@
 # EyeMine Changelog
 
+## Version 6.1.0-alpha.1
+
+### New Features
+
+#### AutoAim (Experimental)
+
+- **AutoAim submod**: Automatically rotates the camera to face the nearest mob or attacker. Toggle with the `O` key.
+- **Turn speed adjustment**: Increase/decrease aim speed with `=` and `-` keys at runtime.
+- **Attacker tracking**: When hit, AutoAim attempts to identify and target the source of damage using multiple heuristics (projectile traceback, approaching threats, nearest hostile).
+
+---
+
+
 ## Version 6.0.2
 
 ### Bug Fixes
