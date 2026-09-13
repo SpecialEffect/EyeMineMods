@@ -12,16 +12,15 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -32,7 +31,7 @@ public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPaylo
 			ActivateBlockAtPosition::new
 	);
 	public static final CustomPacketPayload.Type<ActivateBlockAtPosition> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "activate_block_at_position"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "activate_block_at_position"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -41,7 +40,7 @@ public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPaylo
 
 	public static class Handler {
 		@SuppressWarnings("deprecation")
-		public static void handle(final ActivateBlockAtPosition pkt, NetworkManager.PacketContext context) {
+		public static void handle(final ActivateBlockAtPosition pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
 				Player player = context.getPlayer();
 				if (player == null) {
@@ -50,13 +49,13 @@ public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPaylo
 
 				Level level = player.level();
 				BlockState state = level.getBlockState(pkt.pos);
-				Block block = state.getBlock();
 
-				// NOTE this assumes hit is not used by onBlockActivated: could be a problem with some blocks
-				BlockHitResult hit = null;
+				// Create a synthetic hit result pointing at the top of the block
+				BlockHitResult hit = new BlockHitResult(
+					pkt.pos.getCenter(), net.minecraft.core.Direction.UP, pkt.pos, false);
 
-				// NOTE: should use state.onBlockActivated, but this requires non-null hit, so we suppress warning
-				block.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), state, level, pkt.pos, player, InteractionHand.MAIN_HAND, hit);
+				// Use the BlockState's useItemOn which is public
+				state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, hit);
 			});
 		}
 	}

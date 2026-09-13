@@ -12,12 +12,12 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public record AddItemToHotbar(ItemStack item, int slotId) implements CustomPacke
 			AddItemToHotbar::new
 	);
 	public static final CustomPacketPayload.Type<AddItemToHotbar> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "add_item_to_hotbar"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "add_item_to_hotbar"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -43,20 +43,26 @@ public record AddItemToHotbar(ItemStack item, int slotId) implements CustomPacke
 	}
 
 	public static class Handler {
-		public static void handle(final AddItemToHotbar pkt, NetworkManager.PacketContext context) {
+		public static void handle(final AddItemToHotbar pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
 				Player player = context.getPlayer();
-				if (player == null) {
+				if (player == null || !player.isCreative()) {
+					return;
+				}
+				if (pkt.slotId != -1 && !Inventory.isHotbarSlot(pkt.slotId)) {
+					return;
+				}
+				if (pkt.item.isEmpty() || pkt.item.getCount() > pkt.item.getMaxStackSize()) {
 					return;
 				}
 
 				Inventory inventory = player.getInventory();
 				int slot = pkt.slotId;
-				if (slot < 0) {
+				if (slot == -1) {
 					slot = inventory.getSuitableHotbarSlot();
 				}
-				inventory.setItem(slot, pkt.item);
-				inventory.selected = slot;
+				inventory.setItem(slot, pkt.item.copy());
+				inventory.setSelectedSlot(slot);
 			});
 		}
 	}

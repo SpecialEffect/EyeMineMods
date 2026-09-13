@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.submod.utils;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -22,15 +23,15 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientGuiEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
@@ -70,7 +71,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 	}
 
 	public void onInitializeClient() {
-		ClientGuiEvent.RENDER_HUD.register(this::onRenderGameOverlayEvent);
+		EyeMineEvents.RENDER_HUD.register(this::onRenderGameOverlayEvent);
 		BlockOutlineEvent.OUTLINE.register(this::onBlockOutlineRender);
 	}
 
@@ -135,7 +136,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 
 					// Place block if dwell complete
 					if (currentTarget != null && liveTargets.get(currentTarget).hasCompleted()) {
-						System.out.println("Performing");
+						EyeMine.LOGGER.debug("Performing dwell action");
 						this.performAction(currentTarget);
 						liveTargets.remove(currentTarget);
 						if (oneShot) {
@@ -225,7 +226,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		return EventResult.pass();
 	}
 
-	public void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public void onRenderGameOverlayEvent(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		// If dwell is on, show a warning message
 		if (mDwelling && showLabel) {
 			Minecraft minecraft = Minecraft.getInstance();
@@ -237,7 +238,7 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 			final Font font = minecraft.font;
 			float msgWidth = (float) font.width(msg);
 
-			guiGraphics.drawString(font, msg, (int) (w / 2.0f - msgWidth / 2.0f), (int)(h / 2.0f - 20 - labelOffset), 0xffFFFFFF);
+			guiGraphics.text(font, msg, (int) (w / 2.0f - msgWidth / 2.0f), (int)(h / 2.0f - 20 - labelOffset), 0xffFFFFFF);
 		}
 	}
 }

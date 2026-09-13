@@ -11,10 +11,11 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 
 public class BoatController {
 	// Boats are steered with left, right arrow keys to control the paddles
@@ -57,7 +58,7 @@ public class BoatController {
 	// speed [-1, +1] where +1 is for turning right
 	// if abs(speed) > 1, it will just clip the effect
 	private void steer(double speed) {
-		System.out.println("steer " + speed);
+		EyeMine.LOGGER.debug("steer {}", speed);
 
 		final KeyMapping kbLeft = Minecraft.getInstance().options.keyLeft;
 		final KeyMapping kbRight = Minecraft.getInstance().options.keyRight;
@@ -87,7 +88,7 @@ public class BoatController {
 		this.steer(steer_amount);
 	}
 
-	public void pid_step(Boat boat, double yaw_error) {
+	public void pid_step(AbstractBoat boat, double yaw_error) {
 		// Reset if new boat 
 		if (boat.getId() != this.boat_id) {
 			this.yaw_error = 0;

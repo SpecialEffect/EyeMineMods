@@ -11,19 +11,16 @@
 
 package com.specialeffect.eyemine.client.gui.crosshair;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //
-// StateOverlay implements a simple status bar at the top of the screen which 
+// StateOverlay implements a simple status bar at the top of the screen which
 // shows the current states such as attacking, walking, etc.
 //
 public class StateOverlay implements ICrosshairOverlay {
@@ -35,12 +32,9 @@ public class StateOverlay implements ICrosshairOverlay {
 	}
 
 	private void rescale() {
-		// Scale icon sizes to fit screen		
-
 		int maxSizeByWidth = mDisplayWidth / (mIconsPerRow + mIconPadding);
 		int maxSizeByHeight = 2 * mDisplayHeight / (mIconsPerRow + mIconPadding);
 		mIconSize = Math.min(maxSizeByWidth, maxSizeByHeight);
-
 	}
 
 	private static int mIconSize = 30;
@@ -49,71 +43,48 @@ public class StateOverlay implements ICrosshairOverlay {
 	private int mDisplayHeight;
 	private static final int mIconsPerRow = 10;
 
-	// Lists of icons to draw on each half of screen
-	private static List<ResourceLocation> mResourcesLeft;
-	private static List<ResourceLocation> mResourcesRight;
+	private static List<Identifier> mResourcesLeft;
+	private static List<Identifier> mResourcesRight;
 	private static List<Boolean> mFlagsLeft;
 	private static List<Boolean> mFlagsRight;
 
-	// Add texture to list of icons, return position. 
-	// You need to hang onto the position to later turn the
-	// icon on/off.
 	public synchronized static int registerTextureLeft(String filepath) {
-		ResourceLocation res = ResourceLocation.tryParse(filepath);
+		Identifier res = Identifier.tryParse(filepath);
 		mResourcesLeft.add(res);
 		mFlagsLeft.add(false);
 		return mResourcesLeft.size() - 1;
 	}
 
-	// Add texture to list of icons, return position. 
-	// You need to hang onto the position to later turn the
-	// icon on/off.
 	public synchronized static int registerTextureRight(String filepath) {
-		ResourceLocation res = ResourceLocation.tryParse(filepath);
+		Identifier res = Identifier.tryParse(filepath);
 		mResourcesRight.add(res);
 		mFlagsRight.add(false);
 		return mResourcesRight.size() - 1;
 	}
 
-	// A helper function to draw a texture scaled to fit.
-	private void drawScaledTextureWithGlow(Minecraft minecraft, ResourceLocation res, int x, int y, int width, int height) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, res);
+	/** Pack ARGB color int from alpha (0.0-1.0) and white RGB */
+	private static int colorWithAlpha(float alpha) {
+		int a = Math.clamp((int) (alpha * 255), 0, 255);
+		return (a << 24) | 0xFFFFFF;
+	}
 
-		// First draw enlarged and blurred, for glow.
-		RenderSystem.texParameter(GL11.GL_TEXTURE_2D,
-				GL11.GL_TEXTURE_MIN_FILTER,
-				GL11.GL_LINEAR);
-		RenderSystem.texParameter(GL11.GL_TEXTURE_2D,
-				GL11.GL_TEXTURE_MAG_FILTER,
-				GL11.GL_LINEAR);
-
-//		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV,
-//				GL11.GL_TEXTURE_ENV_MODE, //TODO: figure out what this was
-//				GL11.GL_ADD );
-
-		// We draw the texture larger, in white, at progressive levels of alpha 
-		// for blur effect (the alpha gets added on each layer)
-		int blurSteps = 4; // how many levels of progressive blur
-		double totalBlur = (double) width / 12; // in pixels
+	private void drawScaledTextureWithGlow(GuiGraphicsExtractor guiGraphics, Identifier res, int x, int y, int width, int height) {
+		// Draw blur glow effect - progressive larger blits at low alpha
+		int blurSteps = 4;
+		double totalBlur = (double) width / 12;
 
 		for (int i = 0; i < blurSteps; i++) {
 			double blurAmount = totalBlur / blurSteps * (i + 1);
-			ModUtils.drawTexQuad(x - blurAmount,
-					y - blurAmount,
-					width + 2 * blurAmount,
-					height + 2 * blurAmount,
-					1.0f / blurSteps);
+			float alpha = 1.0f / blurSteps;
+			int bx = (int) (x - blurAmount);
+			int by = (int) (y - blurAmount);
+			int bw = (int) (width + 2 * blurAmount);
+			int bh = (int) (height + 2 * blurAmount);
+			guiGraphics.blit(RenderPipelines.GUI_TEXTURED, res, bx, by, 0, 0, bw, bh, bw, bh, colorWithAlpha(alpha));
 		}
 
-//		GlStateManager._texEnv(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_REPLACE );
-
-		// TODO: it would be nice if we could modulate the alpha of these overlays, but that doesn't
-		// work naively with the GL_REPLACE strategy we're using here. Will have to brush up my
-		// OpenGL knowledge to get alpha-icon with drop-shadow
-		RenderSystem.setShaderTexture(0, res);
-		ModUtils.drawTexQuad(x, y, width, height, 1.0f);
+		// Draw the actual icon at full alpha
+		guiGraphics.blit(RenderPipelines.GUI_TEXTURED, res, x, y, 0, 0, width, height, width, height, colorWithAlpha(1.0f));
 	}
 
 	public static void setStateLeftIcon(int i, boolean b) {
@@ -125,16 +96,10 @@ public class StateOverlay implements ICrosshairOverlay {
 	}
 
 	@Override
-	public void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft) {
-		RenderSystem.enableBlend();
-		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-
-		// Don't show if the debug screen is open
+	public void renderOverlay(GuiGraphicsExtractor guiGraphics, Minecraft minecraft) {
 		if (minecraft.getDebugOverlay().showDebugScreen()) {
 			return;
 		}
-
-//		RenderSystem.disableLighting();
 
 		mDisplayWidth = minecraft.getWindow().getGuiScaledWidth();
 		mDisplayHeight = minecraft.getWindow().getGuiScaledHeight();
@@ -145,7 +110,7 @@ public class StateOverlay implements ICrosshairOverlay {
 		int yPos = mIconPadding;
 		for (int i = 0; i < mResourcesLeft.size(); i++) {
 			if (mFlagsLeft.get(i)) {
-				drawScaledTextureWithGlow(minecraft, mResourcesLeft.get(i), xPos, yPos, mIconSize, mIconSize);
+				drawScaledTextureWithGlow(guiGraphics, mResourcesLeft.get(i), xPos, yPos, mIconSize, mIconSize);
 			}
 			xPos += mIconSize + mIconPadding;
 		}
@@ -154,11 +119,9 @@ public class StateOverlay implements ICrosshairOverlay {
 		xPos = mDisplayWidth - mIconSize - mIconPadding;
 		for (int i = 0; i < mResourcesRight.size(); i++) {
 			if (mFlagsRight.get(i)) {
-				drawScaledTextureWithGlow(minecraft, mResourcesRight.get(i), xPos, yPos, mIconSize, mIconSize);
+				drawScaledTextureWithGlow(guiGraphics, mResourcesRight.get(i), xPos, yPos, mIconSize, mIconSize);
 			}
 			xPos -= (mIconSize + mIconPadding);
 		}
-
-		RenderSystem.disableBlend();
 	}
 }

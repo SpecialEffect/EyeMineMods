@@ -1,96 +1,60 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'multiloader-loader'
+    id 'net.fabricmc.fabric-loom'
 }
 
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+repositories {
+    maven {
+        url "https://maven.shedaniel.me/"
+    }
+    maven {
+        url "https://maven.terraformersmc.com/"
+        content {
+            includeGroup "com.terraformersmc"
+        }
+    }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+    // Cloth Config for Fabric config GUI
+    api("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    // Mod Menu
+    implementation("com.terraformersmc:modmenu:${mod_menu_version}"){
+        exclude(group: "eu.pb4")
     }
 }
 
-shadowJar {
-    exclude "eyemine.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier.set("dev-shadow")
-}
-
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    archiveBaseName.set "${rootProject.archives_base_name}-${project.minecraft_version}-${project.name}"
-    archiveClassifier.set('')
-}
-
-jar {
-    archiveClassifier.set("dev")
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
     }
-}
-
-publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.minecraft_version + "-" + project.name
-            from components.java
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
         }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
     }
 }
 
 if (System.getenv("CURSEFORGE_TOKEN")) {
-    def cfReleaseType = rootProject.mod_version.contains("alpha") ? "alpha" :
-                        rootProject.mod_version.contains("beta") ? "beta" : "release"
+    def cfReleaseType = rootProject.version.toString().contains("alpha") ? "alpha" :
+                        rootProject.version.toString().contains("beta") ? "beta" : "release"
 
     curseforge {
         apiKey = System.getenv("CURSEFORGE_TOKEN")
@@ -101,13 +65,12 @@ if (System.getenv("CURSEFORGE_TOKEN")) {
             releaseType = cfReleaseType
             addGameVersion rootProject.minecraft_version
             addGameVersion "Fabric"
-            addGameVersion "Java 21"
-            mainArtifact(remapJar) {
-                displayName = "eyemine-${rootProject.minecraft_version}-fabric-${rootProject.mod_version}"
+            addGameVersion "Java ${rootProject.java_version}"
+            mainArtifact(tasks.named("jar").get()) {
+                displayName = "eyemine-${rootProject.minecraft_version}-fabric-${rootProject.version.toString()}"
             }
             relations {
                 requiredDependency "fabric-api"
-                requiredDependency "architectury-api"
                 requiredDependency "cloth-config"
             }
         }

@@ -12,13 +12,13 @@
 package com.specialeffect.eyemine.packets.messages;
 
 import com.specialeffect.eyemine.EyeMine;
-import dev.architectury.networking.NetworkManager;
+import com.specialeffect.eyemine.packets.NetworkService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.Vec3;
 
 public record TeleportPlayerToSpawnPointMessage() implements CustomPacketPayload {
@@ -35,7 +36,7 @@ public record TeleportPlayerToSpawnPointMessage() implements CustomPacketPayload
 			TeleportPlayerToSpawnPointMessage::write,
 			TeleportPlayerToSpawnPointMessage::new);
 	public static final CustomPacketPayload.Type<TeleportPlayerToSpawnPointMessage> ID = new CustomPacketPayload.Type<>(
-			ResourceLocation.fromNamespaceAndPath(EyeMine.MOD_ID, "teleport_to_spawn_point"));
+			Identifier.fromNamespaceAndPath(EyeMine.MOD_ID, "teleport_to_spawn_point"));
 
 	@Override
 	public Type<? extends CustomPacketPayload> type() {
@@ -51,39 +52,43 @@ public record TeleportPlayerToSpawnPointMessage() implements CustomPacketPayload
 	}
 
 	public static class Handler {
-		public static void handle(final TeleportPlayerToSpawnPointMessage pkt, NetworkManager.PacketContext context) {
+		public static void handle(final TeleportPlayerToSpawnPointMessage pkt, NetworkService.PacketContext context) {
 			context.queue(() -> {
 				Player player = context.getPlayer();
 				if (player == null) {
 					return;
 				}
 
-				if (!player.level().isClientSide) {
-					MinecraftServer server = player.getServer();
+				if (!player.level().isClientSide()) {
+					MinecraftServer server = player.level().getServer();
 					ServerPlayer serverPlayer = (ServerPlayer) player;
-					ServerLevel respawnDimension = server.getLevel(serverPlayer.getRespawnDimension());
-					BlockPos respawnPos = serverPlayer.getRespawnPosition();
-					float respawnAngle = serverPlayer.getRespawnAngle();
-					DimensionTransition transition;
-					if (serverPlayer != null && respawnPos != null) {
-						transition = serverPlayer.findRespawnPositionAndUseSpawnBlock(false, DimensionTransition.DO_NOTHING);
-					} else {
-						transition = null;
-					}
+					ServerPlayer.RespawnConfig respawnConfig = serverPlayer.getRespawnConfig();
+					TeleportTransition transition;
+					if (respawnConfig != null) {
+						LevelData.RespawnData respawnData = respawnConfig.respawnData();
+						BlockPos respawnPos = respawnData.pos();
+						float respawnAngle = respawnData.yaw();
+						ServerLevel respawnDimension = server.getLevel(respawnData.dimension());
+						transition = serverPlayer.findRespawnPositionAndUseSpawnBlock(false, TeleportTransition.DO_NOTHING);
 
-					if (transition != null) {
-						BlockState state = respawnDimension.getBlockState(respawnPos);
-						boolean blockIsRespawnAnchor = state.is(Blocks.RESPAWN_ANCHOR);
-						Vec3 vector3d = transition.pos();
-						float f1;
-						if (!state.is(BlockTags.BEDS) && !blockIsRespawnAnchor) {
-							f1 = respawnAngle;
-						} else {
-							Vec3 vector3d1 = Vec3.atBottomCenterOf(respawnPos).subtract(vector3d).normalize();
-							f1 = (float) Mth.wrapDegrees(Mth.atan2(vector3d1.z, vector3d1.x) * (double) (180F / (float) Math.PI) - 90.0D);
+						if (transition != null && respawnDimension != null) {
+							BlockState state = respawnDimension.getBlockState(respawnPos);
+							boolean blockIsRespawnAnchor = state.is(Blocks.RESPAWN_ANCHOR);
+							Vec3 vector3d = transition.position();
+							float f1;
+							if (!state.is(BlockTags.BEDS) && !blockIsRespawnAnchor) {
+								f1 = respawnAngle;
+							} else {
+								Vec3 vector3d1 = Vec3.atBottomCenterOf(respawnPos).subtract(vector3d).normalize();
+								f1 = (float) Mth.wrapDegrees(Mth.atan2(vector3d1.z, vector3d1.x) * (double) (180F / (float) Math.PI) - 90.0D);
+							}
+							serverPlayer.teleportTo(respawnDimension, vector3d.x, vector3d.y, vector3d.z, java.util.Set.of(), f1, 0.0F, false);
+							serverPlayer.setRespawnPosition(
+								new ServerPlayer.RespawnConfig(
+									LevelData.RespawnData.of(respawnDimension.dimension(), BlockPos.containing(vector3d), respawnAngle, 0.0F),
+									false
+								), false);
 						}
-						serverPlayer.moveTo(vector3d.x, vector3d.y, vector3d.z, f1, 0.0F);
-						serverPlayer.setRespawnPosition(respawnDimension.dimension(), BlockPos.containing(vector3d), respawnAngle, false, false);
 					}
 				}
 			});

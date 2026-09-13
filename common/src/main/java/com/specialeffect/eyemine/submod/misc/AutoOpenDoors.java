@@ -15,7 +15,7 @@ import com.specialeffect.eyemine.mixin.ClientLevelAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.prediction.BlockStatePredictionHandler;
@@ -25,7 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
@@ -38,7 +38,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 	public final String MODID = "autoopendoors";
 
 	public void onInitializeClient() {
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
 	}
 
 	public void syncConfig() {
@@ -89,7 +89,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 											}
 											BlockHitResult blockHitResult = new BlockHitResult(hitVec, fakeDirection, blockPos, true);
 
-											ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, blockHitResult);
+											InteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, blockHitResult);
 											if (result.consumesAction()) {
 												BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 												int i = blockstatepredictionhandler.currentSequence();
@@ -124,7 +124,7 @@ public class AutoOpenDoors extends SubMod implements IConfigListener {
 									}
 								}
 								BlockHitResult blockHitResult = new BlockHitResult(hitVec, fakeDirection, pos, true);
-								ItemInteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, blockHitResult);
+								InteractionResult result = state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, blockHitResult);
 								if (result.consumesAction()) {
 									BlockStatePredictionHandler blockstatepredictionhandler = ((ClientLevelAccessor) level).eyemineGetPredictionHandler().startPredicting();
 									int i = blockstatepredictionhandler.currentSequence();

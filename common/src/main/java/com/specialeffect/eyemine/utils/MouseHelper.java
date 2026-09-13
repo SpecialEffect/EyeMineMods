@@ -14,7 +14,6 @@ package com.specialeffect.eyemine.utils;
 import com.specialeffect.eyemine.mixin.MouseHandlerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
-import net.minecraft.client.gui.screens.Overlay;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseHelper {
@@ -55,13 +54,15 @@ public class MouseHelper {
 		return mHasPendingEvent;
 	}
 
-	public static boolean hasGLcontext() {
-		return !(Minecraft.getInstance().getOverlay() instanceof Overlay);
+	public static boolean canChangeMouseCapture() {
+		Minecraft minecraft = Minecraft.getInstance();
+		// Cursor operations belong on the client thread; overlays also suppress capture changes.
+		return minecraft.isSameThread() && minecraft.getOverlay() == null;
 	}
 
 	public static void setUngrabbedMode(boolean ungrabbed) {
 		ungrabbedMouseMode = ungrabbed;
-		if (!hasGLcontext()) {
+		if (!canChangeMouseCapture()) {
 			return;
 		}
 
@@ -86,8 +87,8 @@ public class MouseHelper {
 	 **/
 	public void moveCursor(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
-			long handle = Minecraft.getInstance().getWindow().getWindow();
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), xpos, ypos);
+			long handle = Minecraft.getInstance().getWindow().handle();
+			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xpos, ypos);
 			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos);
 		}
 	}
@@ -110,7 +111,7 @@ public class MouseHelper {
 
 	public void scroll(MouseHandler mouseHandler, double amount) {
 		if (mouseHandler != null) {
-			long handle = Minecraft.getInstance().getWindow().getWindow();
+			long handle = Minecraft.getInstance().getWindow().handle();
 			((MouseHandlerAccessor) mouseHandler).invokeOnScroll(handle, 0, amount);
 		}
 	}
@@ -125,8 +126,9 @@ public class MouseHelper {
 	 * mods: GLFW.GLFW_MOD_[SHIFT/CONTROL/ALT/SUPER]
 	 */
 	public void mouseButton(int button, int action, int mods) {
-		long handle = Minecraft.getInstance().getWindow().getWindow();
-		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnPress(handle, button, action, mods);
+		long handle = Minecraft.getInstance().getWindow().handle();
+		((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).invokeOnButton(
+				handle, new net.minecraft.client.input.MouseButtonInfo(button, mods), action);
 	}
 
 	public static void setMovementState(PlayerMovement state) {

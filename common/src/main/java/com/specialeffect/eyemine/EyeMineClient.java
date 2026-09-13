@@ -3,6 +3,7 @@ package com.specialeffect.eyemine;
 import com.specialeffect.eyemine.client.CreativeClientHelper;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
@@ -32,11 +33,6 @@ import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
 import com.specialeffect.eyemine.submod.movement.Sneak;
 import com.specialeffect.eyemine.submod.movement.Swim;
 import com.specialeffect.eyemine.submod.utils.DebugAverageFps;
-import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
-import net.minecraft.client.KeyMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,17 +50,13 @@ public class EyeMineClient {
 		// Setup all other sub mods
 		instantiateSubMods();
 
-		ClientGuiEvent.SET_SCREEN.register(MainClientHandler::onGuiOpen);
-		ClientGuiEvent.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
-		ClientRawInputEvent.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
+		EyeMineEvents.SCREEN_SET.register(MainClientHandler::onGuiOpen);
+		EyeMineEvents.RENDER_HUD.register(MainClientHandler::onRenderGameOverlayEvent);
+		EyeMineEvents.KEY_PRESSED.register(CreativeClientHelper::onKeyInput);
 
-		if (!Keybindings.keybindings.isEmpty()) {
-			for (KeyMapping keyBinding : Keybindings.keybindings) {
-				KeyMappingRegistry.register(keyBinding);
-			}
-		}
+		// Key mappings are registered by platform entry points via Keybindings.keybindings list
 
-		ClientLifecycleEvent.CLIENT_SETUP.register((client) -> {
+		EyeMineEvents.CLIENT_SETUP.register((client) -> {
 			if (!setupComplete) {
 				setupComplete = true;
 				refresh();

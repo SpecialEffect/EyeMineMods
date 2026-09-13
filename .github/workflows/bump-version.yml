@@ -13,6 +13,9 @@ on:
           - minor
           - major
 
+permissions:
+  contents: write
+
 jobs:
   bump-version:
     runs-on: ubuntu-latest
@@ -25,7 +28,7 @@ jobs:
       - name: Bump version in gradle.properties
         id: bump
         run: |
-          CURRENT=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)
+          CURRENT=$(grep '^version=' gradle.properties | cut -d'=' -f2)
           echo "Current version: $CURRENT"
 
           if echo "$CURRENT" | grep -qE '\-alpha'; then
@@ -49,7 +52,7 @@ jobs:
           fi
 
           echo "New version: $NEW"
-          sed -i "s/^mod_version=.*/mod_version=${NEW}/" gradle.properties
+          sed -i "s/^version=.*/version=${NEW}/" gradle.properties
           echo "new_version=$NEW" >> "$GITHUB_OUTPUT"
           echo "old_version=$CURRENT" >> "$GITHUB_OUTPUT"
 

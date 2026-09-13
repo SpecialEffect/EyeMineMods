@@ -11,21 +11,18 @@
 
 package com.specialeffect.eyemine.client.gui.crosshair;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 
 public class JoystickControlOverlay implements ICrosshairOverlay {
 
 	public JoystickControlOverlay() {
-		mResource = ResourceLocation.fromNamespaceAndPath("eyemine", "textures/icons/overlay.png");
+		mResource = Identifier.fromNamespaceAndPath("eyemine", "textures/icons/overlay.png");
 	}
 
-	ResourceLocation mResource;
+	Identifier mResource;
 
 	private boolean mVisible = false;
 
@@ -36,7 +33,6 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 	}
 
 	public void setAlpha(float alpha) {
-		// Minecraft clips alpha at 0.1, so we add 0.1 back in to get reasonable user-facing behaviour
 		if (alpha > 0.0f && alpha < 0.9f) {
 			alpha += 0.1f;
 		}
@@ -44,20 +40,16 @@ public class JoystickControlOverlay implements ICrosshairOverlay {
 	}
 
 	@Override
-	public void renderOverlay(GuiGraphics guiGraphics, Minecraft minecraft) {
+	public void renderOverlay(GuiGraphicsExtractor guiGraphics, Minecraft minecraft) {
 		if (mVisible && mAlpha > 0.0f) {
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
 
 			int w = minecraft.getWindow().getGuiScaledWidth();
 			int h = minecraft.getWindow().getGuiScaledHeight();
 
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.setShaderTexture(0, mResource);
-			ModUtils.drawTexQuad(0, 0, w, h, mAlpha);
+			int a = Math.clamp((int) (mAlpha * 255), 0, 255);
+			int color = (a << 24) | 0xFFFFFF;
+			guiGraphics.blit(RenderPipelines.GUI_TEXTURED, mResource, 0, 0, 0, 0, w, h, w, h, color);
 
-			RenderSystem.disableBlend();
 		}
 	}
 }

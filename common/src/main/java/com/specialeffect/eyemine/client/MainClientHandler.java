@@ -17,10 +17,10 @@ import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
-import dev.architectury.event.CompoundEventResult;
+import com.specialeffect.eyemine.event.ScreenSetResult;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 
@@ -31,7 +31,7 @@ public class MainClientHandler {
 	public static final List<ICrosshairOverlay> crosshairOverlayList = new ArrayList<>();
 	private static StateOverlay mStateOverlay;
 
-	public static void onRenderGameOverlayEvent(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+	public static void onRenderGameOverlayEvent(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
 		if (!MainClientHandler.crosshairOverlayList.isEmpty()) {
 			Minecraft minecraft = Minecraft.getInstance();
 			for (ICrosshairOverlay overlay : MainClientHandler.crosshairOverlayList) {
@@ -41,15 +41,7 @@ public class MainClientHandler {
 	}
 
 	// Replace / augment some GUIs
-	public static CompoundEventResult<Screen> onGuiOpen(Screen screen) {
-		Screen currentScreen = Minecraft.getInstance().screen;
-//		if (!EyeMineClient.disableCustomNewWorld && screen instanceof CreateWorldScreen && !(currentScreen instanceof CustomCreateWorldScreen)) {
-//			if (!EyeMineClient.allowMoreOptions) {
-//				// override the CreateWorldScreen, unless it's been requested from within our own CustomCreateWorldScreen
-//				return CompoundEventResult.interruptTrue(CustomCreateWorldScreen.create(Minecraft.getInstance(), screen));
-//			}
-//			EyeMineClient.allowMoreOptions = false;
-//		}
+	public static ScreenSetResult onGuiOpen(Screen screen) {
 		if (screen instanceof CreativeModeInventoryScreen gui) {
 			// Make sure mouse starts outside container, so we have a sensible reference point
 			AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;
@@ -60,7 +52,7 @@ public class MainClientHandler {
 					gui.getMenu());
 			con.resetMouse();
 		}
-		return CompoundEventResult.pass();
+		return ScreenSetResult.pass();
 	}
 
 	public static void initialize() {

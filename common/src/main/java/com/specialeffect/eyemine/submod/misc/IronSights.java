@@ -18,10 +18,12 @@ import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.IconOverlay;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -43,7 +45,7 @@ public class IronSights extends SubMod implements IConfigListener {
 				"key.eyemine.toggle_ironsights",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_P,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		// Set up icon rendering		
@@ -54,7 +56,7 @@ public class IronSights extends SubMod implements IConfigListener {
 		mIcon.setVisible(false);
 		MainClientHandler.addOverlayToRender(mIcon);
 
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	@Override
@@ -64,15 +66,11 @@ public class IronSights extends SubMod implements IConfigListener {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
-			return EventResult.pass();
-		}
-
-		if (mToggleIronsight.matches(keyCode, scanCode) && mToggleIronsight.consumeClick()) {
+		if (mToggleIronsight.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mToggleIronsight.consumeClick()) {
 			ironsightsOn = !ironsightsOn;
 			if (ironsightsOn) {
 				minecraft.options.fov().set(minecraft.options.fov().get() - fovReduction);

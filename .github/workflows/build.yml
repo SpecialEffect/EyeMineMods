@@ -17,7 +17,7 @@ jobs:
         run: |
           JAVA=$(grep '^java_version=' gradle.properties | cut -d'=' -f2)
           if [ -z "$JAVA" ]; then
-            echo "::error::java_version is not set in gradle.properties. Add java_version=21 (or 17) to gradle.properties before building."
+            echo "::error::java_version is not set in gradle.properties. Add java_version=25 to gradle.properties before building."
             exit 1
           fi
           echo "java_version=$JAVA" >> "$GITHUB_OUTPUT"
@@ -40,6 +40,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eyemine-${{ github.ref_name }}-${{ github.sha }}
-          path: '*/build/libs/eyemine-*[0-9].jar'
-          if-no-files-found: warn
+          path: |
+            fabric/build/libs/eyemine-*-fabric.jar
+            neoforge/build/libs/eyemine-*-neoforge.jar
+          if-no-files-found: error
           retention-days: 14

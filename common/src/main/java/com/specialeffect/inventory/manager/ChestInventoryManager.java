@@ -166,6 +166,6 @@ public class ChestInventoryManager {
 		int yPos = containerTop + itemRow * itemWidth;
 		int xPos = containerLeft + itemCol * itemWidth;
 
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().getWindow(), xPos * this.xScale, yPos * this.yScale);
+		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 	}
 }

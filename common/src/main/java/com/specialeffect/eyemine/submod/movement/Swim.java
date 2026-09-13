@@ -17,10 +17,10 @@ import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTickEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -43,7 +43,7 @@ public class Swim extends SubMod {
 				"key.eyemine.toggle_swimming",
 				Type.KEYSYM,
 				GLFW.GLFW_KEY_V,
-				"category.eyemine.category.eyegaze_extra" // The translation key of the keybinding's category.
+				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		// Register an icon for the overlay
@@ -51,8 +51,8 @@ public class Swim extends SubMod {
 
 		StateOverlay.setStateLeftIcon(mIconIndex, mSwimmingTurnedOn);
 
-		ClientTickEvent.CLIENT_PRE.register(this::onClientTick);
-		ClientRawInputEvent.KEY_PRESSED.register(this::onKeyInput);
+		EyeMineEvents.CLIENT_TICK.register(this::onClientTick);
+		EyeMineEvents.KEY_PRESSED.register(this::onKeyInput);
 	}
 
 	public static void stopActivelySwimming() {
@@ -113,15 +113,11 @@ public class Swim extends SubMod {
 	}
 
 	private EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (ModUtils.hasActiveGui()) {
+		if (KeyInputUtil.shouldIgnoreKeyInput(minecraft)) {
 			return EventResult.pass();
 		}
 
-		if (InputConstants.isKeyDown(minecraft.getWindow().getWindow(), 292)) {
-			return EventResult.pass();
-		}
-
-		if (mSwimKB.matches(keyCode, scanCode) && mSwimKB.consumeClick()) {
+		if (mSwimKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mSwimKB.consumeClick()) {
 			final KeyMapping swimBinding = minecraft.options.keyJump;
 
 			mSwimmingTurnedOn = !mSwimmingTurnedOn;

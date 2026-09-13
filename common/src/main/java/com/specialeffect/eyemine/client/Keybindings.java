@@ -12,10 +12,21 @@
 package com.specialeffect.eyemine.client;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Keybindings {
 	public static final List<KeyMapping> keybindings = new ArrayList<>();
+
+	// Custom key mapping categories for EyeMine
+	public static final KeyMapping.Category EYEGAZE_SETTINGS = KeyMapping.Category.register(
+			Identifier.fromNamespaceAndPath("eyemine", "eyegaze_settings"));
+	public static final KeyMapping.Category EYEGAZE_COMMON = KeyMapping.Category.register(
+			Identifier.fromNamespaceAndPath("eyemine", "eyegaze_common"));
+	public static final KeyMapping.Category EYEGAZE_EXTRA = KeyMapping.Category.register(
+			Identifier.fromNamespaceAndPath("eyemine", "eyegaze_extra"));
+	public static final KeyMapping.Category EYEGAZE_ADVANCED = KeyMapping.Category.register(
+			Identifier.fromNamespaceAndPath("eyemine", "eyegaze_advanced"));
 }
