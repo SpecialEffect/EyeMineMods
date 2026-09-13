@@ -21,6 +21,9 @@
     ],
     "client": [
       "com.specialeffect.eyemine.EyeMineClientFabric"
+    ],
+    "modmenu": [
+      "com.specialeffect.eyemine.config.EyeMineModMenuIntegration"
     ]
   },
   "mixins": [
