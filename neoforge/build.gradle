@@ -1,5 +1,5 @@
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'net.darkhax.curseforgegradle'
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
 }
@@ -46,27 +46,22 @@ neoForge {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
-if (System.getenv("CURSEFORGE_TOKEN")) {
+if (System.getenv().CURSEFORGE_TOKEN) {
     def cfReleaseType = rootProject.version.toString().contains("alpha") ? "alpha" :
-                        rootProject.version.toString().contains("beta") ? "beta" : "release"
+            rootProject.version.toString().contains("beta") ? "beta" : "release"
 
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE_TOKEN")
-        project {
-            id = rootProject.curseforge_id
-            changelog = rootProject.file("changes.md").text
-            changelogType = "markdown"
-            releaseType = cfReleaseType
-            addGameVersion rootProject.minecraft_version
-            addGameVersion "NeoForge"
-            addGameVersion "Java ${rootProject.java_version}"
-            mainArtifact(tasks.named("jar").get()) {
-                displayName = "eyemine-${rootProject.minecraft_version}-neoforge-${rootProject.version.toString()}"
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-            javaVersionAutoDetect = false
-        }
+    task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+        apiToken = System.getenv().CURSEFORGE_TOKEN
+
+        def mainFile = upload(project.curseforge_id, jar)
+        mainFile.releaseType = cfReleaseType
+        mainFile.addModLoader "NeoForge"
+        mainFile.addGameVersion rootProject.minecraft_version
+        mainFile.addJavaVersion "Java ${rootProject.java_version}"
+        mainFile.addEnvironment('Client')
+
+        mainFile.displayName = "eyemine-${rootProject.minecraft_version}-neoforge-${rootProject.version.toString()}"
+        mainFile.changelog = rootProject.file("changes.md")
+        mainFile.changelogType = 'markdown'
     }
 }
