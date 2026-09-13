@@ -1,7 +1,6 @@
 package com.specialeffect.eyemine;
 
 import com.specialeffect.eyemine.client.CreativeClientHelper;
-import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.submod.IConfigListener;

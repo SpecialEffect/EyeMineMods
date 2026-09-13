@@ -11,12 +11,10 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.submod.utils.DwellAction;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.utils.TargetBlock;
 import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;

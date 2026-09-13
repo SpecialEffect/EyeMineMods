@@ -11,7 +11,6 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.eyemine.callbacks.OnLivingCallback;
@@ -22,7 +21,6 @@ import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
-import com.specialeffect.eyemine.packets.NetworkService;
 import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

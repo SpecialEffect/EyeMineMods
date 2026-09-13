@@ -20,7 +20,6 @@ import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
-import com.specialeffect.eyemine.packets.NetworkService;
 import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;

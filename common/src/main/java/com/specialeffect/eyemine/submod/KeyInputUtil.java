@@ -1,7 +1,6 @@
 package com.specialeffect.eyemine.submod;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
