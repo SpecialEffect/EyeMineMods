@@ -11,18 +11,18 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.utils.DwellAction;
-import com.specialeffect.eyemine.submod.utils.TargetBlock;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.utils.DwellAction;
+import com.specialeffect.eyemine.submod.utils.TargetBlock;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 
 public class DwellMine extends DwellAction {
 	public final String MODID = "dwellbuild";
@@ -38,15 +38,15 @@ public class DwellMine extends DwellAction {
 		// Register key bindings
 		Keybindings.keybindings.add(mDwellMineKB = new KeyMapping(
 				"key.eyemine.toggle_dwell",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_6,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD6,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mDwellMineOnceKB = new KeyMapping(
 				"key.eyemine.dwell_once",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_8,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD8,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

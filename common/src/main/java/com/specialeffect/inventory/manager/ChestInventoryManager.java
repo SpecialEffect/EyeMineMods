@@ -19,7 +19,7 @@ import net.minecraft.client.MouseHandler;
 import net.minecraft.world.inventory.ChestMenu;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -166,6 +166,6 @@ public class ChestInventoryManager {
 		int yPos = containerTop + itemRow * itemWidth;
 		int xPos = containerLeft + itemCol * itemWidth;
 
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
+		SDLMouse.SDL_WarpMouseInWindow(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 	}
 }

@@ -16,7 +16,7 @@ public class KeyInputUtil {
      * Returns true if key events should be ignored (GUI open or F11 debug key held).
      */
     public static boolean shouldIgnoreKeyInput(Minecraft minecraft) {
-        return ModUtils.hasActiveGui() || InputConstants.isKeyDown(minecraft.getWindow(), 292);
+        return ModUtils.hasActiveGui() || InputConstants.isKeyDown(292);
     }
 
     /**

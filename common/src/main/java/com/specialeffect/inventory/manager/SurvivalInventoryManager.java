@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import java.util.List;
 
@@ -273,7 +273,7 @@ public class SurvivalInventoryManager {
 		int yPos = topItemYPos + itemRow * itemWidth;
 		int xPos = leftItemXPos + itemCol * itemWidth;
 
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
+		SDLMouse.SDL_WarpMouseInWindow(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 	}
 
 	private void switchToTab(int iTab) {

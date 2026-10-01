@@ -9,7 +9,7 @@ version="${version}"
 displayName="${mod_name}"
 displayURL="https://www.specialeffect.org.uk/eyemine"
 authors="${mod_author}"
-logoFile="eyemine_logo.png"
+iconFile="eyemine_logo.png"
 credits="${credits}"
 description='''${description}'''
 

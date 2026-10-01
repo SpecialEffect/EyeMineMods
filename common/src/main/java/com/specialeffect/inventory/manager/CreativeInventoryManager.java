@@ -21,7 +21,7 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.It
 import net.minecraft.world.item.CreativeModeTab;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 /**
  * Manages a Inventory GUI Inventory.
@@ -243,7 +243,7 @@ public class CreativeInventoryManager {
 		int yPos = containerTop + itemRow * itemWidth;
 		int xPos = containerLeft + itemCol * itemWidth;
 
-		GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
+		SDLMouse.SDL_WarpMouseInWindow(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 	}
 
 	private void switchToTab(int iTab) {
@@ -319,7 +319,7 @@ public class CreativeInventoryManager {
 			// the same tab again (otherwise this gets missed)
 			this.onTabChanged();
 
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
+			SDLMouse.SDL_WarpMouseInWindow(Minecraft.getInstance().getWindow().handle(), xPos * this.xScale, yPos * this.yScale);
 		}
 	}
 

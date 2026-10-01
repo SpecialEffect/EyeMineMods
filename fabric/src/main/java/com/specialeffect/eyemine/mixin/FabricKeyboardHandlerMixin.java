@@ -30,7 +30,7 @@ public class FabricKeyboardHandlerMixin {
         }
         for (var listener : EyeMineEvents.KEY_PRESSED.getListeners()) {
             EventResult result = listener.onKeyPressed(
-                    minecraft, keyEvent.key(), keyEvent.scancode(), action, keyEvent.modifiers());
+                    minecraft, keyEvent.key(), keyEvent.keycode(), action, keyEvent.modifiers());
             if (result.isPresent()) break;
         }
     }

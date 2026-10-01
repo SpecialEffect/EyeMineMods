@@ -11,16 +11,17 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.platform.EyeMineConfig;
-import com.specialeffect.eyemine.submod.utils.DwellAction;
-import com.specialeffect.eyemine.submod.utils.TargetBlock;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.utils.DwellAction;
+import com.specialeffect.eyemine.submod.utils.TargetBlock;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -32,7 +33,6 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
 
 public class UseItem extends DwellAction {
 
@@ -46,29 +46,29 @@ public class UseItem extends DwellAction {
 		// Register key bindings
 		Keybindings.keybindings.add(mUseItemOnceKB = new KeyMapping(
 				"key.eyemine.use_item",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_0,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD0,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mUseItemContinuouslyKB = new KeyMapping(
 				"key.eyemine.use_item_continuously",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_1,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD1,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mPrevItemKB = new KeyMapping(
 				"key.eyemine.select_previous_item",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_4,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD4,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mNextItemKB = new KeyMapping(
 				"key.eyemine.select_next_item",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_5,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD5,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

@@ -11,16 +11,16 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 
 public class PickBlock extends SubMod {
 	public final String MODID = "pickblock";
@@ -31,8 +31,8 @@ public class PickBlock extends SubMod {
 		// Register key bindings
 		Keybindings.keybindings.add(mPickBlockKB = new KeyMapping(
 				"key.eyemine.pick_block",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_2,
+				Type.KEYBOARD,
+				InputConstants.KEY_NUMPAD2,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 

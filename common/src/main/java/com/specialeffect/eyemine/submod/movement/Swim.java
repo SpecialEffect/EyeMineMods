@@ -11,21 +11,21 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import org.lwjgl.glfw.GLFW;
 
 public class Swim extends SubMod {
 	public final String MODID = "swimtoggle";
@@ -40,8 +40,8 @@ public class Swim extends SubMod {
 		// Register key bindings
 		Keybindings.keybindings.add(mSwimKB = new KeyMapping(
 				"key.eyemine.toggle_swimming",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_V,
+				Type.KEYBOARD,
+				InputConstants.KEY_V,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

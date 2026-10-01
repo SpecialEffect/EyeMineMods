@@ -11,14 +11,15 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.messages.GatherBlockMessage;
 import com.specialeffect.eyemine.platform.Services;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -26,7 +27,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -44,8 +44,8 @@ public class GatherDrops extends SubMod {
 	public void onInitializeClient() {
 		Keybindings.keybindings.add(mGatherKB = new KeyMapping(
 				"key.eyemine.gather",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_KP_MULTIPLY,
+				Type.KEYBOARD,
+				InputConstants.KEY_MULTIPLY,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

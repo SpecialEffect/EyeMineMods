@@ -15,6 +15,7 @@
     "MinecraftAccessor",
     "MouseHandlerAccessor",
     "MouseHandlerMixin",
+    "SwingStateAccessor",
     "TitleScreenMixin"
   ],
   "injectors": {

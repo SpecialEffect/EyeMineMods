@@ -11,25 +11,26 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.messages.ToggleDaylightCycleMessage;
-import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.messages.TeleportPlayerToSpawnPointMessage;
+import com.specialeffect.eyemine.packets.messages.ToggleDaylightCycleMessage;
 import com.specialeffect.eyemine.platform.Services;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
 
 public class QuickCommands extends SubMod {
 	public final String MODID = "quickcommands";
@@ -43,29 +44,29 @@ public class QuickCommands extends SubMod {
 		// Register key bindings
 		Keybindings.keybindings.add(mNightVisionKB = new KeyMapping(
 				"key.eyemine.night_vision",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_F12,
+				Type.KEYBOARD,
+				InputConstants.KEY_F12,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mDayNightKB = new KeyMapping(
 				"key.eyemine.day_cycle",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_F14,
+				Type.KEYBOARD,
+				InputConstants.KEY_F14,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mRespawnKB = new KeyMapping(
 				"key.eyemine.respawn",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_HOME,
+				Type.KEYBOARD,
+				InputConstants.KEY_HOME,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mDropItemKB = new KeyMapping(
 				"key.eyemine.drop_item",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_MINUS,
+				Type.KEYBOARD,
+				InputConstants.KEY_MINUS,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
@@ -100,7 +101,7 @@ public class QuickCommands extends SubMod {
 			// an item while the inventory is open. The inventory keybinding needs to be a key not used
 			// for typing.
 			ItemStack stack = player.getInventory().getSelectedItem();
-			player.drop(stack, true); //TODO: see if this still drops all?
+			player.drop(stack, true, Prediction.PREDICTED); //TODO: see if this still drops all?
 		}
 
 		if (mDayNightKB.matches(new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers)) && mDayNightKB.consumeClick()) {

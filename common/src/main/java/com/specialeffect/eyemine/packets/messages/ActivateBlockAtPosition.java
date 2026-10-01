@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPayload {
 	public static final StreamCodec<RegistryFriendlyByteBuf, ActivateBlockAtPosition> CODEC = StreamCodec.composite(
@@ -52,7 +53,7 @@ public record ActivateBlockAtPosition(BlockPos pos) implements CustomPacketPaylo
 
 				// Create a synthetic hit result pointing at the top of the block
 				BlockHitResult hit = new BlockHitResult(
-					pkt.pos.getCenter(), net.minecraft.core.Direction.UP, pkt.pos, false);
+					Vec3.atCenterOf(pkt.pos), net.minecraft.core.Direction.UP, pkt.pos, false);
 
 				// Use the BlockState's useItemOn which is public
 				state.useItemOn(player.getItemInHand(InteractionHand.MAIN_HAND), level, player, InteractionHand.MAIN_HAND, hit);

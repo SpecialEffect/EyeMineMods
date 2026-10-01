@@ -3,25 +3,24 @@ package com.irtimaled.bbor.client.renderers;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class Renderer {
-	private final Mode glMode;
+	private final PrimitiveTopology glMode;
 
 	static Renderer startLines() {
-		return new Renderer(Mode.LINES, DefaultVertexFormat.POSITION_COLOR);
+		return new Renderer(PrimitiveTopology.LINES, DefaultVertexFormat.POSITION_COLOR);
 	}
 
 	static Renderer startQuads() {
-		return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+		return new Renderer(PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_COLOR);
 	}
 
 	public static Renderer startTextured() {
-		return new Renderer(Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		return new Renderer(PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 	}
 
 	private static BufferBuilder bufferBuilder;
@@ -31,7 +30,7 @@ public class Renderer {
 	private int blue;
 	private int alpha;
 
-	private Renderer(Mode glMode, VertexFormat vertexFormat) {
+	private Renderer(PrimitiveTopology glMode, VertexFormat vertexFormat) {
 		bufferBuilder = Tesselator.getInstance().begin(glMode, vertexFormat);
 		this.glMode = glMode;
 	}

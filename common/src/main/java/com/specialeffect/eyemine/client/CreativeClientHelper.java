@@ -13,28 +13,27 @@ package com.specialeffect.eyemine.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.specialeffect.eyemine.EyeMine;
+import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.mixin.AbstractContainerScreenAccessor;
 import com.specialeffect.inventory.manager.ChestInventoryManager;
 import com.specialeffect.inventory.manager.CreativeInventoryManager;
 import com.specialeffect.inventory.manager.SurvivalInventoryManager;
-import com.specialeffect.eyemine.event.EventResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import org.lwjgl.glfw.GLFW;
 
 public class CreativeClientHelper {
 	public static EventResult onKeyInput(Minecraft minecraft, int keyCode, int scanCode, int action, int modifiers) {
-		if (InputConstants.isKeyDown(minecraft.getWindow(), 292)) {
+		if (InputConstants.isKeyDown(292)) {
 			return EventResult.pass();
 		}
 
-		if (action == GLFW.GLFW_RELEASE) {
+		if (action == InputConstants.RELEASE) {
 			int key = keyCode;
 			EyeMine.LOGGER.debug(key);
-			Screen currentScreen = minecraft.screen;
+			Screen currentScreen = minecraft.gui.screen();
 			if (currentScreen != null) {
 				if (currentScreen instanceof CreativeModeInventoryScreen gui) {
 					AbstractContainerScreenAccessor accessor = (AbstractContainerScreenAccessor) gui;

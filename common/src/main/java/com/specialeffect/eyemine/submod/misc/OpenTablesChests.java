@@ -11,15 +11,16 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.mixin.ClientLevelAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
-import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.submod.SubMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.block.CraftingTableBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Predicate;
 
@@ -55,14 +55,14 @@ public class OpenTablesChests extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mOpenChestKB = new KeyMapping(
 				"key.eyemine.open_chest",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT_BRACKET,
+				Type.KEYBOARD,
+				InputConstants.KEY_LBRACKET,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mOpenCraftingTableKB = new KeyMapping(
 				"key.eyemine.open_crafting_table",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_RIGHT_BRACKET,
+				Type.KEYBOARD,
+				InputConstants.KEY_RBRACKET,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

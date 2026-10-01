@@ -5,7 +5,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Camera {
 	private static Vec3 getPos() {
-		return Minecraft.getInstance().gameRenderer.getMainCamera().position();
+		return Minecraft.getInstance().gameRenderer.mainCamera().position();
 	}
 
 	public static double getX() {

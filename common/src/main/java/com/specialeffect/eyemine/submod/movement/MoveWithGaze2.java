@@ -11,25 +11,25 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.JoystickControlOverlay;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import org.lwjgl.glfw.GLFW;
 
 public class MoveWithGaze2 extends SubMod implements IConfigListener {
 	public static final String MODID = "specialeffect.movewithgaze2";
@@ -47,8 +47,8 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mToggleAutoWalkKB = new KeyMapping(
 				"key.eyemine.toggle_walking", //Careful walk
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_B,
+				Type.KEYBOARD,
+				InputConstants.KEY_B,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
@@ -98,7 +98,7 @@ public class MoveWithGaze2 extends SubMod implements IConfigListener {
 			// keyboard area may be in the deadzone where no pending event is registered
 			boolean gazeAtKeyboard = MouseHelper.isGazeBelowHotbar || MouseHelper.isGazeOutsideWindow;
 
-			if (mDoingAutoWalk && minecraft.screen == null && // no gui visible
+			if (mDoingAutoWalk && minecraft.gui.screen() == null && // no gui visible
 					(mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 
 				double lastMouseY = MouseHelper.lastYVelocity;

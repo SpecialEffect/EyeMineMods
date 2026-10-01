@@ -11,30 +11,31 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.callbacks.DelayedOnLivingCallback;
 import com.specialeffect.eyemine.callbacks.OnLivingCallback;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.Services;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -56,8 +57,8 @@ public class AutoPillar extends SubMod {
 		// Register key bindings
 		Keybindings.keybindings.add(autoPlaceKeyBinding = new KeyMapping(
 				"key.eyemine.pillar",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_0,
+				Type.KEYBOARD,
+				InputConstants.KEY_0,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
@@ -147,7 +148,7 @@ public class AutoPillar extends SubMod {
 							if (blockHitResult.getBlockPos().getY() < player.getY()) {
 								mc.gameMode.useItemOn(player, InteractionHand.MAIN_HAND, blockHitResult); //TODO: Test if this actually works on server
 								// Make sure we get the animation
-								player.swing(InteractionHand.MAIN_HAND);
+								player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 							}
 						}
 					}

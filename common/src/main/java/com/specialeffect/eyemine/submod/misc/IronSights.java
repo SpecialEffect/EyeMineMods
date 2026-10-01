@@ -11,19 +11,19 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.IconOverlay;
-import com.specialeffect.eyemine.platform.EyeMineConfig;
-import com.specialeffect.eyemine.submod.IConfigListener;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 
 public class IronSights extends SubMod implements IConfigListener {
 	public final String MODID = "ironsights";
@@ -40,8 +40,8 @@ public class IronSights extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mToggleIronsight = new KeyMapping(
 				"key.eyemine.toggle_ironsights",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_P,
+				Type.KEYBOARD,
+				InputConstants.KEY_P,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

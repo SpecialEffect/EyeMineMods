@@ -11,29 +11,29 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.lwjgl.glfw.GLFW;
 
 public class SwapMinePlace extends SubMod {
 	public void onInitializeClient() {
 		// Register key bindings
 		Keybindings.keybindings.add(mSwapKB = new KeyMapping(
 				"key.eyemine.swap_mine_place",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_F10,
+				Type.KEYBOARD,
+				InputConstants.KEY_F10,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

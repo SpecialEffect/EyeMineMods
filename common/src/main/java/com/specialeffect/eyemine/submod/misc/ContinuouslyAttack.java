@@ -11,33 +11,34 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.platform.Services;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mining.ContinuouslyMine;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
-import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.EntityHitResult;
-import org.lwjgl.glfw.GLFW;
 
 public class ContinuouslyAttack extends SubMod implements IConfigListener {
 	public final String MODID = "continuouslyattack";
@@ -53,8 +54,8 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mAttackKB = new KeyMapping(
 				"key.eyemine.continious_attack",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_R,
+				Type.KEYBOARD,
+				InputConstants.KEY_R,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
@@ -126,8 +127,8 @@ public class ContinuouslyAttack extends SubMod implements IConfigListener {
 
 				// When attacking programmatically, the player doesn't swing unless
 				// an attackable-block is in reach. We fix that here, for better feedback.
-				if (!player.swinging && !recharging) {
-					player.swing(InteractionHand.MAIN_HAND);
+				if (!player.isSwinging() && !recharging) {
+					player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 				}
 			}
 		}

@@ -11,33 +11,35 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
-import com.specialeffect.eyemine.EyeMine;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.mixin.LivingEntityAccessor;
+import com.specialeffect.eyemine.mixin.SwingStateAccessor;
 import com.specialeffect.eyemine.packets.messages.AddItemToHotbar;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.platform.Services;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
-import com.specialeffect.eyemine.platform.Services;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.ItemTags;
-import org.lwjgl.glfw.GLFW;
-
-import com.specialeffect.eyemine.utils.MouseHelper;
+import net.minecraft.world.item.component.SwingAnimation;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
@@ -65,8 +67,8 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mDestroyKB = new KeyMapping(
 				"key.eyemine.continious_destroy",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_M,
+				Type.KEYBOARD,
+				InputConstants.KEY_M,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
@@ -136,9 +138,9 @@ public class ContinuouslyMine extends SubMod implements IConfigListener {
 								miningTimer = miningCooldown.getAsInt();
 							}
 						} else {
-							if (player.attackAnim == 0) {
+							if (((SwingStateAccessor)((LivingEntityAccessor)player).getSwingState()).getAnimationValue() == 0) {
 								EyeMine.LOGGER.debug("swing");
-								player.swing(InteractionHand.MAIN_HAND);
+								player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 							}
 						}
 					}

@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.SmoothDouble;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -94,20 +94,20 @@ public abstract class MouseHandlerMixin {
 	/**
 	 * Inject at HEAD of onMove to add our pending event tracking
 	 */
-	@Inject(method = "onMove(JDD)V", at = @At(value = "HEAD"))
-	public void eyemine$addPendingEvent(long windowPointer, double xPos, double yPos, CallbackInfo ci) {
+	@Inject(method = "onMove(JDDDD)V", at = @At(value = "HEAD"))
+	public void eyemine$addPendingEvent(long windowPointer, double xPos, double yPos, double xRel, double yRel, CallbackInfo ci) {
 		MouseHelper.addPendingEvent();
 	}
 
 	/**
 	 * Main injection point - replaces vanilla onMove logic after the window handle check
 	 */
-	@Inject(method = "onMove(JDD)V", at = @At(value = "FIELD",
+	@Inject(method = "onMove(JDDDD)V", at = @At(value = "FIELD",
 			target = "Lnet/minecraft/client/MouseHandler;ignoreFirstMove:Z",
 			ordinal = 0), cancellable = true)
-	public void eyemine$processOnMove(long handle, double xpos, double ypos, CallbackInfo ci) {
+	public void eyemine$processOnMove(long handle, double xpos, double ypos, double xRel, double yRel, CallbackInfo ci) {
 		// Let vanilla accumulate movement for screen hover and dragging.
-		if (this.minecraft.screen != null && this.minecraft.getOverlay() == null) {
+		if (this.minecraft.gui.screen() != null && this.minecraft.gui.overlay() == null) {
 			return;
 		}
 
@@ -155,7 +155,7 @@ public abstract class MouseHandlerMixin {
 		// In grabbed mode (eye tracker), reset cursor to origin after each move
 		// This makes each subsequent position effectively a delta
 		if (!MouseHelper.ungrabbedMouseMode) {
-			GLFW.glfwSetCursorPos(this.minecraft.getWindow().handle(), 0, 0);
+			SDLMouse.SDL_WarpMouseInWindow(this.minecraft.getWindow().handle(), 0, 0);
 			this.xpos = 0;
 			this.ypos = 0;
 			// In grabbed mode, call turnPlayer immediately since position IS the delta
@@ -384,7 +384,7 @@ public abstract class MouseHandlerMixin {
 			this.eyemine$resetVelocity();
 
 			this.minecraft.getTutorial().onMouse(d2, 0);
-			if (this.minecraft.screen == null && this.minecraft.player != null) {
+			if (this.minecraft.gui.screen() == null && this.minecraft.player != null) {
 				this.minecraft.player.turn(d2, 0);
 			}
 		} else {
@@ -414,14 +414,14 @@ public abstract class MouseHandlerMixin {
 	}
 
 	@Inject(method = "grabMouse()V", at = @At(value = "INVOKE",
-			target = "Lcom/mojang/blaze3d/platform/InputConstants;grabOrReleaseMouse(Lcom/mojang/blaze3d/platform/Window;IDD)V",
+			target = "Lcom/mojang/blaze3d/platform/InputConstants;grabMouse(Lcom/mojang/blaze3d/platform/Window;DD)V",
 			ordinal = 0), cancellable = true)
 	public void eyemine$onlyGrabWhenUngrabbed(CallbackInfo ci) {
 		if (!MouseHelper.ungrabbedMouseMode) {
-			InputConstants.grabOrReleaseMouse(this.minecraft.getWindow(), 212995, this.xpos, this.ypos);
+			InputConstants.grabMouse(this.minecraft.getWindow(), this.xpos, this.ypos);
 		}
 
-		this.minecraft.setScreen((Screen) null);
+		this.minecraft.gui.setScreen((Screen) null);
 		((MinecraftAccessor) this.minecraft).setMissTime(10000);
 		this.ignoreFirstMove = true;
 		ci.cancel();

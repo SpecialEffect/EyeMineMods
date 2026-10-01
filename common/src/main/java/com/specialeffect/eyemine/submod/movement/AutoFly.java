@@ -11,27 +11,28 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
-import com.specialeffect.eyemine.packets.messages.ChangeFlyingStateMessage;
-import com.specialeffect.eyemine.platform.EyeMineConfig;
-import com.specialeffect.eyemine.submod.IConfigListener;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.packets.messages.ChangeFlyingStateMessage;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.platform.Services;
+import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 public class AutoFly extends SubMod implements IConfigListener {
 	private static KeyMapping mFlyManualKB;
@@ -49,26 +50,26 @@ public class AutoFly extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mFlyManualKB = new KeyMapping(
 				"key.eyemine.toggle_manual_flying",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_COMMA,
+				Type.KEYBOARD,
+				InputConstants.KEY_COMMA,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyAutoKB = new KeyMapping(
 				"key.eyemine.toggle_auto_flying",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_G,
+				Type.KEYBOARD,
+				InputConstants.KEY_G,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyUpKB = new KeyMapping(
 				"key.eyemine.fly_higher",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_PERIOD,
+				Type.KEYBOARD,
+				InputConstants.KEY_PERIOD,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mFlyDownKB = new KeyMapping(
 				"key.eyemine.fly_lower",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_APOSTROPHE,
+				Type.KEYBOARD,
+				InputConstants.KEY_APOSTROPHE,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
@@ -104,7 +105,7 @@ public class AutoFly extends SubMod implements IConfigListener {
 
 					Vec3 motion = player.getDeltaMovement();
 					Vec3 addMotion = new Vec3(0.0, Math.max(mFlyHeightAuto / 4, 1), 0.0);
-					if (level.getBlockState(blockPosInFrontOfPlayer).blocksMotion() &&
+					if (level.getBlockState(blockPosInFrontOfPlayer).is(BlockTags.BLOCKS_MOTION) &&
 							motion.y == 0) {
 						player.setDeltaMovement(motion.add(addMotion));
 						break;

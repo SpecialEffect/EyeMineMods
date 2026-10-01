@@ -46,7 +46,7 @@ public class ClientHandler {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft mc = Minecraft.getInstance();
         for (var listener : EyeMineEvents.KEY_PRESSED.getListeners()) {
-            EventResult result = listener.onKeyPressed(mc, event.getKey(), event.getScanCode(), event.getAction(), event.getModifiers());
+            EventResult result = listener.onKeyPressed(mc, event.getKey(), event.getKeycode(), event.getAction(), event.getModifiers());
             if (result.isPresent()) break;
         }
     }
@@ -75,9 +75,9 @@ public class ClientHandler {
     public static void onBlockOutline(net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent event) {
         if (!EyeMineEvents.BLOCK_OUTLINE.getListeners().isEmpty()) {
             // Add a custom renderer that delegates to EyeMine's block outline listeners
-            event.addCustomRenderer((outlineState, bufferSource, poseStack, isTranslucent, levelRenderState) -> {
+            event.addCustomRenderer((outlineState, submitNodeCollector, poseStack, renderState) -> {
                 for (var listener : EyeMineEvents.BLOCK_OUTLINE.getListeners()) {
-                    EventResult result = listener.renderOutline(bufferSource, poseStack);
+                    EventResult result = listener.renderOutline(submitNodeCollector, poseStack);
                     if (result.isPresent()) return true;
                 }
                 return false;

@@ -11,16 +11,16 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 
 public class OpenChat extends SubMod {
 	public final String MODID = "openchat";
@@ -31,8 +31,8 @@ public class OpenChat extends SubMod {
 		// Register key bindings
 		Keybindings.keybindings.add(mOpenChatKB = new KeyMapping(
 				"key.eyemine.open_chat",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_END,
+				Type.KEYBOARD,
+				InputConstants.KEY_END,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 

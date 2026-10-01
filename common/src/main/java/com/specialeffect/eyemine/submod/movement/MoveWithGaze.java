@@ -11,31 +11,32 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.misc.ContinuouslyAttack;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.KeyboardInputHelper;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ServerboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
-import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.entity.vehicle.minecart.Minecart;
@@ -44,7 +45,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.lwjgl.glfw.GLFW;
 
 import java.text.DecimalFormat;
 import java.util.Queue;
@@ -75,21 +75,21 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 		// Register key bindings
 		Keybindings.keybindings.add(mToggleAutoWalkKB = new KeyMapping(
 				"key.eyemine.toggle_walking_forward",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_H,
+				Type.KEYBOARD,
+				InputConstants.KEY_H,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mIncreaseWalkSpeedKB = new KeyMapping(
 				"key.eyemine.increase_walk_speed",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_UP,
+				Type.KEYBOARD,
+				InputConstants.KEY_UP,
 				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 		Keybindings.keybindings.add(mDecreaseWalkSpeedKB = new KeyMapping(
 				"key.eyemine.decrease_walk_speed",
-				Type.KEYSYM,
-				GLFW.GLFW_KEY_DOWN,
+				Type.KEYBOARD,
+				InputConstants.KEY_DOWN,
 				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
@@ -147,7 +147,7 @@ public class MoveWithGaze extends SubMod implements IConfigListener {
 				mWasPausedByGaze = false;
 			}
 
-			if (mDoingAutoWalk && null == minecraft.screen && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
+			if (mDoingAutoWalk && null == minecraft.gui.screen() && (mMoveWhenMouseStationary || MouseHandlerMod.hasPendingEvent())) {
 				double forward = (double) mCustomSpeedFactor;
 
 				// Fully stop when gaze is at keyboard area or outside window
