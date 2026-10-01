@@ -90,7 +90,7 @@ public class MouseHelper {
 		if (mouseHelper != null) {
 			long handle = Minecraft.getInstance().getWindow().handle();
 			GLFW.glfwSetCursorPos(handle, (float) xpos, (float) ypos);
-			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos, 0, 0);
+			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos);
 		}
 	}
 
