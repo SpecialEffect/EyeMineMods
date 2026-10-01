@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(MouseHandler.class)
 public interface MouseHandlerAccessor {
 	@Invoker("onMove")
-	void invokeOnMove(long l, double d, double e);
+	void invokeOnMove(long l, double x, double y, double xr, double xy);
 
 	@Invoker("onScroll")
 	void invokeOnScroll(long l, double d, double e);

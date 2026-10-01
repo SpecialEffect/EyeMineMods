@@ -107,7 +107,7 @@ public abstract class MouseHandlerMixin {
 			ordinal = 0), cancellable = true)
 	public void eyemine$processOnMove(long handle, double xpos, double ypos, CallbackInfo ci) {
 		// Let vanilla accumulate movement for screen hover and dragging.
-		if (this.minecraft.screen != null && this.minecraft.getOverlay() == null) {
+		if (this.minecraft.gui.screen() != null && this.minecraft.gui.overlay() == null) {
 			return;
 		}
 
@@ -384,7 +384,7 @@ public abstract class MouseHandlerMixin {
 			this.eyemine$resetVelocity();
 
 			this.minecraft.getTutorial().onMouse(d2, 0);
-			if (this.minecraft.screen == null && this.minecraft.player != null) {
+			if (this.minecraft.gui.screen() == null && this.minecraft.player != null) {
 				this.minecraft.player.turn(d2, 0);
 			}
 		} else {
@@ -421,7 +421,7 @@ public abstract class MouseHandlerMixin {
 			InputConstants.grabOrReleaseMouse(this.minecraft.getWindow(), 212995, this.xpos, this.ypos);
 		}
 
-		this.minecraft.setScreen((Screen) null);
+		this.minecraft.gui.setScreen((Screen) null);
 		((MinecraftAccessor) this.minecraft).setMissTime(10000);
 		this.ignoreFirstMove = true;
 		ci.cancel();

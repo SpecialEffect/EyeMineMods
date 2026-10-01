@@ -11,21 +11,21 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
-import com.specialeffect.eyemine.platform.EyeMineConfig;
-import com.specialeffect.eyemine.submod.IConfigListener;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.player.LocalPlayer;
-import org.lwjgl.glfw.GLFW;
 
 public class AutoJump extends SubMod implements IConfigListener {
 	public final String MODID = "autojump";
@@ -41,7 +41,7 @@ public class AutoJump extends SubMod implements IConfigListener {
 		Keybindings.keybindings.add(autoJumpKeyBinding = new KeyMapping(
 				"key.eyemine.toggle_auto_jump",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_J,
+				InputConstants.KEY_J,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 

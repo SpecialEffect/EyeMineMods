@@ -13,16 +13,15 @@ package com.specialeffect.eyemine.submod.movement;
 
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.specialeffect.eyemine.client.EyeMineRenderType;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +32,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class EasyLadderClimb extends SubMod {
 	public final String MODID = "easyladderclimb";
@@ -95,13 +94,13 @@ public class EasyLadderClimb extends SubMod {
 
 	private Vec3 renderPos;
 
-	public EventResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
+	public EventResult onBlockOutlineRender(SubmitNodeCollector nodeCollector, PoseStack poseStack) {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Turn this on to debug the positional logic - it will render block positions for you 
 		boolean debugRender = false;
 
 		if (debugRender) {
-			if (minecraft.screen != null) {
+			if (minecraft.gui.screen() != null) {
 				return EventResult.pass();
 			}
 
@@ -112,12 +111,9 @@ public class EasyLadderClimb extends SubMod {
 				double size = 0.05;
 
 				final RenderType cubeType = EyeMineRenderType.cubeRenderType();
-				VertexConsumer vertexConsumer = bufferSource.getBuffer(cubeType);
-				AbstractRenderer.renderCubeAtPosition(poseStack, vertexConsumer, renderPos, color, opacity, size);
-
-				if (bufferSource instanceof MultiBufferSource.BufferSource) {
-					((MultiBufferSource.BufferSource) bufferSource).endBatch(cubeType);
-				}
+				nodeCollector.submitCustomGeometry(poseStack, cubeType, (pose, vertexConsumer) -> {
+					AbstractRenderer.renderCubeAtPosition(poseStack, vertexConsumer, renderPos, color, opacity, size);
+				});
 
 				poseStack.popPose();
 			}

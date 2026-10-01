@@ -30,7 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,7 +67,7 @@ public class ModUtils {
 	public static boolean hasActiveGui() {
 		// Is there a GUI currently open ?
 		// (i.e. false means in-game without gui)
-		return (null != Minecraft.getInstance().screen);
+		return (null != Minecraft.getInstance().gui.screen());
 	}
 
 

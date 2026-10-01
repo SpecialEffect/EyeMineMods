@@ -1,10 +1,10 @@
 package com.specialeffect.eyemine.config;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-import org.lwjgl.glfw.GLFW;
 
 @Config(name = "eyemine-inventory")
 public class InventoryConfig implements ConfigData {
@@ -13,22 +13,22 @@ public class InventoryConfig implements ConfigData {
 
 	public static class Survival {
 		@Comment("recipes: prev tab")
-		public int keySurvPrevTab = GLFW.GLFW_KEY_KP_0;
+		public int keySurvPrevTab = InputConstants.KEY_NUMPAD0;
 		@Comment("recipes: next tab")
-		public int keySurvNextTab = GLFW.GLFW_KEY_KP_1;
+		public int keySurvNextTab = InputConstants.KEY_NUMPAD1;
 
 		@Comment("open/close recipe book")
-		public int keySurvRecipes = GLFW.GLFW_KEY_KP_2;
+		public int keySurvRecipes = InputConstants.KEY_NUMPAD2;
 		@Comment("toggle all/craftable")
-		public int keySurvCraftable = GLFW.GLFW_KEY_KP_3;
+		public int keySurvCraftable = InputConstants.KEY_NUMPAD3;
 
 		@Comment("recipes: prev page")
-		public int keySurvPrevPage = GLFW.GLFW_KEY_KP_4;
+		public int keySurvPrevPage = InputConstants.KEY_NUMPAD4;
 		@Comment("recipes: next page")
-		public int keySurvNextPage = GLFW.GLFW_KEY_KP_5;
+		public int keySurvNextPage = InputConstants.KEY_NUMPAD5;
 
 		@Comment("hover output")
-		public int keySurvOutput = GLFW.GLFW_KEY_KP_6;
+		public int keySurvOutput = InputConstants.KEY_NUMPAD6;
 	}
 
 	@CollapsibleObject
@@ -36,25 +36,25 @@ public class InventoryConfig implements ConfigData {
 
 	public static class ConfigKeys {
 		@Comment("key0")
-		public int key0 = GLFW.GLFW_KEY_KP_0;
+		public int key0 = InputConstants.KEY_NUMPAD0;
 		@Comment("key1")
-		public int key1 = GLFW.GLFW_KEY_KP_1;
+		public int key1 = InputConstants.KEY_NUMPAD1;
 		@Comment("key2")
-		public int key2 = GLFW.GLFW_KEY_KP_2;
+		public int key2 = InputConstants.KEY_NUMPAD2;
 		@Comment("key3")
-		public int key3 = GLFW.GLFW_KEY_KP_3;
+		public int key3 = InputConstants.KEY_NUMPAD3;
 		@Comment("key4")
-		public int key4 = GLFW.GLFW_KEY_KP_4;
+		public int key4 = InputConstants.KEY_NUMPAD4;
 		@Comment("key5")
-		public int key5 = GLFW.GLFW_KEY_KP_5;
+		public int key5 = InputConstants.KEY_NUMPAD5;
 		@Comment("key6")
-		public int key6 = GLFW.GLFW_KEY_KP_6;
+		public int key6 = InputConstants.KEY_NUMPAD6;
 		@Comment("key7")
-		public int key7 = GLFW.GLFW_KEY_KP_7;
+		public int key7 = InputConstants.KEY_NUMPAD7;
 		@Comment("key8")
-		public int key8 = GLFW.GLFW_KEY_KP_8;
+		public int key8 = InputConstants.KEY_NUMPAD8;
 		@Comment("key9")
-		public int key9 = GLFW.GLFW_KEY_KP_9;
+		public int key9 = InputConstants.KEY_NUMPAD9;
 	}
 
 	@CollapsibleObject
@@ -62,22 +62,22 @@ public class InventoryConfig implements ConfigData {
 
 	public static class NavKeys {
 		@Comment("keyPrev")
-		public int keyPrev = GLFW.GLFW_KEY_LEFT;
+		public int keyPrev = InputConstants.KEY_LEFT;
 		@Comment("keyNext")
-		public int keyNext = GLFW.GLFW_KEY_RIGHT;
+		public int keyNext = InputConstants.KEY_RIGHT;
 		@Comment("keyNextItemRow")
-		public int keyNextItemRow = GLFW.GLFW_KEY_F6;
+		public int keyNextItemRow = InputConstants.KEY_F6;
 		@Comment("keyNextItemCol")
-		public int keyNextItemCol = GLFW.GLFW_KEY_F7;
+		public int keyNextItemCol = InputConstants.KEY_F7;
 
 		@Comment("keyScrollUp")
-		public int keyScrollUp = GLFW.GLFW_KEY_F8;
+		public int keyScrollUp = InputConstants.KEY_F8;
 		@Comment("keyScrollDown")
-		public int keyScrollDown = GLFW.GLFW_KEY_F9;
+		public int keyScrollDown = InputConstants.KEY_F9;
 
 		@Comment("keySearch")
-		public int keySearch = GLFW.GLFW_KEY_DOWN;
+		public int keySearch = InputConstants.KEY_DOWN;
 		@Comment("keyDrop")
-		public int keyDrop = GLFW.GLFW_KEY_MINUS;
+		public int keyDrop = InputConstants.KEY_MINUS;
 	}
 }

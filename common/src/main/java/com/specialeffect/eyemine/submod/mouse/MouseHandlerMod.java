@@ -11,22 +11,23 @@
 
 package com.specialeffect.eyemine.submod.mouse;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.MainClientHandler;
 import com.specialeffect.eyemine.client.gui.crosshair.IconOverlay;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.event.ScreenSetResult;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.movement.MoveWithGaze;
 import com.specialeffect.eyemine.submod.movement.MoveWithGaze2;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.eyemine.utils.MouseHelper.PlayerMovement;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.ScreenSetResult;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -77,14 +78,14 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		Keybindings.keybindings.add(mSensitivityUpKB = new KeyMapping(
 				"key.eyemine.sensitivity_up",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_RIGHT,
+				InputConstants.KEY_RIGHT,
 				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
 		Keybindings.keybindings.add(mSensitivityDownKB = new KeyMapping(
 				"key.eyemine.sensitivity_down",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT,
+				InputConstants.KEY_LEFT,
 				Keybindings.EYEGAZE_SETTINGS // The translation key of the keybinding's category.
 		));
 
@@ -94,7 +95,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 		Keybindings.keybindings.add(mToggleMouseViewControlKB = new KeyMapping(
 				"key.eyemine.toggle_mouse_look",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_Y,
+				InputConstants.KEY_Y,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 	}
@@ -194,7 +195,7 @@ public class MouseHandlerMod extends SubMod implements IConfigListener {
 			}
 		}
 
-		if (!(minecraft.screen instanceof OptionsScreen)) {
+		if (!(minecraft.gui.screen() instanceof OptionsScreen)) {
 			syncConfigImpl();
 		}
 	}

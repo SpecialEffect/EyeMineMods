@@ -5,7 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -72,6 +72,6 @@ public final class EyeMineEvents {
 
     @FunctionalInterface
     public interface BlockOutlineListener {
-        EventResult renderOutline(MultiBufferSource bufferSource, PoseStack poseStack);
+        EventResult renderOutline(SubmitNodeCollector bufferSource, PoseStack poseStack);
     }
 }

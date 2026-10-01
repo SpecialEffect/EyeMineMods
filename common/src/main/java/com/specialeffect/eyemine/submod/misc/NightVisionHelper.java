@@ -11,10 +11,10 @@
 
 package com.specialeffect.eyemine.submod.misc;
 
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -102,7 +102,7 @@ public class NightVisionHelper extends SubMod {
 	public void onClientTick(Minecraft event) {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Don't apply logic while in loading screen / other UIs
-		if (minecraft.screen != null) {
+		if (minecraft.gui.screen() != null) {
 			return;
 		}
 

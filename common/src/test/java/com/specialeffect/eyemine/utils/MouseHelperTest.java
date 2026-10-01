@@ -24,11 +24,13 @@ class MouseHelperTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
-    void onlyAllowsClientThreadCaptureWithoutAnOverlay(boolean overlayVisible) {
+    void onlyAllowsClientThreadCaptureWithoutAnOverlay(boolean overlayVisible) throws Exception {
         var minecraft = mock(Minecraft.class);
+        var f = Minecraft.class.getField("gui");
+        f.setAccessible(true); f.set(minecraft, mock(net.minecraft.client.gui.Gui.class));
         Thread clientThread = Thread.currentThread();
         when(minecraft.isSameThread()).thenAnswer(call -> Thread.currentThread() == clientThread);
-        when(minecraft.getOverlay()).thenReturn(overlayVisible ? mock(Overlay.class) : null);
+        when(minecraft.gui.overlay()).thenReturn(overlayVisible ? mock(Overlay.class) : null);
 
         try (var singleton = mockStatic(Minecraft.class)) {
             singleton.when(Minecraft::getInstance).thenReturn(minecraft);
@@ -40,6 +42,8 @@ class MouseHelperTest {
     @ValueSource(booleans = {false, true})
     void rejectsLoadingWorkerBeforeReadingOverlayState(boolean ungrabbed) throws Exception {
         var minecraft = mock(Minecraft.class);
+        var f = Minecraft.class.getField("gui"); f.setAccessible(true);
+        f.set(minecraft, mock(net.minecraft.client.gui.Gui.class));
         Thread clientThread = Thread.currentThread();
         when(minecraft.isSameThread()).thenAnswer(call -> Thread.currentThread() == clientThread);
         boolean previousMode = MouseHelper.ungrabbedMouseMode;
@@ -55,7 +59,7 @@ class MouseHelperTest {
         try {
             worker.start();
             assertFalse(work.get(30, TimeUnit.SECONDS));
-            verify(minecraft, never()).getOverlay();
+            verify(minecraft.gui, never()).overlay();
         } finally {
             worker.join(30_000);
             MouseHelper.ungrabbedMouseMode = previousMode;

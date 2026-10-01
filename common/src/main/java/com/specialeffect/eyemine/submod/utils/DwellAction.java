@@ -11,31 +11,31 @@
 
 package com.specialeffect.eyemine.submod.utils;
 
-import com.specialeffect.eyemine.EyeMine;
 import com.irtimaled.bbor.client.renderers.AbstractRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.specialeffect.eyemine.EyeMine;
 import com.specialeffect.eyemine.client.EyeMineRenderType;
 import com.specialeffect.eyemine.event.BlockOutlineEvent;
+import com.specialeffect.eyemine.event.EventResult;
+import com.specialeffect.eyemine.event.EyeMineEvents;
 import com.specialeffect.eyemine.platform.EyeMineConfig;
 import com.specialeffect.eyemine.submod.IConfigListener;
 import com.specialeffect.eyemine.submod.SubMod;
 import com.specialeffect.eyemine.submod.mouse.MouseHandlerMod;
 import com.specialeffect.eyemine.utils.MouseHelper;
 import com.specialeffect.utils.ModUtils;
-import com.specialeffect.eyemine.event.EventResult;
-import com.specialeffect.eyemine.event.EyeMineEvents;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,9 +178,9 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 		AbstractRenderer.renderBlockFace(poseStack, vertexConsumer, target.pos, target.direction, color, iAlpha);
 	}
 
-	public EventResult onBlockOutlineRender(MultiBufferSource bufferSource, PoseStack poseStack) {
+	public EventResult onBlockOutlineRender(SubmitNodeCollector nodeCollector, PoseStack poseStack) {
 		Minecraft minecraft = Minecraft.getInstance();
-		if (minecraft.screen != null) {
+		if (minecraft.gui.screen() != null) {
 			liveTargets.clear();
 			return EventResult.pass();
 		}
@@ -208,17 +208,13 @@ public abstract class DwellAction extends SubMod implements IConfigListener {
 					poseStack.pushPose();
 
 					RenderType dwellType = EyeMineRenderType.dwellRenderType();
-					VertexConsumer vertexConsumer = bufferSource.getBuffer(dwellType);
-
-					if (doCentralised) {
-						this.renderCentralisedDwell(poseStack, vertexConsumer, target, dwellState, expanding);
-					} else {
-						this.renderOpacityDwell(poseStack, vertexConsumer, target, dwellState);
-					}
-
-					if (bufferSource instanceof MultiBufferSource.BufferSource) {
-						((MultiBufferSource.BufferSource) bufferSource).endBatch(dwellType);
-					}
+					nodeCollector.submitCustomGeometry(poseStack, dwellType, (pose, vertexConsumer) -> {
+						if (doCentralised) {
+							this.renderCentralisedDwell(poseStack, vertexConsumer, target, dwellState, expanding);
+						} else {
+							this.renderOpacityDwell(poseStack, vertexConsumer, target, dwellState);
+						}
+					});
 					poseStack.popPose();
 				}
 			}

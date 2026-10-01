@@ -68,7 +68,7 @@ public class EyeMineClientFabric implements ClientModInitializer {
         LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineState) -> {
             if (outlineState != null) {
                 for (var listener : EyeMineEvents.BLOCK_OUTLINE.getListeners()) {
-                    EventResult result = listener.renderOutline(context.bufferSource(), context.poseStack());
+                    EventResult result = listener.renderOutline(context.submitNodeCollector(), context.poseStack());
                     if (result.isPresent()) return false;
                 }
             }

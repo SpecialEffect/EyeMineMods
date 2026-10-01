@@ -75,9 +75,9 @@ public class ClientHandler {
     public static void onBlockOutline(net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent event) {
         if (!EyeMineEvents.BLOCK_OUTLINE.getListeners().isEmpty()) {
             // Add a custom renderer that delegates to EyeMine's block outline listeners
-            event.addCustomRenderer((outlineState, bufferSource, poseStack, isTranslucent, levelRenderState) -> {
+            event.addCustomRenderer((outlineState, submitNodeCollector, poseStack, renderState) -> {
                 for (var listener : EyeMineEvents.BLOCK_OUTLINE.getListeners()) {
-                    EventResult result = listener.renderOutline(bufferSource, poseStack);
+                    EventResult result = listener.renderOutline(submitNodeCollector, poseStack);
                     if (result.isPresent()) return true;
                 }
                 return false;

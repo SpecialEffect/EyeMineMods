@@ -11,12 +11,12 @@
 
 package com.inventory.config;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.glfw.GLFW;
 
 public class InventoryConfig {
 	// Based on McJty/YouTubeModding14 tutorial, MIT license:
@@ -60,46 +60,46 @@ public class InventoryConfig {
 
 	private static void setupSurvivalKeys() {
 
-		keySurvPrevTab = CLIENT_BUILDER.comment("recipes: prev tab").define("keySurvPrevTab", GLFW.GLFW_KEY_KP_0);
-		keySurvNextTab = CLIENT_BUILDER.comment("recipes: next tab").define("keySurvNextTab", GLFW.GLFW_KEY_KP_1);
+		keySurvPrevTab = CLIENT_BUILDER.comment("recipes: prev tab").define("keySurvPrevTab", InputConstants.KEY_NUMPAD0);
+		keySurvNextTab = CLIENT_BUILDER.comment("recipes: next tab").define("keySurvNextTab", InputConstants.KEY_NUMPAD1);
 
-		keySurvRecipes = CLIENT_BUILDER.comment("open/close recipe book").define("keySurvRecipes", GLFW.GLFW_KEY_KP_2);
-		keySurvCraftable = CLIENT_BUILDER.comment("toggle all/craftable").define("keySurvCraftable", GLFW.GLFW_KEY_KP_3);
+		keySurvRecipes = CLIENT_BUILDER.comment("open/close recipe book").define("keySurvRecipes", InputConstants.KEY_NUMPAD2);
+		keySurvCraftable = CLIENT_BUILDER.comment("toggle all/craftable").define("keySurvCraftable", InputConstants.KEY_NUMPAD3);
 
-		keySurvPrevPage = CLIENT_BUILDER.comment("recipes: prev page").define("keySurvPrevPage", GLFW.GLFW_KEY_KP_4);
-		keySurvNextPage = CLIENT_BUILDER.comment("recipes: next page").define("keySurvNextPage", GLFW.GLFW_KEY_KP_5);
+		keySurvPrevPage = CLIENT_BUILDER.comment("recipes: prev page").define("keySurvPrevPage", InputConstants.KEY_NUMPAD4);
+		keySurvNextPage = CLIENT_BUILDER.comment("recipes: next page").define("keySurvNextPage", InputConstants.KEY_NUMPAD5);
 
-		keySurvOutput = CLIENT_BUILDER.comment("hover output").define("keySurvOutput", GLFW.GLFW_KEY_KP_6);
+		keySurvOutput = CLIENT_BUILDER.comment("hover output").define("keySurvOutput", InputConstants.KEY_NUMPAD6);
 
 	}
 
 	private static void setupConfigKeys() {
 
-		key0 = CLIENT_BUILDER.comment("key0").define("key0", GLFW.GLFW_KEY_KP_0);
-		key1 = CLIENT_BUILDER.comment("key1").define("key1", GLFW.GLFW_KEY_KP_1);
-		key2 = CLIENT_BUILDER.comment("key2").define("key2", GLFW.GLFW_KEY_KP_2);
-		key3 = CLIENT_BUILDER.comment("key3").define("key3", GLFW.GLFW_KEY_KP_3);
-		key4 = CLIENT_BUILDER.comment("key4").define("key4", GLFW.GLFW_KEY_KP_4);
-		key5 = CLIENT_BUILDER.comment("key5").define("key5", GLFW.GLFW_KEY_KP_5);
-		key6 = CLIENT_BUILDER.comment("key6").define("key6", GLFW.GLFW_KEY_KP_6);
-		key7 = CLIENT_BUILDER.comment("key7").define("key7", GLFW.GLFW_KEY_KP_7);
-		key8 = CLIENT_BUILDER.comment("key8").define("key8", GLFW.GLFW_KEY_KP_8);
-		key9 = CLIENT_BUILDER.comment("key9").define("key9", GLFW.GLFW_KEY_KP_9);
+		key0 = CLIENT_BUILDER.comment("key0").define("key0", InputConstants.KEY_NUMPAD0);
+		key1 = CLIENT_BUILDER.comment("key1").define("key1", InputConstants.KEY_NUMPAD1);
+		key2 = CLIENT_BUILDER.comment("key2").define("key2", InputConstants.KEY_NUMPAD2);
+		key3 = CLIENT_BUILDER.comment("key3").define("key3", InputConstants.KEY_NUMPAD3);
+		key4 = CLIENT_BUILDER.comment("key4").define("key4", InputConstants.KEY_NUMPAD4);
+		key5 = CLIENT_BUILDER.comment("key5").define("key5", InputConstants.KEY_NUMPAD5);
+		key6 = CLIENT_BUILDER.comment("key6").define("key6", InputConstants.KEY_NUMPAD6);
+		key7 = CLIENT_BUILDER.comment("key7").define("key7", InputConstants.KEY_NUMPAD7);
+		key8 = CLIENT_BUILDER.comment("key8").define("key8", InputConstants.KEY_NUMPAD8);
+		key9 = CLIENT_BUILDER.comment("key9").define("key9", InputConstants.KEY_NUMPAD9);
 
 	}
 
 	private static void setupNavKeys() {
 
-		keyPrev = CLIENT_BUILDER.comment("keyPrev").define("keyPrev", GLFW.GLFW_KEY_LEFT);
-		keyNext = CLIENT_BUILDER.comment("keyNext").define("keyNext", GLFW.GLFW_KEY_RIGHT);
-		keyNextItemRow = CLIENT_BUILDER.comment("keyNextItemRow").define("keyNextItemRow", GLFW.GLFW_KEY_F6);
-		keyNextItemCol = CLIENT_BUILDER.comment("keyNextItemCol").define("keyNextItemCol", GLFW.GLFW_KEY_F7);
+		keyPrev = CLIENT_BUILDER.comment("keyPrev").define("keyPrev", InputConstants.KEY_LEFT);
+		keyNext = CLIENT_BUILDER.comment("keyNext").define("keyNext", InputConstants.KEY_RIGHT);
+		keyNextItemRow = CLIENT_BUILDER.comment("keyNextItemRow").define("keyNextItemRow", InputConstants.KEY_F6);
+		keyNextItemCol = CLIENT_BUILDER.comment("keyNextItemCol").define("keyNextItemCol", InputConstants.KEY_F7);
 
-		keyScrollUp = CLIENT_BUILDER.comment("keyScrollUp").define("keyScrollUp", GLFW.GLFW_KEY_F8);
-		keyScrollDown = CLIENT_BUILDER.comment("keyScrollDown").define("keyScrollDown", GLFW.GLFW_KEY_F9);
+		keyScrollUp = CLIENT_BUILDER.comment("keyScrollUp").define("keyScrollUp", InputConstants.KEY_F8);
+		keyScrollDown = CLIENT_BUILDER.comment("keyScrollDown").define("keyScrollDown", InputConstants.KEY_F9);
 
-		keySearch = CLIENT_BUILDER.comment("keySearch").define("keySearch", GLFW.GLFW_KEY_DOWN);
-		keyDrop = CLIENT_BUILDER.comment("keyDrop2").define("keyDrop2", GLFW.GLFW_KEY_MINUS);
+		keySearch = CLIENT_BUILDER.comment("keySearch").define("keySearch", InputConstants.KEY_DOWN);
+		keyDrop = CLIENT_BUILDER.comment("keyDrop2").define("keyDrop2", InputConstants.KEY_MINUS);
 	}
 
 	@SubscribeEvent

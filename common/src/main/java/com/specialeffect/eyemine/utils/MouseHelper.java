@@ -11,6 +11,7 @@
 
 package com.specialeffect.eyemine.utils;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.specialeffect.eyemine.mixin.MouseHandlerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -57,7 +58,7 @@ public class MouseHelper {
 	public static boolean canChangeMouseCapture() {
 		Minecraft minecraft = Minecraft.getInstance();
 		// Cursor operations belong on the client thread; overlays also suppress capture changes.
-		return minecraft.isSameThread() && minecraft.getOverlay() == null;
+		return minecraft.isSameThread() && minecraft.gui.overlay() == null;
 	}
 
 	public static void setUngrabbedMode(boolean ungrabbed) {
@@ -88,24 +89,24 @@ public class MouseHelper {
 	public void moveCursor(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
 			long handle = Minecraft.getInstance().getWindow().handle();
-			GLFW.glfwSetCursorPos(Minecraft.getInstance().getWindow().handle(), xpos, ypos);
-			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos);
+			GLFW.glfwSetCursorPos(handle, (float) xpos, (float) ypos);
+			((MouseHandlerAccessor) mouseHelper).invokeOnMove(handle, xpos, ypos, 0, 0);
 		}
 	}
 
 	public void leftMouseClickAtPosition(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
 			this.moveCursor(mouseHelper, xpos, ypos);
-			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, 0);
-			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, 0);
+			this.mouseButton(InputConstants.MOUSE_BUTTON_LEFT, InputConstants.PRESS, 0);
+			this.mouseButton(InputConstants.MOUSE_BUTTON_LEFT, InputConstants.RELEASE, 0);
 		}
 	}
 
 	public void leftShiftMouseClickAtPosition(MouseHandler mouseHelper, double xpos, double ypos) {
 		if (mouseHelper != null) {
 			this.moveCursor(mouseHelper, xpos, ypos);
-			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_PRESS, GLFW.GLFW_MOD_SHIFT);
-			this.mouseButton(GLFW.GLFW_MOUSE_BUTTON_1, GLFW.GLFW_RELEASE, GLFW.GLFW_MOD_SHIFT);
+			this.mouseButton(InputConstants.MOUSE_BUTTON_LEFT, InputConstants.PRESS, InputConstants.MOD_SHIFT);
+			this.mouseButton(InputConstants.MOUSE_BUTTON_LEFT, InputConstants.RELEASE, InputConstants.MOD_SHIFT);
 		}
 	}
 

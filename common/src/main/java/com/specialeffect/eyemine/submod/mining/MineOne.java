@@ -11,16 +11,17 @@
 
 package com.specialeffect.eyemine.submod.mining;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.platform.EyeMineConfig;
-import com.specialeffect.eyemine.submod.utils.DwellAction;
-import com.specialeffect.eyemine.submod.utils.TargetBlock;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.platform.EyeMineConfig;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.utils.DwellAction;
+import com.specialeffect.eyemine.submod.utils.TargetBlock;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -30,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.lwjgl.glfw.GLFW;
 
 public class MineOne extends DwellAction {
 	public MineOne() {
@@ -47,7 +47,7 @@ public class MineOne extends DwellAction {
 		Keybindings.keybindings.add(mDestroyKB = new KeyMapping(
 				"key.eyemine.mine_singular",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_N,
+				InputConstants.KEY_N,
 				Keybindings.EYEGAZE_COMMON // The translation key of the keybinding's category.
 		));
 

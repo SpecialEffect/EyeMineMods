@@ -11,20 +11,20 @@
 
 package com.specialeffect.eyemine.submod.movement;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 import com.specialeffect.eyemine.client.Keybindings;
 import com.specialeffect.eyemine.client.gui.crosshair.StateOverlay;
-import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
-import com.specialeffect.eyemine.submod.SubMod;
-import com.specialeffect.eyemine.submod.KeyInputUtil;
-import com.specialeffect.eyemine.utils.KeyboardInputHelper;
-import com.specialeffect.utils.ModUtils;
 import com.specialeffect.eyemine.event.EventResult;
 import com.specialeffect.eyemine.event.EyeMineEvents;
+import com.specialeffect.eyemine.mixin.KeyMappingAccessor;
+import com.specialeffect.eyemine.submod.KeyInputUtil;
+import com.specialeffect.eyemine.submod.SubMod;
+import com.specialeffect.eyemine.utils.KeyboardInputHelper;
+import com.specialeffect.utils.ModUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import org.lwjgl.glfw.GLFW;
 
 public class Sneak extends SubMod {
 	public final String MODID = "sneaktoggle";
@@ -42,7 +42,7 @@ public class Sneak extends SubMod {
 		Keybindings.keybindings.add(mSneakKB = new KeyMapping(
 				"key.eyemine.toggle_sneaking",
 				Type.KEYSYM,
-				GLFW.GLFW_KEY_Z,
+				InputConstants.KEY_Z,
 				Keybindings.EYEGAZE_EXTRA // The translation key of the keybinding's category.
 		));
 
