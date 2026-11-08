@@ -1,5 +1,12 @@
 # EyeMine Changelog
 
+### Major Changes
+
+## Version 8.0.0 - MC 26.2 (NeoForge + Fabric)
+- **Upgraded to MC 26.2** from MC 26.1.2
+
+---
+
 ## Version 7.0.0 - MC 26.1.1 (NeoForge + Fabric)
 
 ### Major Changes
