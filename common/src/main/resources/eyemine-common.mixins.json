@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8.4",
-  "compatibilityLevel": "JAVA_22",
+  "compatibilityLevel": "JAVA_25",
   "package": "com.specialeffect.eyemine.mixin",
   "target": "@env(DEFAULT)",
   "mixins": [
@@ -16,7 +16,8 @@
     "MouseHandlerAccessor",
     "MouseHandlerMixin",
     "SwingStateAccessor",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "LivingEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
