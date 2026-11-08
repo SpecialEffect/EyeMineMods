@@ -39,7 +39,7 @@ public class TitleScreenMixin extends Screen {
 	}
 
 	@Inject(at = @At("HEAD"), method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V")
-	public void eyemineTitleHeadRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+	public void eyemineTitleHeadRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
 		if (this.eyemine$firstRenderTime == 0L && this.eyemine$showFadeInAnimation) {
 			this.eyemine$firstRenderTime = System.currentTimeMillis();
 		}
@@ -47,18 +47,18 @@ public class TitleScreenMixin extends Screen {
 	}
 
 	@Inject(at = @At("TAIL"), method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V")
-	public void eyemineTitleTailRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+	public void eyemineTitleTailRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
 		float f1 = this.eyemine$showFadeInAnimation ? Mth.clamp(eyemine$animationTime - 1.0F, 0.0F, 1.0F) : 1.0F;
 		int l = Mth.ceil(f1 * 255.0F) << 24;
 
 		String subtitle = "EyeMine Edition";
 		if ((l & -67108864) != 0) {
-			Matrix3x2fStack pose = guiGraphics.pose();
+			Matrix3x2fStack pose = graphics.pose();
 			pose.pushMatrix();
 			pose.translate((float) (this.width / 2), 25.0F);
 			float f2 = 1.5f;
 			pose.scale(f2, f2);
-			guiGraphics.centeredText(this.font, subtitle, 0, -8, 16776960 | l);
+			graphics.centeredText(this.font, subtitle, 0, -8, 16776960 | l);
 			pose.popMatrix();
 		}
 	}

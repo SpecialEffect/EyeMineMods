@@ -22,6 +22,7 @@ import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.SmoothDouble;
 import org.lwjgl.sdl.SDLMouse;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -70,10 +71,7 @@ public abstract class MouseHandlerMixin {
 	public abstract void grabMouse();
 
 	@Shadow
-	public abstract boolean isMouseGrabbed();
-
-	@Shadow
-	protected abstract void turnPlayer(double d);
+	protected abstract void turnPlayer(double mousea);
 
 	@Unique
 	public float eyemine$deadBorder = 0.05f;
@@ -95,7 +93,7 @@ public abstract class MouseHandlerMixin {
 	 * Inject at HEAD of onMove to add our pending event tracking
 	 */
 	@Inject(method = "onMove(JDDDD)V", at = @At(value = "HEAD"))
-	public void eyemine$addPendingEvent(long windowPointer, double xPos, double yPos, double xRel, double yRel, CallbackInfo ci) {
+	public void eyemine$addPendingEvent(long handle, double xpos, double ypos, double xrel, double yrel, CallbackInfo ci) {
 		MouseHelper.addPendingEvent();
 	}
 
@@ -104,8 +102,8 @@ public abstract class MouseHandlerMixin {
 	 */
 	@Inject(method = "onMove(JDDDD)V", at = @At(value = "FIELD",
 			target = "Lnet/minecraft/client/MouseHandler;ignoreFirstMove:Z",
-			ordinal = 0), cancellable = true)
-	public void eyemine$processOnMove(long handle, double xpos, double ypos, double xRel, double yRel, CallbackInfo ci) {
+			ordinal = 0, opcode = Opcodes.GETFIELD), cancellable = true)
+	public void eyemine$processOnMove(long handle, double xpos, double ypos, double xrel, double yrel, CallbackInfo ci) {
 		// Let vanilla accumulate movement for screen hover and dragging.
 		if (this.minecraft.gui.screen() != null && this.minecraft.gui.overlay() == null) {
 			return;
@@ -224,7 +222,7 @@ public abstract class MouseHandlerMixin {
 	 * Override turnPlayer to use EyeMine's custom look logic
 	 */
 	@Inject(method = "turnPlayer(D)V", at = @At(value = "HEAD"), cancellable = true)
-	public void eyemine$turnPlayer(double movementTime, CallbackInfo ci) {
+	public void eyemine$turnPlayer(double mousea, CallbackInfo ci) {
 		if (this.minecraft.player == null) {
 			ci.cancel();
 			return;
