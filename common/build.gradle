@@ -20,7 +20,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly "org.spongepowered:mixin:0.8.7"
+    compileOnly "net.fabricmc:sponge-mixin:${mixin_version}"
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: "${mixinextras_version}"
     testImplementation platform('org.junit:junit-bom:5.10.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.mockito:mockito-core:5.20.0'
