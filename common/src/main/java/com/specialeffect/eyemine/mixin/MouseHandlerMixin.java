@@ -126,7 +126,8 @@ public abstract class MouseHandlerMixin {
 		// Skip the check if position is (0,0) in grabbed mode - that's our cursor reset position,
 		// not a real gaze. GLFW fires an onMove callback when we reset the cursor.
 		int threshold = EyeMineConfig.getGazeIdleThreshold();
-		boolean isCursorResetEvent = !MouseHelper.ungrabbedMouseMode && xpos == 0 && ypos == 0;
+		boolean isCursorResetEvent = !MouseHelper.ungrabbedMouseMode
+				&& xpos == 0 && ypos == 0 && xrel == 0 && yrel == 0;
 		if (threshold > 0 && !isCursorResetEvent) {
 			double screenHeight = this.minecraft.getWindow().getScreenHeight();
 			// Use raw ypos from callback - this is the actual gaze/cursor position
@@ -147,7 +148,11 @@ public abstract class MouseHandlerMixin {
 
 		// Process mouse position - sets accumulatedDX/DY based on position
 		if (this.minecraft.isWindowActive()) {
-			this.eyemine$processMousePosition(xpos, ypos, isCursorResetEvent);
+			// In grabbed mode the OS cursor is clamped at (0,0) by SDL, so negative
+			// movement is only visible in the relative values.
+			double px = MouseHelper.ungrabbedMouseMode ? xpos : xrel;
+			double py = MouseHelper.ungrabbedMouseMode ? ypos : yrel;
+			this.eyemine$processMousePosition(px, py, isCursorResetEvent);
 		}
 
 		// In grabbed mode (eye tracker), reset cursor to origin after each move
